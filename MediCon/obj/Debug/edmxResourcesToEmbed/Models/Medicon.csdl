@@ -1,0 +1,1019 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MediconModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="MediconEntities" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(MediconModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(MediconModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <EntitySet Name="BloodPressures" EntityType="MediconModel.BloodPressure" />
+    <EntitySet Name="BrandLists" EntityType="MediconModel.BrandList" />
+    <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
+    <EntitySet Name="Diagnosis" EntityType="MediconModel.Diagnosi" />
+    <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
+    <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
+    <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
+    <EntitySet Name="MaleRepro_Diagnosis" EntityType="MediconModel.MaleRepro_Diagnosis" />
+    <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
+    <EntitySet Name="Measurements" EntityType="MediconModel.Measurement" />
+    <EntitySet Name="MedicalPrescriptions" EntityType="MediconModel.MedicalPrescription" />
+    <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
+    <EntitySet Name="PapsmearBreastExams" EntityType="MediconModel.PapsmearBreastExam" />
+    <EntitySet Name="Personnels" EntityType="MediconModel.Personnel" />
+    <EntitySet Name="ProductLists" EntityType="MediconModel.ProductList" />
+    <EntitySet Name="ProductUnits" EntityType="MediconModel.ProductUnit" />
+    <EntitySet Name="Referrals" EntityType="MediconModel.Referral" />
+    <EntitySet Name="ResultDiagnosis" EntityType="MediconModel.ResultDiagnosi" />
+    <EntitySet Name="Services" EntityType="MediconModel.Service" />
+    <EntitySet Name="sysdiagrams" EntityType="MediconModel.sysdiagram" />
+    <EntitySet Name="UserTypes" EntityType="MediconModel.UserType" />
+    <EntitySet Name="VitalSigns" EntityType="MediconModel.VitalSign" />
+    <AssociationSet Name="FK_BloodPressure_VitalSigns" Association="MediconModel.FK_BloodPressure_VitalSigns">
+      <End Role="VitalSign" EntitySet="VitalSigns" />
+      <End Role="BloodPressure" EntitySet="BloodPressures" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductList_BrandList" Association="MediconModel.FK_ProductList_BrandList">
+      <End Role="BrandList" EntitySet="BrandLists" />
+      <End Role="ProductList" EntitySet="ProductLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Consultation_Personnel" Association="MediconModel.FK_Consultation_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="Consultation" EntitySet="Consultations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Consultation_Services" Association="MediconModel.FK_Consultation_Services">
+      <End Role="Service" EntitySet="Services" />
+      <End Role="Consultation" EntitySet="Consultations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Consultation_VitalSigns" Association="MediconModel.FK_Consultation_VitalSigns">
+      <End Role="VitalSign" EntitySet="VitalSigns" />
+      <End Role="Consultation" EntitySet="Consultations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MedicalPrescription_Consultation" Association="MediconModel.FK_MedicalPrescription_Consultation">
+      <End Role="Consultation" EntitySet="Consultations" />
+      <End Role="MedicalPrescription" EntitySet="MedicalPrescriptions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Referral_Consultation" Association="MediconModel.FK_Referral_Consultation">
+      <End Role="Consultation" EntitySet="Consultations" />
+      <End Role="Referral" EntitySet="Referrals" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ResultDiagnosis_Consultation" Association="MediconModel.FK_ResultDiagnosis_Consultation">
+      <End Role="Consultation" EntitySet="Consultations" />
+      <End Role="ResultDiagnosi" EntitySet="ResultDiagnosis" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ResultDiagnosis_Diagnosis" Association="MediconModel.FK_ResultDiagnosis_Diagnosis">
+      <End Role="Diagnosi" EntitySet="Diagnosis" />
+      <End Role="ResultDiagnosi" EntitySet="ResultDiagnosis" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DietCounseling_Personnel" Association="MediconModel.FK_DietCounseling_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="DietCounseling" EntitySet="DietCounselings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DietCounseling_Referral" Association="MediconModel.FK_DietCounseling_Referral">
+      <End Role="Referral" EntitySet="Referrals" />
+      <End Role="DietCounseling" EntitySet="DietCounselings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LaboratoryExam_LaboratoryTest" Association="MediconModel.FK_LaboratoryExam_LaboratoryTest">
+      <End Role="LaboratoryTest" EntitySet="LaboratoryTests" />
+      <End Role="LaboratoryExam" EntitySet="LaboratoryExams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LaboratoryExam_Personnel" Association="MediconModel.FK_LaboratoryExam_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="LaboratoryExam" EntitySet="LaboratoryExams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LaboratoryExam_Referral" Association="MediconModel.FK_LaboratoryExam_Referral">
+      <End Role="Referral" EntitySet="Referrals" />
+      <End Role="LaboratoryExam" EntitySet="LaboratoryExams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MaleRepro_Diagnosis_MaleRepro_Interview" Association="MediconModel.FK_MaleRepro_Diagnosis_MaleRepro_Interview">
+      <End Role="MaleRepro_Interview" EntitySet="MaleRepro_Interview" />
+      <End Role="MaleRepro_Diagnosis" EntitySet="MaleRepro_Diagnosis" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MaleRepro_Diagnosis_Personnel" Association="MediconModel.FK_MaleRepro_Diagnosis_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="MaleRepro_Diagnosis" EntitySet="MaleRepro_Diagnosis" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MaleRepro_Interview_Personnel" Association="MediconModel.FK_MaleRepro_Interview_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="MaleRepro_Interview" EntitySet="MaleRepro_Interview" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MaleRepro_Interview_Referral" Association="MediconModel.FK_MaleRepro_Interview_Referral">
+      <End Role="Referral" EntitySet="Referrals" />
+      <End Role="MaleRepro_Interview" EntitySet="MaleRepro_Interview" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Measurement_Personnel" Association="MediconModel.FK_Measurement_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="Measurement" EntitySet="Measurements" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductList_Measurement" Association="MediconModel.FK_ProductList_Measurement">
+      <End Role="Measurement" EntitySet="Measurements" />
+      <End Role="ProductList" EntitySet="ProductLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MedicalPrescription_Personnel" Association="MediconModel.FK_MedicalPrescription_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="MedicalPrescription" EntitySet="MedicalPrescriptions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MedicalPrescription_Referral" Association="MediconModel.FK_MedicalPrescription_Referral">
+      <End Role="Referral" EntitySet="Referrals" />
+      <End Role="MedicalPrescription" EntitySet="MedicalPrescriptions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MedicalPrescription_Services" Association="MediconModel.FK_MedicalPrescription_Services">
+      <End Role="Service" EntitySet="Services" />
+      <End Role="MedicalPrescription" EntitySet="MedicalPrescriptions" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OutgoingItems_MedicalPrescription" Association="MediconModel.FK_OutgoingItems_MedicalPrescription">
+      <End Role="MedicalPrescription" EntitySet="MedicalPrescriptions" />
+      <End Role="OutgoingItem" EntitySet="OutgoingItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OutgoingItems_Personnel" Association="MediconModel.FK_OutgoingItems_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="OutgoingItem" EntitySet="OutgoingItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OutgoingItems_Personnel1" Association="MediconModel.FK_OutgoingItems_Personnel1">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="OutgoingItem" EntitySet="OutgoingItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_OutgoingItems_ProductList" Association="MediconModel.FK_OutgoingItems_ProductList">
+      <End Role="ProductList" EntitySet="ProductLists" />
+      <End Role="OutgoingItem" EntitySet="OutgoingItems" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PapsmearBreastExam_Personnel" Association="MediconModel.FK_PapsmearBreastExam_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="PapsmearBreastExam" EntitySet="PapsmearBreastExams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PapsmearBreastExam_Referral" Association="MediconModel.FK_PapsmearBreastExam_Referral">
+      <End Role="Referral" EntitySet="Referrals" />
+      <End Role="PapsmearBreastExam" EntitySet="PapsmearBreastExams" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Personnel_Services" Association="MediconModel.FK_Personnel_Services">
+      <End Role="Service" EntitySet="Services" />
+      <End Role="Personnel" EntitySet="Personnels" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Personnel_UserType" Association="MediconModel.FK_Personnel_UserType">
+      <End Role="UserType" EntitySet="UserTypes" />
+      <End Role="Personnel" EntitySet="Personnels" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductList_Personnel" Association="MediconModel.FK_ProductList_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="ProductList" EntitySet="ProductLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_VitalSigns_Personnel" Association="MediconModel.FK_VitalSigns_Personnel">
+      <End Role="Personnel" EntitySet="Personnels" />
+      <End Role="VitalSign" EntitySet="VitalSigns" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductList_ProductUnit" Association="MediconModel.FK_ProductList_ProductUnit">
+      <End Role="ProductUnit" EntitySet="ProductUnits" />
+      <End Role="ProductList" EntitySet="ProductLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Referral_Services" Association="MediconModel.FK_Referral_Services">
+      <End Role="Service" EntitySet="Services" />
+      <End Role="Referral" EntitySet="Referrals" />
+    </AssociationSet>
+    <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
+    <AssociationSet Name="FK_MenuAccess_UserType" Association="MediconModel.FK_MenuAccess_UserType">
+      <End Role="UserType" EntitySet="UserTypes" />
+      <End Role="MenuAccess" EntitySet="MenuAccesses" />
+    </AssociationSet>
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+  <EntityType Name="BloodPressure">
+    <Key>
+      <PropertyRef Name="BPID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="BPID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="temperature" Type="Decimal" Precision="4" Scale="2" />
+    <Property Name="systolic" Type="Int32" />
+    <Property Name="diastolic" Type="Int32" />
+    <Property Name="pulseRate" Type="Int32" />
+    <NavigationProperty Name="VitalSign" Relationship="MediconModel.FK_BloodPressure_VitalSigns" FromRole="BloodPressure" ToRole="VitalSign" />
+  </EntityType>
+  <EntityType Name="BrandList">
+    <Key>
+      <PropertyRef Name="brandID" />
+    </Key>
+    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="brandID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="brandName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ProductLists" Relationship="MediconModel.FK_ProductList_BrandList" FromRole="BrandList" ToRole="ProductList" />
+  </EntityType>
+  <EntityType Name="Consultation">
+    <Key>
+      <PropertyRef Name="consultID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="consultID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="outsideReferral" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_Consultation_Personnel" FromRole="Consultation" ToRole="Personnel" />
+    <NavigationProperty Name="Service" Relationship="MediconModel.FK_Consultation_Services" FromRole="Consultation" ToRole="Service" />
+    <NavigationProperty Name="VitalSign" Relationship="MediconModel.FK_Consultation_VitalSigns" FromRole="Consultation" ToRole="VitalSign" />
+    <NavigationProperty Name="MedicalPrescriptions" Relationship="MediconModel.FK_MedicalPrescription_Consultation" FromRole="Consultation" ToRole="MedicalPrescription" />
+    <NavigationProperty Name="Referrals" Relationship="MediconModel.FK_Referral_Consultation" FromRole="Consultation" ToRole="Referral" />
+    <NavigationProperty Name="ResultDiagnosis" Relationship="MediconModel.FK_ResultDiagnosis_Consultation" FromRole="Consultation" ToRole="ResultDiagnosi" />
+  </EntityType>
+  <EntityType Name="Diagnosi">
+    <Key>
+      <PropertyRef Name="diagnoseID" />
+    </Key>
+    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="diagnoseID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="diagnoseName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="diagnoseType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ResultDiagnosis" Relationship="MediconModel.FK_ResultDiagnosis_Diagnosis" FromRole="Diagnosi" ToRole="ResultDiagnosi" />
+  </EntityType>
+  <EntityType Name="DietCounseling">
+    <Key>
+      <PropertyRef Name="dietID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="dietID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="isHPN" Type="Boolean" />
+    <Property Name="isDM" Type="Boolean" />
+    <Property Name="isChole" Type="Boolean" />
+    <Property Name="isUricAcid" Type="Boolean" />
+    <Property Name="isOthers" Type="Boolean" />
+    <Property Name="otherDesc" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_DietCounseling_Personnel" FromRole="DietCounseling" ToRole="Personnel" />
+    <NavigationProperty Name="Referral" Relationship="MediconModel.FK_DietCounseling_Referral" FromRole="DietCounseling" ToRole="Referral" />
+  </EntityType>
+  <EntityType Name="LaboratoryExam">
+    <Key>
+      <PropertyRef Name="labID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="isTested" Type="Boolean" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="LaboratoryTest" Relationship="MediconModel.FK_LaboratoryExam_LaboratoryTest" FromRole="LaboratoryExam" ToRole="LaboratoryTest" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_LaboratoryExam_Personnel" FromRole="LaboratoryExam" ToRole="Personnel" />
+    <NavigationProperty Name="Referral" Relationship="MediconModel.FK_LaboratoryExam_Referral" FromRole="LaboratoryExam" ToRole="Referral" />
+  </EntityType>
+  <EntityType Name="LaboratoryTest">
+    <Key>
+      <PropertyRef Name="labTestID" />
+    </Key>
+    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="labTestID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="LaboratoryExams" Relationship="MediconModel.FK_LaboratoryExam_LaboratoryTest" FromRole="LaboratoryTest" ToRole="LaboratoryExam" />
+  </EntityType>
+  <EntityType Name="MaleRepro_Diagnosis">
+    <Key>
+      <PropertyRef Name="MRDiagnosisID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MRDiagnosisID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="MRID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="PEfindings" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="abdomen" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="extGenita" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="DREsize" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="consistency_firm" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="consistency_soft" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="consistency_hard" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="texture_modular" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="texture_smooth" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="texture_indurated" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="mobility_movable" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="mobility_nonmovable" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="lowbackPain" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="arthriticPain" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="rectalFinding" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TRUS" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="PSA" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="transperrinealBiopsy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="transrectalBiopsy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="TRUSBiopsy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="Remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="MaleRepro_Interview" Relationship="MediconModel.FK_MaleRepro_Diagnosis_MaleRepro_Interview" FromRole="MaleRepro_Diagnosis" ToRole="MaleRepro_Interview" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_MaleRepro_Diagnosis_Personnel" FromRole="MaleRepro_Diagnosis" ToRole="Personnel" />
+  </EntityType>
+  <EntityType Name="MaleRepro_Interview">
+    <Key>
+      <PropertyRef Name="MRID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MRID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="is1stDRE" Type="Boolean" />
+    <Property Name="DREfrequency" Type="Byte" Nullable="false" />
+    <Property Name="isProstateCancer" Type="Boolean" />
+    <Property Name="isAnyCancer" Type="Boolean" />
+    <Property Name="cancerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="isMedication" Type="Boolean" />
+    <Property Name="medicineName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="diNauubos" Type="Byte" />
+    <Property Name="kadalasUmihi" Type="Byte" />
+    <Property Name="patigiltiglNaIhi" Type="Byte" />
+    <Property Name="pagpigilNgIhi" Type="Byte" />
+    <Property Name="mahinangDaloy" Type="Byte" />
+    <Property Name="magpwersaNgIhi" Type="Byte" />
+    <Property Name="besesGumising" Type="Byte" />
+    <Property Name="sintomasNgIhi" Type="Byte" />
+    <Property Name="nadarama" Type="Byte" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="MaleRepro_Diagnosis" Relationship="MediconModel.FK_MaleRepro_Diagnosis_MaleRepro_Interview" FromRole="MaleRepro_Interview" ToRole="MaleRepro_Diagnosis" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_MaleRepro_Interview_Personnel" FromRole="MaleRepro_Interview" ToRole="Personnel" />
+    <NavigationProperty Name="Referral" Relationship="MediconModel.FK_MaleRepro_Interview_Referral" FromRole="MaleRepro_Interview" ToRole="Referral" />
+  </EntityType>
+  <EntityType Name="Measurement">
+    <Key>
+      <PropertyRef Name="measurementID" />
+    </Key>
+    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="measurementID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="measurementDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_Measurement_Personnel" FromRole="Measurement" ToRole="Personnel" />
+    <NavigationProperty Name="ProductLists" Relationship="MediconModel.FK_ProductList_Measurement" FromRole="Measurement" ToRole="ProductList" />
+  </EntityType>
+  <EntityType Name="MedicalPrescription">
+    <Key>
+      <PropertyRef Name="rxID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="rxID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
+    <Property Name="perDay" Type="Int32" />
+    <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Consultation" Relationship="MediconModel.FK_MedicalPrescription_Consultation" FromRole="MedicalPrescription" ToRole="Consultation" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_MedicalPrescription_Personnel" FromRole="MedicalPrescription" ToRole="Personnel" />
+    <NavigationProperty Name="Referral" Relationship="MediconModel.FK_MedicalPrescription_Referral" FromRole="MedicalPrescription" ToRole="Referral" />
+    <NavigationProperty Name="Service" Relationship="MediconModel.FK_MedicalPrescription_Services" FromRole="MedicalPrescription" ToRole="Service" />
+    <NavigationProperty Name="OutgoingItems" Relationship="MediconModel.FK_OutgoingItems_MedicalPrescription" FromRole="MedicalPrescription" ToRole="OutgoingItem" />
+  </EntityType>
+  <EntityType Name="OutgoingItem">
+    <Key>
+      <PropertyRef Name="outID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="outID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="qtyRx" Type="Int32" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeRx" Type="DateTime" Precision="3" />
+    <Property Name="isRelease" Type="Boolean" />
+    <Property Name="qtyReleased" Type="Int32" />
+    <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="MedicalPrescription" Relationship="MediconModel.FK_OutgoingItems_MedicalPrescription" FromRole="OutgoingItem" ToRole="MedicalPrescription" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_OutgoingItems_Personnel" FromRole="OutgoingItem" ToRole="Personnel" />
+    <NavigationProperty Name="Personnel1" Relationship="MediconModel.FK_OutgoingItems_Personnel1" FromRole="OutgoingItem" ToRole="Personnel" />
+    <NavigationProperty Name="ProductList" Relationship="MediconModel.FK_OutgoingItems_ProductList" FromRole="OutgoingItem" ToRole="ProductList" />
+  </EntityType>
+  <EntityType Name="PapsmearBreastExam">
+    <Key>
+      <PropertyRef Name="PBEID" />
+    </Key>
+    <Property Name="recNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PBEID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="isPapsmear" Type="Boolean" />
+    <Property Name="isBreastExam" Type="Boolean" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_PapsmearBreastExam_Personnel" FromRole="PapsmearBreastExam" ToRole="Personnel" />
+    <NavigationProperty Name="Referral" Relationship="MediconModel.FK_PapsmearBreastExam_Referral" FromRole="PapsmearBreastExam" ToRole="Referral" />
+  </EntityType>
+  <EntityType Name="Personnel">
+    <Key>
+      <PropertyRef Name="personnelID" />
+    </Key>
+    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="personnelID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="personnel_lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnel_firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnel_midInit" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="personnel_extName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="sex" Type="Boolean" />
+    <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="isActive" Type="Boolean" />
+    <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="userEncoder" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <Property Name="contactNum" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Consultations" Relationship="MediconModel.FK_Consultation_Personnel" FromRole="Personnel" ToRole="Consultation" />
+    <NavigationProperty Name="DietCounselings" Relationship="MediconModel.FK_DietCounseling_Personnel" FromRole="Personnel" ToRole="DietCounseling" />
+    <NavigationProperty Name="LaboratoryExams" Relationship="MediconModel.FK_LaboratoryExam_Personnel" FromRole="Personnel" ToRole="LaboratoryExam" />
+    <NavigationProperty Name="MaleRepro_Diagnosis" Relationship="MediconModel.FK_MaleRepro_Diagnosis_Personnel" FromRole="Personnel" ToRole="MaleRepro_Diagnosis" />
+    <NavigationProperty Name="MaleRepro_Interview" Relationship="MediconModel.FK_MaleRepro_Interview_Personnel" FromRole="Personnel" ToRole="MaleRepro_Interview" />
+    <NavigationProperty Name="Measurements" Relationship="MediconModel.FK_Measurement_Personnel" FromRole="Personnel" ToRole="Measurement" />
+    <NavigationProperty Name="MedicalPrescriptions" Relationship="MediconModel.FK_MedicalPrescription_Personnel" FromRole="Personnel" ToRole="MedicalPrescription" />
+    <NavigationProperty Name="OutgoingItems" Relationship="MediconModel.FK_OutgoingItems_Personnel" FromRole="Personnel" ToRole="OutgoingItem" />
+    <NavigationProperty Name="OutgoingItems1" Relationship="MediconModel.FK_OutgoingItems_Personnel1" FromRole="Personnel" ToRole="OutgoingItem" />
+    <NavigationProperty Name="PapsmearBreastExams" Relationship="MediconModel.FK_PapsmearBreastExam_Personnel" FromRole="Personnel" ToRole="PapsmearBreastExam" />
+    <NavigationProperty Name="Service" Relationship="MediconModel.FK_Personnel_Services" FromRole="Personnel" ToRole="Service" />
+    <NavigationProperty Name="UserType" Relationship="MediconModel.FK_Personnel_UserType" FromRole="Personnel" ToRole="UserType" />
+    <NavigationProperty Name="ProductLists" Relationship="MediconModel.FK_ProductList_Personnel" FromRole="Personnel" ToRole="ProductList" />
+    <NavigationProperty Name="VitalSigns" Relationship="MediconModel.FK_VitalSigns_Personnel" FromRole="Personnel" ToRole="VitalSign" />
+  </EntityType>
+  <EntityType Name="ProductList">
+    <Key>
+      <PropertyRef Name="productCode" />
+    </Key>
+    <Property Name="recNo" Type="Int32" />
+    <Property Name="productCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="productDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="measurementID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="brandID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="unitID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="BrandList" Relationship="MediconModel.FK_ProductList_BrandList" FromRole="ProductList" ToRole="BrandList" />
+    <NavigationProperty Name="Measurement" Relationship="MediconModel.FK_ProductList_Measurement" FromRole="ProductList" ToRole="Measurement" />
+    <NavigationProperty Name="OutgoingItems" Relationship="MediconModel.FK_OutgoingItems_ProductList" FromRole="ProductList" ToRole="OutgoingItem" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_ProductList_Personnel" FromRole="ProductList" ToRole="Personnel" />
+    <NavigationProperty Name="ProductUnit" Relationship="MediconModel.FK_ProductList_ProductUnit" FromRole="ProductList" ToRole="ProductUnit" />
+  </EntityType>
+  <EntityType Name="ProductUnit">
+    <Key>
+      <PropertyRef Name="unitID" />
+    </Key>
+    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="unitID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="unitDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ProductLists" Relationship="MediconModel.FK_ProductList_ProductUnit" FromRole="ProductUnit" ToRole="ProductList" />
+  </EntityType>
+  <EntityType Name="Referral">
+    <Key>
+      <PropertyRef Name="referralID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="referralID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="referredServiceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Consultation" Relationship="MediconModel.FK_Referral_Consultation" FromRole="Referral" ToRole="Consultation" />
+    <NavigationProperty Name="DietCounselings" Relationship="MediconModel.FK_DietCounseling_Referral" FromRole="Referral" ToRole="DietCounseling" />
+    <NavigationProperty Name="LaboratoryExams" Relationship="MediconModel.FK_LaboratoryExam_Referral" FromRole="Referral" ToRole="LaboratoryExam" />
+    <NavigationProperty Name="MaleRepro_Interview" Relationship="MediconModel.FK_MaleRepro_Interview_Referral" FromRole="Referral" ToRole="MaleRepro_Interview" />
+    <NavigationProperty Name="MedicalPrescriptions" Relationship="MediconModel.FK_MedicalPrescription_Referral" FromRole="Referral" ToRole="MedicalPrescription" />
+    <NavigationProperty Name="PapsmearBreastExams" Relationship="MediconModel.FK_PapsmearBreastExam_Referral" FromRole="Referral" ToRole="PapsmearBreastExam" />
+    <NavigationProperty Name="Service" Relationship="MediconModel.FK_Referral_Services" FromRole="Referral" ToRole="Service" />
+  </EntityType>
+  <EntityType Name="ResultDiagnosi">
+    <Key>
+      <PropertyRef Name="resultID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="resultID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="diagnoseID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="otherDiagnosis" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="toothNum" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Consultation" Relationship="MediconModel.FK_ResultDiagnosis_Consultation" FromRole="ResultDiagnosi" ToRole="Consultation" />
+    <NavigationProperty Name="Diagnosi" Relationship="MediconModel.FK_ResultDiagnosis_Diagnosis" FromRole="ResultDiagnosi" ToRole="Diagnosi" />
+  </EntityType>
+  <EntityType Name="Service">
+    <Key>
+      <PropertyRef Name="serviceID" />
+    </Key>
+    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="serviceID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="serviceName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Consultations" Relationship="MediconModel.FK_Consultation_Services" FromRole="Service" ToRole="Consultation" />
+    <NavigationProperty Name="MedicalPrescriptions" Relationship="MediconModel.FK_MedicalPrescription_Services" FromRole="Service" ToRole="MedicalPrescription" />
+    <NavigationProperty Name="Personnels" Relationship="MediconModel.FK_Personnel_Services" FromRole="Service" ToRole="Personnel" />
+    <NavigationProperty Name="Referrals" Relationship="MediconModel.FK_Referral_Services" FromRole="Service" ToRole="Referral" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="UserType">
+    <Key>
+      <PropertyRef Name="userTypeID" />
+    </Key>
+    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="userTypeID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="userTypeDesc" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="Personnels" Relationship="MediconModel.FK_Personnel_UserType" FromRole="UserType" ToRole="Personnel" />
+    <NavigationProperty Name="MenuAccesses" Relationship="MediconModel.FK_MenuAccess_UserType" FromRole="UserType" ToRole="MenuAccess" />
+  </EntityType>
+  <EntityType Name="VitalSign">
+    <Key>
+      <PropertyRef Name="vSignID" />
+    </Key>
+    <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="vSignID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="weight" Type="Decimal" Precision="5" Scale="2" />
+    <Property Name="height" Type="Decimal" Precision="5" Scale="2" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="BloodPressures" Relationship="MediconModel.FK_BloodPressure_VitalSigns" FromRole="VitalSign" ToRole="BloodPressure" />
+    <NavigationProperty Name="Consultations" Relationship="MediconModel.FK_Consultation_VitalSigns" FromRole="VitalSign" ToRole="Consultation" />
+    <NavigationProperty Name="Personnel" Relationship="MediconModel.FK_VitalSigns_Personnel" FromRole="VitalSign" ToRole="Personnel" />
+  </EntityType>
+  <Association Name="FK_BloodPressure_VitalSigns">
+    <End Type="MediconModel.VitalSign" Role="VitalSign" Multiplicity="0..1" />
+    <End Type="MediconModel.BloodPressure" Role="BloodPressure" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="VitalSign">
+        <PropertyRef Name="vSignID" />
+      </Principal>
+      <Dependent Role="BloodPressure">
+        <PropertyRef Name="vSignID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProductList_BrandList">
+    <End Type="MediconModel.BrandList" Role="BrandList" Multiplicity="0..1" />
+    <End Type="MediconModel.ProductList" Role="ProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="BrandList">
+        <PropertyRef Name="brandID" />
+      </Principal>
+      <Dependent Role="ProductList">
+        <PropertyRef Name="brandID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Consultation_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.Consultation" Role="Consultation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="Consultation">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Consultation_Services">
+    <End Type="MediconModel.Service" Role="Service" Multiplicity="0..1" />
+    <End Type="MediconModel.Consultation" Role="Consultation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Service">
+        <PropertyRef Name="serviceID" />
+      </Principal>
+      <Dependent Role="Consultation">
+        <PropertyRef Name="serviceID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Consultation_VitalSigns">
+    <End Type="MediconModel.VitalSign" Role="VitalSign" Multiplicity="0..1" />
+    <End Type="MediconModel.Consultation" Role="Consultation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="VitalSign">
+        <PropertyRef Name="vSignID" />
+      </Principal>
+      <Dependent Role="Consultation">
+        <PropertyRef Name="vSignID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MedicalPrescription_Consultation">
+    <End Type="MediconModel.Consultation" Role="Consultation" Multiplicity="0..1" />
+    <End Type="MediconModel.MedicalPrescription" Role="MedicalPrescription" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Consultation">
+        <PropertyRef Name="consultID" />
+      </Principal>
+      <Dependent Role="MedicalPrescription">
+        <PropertyRef Name="consultID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Referral_Consultation">
+    <End Type="MediconModel.Consultation" Role="Consultation" Multiplicity="0..1" />
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Consultation">
+        <PropertyRef Name="consultID" />
+      </Principal>
+      <Dependent Role="Referral">
+        <PropertyRef Name="consultID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ResultDiagnosis_Consultation">
+    <End Type="MediconModel.Consultation" Role="Consultation" Multiplicity="0..1" />
+    <End Type="MediconModel.ResultDiagnosi" Role="ResultDiagnosi" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Consultation">
+        <PropertyRef Name="consultID" />
+      </Principal>
+      <Dependent Role="ResultDiagnosi">
+        <PropertyRef Name="consultID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ResultDiagnosis_Diagnosis">
+    <End Type="MediconModel.Diagnosi" Role="Diagnosi" Multiplicity="0..1" />
+    <End Type="MediconModel.ResultDiagnosi" Role="ResultDiagnosi" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Diagnosi">
+        <PropertyRef Name="diagnoseID" />
+      </Principal>
+      <Dependent Role="ResultDiagnosi">
+        <PropertyRef Name="diagnoseID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DietCounseling_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.DietCounseling" Role="DietCounseling" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="DietCounseling">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DietCounseling_Referral">
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="0..1" />
+    <End Type="MediconModel.DietCounseling" Role="DietCounseling" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Referral">
+        <PropertyRef Name="referralID" />
+      </Principal>
+      <Dependent Role="DietCounseling">
+        <PropertyRef Name="referralID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LaboratoryExam_LaboratoryTest">
+    <End Type="MediconModel.LaboratoryTest" Role="LaboratoryTest" Multiplicity="0..1" />
+    <End Type="MediconModel.LaboratoryExam" Role="LaboratoryExam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LaboratoryTest">
+        <PropertyRef Name="labTestID" />
+      </Principal>
+      <Dependent Role="LaboratoryExam">
+        <PropertyRef Name="labTestID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LaboratoryExam_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.LaboratoryExam" Role="LaboratoryExam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="LaboratoryExam">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LaboratoryExam_Referral">
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="0..1" />
+    <End Type="MediconModel.LaboratoryExam" Role="LaboratoryExam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Referral">
+        <PropertyRef Name="referralID" />
+      </Principal>
+      <Dependent Role="LaboratoryExam">
+        <PropertyRef Name="referralID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MaleRepro_Diagnosis_MaleRepro_Interview">
+    <End Type="MediconModel.MaleRepro_Interview" Role="MaleRepro_Interview" Multiplicity="0..1" />
+    <End Type="MediconModel.MaleRepro_Diagnosis" Role="MaleRepro_Diagnosis" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MaleRepro_Interview">
+        <PropertyRef Name="MRID" />
+      </Principal>
+      <Dependent Role="MaleRepro_Diagnosis">
+        <PropertyRef Name="MRID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MaleRepro_Diagnosis_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.MaleRepro_Diagnosis" Role="MaleRepro_Diagnosis" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="MaleRepro_Diagnosis">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MaleRepro_Interview_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.MaleRepro_Interview" Role="MaleRepro_Interview" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="MaleRepro_Interview">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MaleRepro_Interview_Referral">
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="0..1" />
+    <End Type="MediconModel.MaleRepro_Interview" Role="MaleRepro_Interview" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Referral">
+        <PropertyRef Name="referralID" />
+      </Principal>
+      <Dependent Role="MaleRepro_Interview">
+        <PropertyRef Name="referralID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Measurement_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.Measurement" Role="Measurement" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="Measurement">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProductList_Measurement">
+    <End Type="MediconModel.Measurement" Role="Measurement" Multiplicity="0..1" />
+    <End Type="MediconModel.ProductList" Role="ProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Measurement">
+        <PropertyRef Name="measurementID" />
+      </Principal>
+      <Dependent Role="ProductList">
+        <PropertyRef Name="measurementID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MedicalPrescription_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.MedicalPrescription" Role="MedicalPrescription" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="MedicalPrescription">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MedicalPrescription_Referral">
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="0..1" />
+    <End Type="MediconModel.MedicalPrescription" Role="MedicalPrescription" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Referral">
+        <PropertyRef Name="referralID" />
+      </Principal>
+      <Dependent Role="MedicalPrescription">
+        <PropertyRef Name="referralID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MedicalPrescription_Services">
+    <End Type="MediconModel.Service" Role="Service" Multiplicity="0..1" />
+    <End Type="MediconModel.MedicalPrescription" Role="MedicalPrescription" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Service">
+        <PropertyRef Name="serviceID" />
+      </Principal>
+      <Dependent Role="MedicalPrescription">
+        <PropertyRef Name="serviceID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OutgoingItems_MedicalPrescription">
+    <End Type="MediconModel.MedicalPrescription" Role="MedicalPrescription" Multiplicity="0..1" />
+    <End Type="MediconModel.OutgoingItem" Role="OutgoingItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="MedicalPrescription">
+        <PropertyRef Name="rxID" />
+      </Principal>
+      <Dependent Role="OutgoingItem">
+        <PropertyRef Name="rxID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OutgoingItems_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.OutgoingItem" Role="OutgoingItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="OutgoingItem">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OutgoingItems_Personnel1">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.OutgoingItem" Role="OutgoingItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="OutgoingItem">
+        <PropertyRef Name="userIDreleased" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_OutgoingItems_ProductList">
+    <End Type="MediconModel.ProductList" Role="ProductList" Multiplicity="0..1" />
+    <End Type="MediconModel.OutgoingItem" Role="OutgoingItem" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductList">
+        <PropertyRef Name="productCode" />
+      </Principal>
+      <Dependent Role="OutgoingItem">
+        <PropertyRef Name="productCode" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PapsmearBreastExam_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.PapsmearBreastExam" Role="PapsmearBreastExam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="PapsmearBreastExam">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PapsmearBreastExam_Referral">
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="0..1" />
+    <End Type="MediconModel.PapsmearBreastExam" Role="PapsmearBreastExam" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Referral">
+        <PropertyRef Name="referralID" />
+      </Principal>
+      <Dependent Role="PapsmearBreastExam">
+        <PropertyRef Name="referralID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Personnel_Services">
+    <End Type="MediconModel.Service" Role="Service" Multiplicity="0..1" />
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Service">
+        <PropertyRef Name="serviceID" />
+      </Principal>
+      <Dependent Role="Personnel">
+        <PropertyRef Name="serviceID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Personnel_UserType">
+    <End Type="MediconModel.UserType" Role="UserType" Multiplicity="0..1" />
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserType">
+        <PropertyRef Name="userTypeID" />
+      </Principal>
+      <Dependent Role="Personnel">
+        <PropertyRef Name="userTypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProductList_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.ProductList" Role="ProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="ProductList">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_VitalSigns_Personnel">
+    <End Type="MediconModel.Personnel" Role="Personnel" Multiplicity="0..1" />
+    <End Type="MediconModel.VitalSign" Role="VitalSign" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Personnel">
+        <PropertyRef Name="personnelID" />
+      </Principal>
+      <Dependent Role="VitalSign">
+        <PropertyRef Name="personnelID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ProductList_ProductUnit">
+    <End Type="MediconModel.ProductUnit" Role="ProductUnit" Multiplicity="0..1" />
+    <End Type="MediconModel.ProductList" Role="ProductList" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductUnit">
+        <PropertyRef Name="unitID" />
+      </Principal>
+      <Dependent Role="ProductList">
+        <PropertyRef Name="unitID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Referral_Services">
+    <End Type="MediconModel.Service" Role="Service" Multiplicity="0..1" />
+    <End Type="MediconModel.Referral" Role="Referral" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Service">
+        <PropertyRef Name="serviceID" />
+      </Principal>
+      <Dependent Role="Referral">
+        <PropertyRef Name="referredServiceID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="MenuAccess">
+    <Key>
+      <PropertyRef Name="menuID" />
+    </Key>
+    <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="subMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="UserType" Relationship="MediconModel.FK_MenuAccess_UserType" FromRole="MenuAccess" ToRole="UserType" />
+  </EntityType>
+  <Association Name="FK_MenuAccess_UserType">
+    <End Type="MediconModel.UserType" Role="UserType" Multiplicity="0..1" />
+    <End Type="MediconModel.MenuAccess" Role="MenuAccess" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserType">
+        <PropertyRef Name="userTypeID" />
+      </Principal>
+      <Dependent Role="MenuAccess">
+        <PropertyRef Name="userTypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

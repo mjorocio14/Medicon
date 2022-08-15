@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="MedConModelStoreContainer" CdmEntityContainer="MedConEntities">
+    <EntitySetMapping Name="BPtemps">
+      <EntityTypeMapping TypeName="MedConModel.BPtemp">
+        <MappingFragment StoreEntitySet="BPtemp">
+          <ScalarProperty Name="pulseRate" ColumnName="pulseRate" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="bpID" ColumnName="bpID" />
+          <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+          <ScalarProperty Name="systolic" ColumnName="systolic" />
+          <ScalarProperty Name="diastolic" ColumnName="diastolic" />
+          <ScalarProperty Name="temp" ColumnName="temp" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Brgies">
+      <EntityTypeMapping TypeName="MedConModel.Brgy">
+        <MappingFragment StoreEntitySet="Brgy">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="brgyCode" ColumnName="brgyCode" />
+          <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
+          <ScalarProperty Name="regCode" ColumnName="regCode" />
+          <ScalarProperty Name="provCode" ColumnName="provCode" />
+          <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CityMuns">
+      <EntityTypeMapping TypeName="MedConModel.CityMun">
+        <MappingFragment StoreEntitySet="CityMun">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
+          <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
+          <ScalarProperty Name="regDesc" ColumnName="regDesc" />
+          <ScalarProperty Name="provCode" ColumnName="provCode" />
+          <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ConsultationSurgeries">
+      <EntityTypeMapping TypeName="MedConModel.ConsultationSurgery">
+        <MappingFragment StoreEntitySet="ConsultationSurgery">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="consultID" ColumnName="consultID" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="remarks" ColumnName="remarks" />
+          <ScalarProperty Name="doctorID" ColumnName="doctorID" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Departments">
+      <EntityTypeMapping TypeName="MedConModel.Department">
+        <MappingFragment StoreEntitySet="Department">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="departmentCode" ColumnName="departmentCode" />
+          <ScalarProperty Name="departmentName" ColumnName="departmentName" />
+          <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
+          <ScalarProperty Name="orderNo" ColumnName="orderNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Diagnosis">
+      <EntityTypeMapping TypeName="MedConModel.Diagnosi">
+        <MappingFragment StoreEntitySet="Diagnosis">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
+          <ScalarProperty Name="diagnoseName" ColumnName="diagnoseName" />
+          <ScalarProperty Name="diagnoseType" ColumnName="diagnoseType" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MedConServices">
+      <EntityTypeMapping TypeName="MedConModel.MedConService">
+        <MappingFragment StoreEntitySet="MedConServices">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+          <ScalarProperty Name="serviceName" ColumnName="serviceName" />
+          <ScalarProperty Name="programID" ColumnName="programID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MedicalPrescriptions">
+      <EntityTypeMapping TypeName="MedConModel.MedicalPrescription">
+        <MappingFragment StoreEntitySet="MedicalPrescription">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="rxID" ColumnName="rxID" />
+          <ScalarProperty Name="outID" ColumnName="outID" />
+          <ScalarProperty Name="dosage" ColumnName="dosage" />
+          <ScalarProperty Name="perDay" ColumnName="perDay" />
+          <ScalarProperty Name="noDay" ColumnName="noDay" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MenuAccesses">
+      <EntityTypeMapping TypeName="MedConModel.MenuAccess">
+        <MappingFragment StoreEntitySet="MenuAccess">
+          <ScalarProperty Name="subMenu" ColumnName="subMenu" />
+          <ScalarProperty Name="menuID" ColumnName="menuID" />
+          <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
+          <ScalarProperty Name="controller" ColumnName="controller" />
+          <ScalarProperty Name="action" ColumnName="action" />
+          <ScalarProperty Name="userType" ColumnName="userType" />
+          <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Nutritions">
+      <EntityTypeMapping TypeName="MedConModel.Nutrition">
+        <MappingFragment StoreEntitySet="Nutrition">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="nutritionID" ColumnName="nutritionID" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="isFoodSupply" ColumnName="isFoodSupply" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="NutritionCategories">
+      <EntityTypeMapping TypeName="MedConModel.NutritionCategory">
+        <MappingFragment StoreEntitySet="NutritionCategory">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="nutCatID" ColumnName="nutCatID" />
+          <ScalarProperty Name="nutritionCategory1" ColumnName="nutritionCategory" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="OutgoingItems">
+      <EntityTypeMapping TypeName="MedConModel.OutgoingItem">
+        <MappingFragment StoreEntitySet="OutgoingItems">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="outID" ColumnName="outID" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="productCode" ColumnName="productCode" />
+          <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+          <ScalarProperty Name="doctorID" ColumnName="doctorID" />
+          <ScalarProperty Name="dateTimeRx" ColumnName="dateTimeRx" />
+          <ScalarProperty Name="isReleased" ColumnName="isReleased" />
+          <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
+          <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
+          <ScalarProperty Name="userEncoderReleased" ColumnName="userEncoderReleased" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProductBrands">
+      <EntityTypeMapping TypeName="MedConModel.ProductBrand">
+        <MappingFragment StoreEntitySet="ProductBrand">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="brandID" ColumnName="brandID" />
+          <ScalarProperty Name="brandName" ColumnName="brandName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProductStocks">
+      <EntityTypeMapping TypeName="MedConModel.ProductStock">
+        <MappingFragment StoreEntitySet="ProductStocks">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="stockID" ColumnName="stockID" />
+          <ScalarProperty Name="productCode" ColumnName="productCode" />
+          <ScalarProperty Name="qty" ColumnName="qty" />
+          <ScalarProperty Name="remarks" ColumnName="remarks" />
+          <ScalarProperty Name="date_received" ColumnName="date_received" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Provinces">
+      <EntityTypeMapping TypeName="MedConModel.Province">
+        <MappingFragment StoreEntitySet="Province">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
+          <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+          <ScalarProperty Name="regCode" ColumnName="regCode" />
+          <ScalarProperty Name="provCode" ColumnName="provCode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ResultDiagnosis">
+      <EntityTypeMapping TypeName="MedConModel.ResultDiagnosi">
+        <MappingFragment StoreEntitySet="ResultDiagnosis">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="resultID" ColumnName="resultID" />
+          <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
+          <ScalarProperty Name="otherDiagnose" ColumnName="otherDiagnose" />
+          <ScalarProperty Name="toothNum" ColumnName="toothNum" />
+          <ScalarProperty Name="disability" ColumnName="disability" />
+          <ScalarProperty Name="referDesc" ColumnName="referDesc" />
+          <ScalarProperty Name="consultID" ColumnName="consultID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ServiceAvaileds">
+      <EntityTypeMapping TypeName="MedConModel.ServiceAvailed">
+        <MappingFragment StoreEntitySet="ServiceAvailed">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+          <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+          <ScalarProperty Name="isEdit" ColumnName="isEdit" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserTypes">
+      <EntityTypeMapping TypeName="MedConModel.UserType">
+        <MappingFragment StoreEntitySet="UserType">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="userType" ColumnName="userType" />
+          <ScalarProperty Name="userTypeDescription" ColumnName="userTypeDescription" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="VitalSigns">
+      <EntityTypeMapping TypeName="MedConModel.VitalSign">
+        <MappingFragment StoreEntitySet="VitalSigns">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MedConPrograms">
+      <EntityTypeMapping TypeName="MedConModel.MedConProgram">
+        <MappingFragment StoreEntitySet="MedConPrograms">
+          <ScalarProperty Name="departmentCode" ColumnName="departmentCode" />
+          <ScalarProperty Name="programName" ColumnName="programName" />
+          <ScalarProperty Name="programID" ColumnName="programID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PersonalInfoes">
+      <EntityTypeMapping TypeName="MedConModel.PersonalInfo">
+        <MappingFragment StoreEntitySet="PersonalInfo">
+          <ScalarProperty Name="registrationType" ColumnName="registrationType" />
+          <ScalarProperty Name="userID" ColumnName="userID" />
+          <ScalarProperty Name="timeLog" ColumnName="timeLog" />
+          <ScalarProperty Name="occupation" ColumnName="occupation" />
+          <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="brgyCode" ColumnName="brgyCode" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+          <ScalarProperty Name="extName" ColumnName="extName" />
+          <ScalarProperty Name="middleName" ColumnName="middleName" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="fOT_VitalSignsList" FunctionName="MedConModel.Store.fOT_VitalSignsList">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MedConModel.fOT_VitalSignsList_Result">
+          <ScalarProperty Name="weight" ColumnName="weight" />
+          <ScalarProperty Name="height" ColumnName="height" />
+          <ScalarProperty Name="dateTimeEncoded" ColumnName="dateTimeEncoded" />
+          <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="middleName" ColumnName="middleName" />
+          <ScalarProperty Name="extName" ColumnName="extName" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+          <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+          <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
+          <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
+          <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+          <ScalarProperty Name="AvailedDT" ColumnName="AvailedDT" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="fOT_ClientList_perService" FunctionName="MedConModel.Store.fOT_ClientList_perService">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MedConModel.fOT_ClientList_perService_Result">
+          <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="middleName" ColumnName="middleName" />
+          <ScalarProperty Name="extName" ColumnName="extName" />
+          <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+          <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
+          <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
+          <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+          <ScalarProperty Name="remarks" ColumnName="remarks" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="consultID" ColumnName="consultID" />
+          <ScalarProperty Name="doctorID" ColumnName="doctorID" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="height" ColumnName="height" />
+          <ScalarProperty Name="weight" ColumnName="weight" />
+          <ScalarProperty Name="nutCatID" ColumnName="nutCatID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="spOT_MedicineList" FunctionName="MedConModel.Store.spOT_MedicineList">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MedConModel.spOT_MedicineList_Result">
+          <ScalarProperty Name="productCode" ColumnName="productCode" />
+          <ScalarProperty Name="productDesc" ColumnName="productDesc" />
+          <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+          <ScalarProperty Name="TOTAL_INCOMING" ColumnName="TOTAL_INCOMING" />
+          <ScalarProperty Name="itemRx" ColumnName="itemRx" />
+          <ScalarProperty Name="LESSRX_AVAILABLE" ColumnName="LESSRX_AVAILABLE" />
+          <ScalarProperty Name="itemReleased" ColumnName="itemReleased" />
+          <ScalarProperty Name="AVAILABLE" ColumnName="AVAILABLE" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="fVAC_SearchQRinfo" FunctionName="MedConModel.Store.fVAC_SearchQRinfo">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MedConModel.fVAC_SearchQRinfo_Result">
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+          <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="middleName" ColumnName="middleName" />
+          <ScalarProperty Name="extName" ColumnName="extName" />
+          <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="brgyCode" ColumnName="brgyCode" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+          <ScalarProperty Name="occupation" ColumnName="occupation" />
+          <ScalarProperty Name="timeLog" ColumnName="timeLog" />
+          <ScalarProperty Name="userID" ColumnName="userID" />
+          <ScalarProperty Name="registrationType" ColumnName="registrationType" />
+          <ScalarProperty Name="fullAddress" ColumnName="fullAddress" />
+          <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+          <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
+          <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
+          <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
+          <ScalarProperty Name="provCode" ColumnName="provCode" />
+          <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+          <ScalarProperty Name="height" ColumnName="height" />
+          <ScalarProperty Name="weight" ColumnName="weight" />
+          <ScalarProperty Name="Age" ColumnName="Age" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="AdditionalPersonInfoes">
+      <EntityTypeMapping TypeName="MedConModel.AdditionalPersonInfo">
+        <MappingFragment StoreEntitySet="AdditionalPersonInfo">
+          <ScalarProperty Name="dateTimeEncoded" ColumnName="dateTimeEncoded" />
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+          <ScalarProperty Name="nutCatID" ColumnName="nutCatID" />
+          <ScalarProperty Name="height" ColumnName="height" />
+          <ScalarProperty Name="weight" ColumnName="weight" />
+          <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <ScalarProperty Name="AdditionalPersonID" ColumnName="AdditionalPersonID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="fOT_BPtempList" FunctionName="MedConModel.Store.fOT_BPtempList">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="MedConModel.fOT_BPtempList_Result">
+          <ScalarProperty Name="programName" ColumnName="programName" />
+          <ScalarProperty Name="serviceName" ColumnName="serviceName" />
+          <ScalarProperty Name="systolic" ColumnName="systolic" />
+          <ScalarProperty Name="diastolic" ColumnName="diastolic" />
+          <ScalarProperty Name="temp" ColumnName="temp" />
+          <ScalarProperty Name="BPdateTime" ColumnName="BPdateTime" />
+          <ScalarProperty Name="nutritionCategory" ColumnName="nutritionCategory" />
+          <ScalarProperty Name="availedID" ColumnName="availedID" />
+          <ScalarProperty Name="AvaileDateTime" ColumnName="AvaileDateTime" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <EntitySetMapping Name="Personnels">
+      <EntityTypeMapping TypeName="MedConModel.Personnel">
+        <MappingFragment StoreEntitySet="Personnel">
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+          <ScalarProperty Name="contactNum" ColumnName="contactNum" />
+          <ScalarProperty Name="userType" ColumnName="userType" />
+          <ScalarProperty Name="isActive" ColumnName="isActive" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+          <ScalarProperty Name="position" ColumnName="position" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
+          <ScalarProperty Name="personnel_middleName" ColumnName="personnel_middleName" />
+          <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+          <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Measurments">
+      <EntityTypeMapping TypeName="MedConModel.Measurment">
+        <MappingFragment StoreEntitySet="Measurment">
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="measurmentDesc" ColumnName="measurmentDesc" />
+          <ScalarProperty Name="measureID" ColumnName="measureID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProductLists">
+      <EntityTypeMapping TypeName="MedConModel.ProductList">
+        <MappingFragment StoreEntitySet="ProductList">
+          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="unitID" ColumnName="unitID" />
+          <ScalarProperty Name="brandID" ColumnName="brandID" />
+          <ScalarProperty Name="measureID" ColumnName="measureID" />
+          <ScalarProperty Name="productDesc" ColumnName="productDesc" />
+          <ScalarProperty Name="productCode" ColumnName="productCode" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProductUnits">
+      <EntityTypeMapping TypeName="MedConModel.ProductUnit">
+        <MappingFragment StoreEntitySet="ProductUnit">
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+          <ScalarProperty Name="unitID" ColumnName="unitID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

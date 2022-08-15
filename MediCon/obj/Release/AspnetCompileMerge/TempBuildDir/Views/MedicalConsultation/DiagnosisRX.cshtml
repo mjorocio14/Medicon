@@ -1,0 +1,592 @@
+﻿
+@{
+    //ViewBag.Title = "DiagnosisRX";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .select2-container .select2-selection {
+        height: 34px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #444;
+        line-height: 32px;
+    }
+</style>
+
+<div ng-controller="DiagnosisRXCtrl">
+
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Diagnosis & Prescription</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">PHO</a>
+                </li>
+                <li>
+                    <a href="">Medical Consultation</a>
+                </li>
+                <li class="active">
+                    <strong>Diagnosis & Rx</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-sm-2" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN" ng-click="showClientList = !showClientList"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
+            <button class="btn btn-danger" ng-show="showRx" ng-click="resetForm()"><i class="fa fa-angle-double-left"></i> Back </button>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+
+        <div class="animated fadeInRight ecommerce">
+            <div class="row">
+
+                <!-- QR CODE INFO FORM -->
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title text-center">
+                            <label class="text-center">QR CODE INFORMATION</label>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                    <div class="profile_img">
+                                        <!-- Current avatar -->
+                                        <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
+                                    </div>
+                                    <form name="qrSearchForm">
+                                        <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                            <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                    <br />
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                    <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are getting your data...</i></text>
+                                    </div>
+                                    <div ng-show="!loader">
+                                        <form id="QR_FORM" name="QR_FORM">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_lastName">Last name</label>
+                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_firstName">First name</label>
+                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_mi">Middle name</label>
+                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_suffix">Suffix</label>
+                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <label class="control-label">Sex</label>
+                                                    <div class="form-group text-center">
+                                                        <div class="radio radio-primary radio-inline">
+                                                            <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <label for="radio_sex_male"> Male </label>
+                                                        </div>
+                                                        <div class="radio radio-danger radio-inline">
+                                                            <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <label for="radio_sex_female"> Female </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_address">Address</label>
+                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /QR CODE INFO FORM -->
+
+                <div ng-show="!showRx">
+                    <!-- VITAL SIGNS HISTORY -->
+                    <div class="col-sm-6">
+                        <div class="panel panel-success">
+                            <div class="panel-heading text-center">
+                                <label class="text-center">VITAL SIGNS INFORMATION</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-xs-4"><label class="form-control" style="background: aliceblue;">Age: {{vitalSigns.Age}}</label></div>
+                                    <div class="col-xs-4"><label class="form-control" style="background: aliceblue;">Weight: {{vitalSigns.weight + kg}}</label></div>
+                                    <div class="col-xs-4"><label class="form-control" style="background: aliceblue;">Height: {{vitalSigns.height + m}}</label></div>
+                                </div>
+                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                    <table class="table table-stripped">
+                                        <thead>
+                                            <tr>
+
+                                                <th class="">#</th>
+                                                <th>Temperature</th>
+                                                <th>BP</th>
+                                                <th>Pulse Rate</th>
+                                                <th>Date & Time</th>
+                                                <th>Program</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center" ng-show="bpLoader">
+                                                <td colspan="6">
+                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                        <div class="sk-double-bounce1"></div>
+                                                        <div class="sk-double-bounce2"></div>
+                                                    </div>
+                                                    <text><i>Please wait, we are loading your data...</i></text>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                <td colspan="6">
+                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="vs in bpHistoryList">
+                                                <td>{{$index + 1}}</td>
+                                                <td></td>
+                                                <td><label>{{vs.systolic}}/{{vs.diastolic}}</label></td>
+                                                <td></td>
+                                                <td>{{vs.BPdateTime == 'Invalid date' ? '---':vs.BPdateTime }}</td>
+                                                <td>{{vs.programName}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /VITAL SIGNS HISTORY -->
+                    <!--  DIAGNOSIS  -->
+                    <div class="col-sm-6">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading text-center">
+                                <label class="text-center">DIAGNOSIS</label>
+                            </div>
+                            <div class="panel-body">
+                                <form id="diagnosis_form" name="diagnosis_form">
+                                    @*<div class="row" style="background: #eee; display: block; margin: 5px 5px 5px; padding-top: 10px;">
+                                        <div class="col-sm-12 col-xs-12 text-center">
+                                            <label class="text-danger">TB SCREENING</label>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <p><label class="control-label" for="vs_systolic">Do you have:</label></p>
+                                                <div class="checkbox checkbox-danger checkbox-inline">
+                                                    <input type="checkbox" id="isCough" value="isCough" ng-model="diagnoseXray.isCough">
+                                                    <label for="isCough"> Cough </label>
+                                                </div>
+                                                <div class="checkbox checkbox-danger checkbox-inline">
+                                                    <input type="checkbox" id="isDiabetic" value="isDiabetic" ng-model="diagnoseXray.isDiabetic">
+                                                    <label for="isDiabetic"> Diabetes </label>
+                                                </div>
+                                                <div class="checkbox checkbox-danger checkbox-inline">
+                                                    <input type="checkbox" id="isSeniorCitizen" value="isSeniorCitizen" ng-model="diagnoseXray.isSeniorCitizen">
+                                                    <label for="isSeniorCitizen"> Senior Citizen </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <p><label class="control-label" for="isXrayLastYr">Did you had a chest X-ray last year?</label></p>
+                                                <select name="isXrayLastYr" id="isXrayLastYr" style="width: 100%; text-transform : uppercase" ng-model="diagnoseXray.isXrayLastYr" class="form-control" required>
+                                                    <option value="">- Select Answer -</option>
+                                                    <option value=true>Yes</option>
+                                                    <option value=false>No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="hr-line-dashed" />*@
+
+                                    <div class="row">
+                                        <div class="col-sm-6 col-xs-6 form-group">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG005" value="Gastritis" ng-model="diagnose.DIAG005">
+                                                <label for="DIAG005"> Acute Gastritis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG006" value="Gastroenteritis" ng-model="diagnose.DIAG006">
+                                                <label for="DIAG006"> Acute Gastroenteritis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG018" value="Tonsillopharyngitis" ng-model="diagnose.DIAG018">
+                                                <label for="DIAG018"> Acute Tonsillopharyngitis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG003" value="Rhinitis" ng-model="diagnose.DIAG003">
+                                                <label for="DIAG003"> Allergic Rhinitis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG008" value="Amoebiasis" ng-model="diagnose.DIAG008">
+                                                <label for="DIAG008"> Amoebiasis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG021" value="Arthritis" ng-model="diagnose.DIAG021">
+                                                <label for="DIAG021"> Arthritis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG010" value="BPH" ng-model="diagnose.DIAG010">
+                                                <label for="DIAG010"> BPH </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG004" value="Asthma" ng-model="diagnose.DIAG004">
+                                                <label for="DIAG004"> Bronchial Asthma </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG011" value="Dermatitis" ng-model="diagnose.DIAG011">
+                                                <label for="DIAG011"> Contact Dermatitis </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG014" value="Diabetes" ng-model="diagnose.DIAG014">
+                                                <label for="DIAG014"> Diabetes Mellitus </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG012" value="Eczema" ng-model="diagnose.DIAG012">
+                                                <label for="DIAG012"> Eczema </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG020" value="Furuncle" ng-model="diagnose.DIAG020">
+                                                <label for="DIAG020"> Furuncle/Carbuncle </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-6 form-group">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG007" value="GERD" ng-model="diagnose.DIAG007">
+                                                <label for="DIAG007"> GERD </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG015" value="Hyperlipidemia" ng-model="diagnose.DIAG015">
+                                                <label for="DIAG015"> Hyperlipidemia </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG013" value="Hypertension" ng-model="diagnose.DIAG013">
+                                                <label for="DIAG013"> Hypertension </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG016" value="Hyperuricemia" ng-model="diagnose.DIAG016">
+                                                <label for="DIAG016"> Hyperuricemia </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG019" value="spasm" ng-model="diagnose.DIAG019">
+                                                <label for="DIAG019"> Musculoskeletal spasm </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG022" value="Neuropathy" ng-model="diagnose.DIAG022">
+                                                <label for="DIAG022"> Peripheral Neuropathy </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG002" value="Pneumonia" ng-model="diagnose.DIAG002">
+                                                <label for="DIAG002"> Pneumonia </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG017" value="Headache" ng-model="diagnose.DIAG017">
+                                                <label for="DIAG017"> Tension Headache </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG001" value="Respiratory" ng-model="diagnose.DIAG001">
+                                                <label for="DIAG001"> Upper Respiratory Tract Infection </label>
+                                            </div>
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="DIAG009" value="Urinary" ng-model="diagnose.DIAG009">
+                                                <label for="DIAG009"> Urinary Tract Infection </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr class="hr-line-dashed" />
+                                    <div class="row">
+                                        <div class="col-sm-12 col-xs-12">
+                                            <div class="checkbox checkbox-danger col-lg-3 col-md-3">
+                                                <input type="checkbox" id="DIAG023" value="Others" ng-model="diagnose.DIAG023" ng-change="diagnose.DIAG023 == false ? diagnoseInfo.otherDiagnose = '':''">
+                                                <label for="DIAG023"> Others </label>
+                                            </div>
+                                            <div class="form-group col-lg-9 col-md-9">
+                                                <input type="text" id="otherDiagnose" name="otherDiagnose" ng-model="diagnoseInfo.otherDiagnose" ng-disabled="diagnose.DIAG023 == false || diagnose.DIAG023 == undefined" placeholder="Identify diagnosis here..." class="form-control" ng-required="diagnose.DIAG023" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 col-xs-12">
+                                            <div class="checkbox checkbox-danger col-lg-3 col-md-3">
+                                                <input type="checkbox" id="DIAG024" value="Refer" ng-model="diagnose.DIAG024" ng-change="diagnose.DIAG024 == false ? diagnoseInfo.referDesc = '':''">
+                                                <label for="DIAG024"> Refer </label>
+                                            </div>
+                                            <div class="form-group col-lg-9 col-md-9">
+                                                <input type="text" id="referDesc" name="referDesc" ng-model="diagnoseInfo.referDesc" ng-disabled="diagnose.DIAG024 == false || diagnose.DIAG024 == undefined" placeholder="Identify referral info here..." class="form-control" ng-required="diagnose.DIAG024" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-md-12">
+                                        <label class="control-label" for="remarks">Remarks</label>
+                                        <input type="text" id="remarks" name="remarks" ng-model="diagnoseRemarks" placeholder="Remarks here..." class="form-control" />
+                                    </div>
+                                    <hr class="hr-line-dashed" />
+                                    <div class="col-sm-12 col-xs-12">
+                                        <button class="btn btn-info pull-right" type="submit" ng-click="!diagnosis_form.$invalid ? saveDiagnosis(diagnoseXray, diagnose, diagnoseInfo, diagnoseRemarks):''"><i class="fa fa-user-md"></i> Save Diagnosis </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--  /DIAGNOSIS  -->
+                </div>
+
+                <!-- MEDICAL PRESCRIPTION -->
+                <div class="animated fadeInRight ecommerce" ng-show="showRx">
+                    <div class="col-sm-12 col-xs-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading text-center">
+                                <label class="text-center">MEDICAL PRESCRIPTION</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="ibox">
+                                        <h5 class="text-danger text-center">MEDICINE</h5>
+                                        <form id="prescription_form" name="prescription_form" novalidate>
+                                            <div class="row">
+                                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="productCode">Name</label>
+                                                        <select name="productCode" id="productCode" style="width: 100%; text-transform : uppercase" @*ng-model="meds.productCode" ng-change="getUnit(meds.productCode)"*@ class="form-control" required>
+                                                            <option value=""></option>
+                                                            <option ng-repeat="med in medList" value="{{med}}">{{med.productDesc}} {{med.unitDesc}}</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="availability">Available</label>
+                                                        <label name="availability" id="availability" class="form-control text-center" ng-class="unit.AVAILABLE <= 10 ? 'red-bg':''">{{unit.AVAILABLE == null ? '0':unit.AVAILABLE }}</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label" for="dosage">Dosage</label>
+                                                <div class="form-inline">
+                                                    <div class="input-group m-b" style="width: 100%">
+                                                        <input type="number" min="0.01" step="0.01" id="dosage" name="dosage" required ng-model="meds.dosage" placeholder="e.g. 10" class="form-control text-center" />
+                                                        <span class="input-group-addon"><b>{{unit.unitDesc == 'Suspension' || unit.unitDesc == 'Syrup' || unit.unitDesc == 'Drops' ? 'ML':unit.unitDesc == 'Tablet' || unit.unitDesc == 'Softgel' ? 'Tablet/s':unit.unitDesc == 'Capsule' ? 'Capsule/s':unit.unitDesc == 'Nebule'? unit.unitDesc:unit.unitDesc == 'Cream' ? 'Apply':unit.unitDesc == 'Respule' ? unit.unitDesc:unit.unitDesc == 'Sachet' ? unit.unitDesc:unit.unitDesc}}</b></span>
+                                                    </div>
+                                                    <div class="input-group m-b" style="width: 100%">
+                                                        <input type="number" min="1" onkeydown="return event.keyCode !== 190" id="perDay" name="perDay" required ng-model="meds.perDay" placeholder="e.g. 5" class="form-control text-center" /> <span class="input-group-addon"><i class="fa fa-times text-danger"></i><b> a Day</b></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label" for="noDays">No. of Days</label>
+                                                <select name="noDays" id="noDays" style="width: 100%; text-transform : uppercase" class="form-control" required>
+                                                    <option value=""></option>
+                                                    <option value="maintenance">As Maintenance</option>
+                                                    <option value="needed">As Needed</option>
+                                                    <option value="single">Single Dose</option>
+                                                    <option value=1>1 Day</option>
+                                                    <option value=2>2 Days</option>
+                                                    <option value=3>3 Days</option>
+                                                    <option value=4>4 Days</option>
+                                                    <option value=5>5 Days</option>
+                                                    <option value=7>7 Days</option>
+                                                    <option value=10>10 Days</option>
+                                                    <option value=14>14 Days</option>
+                                                </select>
+                                            </div>
+                                            <div ng-show="showRxQty" class="form-group">
+                                                <label class="control-label" for="noDays">Qty</label>
+                                                <div class="input-group m-b col-lg-5" style="width: 100%">
+                                                    <input type="number" min="1" step="1" id="inputQTY" name="inputQTY" ng-model="meds.inputQTY" placeholder="e.g. 10" class="form-control  text-center" ng-required="showRxQty" />
+                                                    <span class="input-group-addon"><b>{{unit.unitDesc == 'Suspension' || unit.unitDesc == 'Syrup' || unit.unitDesc == 'Drops' || unit.unitDesc == 'Bottle' ? 'Bottle/s':unit.unitDesc == 'Tablet' || unit.unitDesc == 'Softgel' ? 'Tablet/s':unit.unitDesc == 'Capsule' ? 'Capsule/s':unit.unitDesc == 'Nebule'? unit.unitDesc:unit.unitDesc == 'Cream' ? 'Apply':unit.unitDesc == 'Respule' ? unit.unitDesc:unit.unitDesc == 'Sachet' ? unit.unitDesc:''}}</b></span>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-success pull-right " type="submit" ng-disabled="prescription_form.$invalid" ng-click="addMedicine(meds)"><i class="fa fa-plus"></i> Add to Rx </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12" style="padding-top: 10px;">
+                                    <label class="col-xs-12 blue-bg">List of Prescription</label>
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped table-hover" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="">#</th>
+                                                    <th>Name</th>
+                                                    <th>Dosage</th>
+                                                    <th># Days</th>
+                                                    <th>Qty</th>
+                                                    <th class="text-right">Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in RxList">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td><b>{{item.productDesc}}</b></td>
+                                                    <td>
+                                                        {{item.dosage}}
+                                                        {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' ? 'ML':item.unitDesc == 'Tablet' || item.unitDesc == 'Softgel' ? 'Tablet/s':item.unitDesc == 'Capsule' ? 'Capsule/s':item.unitDesc == 'Nebule'? item.unitDesc:item.unitDesc == 'Cream' ? 'Apply':item.unitDesc == 'Respule' ? item.unitDesc:item.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
+                                                        {{item.perDay}} x a Day
+                                                    </td>
+                                                    <td>{{item.noDays == 'maintenance' ? 'as Maintenance':item.noDays == 'needed' ? 'as Needed':item.noDays == 'single' ? 'Single Dose':item.noDays + ' Day/s'}}</td>
+                                                    <td><b>{{item.qtyRx}} {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' || item.unitDesc == 'Bottle' ? 'Bottle/s':item.unitDesc == 'Cream' ? 'Tube':''}}</b></td>
+                                                    <td class="text-right">
+                                                        <div class="btn-group">
+                                                            <button class="btn-danger btn btn-xs" ng-click="removeMedicine($index)"> Remove <i class="fa fa-trash"></i></button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button class="btn btn-info pull-right" type="submit" ng-disabled="RxList.length == 0" ng-click="savePrescription()"><i class="fa fa-medkit"></i> Save Rx </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /MEDICAL PRESCRIPTION -->
+            </div>
+        </div>
+
+        <div class="animated fadeInRight ecommerce" ng-show="showClientList">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="panel panel-success">
+                        <div class="panel-heading text-center">
+                            <label class="text-center">LIST OF DIAGNOSE PATIENTS</label>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="diagnoseList_tbl" class="table table-stripped table-hover" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+
+                                            <th>#</th>
+                                            <th>Last name</th>
+                                            <th>First name</th>
+                                            <th>M.I.</th>
+                                            <th>Suffix</th>
+                                            <th>Sex</th>
+                                            <th>Age</th>
+                                            <th>Contact no.</th>
+                                            <th>Address</th>
+                                            <th>Diagnosed Date & Time</th>
+                                            <th class="text-right" data-sort-ignore="true">Action</th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL INDIVIDUAL DIAGNOSE HISTORY-->
+    <div id="diagnosHistory_modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header blue-bg">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h2 class="modal-title text-center">HISTORY OF DIAGNOSIS</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <text>Doctor: <label>{{diagnosisInfo.doctorName}}</label></text>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <text>Date & Time Diagnosed: <label>{{diagnosisInfo.dateTimeLog}}</label></text>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <text>Remarks: <label>{{diagnosisInfo.remarks}}</label></text>
+                        </div>
+                    </div>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table table-stripped table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th class="">#</th>
+                                    <th>Diagnosis</th>
+                                    <th>Others Specify</th>
+                                    <th>Referral Specify</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" ng-show="diagnosisList.length == 0">
+                                    <td colspan="4">
+                                        <text class="text-danger"><label><i>No record found</i></label></text>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="diag in diagnosisList">
+                                    <td>{{$index + 1}}</td>
+                                    <td><label>{{diag.diagnoseName}}</label></td>
+                                    <td>{{diag.otherDiagnose}}</td>
+                                    <td>{{diag.referDesc}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL INDIVIDUAL DIAGNOSE HISTORY -->
+
+</div>
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/MedicalConsultation/DiagnosisRX.js"></script>
+}

@@ -1,0 +1,440 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MedConModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="AdditionalPersonInfo">
+    <Key>
+      <PropertyRef Name="AdditionalPersonID" />
+    </Key>
+    <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="AdditionalPersonID" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="qrCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="weight" Type="decimal" Precision="5" Scale="2" />
+    <Property Name="height" Type="decimal" Precision="5" Scale="2" />
+    <Property Name="nutCatID" Type="varchar" MaxLength="10" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+    <Property Name="dateTimeEncoded" Type="datetime" />
+  </EntityType>
+  <EntityType Name="BPtemp">
+    <Key>
+      <PropertyRef Name="bpID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="bpID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="vSignID" Type="varchar" MaxLength="15" />
+    <Property Name="systolic" Type="int" />
+    <Property Name="diastolic" Type="int" />
+    <Property Name="temp" Type="decimal" Precision="5" Scale="2" />
+    <Property Name="pulseRate" Type="decimal" Precision="5" Scale="2" />
+    <Property Name="dateTimeLog" Type="datetime" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="Brgy">
+    <Key>
+      <PropertyRef Name="brgyCode" />
+    </Key>
+    <Property Name="id" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="brgyCode" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="brgyDesc" Type="varchar" MaxLength="255" />
+    <Property Name="regCode" Type="varchar" MaxLength="255" />
+    <Property Name="provCode" Type="varchar" MaxLength="255" />
+    <Property Name="citymunCode" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="CityMun">
+    <Key>
+      <PropertyRef Name="citymunCode" />
+    </Key>
+    <Property Name="id" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="psgcCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="citymunDesc" Type="nvarchar" MaxLength="255" />
+    <Property Name="regDesc" Type="nvarchar" MaxLength="255" />
+    <Property Name="provCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="citymunCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ConsultationSurgery">
+    <Key>
+      <PropertyRef Name="consultID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="consultID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="availedID" Type="varchar" MaxLength="15" />
+    <Property Name="remarks" Type="varchar" MaxLength="200" />
+    <Property Name="doctorID" Type="varchar" MaxLength="10" />
+    <Property Name="dateTimeLog" Type="datetime" />
+  </EntityType>
+  <EntityType Name="Department">
+    <Key>
+      <PropertyRef Name="departmentCode" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="departmentCode" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="departmentName" Type="varchar" MaxLength="150" />
+    <Property Name="shortDepartmentName" Type="varchar" MaxLength="10" />
+    <Property Name="orderNo" Type="int" />
+  </EntityType>
+  <EntityType Name="Diagnosis">
+    <Key>
+      <PropertyRef Name="diagnoseID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="diagnoseID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="diagnoseName" Type="varchar" MaxLength="100" />
+    <Property Name="diagnoseType" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="Measurment">
+    <Key>
+      <PropertyRef Name="measureID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="measureID" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="measurmentDesc" Type="varchar" MaxLength="30" />
+    <Property Name="dateTimeLog" Type="datetime" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="MedConPrograms">
+    <Key>
+      <PropertyRef Name="programID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="programID" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="programName" Type="varchar" MaxLength="100" />
+    <Property Name="departmentCode" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="MedConServices">
+    <Key>
+      <PropertyRef Name="serviceID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="serviceID" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="serviceName" Type="varchar" MaxLength="200" />
+    <Property Name="programID" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="MedicalPrescription">
+    <Key>
+      <PropertyRef Name="rxID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="rxID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="outID" Type="varchar" MaxLength="15" />
+    <Property Name="dosage" Type="decimal" Precision="5" Scale="2" />
+    <Property Name="perDay" Type="int" />
+    <Property Name="noDay" Type="varchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="MenuAccess">
+    <Key>
+      <PropertyRef Name="menuID" />
+    </Key>
+    <Property Name="menuID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="menuDesc" Type="varchar" MaxLength="50" />
+    <Property Name="controller" Type="varchar" MaxLength="50" />
+    <Property Name="action" Type="varchar" MaxLength="50" />
+    <Property Name="userType" Type="nchar" MaxLength="10" />
+    <Property Name="mainMenu" Type="varchar" MaxLength="50" />
+    <Property Name="subMenu" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Nutrition">
+    <Key>
+      <PropertyRef Name="nutritionID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nutritionID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="availedID" Type="varchar" MaxLength="15" />
+    <Property Name="isFoodSupply" Type="bit" />
+  </EntityType>
+  <EntityType Name="NutritionCategory">
+    <Key>
+      <PropertyRef Name="nutCatID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="nutCatID" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="nutritionCategory" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="OutgoingItems">
+    <Key>
+      <PropertyRef Name="outID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="outID" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="availedID" Type="varchar" MaxLength="15" />
+    <Property Name="productCode" Type="varchar" MaxLength="15" />
+    <Property Name="qtyRx" Type="int" />
+    <Property Name="doctorID" Type="varchar" MaxLength="10" />
+    <Property Name="dateTimeRx" Type="datetime" />
+    <Property Name="isReleased" Type="bit" />
+    <Property Name="qtyReleased" Type="int" />
+    <Property Name="dateTimeReleased" Type="datetime" />
+    <Property Name="userEncoderReleased" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="PersonalInfo">
+    <Key>
+      <PropertyRef Name="qrCode" />
+    </Key>
+    <Property Name="recNo" Type="bigint" Nullable="false" />
+    <Property Name="qrCode" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="lastName" Type="varchar" MaxLength="50" />
+    <Property Name="firstName" Type="varchar" MaxLength="50" />
+    <Property Name="middleName" Type="varchar" MaxLength="50" />
+    <Property Name="extName" Type="varchar" MaxLength="10" />
+    <Property Name="birthdate" Type="date" />
+    <Property Name="sex" Type="bit" />
+    <Property Name="brgyCode" Type="varchar" MaxLength="20" />
+    <Property Name="address" Type="varchar" MaxLength="250" />
+    <Property Name="contactNo" Type="varchar" MaxLength="50" />
+    <Property Name="occupation" Type="varchar" MaxLength="200" />
+    <Property Name="timeLog" Type="datetime" />
+    <Property Name="userID" Type="nchar" MaxLength="10" />
+    <Property Name="registrationType" Type="tinyint" />
+  </EntityType>
+  <EntityType Name="Personnel">
+    <Key>
+      <PropertyRef Name="personnelID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="personnelID" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="personnel_lastName" Type="varchar" MaxLength="50" />
+    <Property Name="personnel_firstName" Type="varchar" MaxLength="50" />
+    <Property Name="personnel_middleName" Type="varchar" MaxLength="50" />
+    <Property Name="personnel_extName" Type="varchar" MaxLength="10" />
+    <Property Name="sex" Type="bit" />
+    <Property Name="position" Type="varchar" MaxLength="30" />
+    <Property Name="serviceID" Type="varchar" MaxLength="15" />
+    <Property Name="username" Type="varchar" MaxLength="50" />
+    <Property Name="password" Type="varchar" MaxLength="50" />
+    <Property Name="isActive" Type="tinyint" />
+    <Property Name="userType" Type="int" />
+    <Property Name="contactNum" Type="varchar" MaxLength="13" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+    <Property Name="dateTimeLog" Type="datetime" />
+  </EntityType>
+  <EntityType Name="ProductBrand">
+    <Key>
+      <PropertyRef Name="brandID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="brandID" Type="varchar" MaxLength="10" Nullable="false" />
+    <Property Name="brandName" Type="varchar" MaxLength="200" />
+  </EntityType>
+  <EntityType Name="ProductList">
+    <Key>
+      <PropertyRef Name="productCode" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="productCode" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="productDesc" Type="varchar" MaxLength="200" />
+    <Property Name="measureID" Type="varchar" MaxLength="10" />
+    <Property Name="brandID" Type="varchar" MaxLength="15" />
+    <Property Name="unitID" Type="varchar" MaxLength="15" />
+    <Property Name="dateTimeLog" Type="datetime" />
+    <Property Name="personnelID" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="ProductStocks">
+    <Key>
+      <PropertyRef Name="stockID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="stockID" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="productCode" Type="varchar" MaxLength="15" />
+    <Property Name="qty" Type="int" />
+    <Property Name="remarks" Type="varchar" MaxLength="200" />
+    <Property Name="date_received" Type="date" />
+    <Property Name="dateTimeLog" Type="datetime" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="ProductUnit">
+    <Key>
+      <PropertyRef Name="unitID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="unitID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="unitDesc" Type="varchar" MaxLength="100" />
+    <Property Name="dateTimeLog" Type="datetime" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+  </EntityType>
+  <EntityType Name="Province">
+    <Key>
+      <PropertyRef Name="provCode" />
+    </Key>
+    <Property Name="id" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="psgcCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="provDesc" Type="nvarchar" MaxLength="255" />
+    <Property Name="regCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="provCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ResultDiagnosis">
+    <Key>
+      <PropertyRef Name="resultID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="resultID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="diagnoseID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="otherDiagnose" Type="varchar" MaxLength="200" />
+    <Property Name="toothNum" Type="int" />
+    <Property Name="disability" Type="varchar" MaxLength="50" />
+    <Property Name="referDesc" Type="varchar" MaxLength="200" />
+    <Property Name="consultID" Type="varchar" MaxLength="15" />
+  </EntityType>
+  <EntityType Name="ServiceAvailed">
+    <Key>
+      <PropertyRef Name="availedID" />
+    </Key>
+    <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="availedID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="serviceID" Type="varchar" MaxLength="10" />
+    <Property Name="qrCode" Type="varchar" MaxLength="30" />
+    <Property Name="dateTimeLog" Type="datetime" />
+    <Property Name="userEncoder" Type="varchar" MaxLength="10" />
+    <Property Name="isEdit" Type="bit" />
+  </EntityType>
+  <EntityType Name="UserType">
+    <Key>
+      <PropertyRef Name="userType" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="userType" Type="int" Nullable="false" />
+    <Property Name="userTypeDescription" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="VitalSigns">
+    <Key>
+      <PropertyRef Name="vSignID" />
+    </Key>
+    <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="vSignID" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="availedID" Type="varchar" MaxLength="15" />
+  </EntityType>
+  <Function Name="fOT_BPtempList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="qrCode" Type="varchar" Mode="In" />
+    <ReturnType>
+      <CollectionType>
+        <RowType>
+          <Property Name="programName" Type="varchar" MaxLength="100" />
+          <Property Name="serviceName" Type="varchar" MaxLength="200" />
+          <Property Name="systolic" Type="int" />
+          <Property Name="diastolic" Type="int" />
+          <Property Name="temp" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="BPdateTime" Type="datetime" />
+          <Property Name="nutritionCategory" Type="varchar" MaxLength="100" />
+          <Property Name="availedID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="AvaileDateTime" Type="datetime" />
+        </RowType>
+      </CollectionType>
+    </ReturnType>
+  </Function>
+  <Function Name="fOT_ClientList_perService" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="serviceID" Type="varchar" Mode="In" />
+    <ReturnType>
+      <CollectionType>
+        <RowType>
+          <Property Name="qrCode" Type="varchar" MaxLength="30" />
+          <Property Name="lastName" Type="varchar" MaxLength="50" />
+          <Property Name="firstName" Type="varchar" MaxLength="50" />
+          <Property Name="middleName" Type="varchar" MaxLength="50" />
+          <Property Name="extName" Type="varchar" MaxLength="10" />
+          <Property Name="birthdate" Type="date" />
+          <Property Name="sex" Type="bit" />
+          <Property Name="contactNo" Type="varchar" MaxLength="50" />
+          <Property Name="brgyDesc" Type="varchar" MaxLength="255" />
+          <Property Name="citymunDesc" Type="nvarchar" MaxLength="255" />
+          <Property Name="provDesc" Type="nvarchar" MaxLength="255" />
+          <Property Name="remarks" Type="varchar" MaxLength="200" />
+          <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="consultID" Type="varchar" MaxLength="15" />
+          <Property Name="doctorID" Type="varchar" MaxLength="10" />
+          <Property Name="availedID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="height" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="weight" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="nutCatID" Type="varchar" MaxLength="10" />
+        </RowType>
+      </CollectionType>
+    </ReturnType>
+  </Function>
+  <Function Name="fOT_VitalSignsList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="user" Type="varchar" Mode="In" />
+    <Parameter Name="service" Type="varchar" Mode="In" />
+    <ReturnType>
+      <CollectionType>
+        <RowType>
+          <Property Name="weight" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="height" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="dateTimeEncoded" Type="datetime" />
+          <Property Name="vSignID" Type="varchar" MaxLength="15" />
+          <Property Name="availedID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="qrCode" Type="varchar" MaxLength="30" />
+          <Property Name="lastName" Type="varchar" MaxLength="50" />
+          <Property Name="firstName" Type="varchar" MaxLength="50" />
+          <Property Name="middleName" Type="varchar" MaxLength="50" />
+          <Property Name="extName" Type="varchar" MaxLength="10" />
+          <Property Name="sex" Type="bit" />
+          <Property Name="contactNo" Type="varchar" MaxLength="50" />
+          <Property Name="birthdate" Type="date" />
+          <Property Name="brgyDesc" Type="varchar" MaxLength="255" />
+          <Property Name="citymunDesc" Type="nvarchar" MaxLength="255" />
+          <Property Name="provDesc" Type="nvarchar" MaxLength="255" />
+          <Property Name="AvailedDT" Type="datetime" />
+        </RowType>
+      </CollectionType>
+    </ReturnType>
+  </Function>
+  <Function Name="fVAC_SearchQRinfo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="qrCode" Type="varchar" Mode="In" />
+    <ReturnType>
+      <CollectionType>
+        <RowType>
+          <Property Name="recNo" Type="bigint" Nullable="false" />
+          <Property Name="qrCode" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="lastName" Type="varchar" MaxLength="50" />
+          <Property Name="firstName" Type="varchar" MaxLength="50" />
+          <Property Name="middleName" Type="varchar" MaxLength="50" />
+          <Property Name="extName" Type="varchar" MaxLength="10" />
+          <Property Name="birthdate" Type="date" />
+          <Property Name="sex" Type="bit" />
+          <Property Name="brgyCode" Type="varchar" MaxLength="20" />
+          <Property Name="address" Type="varchar" MaxLength="250" />
+          <Property Name="contactNo" Type="varchar" MaxLength="50" />
+          <Property Name="occupation" Type="varchar" MaxLength="200" />
+          <Property Name="timeLog" Type="datetime" />
+          <Property Name="userID" Type="nchar" MaxLength="10" />
+          <Property Name="registrationType" Type="tinyint" />
+          <Property Name="fullAddress" Type="nvarchar" MaxLength="769" Nullable="false" />
+          <Property Name="fullNameLast" Type="varchar" MaxLength="164" Nullable="false" />
+          <Property Name="brgyDesc" Type="varchar" MaxLength="255" />
+          <Property Name="citymunCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="citymunDesc" Type="nvarchar" MaxLength="255" />
+          <Property Name="provCode" Type="nvarchar" MaxLength="255" />
+          <Property Name="provDesc" Type="nvarchar" MaxLength="255" />
+          <Property Name="height" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="weight" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="Age" Type="int" />
+        </RowType>
+      </CollectionType>
+    </ReturnType>
+  </Function>
+  <Function Name="spOT_MedicineList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="serviceID" Type="varchar" Mode="In" />
+  </Function>
+  <EntityContainer Name="MedConModelStoreContainer">
+    <EntitySet Name="AdditionalPersonInfo" EntityType="Self.AdditionalPersonInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="BPtemp" EntityType="Self.BPtemp" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Brgy" EntityType="Self.Brgy" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CityMun" EntityType="Self.CityMun" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ConsultationSurgery" EntityType="Self.ConsultationSurgery" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Diagnosis" EntityType="Self.Diagnosis" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Measurment" EntityType="Self.Measurment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MedConPrograms" EntityType="Self.MedConPrograms" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MedConServices" EntityType="Self.MedConServices" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MedicalPrescription" EntityType="Self.MedicalPrescription" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="MenuAccess" EntityType="Self.MenuAccess" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Nutrition" EntityType="Self.Nutrition" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NutritionCategory" EntityType="Self.NutritionCategory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="OutgoingItems" EntityType="Self.OutgoingItems" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PersonalInfo" EntityType="Self.PersonalInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Personnel" EntityType="Self.Personnel" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductBrand" EntityType="Self.ProductBrand" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductList" EntityType="Self.ProductList" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductStocks" EntityType="Self.ProductStocks" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductUnit" EntityType="Self.ProductUnit" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ResultDiagnosis" EntityType="Self.ResultDiagnosis" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ServiceAvailed" EntityType="Self.ServiceAvailed" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

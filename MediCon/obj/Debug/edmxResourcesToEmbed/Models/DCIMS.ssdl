@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EQPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Brgy">
+    <Key>
+      <PropertyRef Name="brgyCode" />
+    </Key>
+    <Property Name="id" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="brgyCode" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="brgyDesc" Type="varchar" MaxLength="255" />
+    <Property Name="regCode" Type="varchar" MaxLength="255" />
+    <Property Name="provCode" Type="varchar" MaxLength="255" />
+    <Property Name="citymunCode" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="CityMun">
+    <Key>
+      <PropertyRef Name="citymunCode" />
+    </Key>
+    <Property Name="id" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="psgcCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="citymunDesc" Type="nvarchar" MaxLength="255" />
+    <Property Name="regDesc" Type="nvarchar" MaxLength="255" />
+    <Property Name="provCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="citymunCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PersonalInfo">
+    <Key>
+      <PropertyRef Name="qrCode" />
+    </Key>
+    <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="qrCode" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="lastName" Type="varchar" MaxLength="50" />
+    <Property Name="firstName" Type="varchar" MaxLength="50" />
+    <Property Name="middleName" Type="varchar" MaxLength="50" />
+    <Property Name="extName" Type="varchar" MaxLength="10" />
+    <Property Name="birthdate" Type="date" />
+    <Property Name="sex" Type="bit" />
+    <Property Name="brgyCode" Type="varchar" MaxLength="20" />
+    <Property Name="address" Type="varchar" MaxLength="250" />
+    <Property Name="contactNo" Type="varchar" MaxLength="50" />
+    <Property Name="occupation" Type="varchar" MaxLength="200" />
+    <Property Name="timeLog" Type="datetime" />
+    <Property Name="userID" Type="nchar" MaxLength="10" />
+    <Property Name="registrationType" Type="tinyint" />
+  </EntityType>
+  <EntityType Name="Province">
+    <Key>
+      <PropertyRef Name="provCode" />
+    </Key>
+    <Property Name="id" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="psgcCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="provDesc" Type="nvarchar" MaxLength="255" />
+    <Property Name="regCode" Type="nvarchar" MaxLength="255" />
+    <Property Name="provCode" Type="nvarchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="EQPModelStoreContainer">
+    <EntitySet Name="Brgy" EntityType="Self.Brgy" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="CityMun" EntityType="Self.CityMun" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="PersonalInfo" EntityType="Self.PersonalInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>
