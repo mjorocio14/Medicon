@@ -22,7 +22,21 @@ namespace MediCon.Controllers
         [HttpPost]
         public ActionResult getUsers()
         {
-            var userList = db.Personnels.ToList();
+            var userList = db.Personnels.Select(a => new {
+            a.personnel_firstName,
+            a.personnel_midInit,
+            a.personnel_lastName,
+            a.personnel_extName,
+            a.isActive,
+            a.password,
+            a.personnelID,
+            a.position,
+            a.userTypeID,
+            a.username,
+            a.sex,
+            a.contactNum,
+            userDesc = db.UserTypes.FirstOrDefault( b=> b.userTypeID == a.userTypeID).userTypeDesc
+            }).ToList();
             return Json(userList, JsonRequestBehavior.AllowGet);
         }
 

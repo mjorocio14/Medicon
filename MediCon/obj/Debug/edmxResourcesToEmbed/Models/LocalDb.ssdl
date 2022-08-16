@@ -80,6 +80,8 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
     <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="labTestID" Type="varchar" MaxLength="5" Nullable="false" />
     <Property Name="labTestName" Type="varchar" MaxLength="50" />
+    <Property Name="personnelID" Type="varchar" MaxLength="8" />
+    <Property Name="dateTimeLog" Type="datetime" />
   </EntityType>
   <EntityType Name="MaleRepro_Diagnosis">
     <Key>
@@ -173,6 +175,7 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
     <Property Name="action" Type="varchar" MaxLength="50" />
     <Property Name="userTypeID" Type="varchar" MaxLength="5" />
     <Property Name="mainMenu" Type="varchar" MaxLength="50" />
+    <Property Name="orderNo" Type="tinyint" />
   </EntityType>
   <EntityType Name="OutgoingItems">
     <Key>
@@ -213,6 +216,7 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
     <Property Name="personnel_midInit" Type="char" MaxLength="1" />
     <Property Name="personnel_extName" Type="varchar" MaxLength="10" />
     <Property Name="sex" Type="bit" />
+    <Property Name="contactNum" Type="varchar" MaxLength="50" />
     <Property Name="position" Type="varchar" MaxLength="100" />
     <Property Name="serviceID" Type="varchar" MaxLength="10" />
     <Property Name="username" Type="varchar" MaxLength="20" />
@@ -242,6 +246,8 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
     <Property Name="recNo" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="unitID" Type="varchar" MaxLength="5" Nullable="false" />
     <Property Name="unitDesc" Type="varchar" MaxLength="50" />
+    <Property Name="personnelID" Type="varchar" MaxLength="8" />
+    <Property Name="dateTimeLog" Type="datetime" />
   </EntityType>
   <EntityType Name="Referral">
     <Key>

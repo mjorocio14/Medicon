@@ -6,17 +6,12 @@
     <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
     <EntitySet Name="Diagnosis" EntityType="MediconModel.Diagnosi" />
     <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
-    <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
     <EntitySet Name="MaleRepro_Diagnosis" EntityType="MediconModel.MaleRepro_Diagnosis" />
     <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
-    <EntitySet Name="Measurements" EntityType="MediconModel.Measurement" />
     <EntitySet Name="MedicalPrescriptions" EntityType="MediconModel.MedicalPrescription" />
-    <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
     <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
     <EntitySet Name="PapsmearBreastExams" EntityType="MediconModel.PapsmearBreastExam" />
-    <EntitySet Name="Personnels" EntityType="MediconModel.Personnel" />
     <EntitySet Name="ProductLists" EntityType="MediconModel.ProductList" />
-    <EntitySet Name="ProductUnits" EntityType="MediconModel.ProductUnit" />
     <EntitySet Name="Referrals" EntityType="MediconModel.Referral" />
     <EntitySet Name="ResultDiagnosis" EntityType="MediconModel.ResultDiagnosi" />
     <EntitySet Name="Services" EntityType="MediconModel.Service" />
@@ -25,6 +20,11 @@
     <EntitySet Name="VitalSigns" EntityType="MediconModel.VitalSign" />
     <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
     <FunctionImport Name="fn_vitalSignList" IsComposable="true" ReturnType="Collection(MediconModel.fn_vitalSignList_Result)" />
+    <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
+    <EntitySet Name="Measurements" EntityType="MediconModel.Measurement" />
+    <EntitySet Name="ProductUnits" EntityType="MediconModel.ProductUnit" />
+    <EntitySet Name="Personnels" EntityType="MediconModel.Personnel" />
+    <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
   </EntityContainer>
   <EntityType Name="BloodPressure">
     <Key>
@@ -84,14 +84,6 @@
     <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
     <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
   </EntityType>
-  <EntityType Name="LaboratoryTest">
-    <Key>
-      <PropertyRef Name="labTestID" />
-    </Key>
-    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="labTestID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-    <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-  </EntityType>
   <EntityType Name="MaleRepro_Diagnosis">
     <Key>
       <PropertyRef Name="MRDiagnosisID" />
@@ -149,16 +141,6 @@
     <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
     <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
   </EntityType>
-  <EntityType Name="Measurement">
-    <Key>
-      <PropertyRef Name="measurementID" />
-    </Key>
-    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="measurementID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-    <Property Name="measurementDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-  </EntityType>
   <EntityType Name="MedicalPrescription">
     <Key>
       <PropertyRef Name="rxID" />
@@ -173,17 +155,6 @@
     <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
     <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
     <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-  </EntityType>
-  <EntityType Name="MenuAccess">
-    <Key>
-      <PropertyRef Name="menuID" />
-    </Key>
-    <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-    <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="OutgoingItem">
     <Key>
@@ -213,26 +184,6 @@
     <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
     <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
   </EntityType>
-  <EntityType Name="Personnel">
-    <Key>
-      <PropertyRef Name="personnelID" />
-    </Key>
-    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="personnelID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-    <Property Name="personnel_lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="personnel_firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="personnel_midInit" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-    <Property Name="personnel_extName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-    <Property Name="sex" Type="Boolean" />
-    <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-    <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-    <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-    <Property Name="isActive" Type="Boolean" />
-    <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-    <Property Name="userEncoder" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-  </EntityType>
   <EntityType Name="ProductList">
     <Key>
       <PropertyRef Name="productCode" />
@@ -245,14 +196,6 @@
     <Property Name="unitID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
     <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
     <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-  </EntityType>
-  <EntityType Name="ProductUnit">
-    <Key>
-      <PropertyRef Name="unitID" />
-    </Key>
-    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="unitID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-    <Property Name="unitDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="Referral">
     <Key>
@@ -344,4 +287,67 @@
     <Property Type="String" Name="citymunDesc" Nullable="true" MaxLength="255" />
     <Property Type="String" Name="provDesc" Nullable="true" MaxLength="255" />
   </ComplexType>
+  <EntityType Name="LaboratoryTest">
+    <Key>
+      <PropertyRef Name="labTestID" />
+    </Key>
+    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="labTestID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Measurement">
+    <Key>
+      <PropertyRef Name="measurementID" />
+    </Key>
+    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="measurementID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="measurementDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ProductUnit">
+    <Key>
+      <PropertyRef Name="unitID" />
+    </Key>
+    <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="unitID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="unitDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="Personnel">
+    <Key>
+      <PropertyRef Name="personnelID" />
+    </Key>
+    <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="personnelID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="personnel_lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnel_firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="personnel_midInit" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+    <Property Name="personnel_extName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="sex" Type="Boolean" />
+    <Property Name="contactNum" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="isActive" Type="Boolean" />
+    <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="userEncoder" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+    <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="MenuAccess">
+    <Key>
+      <PropertyRef Name="menuID" />
+    </Key>
+    <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+    <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="orderNo" Type="Byte" />
+  </EntityType>
 </Schema>

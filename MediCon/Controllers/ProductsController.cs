@@ -35,7 +35,7 @@ namespace MediCon.Controllers
                 a.recNo,
                 a.productCode,
                 a.productDesc,
-                measurmentDesc = db.Measurements.FirstOrDefault( c => c.measurementID == a.measurementID ).measurementDesc,
+                measurementDesc = db.Measurements.FirstOrDefault(c => c.measurementID == a.measurementID).measurementDesc,
                 a.measurementID,
                 a.unitID,
                 unitDesc = db.ProductUnits.FirstOrDefault(b => b.unitID == a.unitID ).unitDesc,
@@ -144,38 +144,37 @@ namespace MediCon.Controllers
             try
             {
 
-                //var checkMeasurment = db.ProductUnits.Count(a => a.unitDesc == p.unitDesc);
+                var checkMeasurment = db.ProductUnits.Count(a => a.unitDesc == p.unitDesc);
 
-                //if (checkMeasurment != 0)
-                //{
-                //    return Json(new { status = "dupli", msg = "Measurement already exists!" }, JsonRequestBehavior.AllowGet);
-                //}
+                if (checkMeasurment != 0)
+                {
+                    return Json(new { status = "dupli", msg = "Measurement already exists!" }, JsonRequestBehavior.AllowGet);
+                }
 
-                //else
-                //{
-                //    if (p.unitID == null)
-                //    {
-                //        var x = db.Measurements.Count();
-                //        var xx = x + 1;
-                //        p.unitID = "U" + xx.ToString("D4");
-                //        p.dateTimeLog = DateTime.Now;
-                //        p.personnelID = Session["personnelID"].ToString();
-                //        db.ProductUnits.Add(p);
-                //    }
-                //    else
-                //    {
-                //        p.dateTimeLog = DateTime.Now;
-                //        p.personnelID = Session["personnelID"].ToString();
-                //        db.Entry(p).State = EntityState.Modified;
-                //    }
+                else
+                {
+                    if (p.unitID == null)
+                    {
+                        var x = db.Measurements.Count();
+                        var xx = x + 1;
+                        p.unitID = "U" + xx.ToString("D4");
+                        p.dateTimeLog = DateTime.Now;
+                        p.personnelID = Session["personnelID"].ToString();
+                        db.ProductUnits.Add(p);
+                    }
+                    else
+                    {
+                        p.dateTimeLog = DateTime.Now;
+                        p.personnelID = Session["personnelID"].ToString();
+                        db.Entry(p).State = EntityState.Modified;
+                    }
 
-                //    var affectedRow = db.SaveChanges();
-                //    if (affectedRow == 0)
-                //        return Json(new { status = "error", msg = "Saving failed!" }, JsonRequestBehavior.AllowGet);
+                    var affectedRow = db.SaveChanges();
+                    if (affectedRow == 0)
+                        return Json(new { status = "error", msg = "Saving failed!" }, JsonRequestBehavior.AllowGet);
 
-                //    return Json(new { status = "success", msg = " Data successfully saved!" }, JsonRequestBehavior.AllowGet);
-                //}
-                return null;
+                    return Json(new { status = "success", msg = " Data successfully saved!" }, JsonRequestBehavior.AllowGet);
+                }
 
             }
             catch (DbEntityValidationException e)

@@ -53,7 +53,7 @@
             }, {
                 "data": null,
                 render: function (row) {
-                    return '<strong>' + row.personnel_firstName + ' ' +   (row.personnel_middleName != null ? row.personnel_middleName : "")  + ' ' + row.personnel_lastName + ' ' + (row.personnel_extName != null ? row.personnel_extName : "")  + '</strong>';
+                    return '<strong>' + row.personnel_firstName + ' ' + (row.personnel_midInit != null ? row.personnel_midInit : "") + ' ' + row.personnel_lastName + ' ' + (row.personnel_extName != null ? row.personnel_extName : "") + '</strong>';
                 }
             },
             {
@@ -70,7 +70,7 @@
 
                {
                    "data": null, render: function (row) {
-                       return row.userType;
+                       return row.userDesc;
                    }
                },
                 {
@@ -110,8 +110,8 @@
         });
         $('#userTable tbody').off('click');
         $('#userTable tbody').on('click', '#active', function () {
-            var a = userTable.row($(this).parents('tr')).data();
-            var status = angular.copy(a);
+           // var a = userTable.row($(this).parents('tr')).data();
+            var status = angular.copy(userTable.row($(this).parents('tr')).data());
 
             var st = status.isActive == 0 ? "activated" : "deactivated";
 
@@ -175,6 +175,7 @@
 
 
     s.saveUserz = function (a) {
+        console.log(a)
         if (usern.test(a.username)) {
             if (a.password != a.cpassword) {
                 swal({

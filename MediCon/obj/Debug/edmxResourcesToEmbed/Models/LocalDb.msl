@@ -64,15 +64,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="LaboratoryTests">
-      <EntityTypeMapping TypeName="MediconModel.LaboratoryTest">
-        <MappingFragment StoreEntitySet="LaboratoryTest">
-          <ScalarProperty Name="labTestName" ColumnName="labTestName" />
-          <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-          <ScalarProperty Name="recNo" ColumnName="recNo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="MaleRepro_Diagnosis">
       <EntityTypeMapping TypeName="MediconModel.MaleRepro_Diagnosis">
         <MappingFragment StoreEntitySet="MaleRepro_Diagnosis">
@@ -132,17 +123,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Measurements">
-      <EntityTypeMapping TypeName="MediconModel.Measurement">
-        <MappingFragment StoreEntitySet="Measurement">
-          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-          <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
-          <ScalarProperty Name="measurementID" ColumnName="measurementID" />
-          <ScalarProperty Name="recNo" ColumnName="recNo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="MedicalPrescriptions">
       <EntityTypeMapping TypeName="MediconModel.MedicalPrescription">
         <MappingFragment StoreEntitySet="MedicalPrescription">
@@ -156,18 +136,6 @@
           <ScalarProperty Name="serviceID" ColumnName="serviceID" />
           <ScalarProperty Name="rxID" ColumnName="rxID" />
           <ScalarProperty Name="recNo" ColumnName="recNo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="MenuAccesses">
-      <EntityTypeMapping TypeName="MediconModel.MenuAccess">
-        <MappingFragment StoreEntitySet="MenuAccess">
-          <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
-          <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
-          <ScalarProperty Name="action" ColumnName="action" />
-          <ScalarProperty Name="controller" ColumnName="controller" />
-          <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
-          <ScalarProperty Name="menuID" ColumnName="menuID" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -201,27 +169,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Personnels">
-      <EntityTypeMapping TypeName="MediconModel.Personnel">
-        <MappingFragment StoreEntitySet="Personnel">
-          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
-          <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
-          <ScalarProperty Name="isActive" ColumnName="isActive" />
-          <ScalarProperty Name="password" ColumnName="password" />
-          <ScalarProperty Name="username" ColumnName="username" />
-          <ScalarProperty Name="serviceID" ColumnName="serviceID" />
-          <ScalarProperty Name="position" ColumnName="position" />
-          <ScalarProperty Name="sex" ColumnName="sex" />
-          <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
-          <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
-          <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
-          <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
-          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-          <ScalarProperty Name="recNo" ColumnName="recNo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="ProductLists">
       <EntityTypeMapping TypeName="MediconModel.ProductList">
         <MappingFragment StoreEntitySet="ProductList">
@@ -232,15 +179,6 @@
           <ScalarProperty Name="measurementID" ColumnName="measurementID" />
           <ScalarProperty Name="productDesc" ColumnName="productDesc" />
           <ScalarProperty Name="productCode" ColumnName="productCode" />
-          <ScalarProperty Name="recNo" ColumnName="recNo" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="ProductUnits">
-      <EntityTypeMapping TypeName="MediconModel.ProductUnit">
-        <MappingFragment StoreEntitySet="ProductUnit">
-          <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
-          <ScalarProperty Name="unitID" ColumnName="unitID" />
           <ScalarProperty Name="recNo" ColumnName="recNo" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -345,5 +283,73 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <EntitySetMapping Name="LaboratoryTests">
+      <EntityTypeMapping TypeName="MediconModel.LaboratoryTest">
+        <MappingFragment StoreEntitySet="LaboratoryTest">
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+          <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+          <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Measurements">
+      <EntityTypeMapping TypeName="MediconModel.Measurement">
+        <MappingFragment StoreEntitySet="Measurement">
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+          <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+          <ScalarProperty Name="measurementID" ColumnName="measurementID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ProductUnits">
+      <EntityTypeMapping TypeName="MediconModel.ProductUnit">
+        <MappingFragment StoreEntitySet="ProductUnit">
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+          <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+          <ScalarProperty Name="unitID" ColumnName="unitID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Personnels">
+      <EntityTypeMapping TypeName="MediconModel.Personnel">
+        <MappingFragment StoreEntitySet="Personnel">
+          <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+          <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+          <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+          <ScalarProperty Name="isActive" ColumnName="isActive" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+          <ScalarProperty Name="position" ColumnName="position" />
+          <ScalarProperty Name="contactNum" ColumnName="contactNum" />
+          <ScalarProperty Name="sex" ColumnName="sex" />
+          <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
+          <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+          <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+          <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+          <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+          <ScalarProperty Name="recNo" ColumnName="recNo" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MenuAccesses">
+      <EntityTypeMapping TypeName="MediconModel.MenuAccess">
+        <MappingFragment StoreEntitySet="MenuAccess">
+          <ScalarProperty Name="orderNo" ColumnName="orderNo" />
+          <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
+          <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+          <ScalarProperty Name="action" ColumnName="action" />
+          <ScalarProperty Name="controller" ColumnName="controller" />
+          <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
+          <ScalarProperty Name="menuID" ColumnName="menuID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

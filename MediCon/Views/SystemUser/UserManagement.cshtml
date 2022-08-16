@@ -109,16 +109,16 @@
                                                             <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="firstName">First Name</label><span style="color:#ff0000"> *</span>
-                                                                    <input type="text" required ng-model="users.personnel_firstName" placeholder="Full Name" class="form-control" />
+                                                                    <input type="text" required ng-model="users.personnel_firstName" placeholder="First Name" class="form-control" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-3">
+                                                            <div class="col-sm-2">
                                                                 <div class="form-group">
-                                                                    <label class="control-label" for="middleName">Middle Name</label>
-                                                                    <input type="text" ng-model="users.personnel_middleName" placeholder="Full Name" class="form-control" />
+                                                                    <label class="control-label" for="middleName">Middle Initial</label>
+                                                                    <input type="text" ng-model="users.personnel_midInit" maxlength="1" placeholder="Middle Initial" class="form-control" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-3">
+                                                            <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="lastName">Last Name</label><span style="color:#ff0000"> *</span>
                                                                     <input type="text" required ng-model="users.personnel_lastName" placeholder="Last Name" class="form-control" />
@@ -148,7 +148,7 @@
                                                             <div class="col-sm-4 col-xs-4 col-lg-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="contactNum">Contact No.</label>
-                                                                    <input type="number" ng-model="users.contactNum" placeholder="Contact Number" class="form-control" />
+                                                                    <input type="number" ng-model="users.contactNum" maxlength="11"  placeholder="Contact Number" class="form-control" />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -159,19 +159,19 @@
                                                                     <label class="control-label" for="userType">Select Service</label><span style="color:#ff0000"> *</span>
                                                                     <select ng-model="users.serviceID" name="userType" id="service" required style="width: 100%;" text-transform uppercase" class="form-control">
                                                                         <option value=""></option>
-                                                                        <option value="VITAL SIGN">VITAL SIGN</option>
-                                                                        <option value="MEDICAL CONSULTATION">MEDICAL CONSULTATION</option>
-                                                                        <option value="DENTAL EXTRACTION">DENTAL EXTRACTION</option>
+                                                                        <option value="1">VITAL SIGN</option>
+                                                                        <option value="2">MEDICAL CONSULTATION</option>
+                                                                        <option value="3">DENTAL EXTRACTION</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-4 col-xs-4 col-lg-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Select User Type</label><span style="color:#ff0000"> *</span>
-                                                                    <select ng-model="users.userType" name="userType" id="userType" required style="width: 100%;" text-transform uppercase" class="form-control">
+                                                                    <select ng-model="users.userTypeID" name="userType" id="userType" required style="width: 100%;" text-transform uppercase" class="form-control">
                                                                         <option value=""></option>
-                                                                        <option value="ADMINISTRATOR">ADMINISTRATOR</option>
-                                                                        <option value="ENCODER">ENCODER</option>
+                                                                        <option value="1">ADMINISTRATOR</option>
+                                                                        <option value="2">ENCODER</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -236,7 +236,7 @@
 
 @section scripts
 {
-    <script src="~/Scripts/AngularJS/UserManagment/UserManagement.js"></script>
+    <script src="~/Scripts/AngularJS/Utility/UserManagement.js"></script>
 }
 
 

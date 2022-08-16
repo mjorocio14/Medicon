@@ -13,10 +13,7 @@
             <h2>Vital Signs</h2>
             <ol class="breadcrumb">
                 <li>
-                    <a href="">PHO</a>
-                </li>
-                <li>
-                    <a href="">Medical Consultation</a>
+                    <a href="">Medicon</a>
                 </li>
                 <li class="active">
                     <strong>Vital Signs</strong>
@@ -222,6 +219,7 @@
 
                                             <th class="">#</th>
                                             <th>Temperature</th>
+                                            <th>Pulse Rate</th>
                                             <th>Systolic</th>
                                             <th>Diastolic</th>
                                             <th>Date & Time</th>
@@ -245,7 +243,8 @@
                                         </tr>
                                         <tr ng-repeat="vs in bpHistory" ng-show="!bpLoader">
                                             <td>{{$index + 1}}</td>
-                                            <td>{{vs.temperature}}</td>
+                                            <td>{{vs.temperature}} °C</td>
+                                            <td>{{vs.pulseRate}} b/min</td>
                                             <td>{{vs.systolic}}</td>
                                             <td>{{vs.diastolic}}</td>
                                             <td>{{vs.BPdateTime}}</td>
@@ -313,6 +312,7 @@
                                 <tr>
                                     <th class="">#</th>
                                     <th>Temperature</th>
+                                    <th>Pulse Rate</th>
                                     <th>Systolic</th>
                                     <th>Diastolic</th>
                                     <th>Date & Time</th>
@@ -327,6 +327,7 @@
                                 <tr ng-repeat="hist in historyList">
                                     <td>{{$index + 1}}</td>
                                     <td><label>{{hist.temperature}} °C</label></td>
+                                    <td><label>{{hist.pulseRate}} b/min</label></td>
                                     <td><label>{{hist.systolic == null ? '---':hist.systolic}}</label></td>
                                     <td><label>{{hist.diastolic == null ? '---':hist.diastolic}}</label></td>
                                     <td>{{hist.dateTimeLog}}</td>
@@ -346,5 +347,4 @@
 @section scripts
 {
     <script src="~/Scripts/AngularJS/VitalSigns/VitalSigns.js"></script>
-@*<script src="~/Content/ISPINIA/sweetalert2/sweetalert2.min.js"></script>*@
 }

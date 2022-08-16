@@ -32,17 +32,12 @@ namespace MediCon.Models
         public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
-        public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
         public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
-        public virtual DbSet<Measurement> Measurements { get; set; }
         public virtual DbSet<MedicalPrescription> MedicalPrescriptions { get; set; }
-        public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
         public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
         public virtual DbSet<PapsmearBreastExam> PapsmearBreastExams { get; set; }
-        public virtual DbSet<Personnel> Personnels { get; set; }
         public virtual DbSet<ProductList> ProductLists { get; set; }
-        public virtual DbSet<ProductUnit> ProductUnits { get; set; }
         public virtual DbSet<Referral> Referrals { get; set; }
         public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
@@ -50,6 +45,11 @@ namespace MediCon.Models
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
         public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
+        public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
+        public virtual DbSet<Measurement> Measurements { get; set; }
+        public virtual DbSet<ProductUnit> ProductUnits { get; set; }
+        public virtual DbSet<Personnel> Personnels { get; set; }
+        public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
     
         [DbFunction("MediconEntities", "fn_vitalSignList")]
         public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()

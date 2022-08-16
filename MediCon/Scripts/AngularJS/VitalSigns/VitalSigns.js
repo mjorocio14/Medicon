@@ -3,7 +3,6 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
     s.loader = false;
     s.qrData = {};
     s.bpLoader = false;
-    s.bpAdded = [];
     var vsIndexNo = 1;
     s.isVSexist = false;
     getVitalList();
@@ -158,7 +157,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
                     else {
                         s.historyList = [];
-                        s.historyList = d.data;
+                        s.historyList = d.data.bp;
                         s.historyList.reverse();
 
                         angular.forEach(s.historyList, function (val) {
@@ -204,7 +203,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                         {
                             s.isVSexist = true;
                             s.qrData.height = d.data.height;
-                            s.qrData.weight = d.data.weight; console.log(d.data)
+                            s.qrData.weight = d.data.weight;
                         }
                     });
                 }
@@ -233,16 +232,18 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
         }
 
         else {
-            getBPhistory(s.qrData.qrCode);
+            s.BP = {};
 
             if (s.isVSexist) {
                 s.showQRpanel = !s.showQRpanel;
+                getBPhistory(s.qrData.qrCode);
             }
 
             else {
                 h.post('../VitalSigns/saveVitalSigns', { qrCode: qrData.qrCode, vs: qrData }).then(function (d) {
                     if (d.data.status == "success") {
                         s.showQRpanel = !s.showQRpanel;
+                        getBPhistory(s.qrData.qrCode);
 
                         swal({
                             title: "SUCCESSFUL",
@@ -277,7 +278,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
             else {
                 s.bpHistory = {};
-                s.bpHistory = d.data;
+                s.bpHistory = d.data.bp;
                 angular.forEach(s.bpHistory, function (value) {
                     value.BPdateTime = moment(value.BPdateTime).format('lll');
                 });
@@ -310,7 +311,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                         text: d.data.msg,
                         type: "success"
                     });
-
+                    s.BP = {};
                     getBPhistory(s.qrData.qrCode);
                     getVitalList();
                 }

@@ -60,8 +60,8 @@
                     <li id="VITALSIGNS">
                         <a href="../VitalSigns/VSview"><i class="fa fa-stethoscope"></i> <span class="nav-label">Vital Signs</span></a>
                     </li>
-                    <li id="DENTAL">
-                        <a href="../Dental/Index"><i class="fa fa-medkit"></i> <span class="nav-label">Dental</span></a>
+                    <li id="MEDCON">
+                        <a href="../MedicalConsultation/Index"><i class="fa fa-user-md"></i> <span class="nav-label">Medical Consultation</span></a>
                     </li>
                     <li id="HEALTH">
                         <a href="widgets.html"><i class="fa fa-stethoscope"></i> <span class="nav-label">Health</span><span class="fa arrow"></span></a>
@@ -132,11 +132,13 @@
 
             var utility = $('#UTILITY');
             var health = $('#HEALTH');
-            var vitalSigns = $('#VITALSIGNS');
+            var vitalSigns = $('#VITALSIGNS'); 
+            var medcon = $('#MEDCON');
 
             health.hide();
             utility.hide();
             vitalSigns.hide();
+            medcon.hide();
 
             $.post('../Home/gMenuAccess').then(function (d) {
                 for(var x =0;x<d.length;x++){
@@ -152,6 +154,10 @@
 
                     else if (d[x].mainMenu == 'VITAL SIGNS') {
                         vitalSigns.show();
+                    }
+
+                    else if (d[x].mainMenu == 'MEDCON') {
+                        medcon.show();
                     }
                 }
             })

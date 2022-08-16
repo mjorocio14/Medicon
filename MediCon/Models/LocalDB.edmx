@@ -85,6 +85,8 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="labTestID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="labTestName" Type="varchar" MaxLength="50" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="MaleRepro_Diagnosis">
           <Key>
@@ -178,6 +180,7 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="action" Type="varchar" MaxLength="50" />
           <Property Name="userTypeID" Type="varchar" MaxLength="5" />
           <Property Name="mainMenu" Type="varchar" MaxLength="50" />
+          <Property Name="orderNo" Type="tinyint" />
         </EntityType>
         <EntityType Name="OutgoingItems">
           <Key>
@@ -218,6 +221,7 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="personnel_midInit" Type="char" MaxLength="1" />
           <Property Name="personnel_extName" Type="varchar" MaxLength="10" />
           <Property Name="sex" Type="bit" />
+          <Property Name="contactNum" Type="varchar" MaxLength="50" />
           <Property Name="position" Type="varchar" MaxLength="100" />
           <Property Name="serviceID" Type="varchar" MaxLength="10" />
           <Property Name="username" Type="varchar" MaxLength="20" />
@@ -247,6 +251,8 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="recNo" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="unitID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="unitDesc" Type="varchar" MaxLength="50" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="Referral">
           <Key>
@@ -376,17 +382,12 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
           <EntitySet Name="Diagnosis" EntityType="MediconModel.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
-          <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="MediconModel.MaleRepro_Diagnosis" />
           <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
-          <EntitySet Name="Measurements" EntityType="MediconModel.Measurement" />
           <EntitySet Name="MedicalPrescriptions" EntityType="MediconModel.MedicalPrescription" />
-          <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
           <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
           <EntitySet Name="PapsmearBreastExams" EntityType="MediconModel.PapsmearBreastExam" />
-          <EntitySet Name="Personnels" EntityType="MediconModel.Personnel" />
           <EntitySet Name="ProductLists" EntityType="MediconModel.ProductList" />
-          <EntitySet Name="ProductUnits" EntityType="MediconModel.ProductUnit" />
           <EntitySet Name="Referrals" EntityType="MediconModel.Referral" />
           <EntitySet Name="ResultDiagnosis" EntityType="MediconModel.ResultDiagnosi" />
           <EntitySet Name="Services" EntityType="MediconModel.Service" />
@@ -395,6 +396,11 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <EntitySet Name="VitalSigns" EntityType="MediconModel.VitalSign" />
           <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
           <FunctionImport Name="fn_vitalSignList" IsComposable="true" ReturnType="Collection(MediconModel.fn_vitalSignList_Result)" />
+          <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
+          <EntitySet Name="Measurements" EntityType="MediconModel.Measurement" />
+          <EntitySet Name="ProductUnits" EntityType="MediconModel.ProductUnit" />
+          <EntitySet Name="Personnels" EntityType="MediconModel.Personnel" />
+          <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
         </EntityContainer>
         <EntityType Name="BloodPressure">
           <Key>
@@ -454,14 +460,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="LaboratoryTest">
-          <Key>
-            <PropertyRef Name="labTestID" />
-          </Key>
-          <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="labTestID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="MaleRepro_Diagnosis">
           <Key>
             <PropertyRef Name="MRDiagnosisID" />
@@ -519,16 +517,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Measurement">
-          <Key>
-            <PropertyRef Name="measurementID" />
-          </Key>
-          <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="measurementID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="measurementDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="MedicalPrescription">
           <Key>
             <PropertyRef Name="rxID" />
@@ -543,17 +531,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="MenuAccess">
-          <Key>
-            <PropertyRef Name="menuID" />
-          </Key>
-          <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="OutgoingItem">
           <Key>
@@ -583,26 +560,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="Personnel">
-          <Key>
-            <PropertyRef Name="personnelID" />
-          </Key>
-          <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="personnelID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="personnel_lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="personnel_firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="personnel_midInit" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
-          <Property Name="personnel_extName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="sex" Type="Boolean" />
-          <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-          <Property Name="isActive" Type="Boolean" />
-          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="userEncoder" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="ProductList">
           <Key>
             <PropertyRef Name="productCode" />
@@ -615,14 +572,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="unitID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="ProductUnit">
-          <Key>
-            <PropertyRef Name="unitID" />
-          </Key>
-          <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="unitID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="unitDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Referral">
           <Key>
@@ -714,6 +663,69 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Type="String" Name="citymunDesc" Nullable="true" MaxLength="255" />
           <Property Type="String" Name="provDesc" Nullable="true" MaxLength="255" />
         </ComplexType>
+        <EntityType Name="LaboratoryTest">
+          <Key>
+            <PropertyRef Name="labTestID" />
+          </Key>
+          <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labTestID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Measurement">
+          <Key>
+            <PropertyRef Name="measurementID" />
+          </Key>
+          <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="measurementID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="measurementDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ProductUnit">
+          <Key>
+            <PropertyRef Name="unitID" />
+          </Key>
+          <Property Name="recNo" Type="Byte" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="unitID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="unitDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Personnel">
+          <Key>
+            <PropertyRef Name="personnelID" />
+          </Key>
+          <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="personnelID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnel_lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="personnel_firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="personnel_midInit" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="personnel_extName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="sex" Type="Boolean" />
+          <Property Name="contactNum" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="userEncoder" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MenuAccess">
+          <Key>
+            <PropertyRef Name="menuID" />
+          </Key>
+          <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="orderNo" Type="Byte" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -783,15 +795,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LaboratoryTests">
-            <EntityTypeMapping TypeName="MediconModel.LaboratoryTest">
-              <MappingFragment StoreEntitySet="LaboratoryTest">
-                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MaleRepro_Diagnosis">
             <EntityTypeMapping TypeName="MediconModel.MaleRepro_Diagnosis">
               <MappingFragment StoreEntitySet="MaleRepro_Diagnosis">
@@ -851,17 +854,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Measurements">
-            <EntityTypeMapping TypeName="MediconModel.Measurement">
-              <MappingFragment StoreEntitySet="Measurement">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
-                <ScalarProperty Name="measurementID" ColumnName="measurementID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MedicalPrescriptions">
             <EntityTypeMapping TypeName="MediconModel.MedicalPrescription">
               <MappingFragment StoreEntitySet="MedicalPrescription">
@@ -875,18 +867,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
                 <ScalarProperty Name="serviceID" ColumnName="serviceID" />
                 <ScalarProperty Name="rxID" ColumnName="rxID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MenuAccesses">
-            <EntityTypeMapping TypeName="MediconModel.MenuAccess">
-              <MappingFragment StoreEntitySet="MenuAccess">
-                <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
-                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
-                <ScalarProperty Name="action" ColumnName="action" />
-                <ScalarProperty Name="controller" ColumnName="controller" />
-                <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
-                <ScalarProperty Name="menuID" ColumnName="menuID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -920,27 +900,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Personnels">
-            <EntityTypeMapping TypeName="MediconModel.Personnel">
-              <MappingFragment StoreEntitySet="Personnel">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
-                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
-                <ScalarProperty Name="isActive" ColumnName="isActive" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
-                <ScalarProperty Name="position" ColumnName="position" />
-                <ScalarProperty Name="sex" ColumnName="sex" />
-                <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
-                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
-                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
-                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ProductLists">
             <EntityTypeMapping TypeName="MediconModel.ProductList">
               <MappingFragment StoreEntitySet="ProductList">
@@ -951,15 +910,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
                 <ScalarProperty Name="measurementID" ColumnName="measurementID" />
                 <ScalarProperty Name="productDesc" ColumnName="productDesc" />
                 <ScalarProperty Name="productCode" ColumnName="productCode" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ProductUnits">
-            <EntityTypeMapping TypeName="MediconModel.ProductUnit">
-              <MappingFragment StoreEntitySet="ProductUnit">
-                <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
-                <ScalarProperty Name="unitID" ColumnName="unitID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1064,6 +1014,74 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="LaboratoryTests">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryTest">
+              <MappingFragment StoreEntitySet="LaboratoryTest">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Measurements">
+            <EntityTypeMapping TypeName="MediconModel.Measurement">
+              <MappingFragment StoreEntitySet="Measurement">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+                <ScalarProperty Name="measurementID" ColumnName="measurementID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductUnits">
+            <EntityTypeMapping TypeName="MediconModel.ProductUnit">
+              <MappingFragment StoreEntitySet="ProductUnit">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+                <ScalarProperty Name="unitID" ColumnName="unitID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Personnels">
+            <EntityTypeMapping TypeName="MediconModel.Personnel">
+              <MappingFragment StoreEntitySet="Personnel">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="userEncoder" ColumnName="userEncoder" />
+                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="position" ColumnName="position" />
+                <ScalarProperty Name="contactNum" ColumnName="contactNum" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
+                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MenuAccesses">
+            <EntityTypeMapping TypeName="MediconModel.MenuAccess">
+              <MappingFragment StoreEntitySet="MenuAccess">
+                <ScalarProperty Name="orderNo" ColumnName="orderNo" />
+                <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
+                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+                <ScalarProperty Name="action" ColumnName="action" />
+                <ScalarProperty Name="controller" ColumnName="controller" />
+                <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
+                <ScalarProperty Name="menuID" ColumnName="menuID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -35,11 +35,16 @@ namespace MediCon.Controllers
         {
             try
             {
-                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= cds && a.dateTimeLog <= cde).vSignID;
-                var bp = dbMed.BloodPressures.Where(a => a.vSignID == vSign);
+                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= cds && a.dateTimeLog <= cde);
 
-                return Json(bp, JsonRequestBehavior.AllowGet);
+                if (vSign == null)
+                    return Json(new { status = "error", msg = "Patient has no vital sign for today, please refer to vital sign station." });
 
+                else
+                {
+                    var bp = dbMed.BloodPressures.Where(a => a.vSignID == vSign.vSignID);
+                    return Json(new { bp = bp, vs = vSign }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception e)
             {
