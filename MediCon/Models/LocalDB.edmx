@@ -34,6 +34,7 @@
           <Property Name="vSignID" Type="varchar" MaxLength="15" />
           <Property Name="serviceID" Type="varchar" MaxLength="10" />
           <Property Name="outsideReferral" Type="varchar" MaxLength="200" />
+          <Property Name="toothNum" Type="varchar" MaxLength="10" />
           <Property Name="remarks" Type="varchar" MaxLength="200" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
@@ -63,11 +64,8 @@
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="LaboratoryExam">
           <Key>
-            <PropertyRef Name="recNo" />
             <PropertyRef Name="labID" />
           </Key>
           <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
@@ -164,11 +162,8 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="serviceID" Type="varchar" MaxLength="10" />
           <Property Name="consultID" Type="varchar" MaxLength="15" />
           <Property Name="referralID" Type="varchar" MaxLength="15" />
-          <Property Name="dosage" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="perDay" Type="int" />
-          <Property Name="noDay" Type="varchar" MaxLength="30" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
-          <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="dateTimeRx" Type="datetime" />
         </EntityType>
         <EntityType Name="MenuAccess">
           <Key>
@@ -191,8 +186,9 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="rxID" Type="varchar" MaxLength="15" />
           <Property Name="productCode" Type="varchar" MaxLength="10" />
           <Property Name="qtyRx" Type="int" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-          <Property Name="dateTimeRx" Type="datetime" />
+          <Property Name="dosage" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="perDay" Type="int" />
+          <Property Name="noDay" Type="varchar" MaxLength="30" />
           <Property Name="isRelease" Type="bit" />
           <Property Name="qtyReleased" Type="int" />
           <Property Name="userIDreleased" Type="varchar" MaxLength="8" />
@@ -272,7 +268,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="consultID" Type="varchar" MaxLength="15" />
           <Property Name="diagnoseID" Type="varchar" MaxLength="8" />
           <Property Name="otherDiagnosis" Type="varchar" MaxLength="200" />
-          <Property Name="toothNum" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Services">
           <Key>
@@ -312,6 +307,74 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
+        <Function Name="fn_getDiagnoseClients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="serviceID" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="consultID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="serviceID" Type="varchar" MaxLength="10" />
+                <Property Name="outsideReferral" Type="varchar" MaxLength="200" />
+                <Property Name="remarks" Type="varchar" MaxLength="200" />
+                <Property Name="toothNum" Type="varchar" MaxLength="10" />
+                <Property Name="personnelID" Type="varchar" MaxLength="8" />
+                <Property Name="dateTimeLog" Type="datetime" />
+                <Property Name="vSignID" Type="varchar" MaxLength="15" />
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="lastName" Type="varchar" MaxLength="50" />
+                <Property Name="firstName" Type="varchar" MaxLength="50" />
+                <Property Name="middleName" Type="varchar" MaxLength="50" />
+                <Property Name="extName" Type="varchar" MaxLength="10" />
+                <Property Name="sex" Type="bit" />
+                <Property Name="birthdate" Type="date" />
+                <Property Name="contactNo" Type="varchar" MaxLength="50" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fn_getLabPatients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="labDT" Type="datetime" />
+                <Property Name="labID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="labTestID" Type="varchar" MaxLength="5" />
+                <Property Name="personnelID" Type="varchar" MaxLength="8" />
+                <Property Name="personnel_lastName" Type="varchar" MaxLength="50" />
+                <Property Name="personnel_firstName" Type="varchar" MaxLength="50" />
+                <Property Name="personnel_midInit" Type="char" MaxLength="1" />
+                <Property Name="referralID" Type="varchar" MaxLength="15" />
+                <Property Name="labTestName" Type="varchar" MaxLength="50" />
+                <Property Name="consultID" Type="varchar" MaxLength="15" />
+                <Property Name="consultDT" Type="datetime" />
+                <Property Name="vSignID" Type="varchar" MaxLength="15" />
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="lastName" Type="varchar" MaxLength="50" />
+                <Property Name="firstName" Type="varchar" MaxLength="50" />
+                <Property Name="middleName" Type="varchar" MaxLength="50" />
+                <Property Name="extName" Type="varchar" MaxLength="10" />
+                <Property Name="birthdate" Type="date" />
+                <Property Name="contactNo" Type="varchar" MaxLength="50" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fn_MedicineList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="productCode" Type="varchar" MaxLength="10" Nullable="false" />
+                <Property Name="productDesc" Type="varchar" MaxLength="50" />
+                <Property Name="brandID" Type="varchar" MaxLength="8" />
+                <Property Name="brandName" Type="varchar" MaxLength="50" />
+                <Property Name="measurementID" Type="varchar" MaxLength="5" />
+                <Property Name="measurementDesc" Type="varchar" MaxLength="50" />
+                <Property Name="unitID" Type="varchar" MaxLength="5" />
+                <Property Name="unitDesc" Type="varchar" MaxLength="50" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="fn_vitalSignList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <ReturnType>
             <CollectionType>
@@ -337,12 +400,17 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
             </CollectionType>
           </ReturnType>
         </Function>
+        <Function Name="sp_getRxHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="consultID" Type="varchar" Mode="In" />
+          <Parameter Name="referralID" Type="varchar" Mode="In" />
+        </Function>
         <EntityContainer Name="MediconModelStoreContainer">
           <EntitySet Name="BloodPressure" EntityType="Self.BloodPressure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandList" EntityType="Self.BrandList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consultation" EntityType="Self.Consultation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DietCounseling" EntityType="Self.DietCounseling" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LaboratoryExam" EntityType="Self.LaboratoryExam" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LaboratoryTest" EntityType="Self.LaboratoryTest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MaleRepro_Interview" EntityType="Self.MaleRepro_Interview" Schema="dbo" store:Type="Tables" />
@@ -360,17 +428,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="LaboratoryExam" EntityType="Self.LaboratoryExam" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [LaboratoryExam].[recNo] AS [recNo], 
-    [LaboratoryExam].[labID] AS [labID], 
-    [LaboratoryExam].[referralID] AS [referralID], 
-    [LaboratoryExam].[labTestID] AS [labTestID], 
-    [LaboratoryExam].[isTested] AS [isTested], 
-    [LaboratoryExam].[personnelID] AS [personnelID], 
-    [LaboratoryExam].[dateTimeLog] AS [dateTimeLog]
-    FROM [dbo].[LaboratoryExam] AS [LaboratoryExam]</DefiningQuery>
-          </EntitySet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -379,29 +436,38 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
         <EntityContainer Name="MediconEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="BloodPressures" EntityType="MediconModel.BloodPressure" />
           <EntitySet Name="BrandLists" EntityType="MediconModel.BrandList" />
-          <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
           <EntitySet Name="Diagnosis" EntityType="MediconModel.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="MediconModel.MaleRepro_Diagnosis" />
           <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
-          <EntitySet Name="MedicalPrescriptions" EntityType="MediconModel.MedicalPrescription" />
-          <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
           <EntitySet Name="PapsmearBreastExams" EntityType="MediconModel.PapsmearBreastExam" />
           <EntitySet Name="ProductLists" EntityType="MediconModel.ProductList" />
           <EntitySet Name="Referrals" EntityType="MediconModel.Referral" />
-          <EntitySet Name="ResultDiagnosis" EntityType="MediconModel.ResultDiagnosi" />
           <EntitySet Name="Services" EntityType="MediconModel.Service" />
           <EntitySet Name="sysdiagrams" EntityType="MediconModel.sysdiagram" />
           <EntitySet Name="UserTypes" EntityType="MediconModel.UserType" />
           <EntitySet Name="VitalSigns" EntityType="MediconModel.VitalSign" />
-          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
           <FunctionImport Name="fn_vitalSignList" IsComposable="true" ReturnType="Collection(MediconModel.fn_vitalSignList_Result)" />
           <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
           <EntitySet Name="Measurements" EntityType="MediconModel.Measurement" />
           <EntitySet Name="ProductUnits" EntityType="MediconModel.ProductUnit" />
           <EntitySet Name="Personnels" EntityType="MediconModel.Personnel" />
           <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
-        </EntityContainer>
+          <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
+          <EntitySet Name="ResultDiagnosis" EntityType="MediconModel.ResultDiagnosi" />
+          <FunctionImport Name="fn_MedicineList" IsComposable="true" ReturnType="Collection(MediconModel.fn_MedicineList_Result)" />
+          <EntitySet Name="MedicalPrescriptions" EntityType="MediconModel.MedicalPrescription" />
+          <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
+          <FunctionImport Name="fn_getDiagnoseClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getDiagnoseClients_Result)">
+          <Parameter Name="serviceID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_getRxHistory" ReturnType="Collection(MediconModel.sp_getRxHistory_Result)">
+            <Parameter Name="consultID" Mode="In" Type="String" />
+            <Parameter Name="referralID" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
+          <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)" />
+          </EntityContainer>
         <EntityType Name="BloodPressure">
           <Key>
             <PropertyRef Name="BPID" />
@@ -421,19 +487,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="brandID" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="brandName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Consultation">
-          <Key>
-            <PropertyRef Name="consultID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="consultID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="outsideReferral" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Diagnosi">
           <Key>
@@ -517,37 +570,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="MedicalPrescription">
-          <Key>
-            <PropertyRef Name="rxID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="rxID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="perDay" Type="Int32" />
-          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="OutgoingItem">
-          <Key>
-            <PropertyRef Name="outID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="outID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="qtyRx" Type="Int32" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeRx" Type="DateTime" Precision="3" />
-          <Property Name="isRelease" Type="Boolean" />
-          <Property Name="qtyReleased" Type="Int32" />
-          <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="PapsmearBreastExam">
           <Key>
             <PropertyRef Name="PBEID" />
@@ -581,17 +603,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="referralID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="referredServiceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="ResultDiagnosi">
-          <Key>
-            <PropertyRef Name="resultID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="resultID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="diagnoseID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="otherDiagnosis" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="toothNum" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Service">
           <Key>
@@ -628,19 +639,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="weight" Type="Decimal" Precision="5" Scale="2" />
           <Property Name="height" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="LaboratoryExam">
-          <Key>
-            <PropertyRef Name="recNo" />
-            <PropertyRef Name="labID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="isTested" Type="Boolean" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
@@ -726,7 +724,140 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
           <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="orderNo" Type="Byte" />
         </EntityType>
-      </Schema>
+        <EntityType Name="Consultation">
+          <Key>
+            <PropertyRef Name="consultID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="consultID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="outsideReferral" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="toothNum" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ResultDiagnosi">
+          <Key>
+            <PropertyRef Name="resultID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="resultID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="diagnoseID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="otherDiagnosis" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <ComplexType Name="fn_MedicineList_Result">
+          <Property Type="String" Name="productCode" Nullable="false" MaxLength="10" />
+          <Property Type="String" Name="productDesc" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="brandID" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="brandName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="measurementID" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="measurementDesc" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="unitID" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="unitDesc" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="MedicalPrescription">
+          <Key>
+            <PropertyRef Name="rxID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="rxID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeRx" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OutgoingItem">
+          <Key>
+            <PropertyRef Name="outID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="outID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="qtyRx" Type="Int32" />
+          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="perDay" Type="Int32" />
+          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="isRelease" Type="Boolean" />
+          <Property Name="qtyReleased" Type="Int32" />
+          <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
+        </EntityType>
+        <ComplexType Name="fn_getDiagnoseClients_Result">
+          <Property Type="String" Name="consultID" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="serviceID" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="outsideReferral" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="remarks" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="toothNum" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="DateTime" Name="dateTimeLog" Nullable="true" Precision="23" />
+          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="middleName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="extName" Nullable="true" MaxLength="10" />
+          <Property Type="Boolean" Name="sex" Nullable="true" />
+          <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
+          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="sp_getRxHistory_Result">
+          <Property Type="Int64" Name="recNo" Nullable="false" />
+          <Property Type="String" Name="rxID" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="serviceID" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="consultID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="referralID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="DateTime" Name="dateTimeRx" Nullable="true" Precision="23" />
+          <Property Type="String" Name="productCode" Nullable="true" MaxLength="10" />
+          <Property Type="Int32" Name="qtyRx" Nullable="true" />
+          <Property Type="Decimal" Name="dosage" Nullable="true" Precision="5" Scale="2" />
+          <Property Type="Int32" Name="perDay" Nullable="true" />
+          <Property Type="String" Name="noDay" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="productDesc" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="measurementID" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="unitID" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="unitDesc" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="measurementDesc" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="LaboratoryExam">
+          <Key>
+            <PropertyRef Name="labID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <ComplexType Name="fn_getLabPatients_Result">
+          <Property Type="DateTime" Name="labDT" Nullable="true" Precision="23" />
+          <Property Type="String" Name="labID" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="labTestID" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="personnel_lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="referralID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="labTestName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="consultID" Nullable="true" MaxLength="15" />
+          <Property Type="DateTime" Name="consultDT" Nullable="true" Precision="23" />
+          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="middleName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="extName" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
+          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -750,20 +881,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               <MappingFragment StoreEntitySet="BrandList">
                 <ScalarProperty Name="brandName" ColumnName="brandName" />
                 <ScalarProperty Name="brandID" ColumnName="brandID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Consultations">
-            <EntityTypeMapping TypeName="MediconModel.Consultation">
-              <MappingFragment StoreEntitySet="Consultation">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="remarks" ColumnName="remarks" />
-                <ScalarProperty Name="outsideReferral" ColumnName="outsideReferral" />
-                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
-                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
-                <ScalarProperty Name="consultID" ColumnName="consultID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -854,39 +971,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MedicalPrescriptions">
-            <EntityTypeMapping TypeName="MediconModel.MedicalPrescription">
-              <MappingFragment StoreEntitySet="MedicalPrescription">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="noDay" ColumnName="noDay" />
-                <ScalarProperty Name="perDay" ColumnName="perDay" />
-                <ScalarProperty Name="dosage" ColumnName="dosage" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="consultID" ColumnName="consultID" />
-                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
-                <ScalarProperty Name="rxID" ColumnName="rxID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OutgoingItems">
-            <EntityTypeMapping TypeName="MediconModel.OutgoingItem">
-              <MappingFragment StoreEntitySet="OutgoingItems">
-                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
-                <ScalarProperty Name="userIDreleased" ColumnName="userIDreleased" />
-                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
-                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
-                <ScalarProperty Name="dateTimeRx" ColumnName="dateTimeRx" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
-                <ScalarProperty Name="productCode" ColumnName="productCode" />
-                <ScalarProperty Name="rxID" ColumnName="rxID" />
-                <ScalarProperty Name="outID" ColumnName="outID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="PapsmearBreastExams">
             <EntityTypeMapping TypeName="MediconModel.PapsmearBreastExam">
               <MappingFragment StoreEntitySet="PapsmearBreastExam">
@@ -920,18 +1004,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
                 <ScalarProperty Name="consultID" ColumnName="consultID" />
                 <ScalarProperty Name="referredServiceID" ColumnName="referredServiceID" />
                 <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ResultDiagnosis">
-            <EntityTypeMapping TypeName="MediconModel.ResultDiagnosi">
-              <MappingFragment StoreEntitySet="ResultDiagnosis">
-                <ScalarProperty Name="toothNum" ColumnName="toothNum" />
-                <ScalarProperty Name="otherDiagnosis" ColumnName="otherDiagnosis" />
-                <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
-                <ScalarProperty Name="consultID" ColumnName="consultID" />
-                <ScalarProperty Name="resultID" ColumnName="resultID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -974,19 +1046,6 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
                 <ScalarProperty Name="weight" ColumnName="weight" />
                 <ScalarProperty Name="qrCode" ColumnName="qrCode" />
                 <ScalarProperty Name="vSignID" ColumnName="vSignID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LaboratoryExams">
-            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
-              <MappingFragment StoreEntitySet="LaboratoryExam">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="isTested" ColumnName="isTested" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1082,6 +1141,160 @@ warning 6002: The table/view 'Medicon.dbo.LaboratoryExam' does not have a primar
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Consultations">
+            <EntityTypeMapping TypeName="MediconModel.Consultation">
+              <MappingFragment StoreEntitySet="Consultation">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="toothNum" ColumnName="toothNum" />
+                <ScalarProperty Name="outsideReferral" ColumnName="outsideReferral" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ResultDiagnosis">
+            <EntityTypeMapping TypeName="MediconModel.ResultDiagnosi">
+              <MappingFragment StoreEntitySet="ResultDiagnosis">
+                <ScalarProperty Name="otherDiagnosis" ColumnName="otherDiagnosis" />
+                <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="resultID" ColumnName="resultID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="fn_MedicineList" FunctionName="MediconModel.Store.fn_MedicineList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_MedicineList_Result">
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="productDesc" ColumnName="productDesc" />
+                <ScalarProperty Name="brandID" ColumnName="brandID" />
+                <ScalarProperty Name="brandName" ColumnName="brandName" />
+                <ScalarProperty Name="measurementID" ColumnName="measurementID" />
+                <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+                <ScalarProperty Name="unitID" ColumnName="unitID" />
+                <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="MedicalPrescriptions">
+            <EntityTypeMapping TypeName="MediconModel.MedicalPrescription">
+              <MappingFragment StoreEntitySet="MedicalPrescription">
+                <ScalarProperty Name="dateTimeRx" ColumnName="dateTimeRx" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="rxID" ColumnName="rxID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OutgoingItems">
+            <EntityTypeMapping TypeName="MediconModel.OutgoingItem">
+              <MappingFragment StoreEntitySet="OutgoingItems">
+                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
+                <ScalarProperty Name="userIDreleased" ColumnName="userIDreleased" />
+                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
+                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
+                <ScalarProperty Name="noDay" ColumnName="noDay" />
+                <ScalarProperty Name="perDay" ColumnName="perDay" />
+                <ScalarProperty Name="dosage" ColumnName="dosage" />
+                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="rxID" ColumnName="rxID" />
+                <ScalarProperty Name="outID" ColumnName="outID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="fn_getDiagnoseClients" FunctionName="MediconModel.Store.fn_getDiagnoseClients">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getDiagnoseClients_Result">
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="outsideReferral" ColumnName="outsideReferral" />
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="toothNum" ColumnName="toothNum" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_getRxHistory" FunctionName="MediconModel.Store.sp_getRxHistory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.sp_getRxHistory_Result">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="rxID" ColumnName="rxID" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeRx" ColumnName="dateTimeRx" />
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+                <ScalarProperty Name="dosage" ColumnName="dosage" />
+                <ScalarProperty Name="perDay" ColumnName="perDay" />
+                <ScalarProperty Name="noDay" ColumnName="noDay" />
+                <ScalarProperty Name="productDesc" ColumnName="productDesc" />
+                <ScalarProperty Name="measurementID" ColumnName="measurementID" />
+                <ScalarProperty Name="unitID" ColumnName="unitID" />
+                <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+                <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="LaboratoryExams">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
+              <MappingFragment StoreEntitySet="LaboratoryExam">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="fn_getLabPatients" FunctionName="MediconModel.Store.fn_getLabPatients">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getLabPatients_Result">
+                <ScalarProperty Name="labDT" ColumnName="labDT" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="consultDT" ColumnName="consultDT" />
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

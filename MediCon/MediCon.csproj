@@ -164,6 +164,7 @@
     <Compile Include="Controllers\DentalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LaboratoryController.cs" />
+    <Compile Include="Controllers\LabtestController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MedicalConsultationController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
@@ -210,6 +211,15 @@
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DietCounseling.cs">
+      <DependentUpon>LocalDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_getDiagnoseClients_Result.cs">
+      <DependentUpon>LocalDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_getLabPatients_Result.cs">
+      <DependentUpon>LocalDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_MedicineList_Result.cs">
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_vitalSignList_Result.cs">
@@ -281,6 +291,9 @@
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Service.cs">
+      <DependentUpon>LocalDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_getRxHistory_Result.cs">
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
@@ -357,6 +370,7 @@
     <Content Include="myIcon16.ico" />
     <Content Include="Scripts\AngularJS\angular.min.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
+    <Content Include="Scripts\AngularJS\Labtest\Labtest.js" />
     <Content Include="Scripts\AngularJS\MedicalConsultation\MedicalConsultation.js" />
     <Content Include="Scripts\AngularJS\MedConApp.js" />
     <Content Include="Scripts\AngularJS\Medicines\MedicineProducts.js" />
@@ -452,6 +466,7 @@
     <Content Include="Views\MedicalConsultation\Index.cshtml" />
     <Content Include="Views\Dental\OralExam.cshtml" />
     <Content Include="Views\Laboratory\Lists.cshtml" />
+    <Content Include="Views\Labtest\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

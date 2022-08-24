@@ -11,7 +11,6 @@ namespace MediCon.Controllers
     public class VitalSignsController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
-        EQPEntities dbQr = new EQPEntities();
 
         static string checkDate = DateTime.Now.ToShortDateString();
         static string checkDateStart = checkDate + " 00:00:00";

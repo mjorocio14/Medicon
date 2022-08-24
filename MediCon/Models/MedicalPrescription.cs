@@ -19,10 +19,7 @@ namespace MediCon.Models
         public string serviceID { get; set; }
         public string consultID { get; set; }
         public string referralID { get; set; }
-        public Nullable<decimal> dosage { get; set; }
-        public Nullable<int> perDay { get; set; }
-        public string noDay { get; set; }
         public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public Nullable<System.DateTime> dateTimeRx { get; set; }
     }
 }

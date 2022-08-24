@@ -205,6 +205,10 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                             s.qrData.height = d.data.height;
                             s.qrData.weight = d.data.weight;
                         }
+
+                        else {
+                            s.isVSexist = false;
+                        }
                     });
                 }
 
@@ -233,7 +237,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
         else {
             s.BP = {};
-
+            
             if (s.isVSexist) {
                 s.showQRpanel = !s.showQRpanel;
                 getBPhistory(s.qrData.qrCode);
@@ -250,6 +254,8 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                             text: d.data.msg,
                             type: "success"
                         });
+
+                        s.isVSexist = true;
                     }
 
                     else {
@@ -262,6 +268,12 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                 });
             }
         }
+    }
+
+    s.btnReturn = function () {
+        s.qrData = {};
+        s.isVSexist = false;
+        s.showQRpanel = !s.showQRpanel;
     }
 
     function getBPhistory(qrCode) {
@@ -314,6 +326,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                     s.BP = {};
                     getBPhistory(s.qrData.qrCode);
                     getVitalList();
+                    s.isVSexist = false;
                 }
             });
     }

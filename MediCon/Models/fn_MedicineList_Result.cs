@@ -10,14 +10,16 @@
 namespace MediCon.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ResultDiagnosi
+    public partial class fn_MedicineList_Result
     {
-        public long recNo { get; set; }
-        public string resultID { get; set; }
-        public string consultID { get; set; }
-        public string diagnoseID { get; set; }
-        public string otherDiagnosis { get; set; }
+        public string productCode { get; set; }
+        public string productDesc { get; set; }
+        public string brandID { get; set; }
+        public string brandName { get; set; }
+        public string measurementID { get; set; }
+        public string measurementDesc { get; set; }
+        public string unitID { get; set; }
+        public string unitDesc { get; set; }
     }
 }

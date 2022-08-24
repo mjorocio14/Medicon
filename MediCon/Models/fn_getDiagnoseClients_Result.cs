@@ -10,18 +10,24 @@
 namespace MediCon.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class Consultation
+    public partial class fn_getDiagnoseClients_Result
     {
-        public long recNo { get; set; }
         public string consultID { get; set; }
-        public string vSignID { get; set; }
         public string serviceID { get; set; }
         public string outsideReferral { get; set; }
-        public string toothNum { get; set; }
         public string remarks { get; set; }
+        public string toothNum { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string vSignID { get; set; }
+        public string qrCode { get; set; }
+        public string lastName { get; set; }
+        public string firstName { get; set; }
+        public string middleName { get; set; }
+        public string extName { get; set; }
+        public Nullable<bool> sex { get; set; }
+        public Nullable<System.DateTime> birthdate { get; set; }
+        public string contactNo { get; set; }
     }
 }

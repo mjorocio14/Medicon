@@ -3,7 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*<link href="~/Content/ISPINIA/sweetalert2/sweetalert2.min.css" rel="stylesheet" />*@
 
 <div ng-controller="VitalSignCtrl">
 
@@ -197,7 +196,7 @@
                                     <div class="col-sm-12">
                                         <hr class="hr-line-dashed" style="margin-top: 5px;" />
                                         <button class="btn btn-success pull-right" type="submit" ng-disabled="VS_form.$invalid" ng-click="saveBP(BP)"><i class="fa fa-save"></i> Save </button>
-                                        <button class="btn btn-danger pull-left" style="margin-right: 2px;" ng-click="btnProceed()"><i class="fa fa-angle-double-left"></i> Return </button>
+                                        <button class="btn btn-danger pull-left" style="margin-right: 2px;" ng-click="btnReturn()"><i class="fa fa-angle-double-left"></i> Return </button>
                                     </div>
                                 </div>
                             </form>
