@@ -4,17 +4,17 @@
 }
 
 
-<div ng-controller="LabTestCtrl">
+<div ng-controller="PBEctrl">
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Laboratory</h2>
+            <h2>Papsmear & Breast Exam</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="">Medicon</a>
                 </li>
                 <li class="active">
-                    <strong>Laboratory</strong>
+                    <strong>Papsmear & Breast Exam</strong>
                 </li>
             </ol>
         </div>
@@ -24,20 +24,19 @@
     </div>
     <!-- /HEADER -->
 
-
     <div class="wrapper wrapper-content ">
-        <!-- QR CODE INFO FORM -->
         <div class="animated fadeInRight ecommerce" ng-show="!showClientList">
-            <div class="row">
-                <div class="col-lg-5 col-md-5">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title text-center">
-                            <label class="text-center">QR CODE INFORMATION</label>
-                        </div>
-                        <div class="ibox-content">
+            <!-- QR CODE INFO FORM -->
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
+                    <label class="text-center">QR CODE INFORMATION</label>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
                             <div class="profile_img">
                                 <!-- Current avatar -->
-                                <video id="preview" class="img-responsive avatar-view" style="width: 100%; height: 100%;" />
+                                <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
                             </div>
                             <form name="qrSearchForm">
                                 <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
@@ -48,7 +47,8 @@
                                 </div>
                             </form>
                             <br />
-
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                             <div class="text-center" ng-show="loader" style="margin-top: 10%;">
                                 <div class="sk-spinner sk-spinner-double-bounce">
                                     <div class="sk-double-bounce1"></div>
@@ -59,39 +59,39 @@
                             <div ng-show="!loader">
                                 <form id="QR_FORM" name="QR_FORM">
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_lastName">Last name</label>
-                                                <input type="text" id="qr_lastName" name="qr_lastName" ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_firstName">First name</label>
-                                                <input type="text" id="qr_firstName" name="qr_firstName" ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-2">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_mi">Middle name</label>
-                                                <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-2">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_suffix">Suffix</label>
-                                                <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_birthdate">Birthday</label>
-                                                <input type="date" id="qr_birthdate" name="qr_birthdate" ng-model="qrData.birthdate" class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
-                                        <div class="col-sm-6">
+                                        <div class="col-sm-4">
                                             <label class="control-label">Sex</label>
                                             <div class="form-group text-center">
                                                 <div class="radio radio-primary radio-inline">
@@ -104,10 +104,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-4">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_contactNo">Contact no.</label>
-                                                <input type="text" id="qr_contactNo" name="qr_contactNo" ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
                                     </div>
@@ -115,20 +115,23 @@
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_address">Address</label>
-                                                <input type="text" id="qr_address" name="qr_address" ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly style="background-color: white;" />
+                                                <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <div class="col-lg-7 col-md-7">
-                    <div class="panel panel-danger" style="min-height: 200px; height: 409px;">
+            </div>
+            <!-- /QR CODE INFO FORM -->
+
+            <div class="row">
+                <div ng-class="showPerformPanel ? 'col-lg-8 col-md-8' : 'col-lg-12 col-md-12'">
+                    <div class="panel panel-warning">
                         <div class="panel-heading text-center">
-                            <label class="text-center">LABORATORY REQUEST</label>
+                            <label class="text-center">PAPSMEAR & BREAST EXAM HISTORY</label>
                         </div>
                         <div class="panel-body">
                             <div class="table-wrapper-scroll-y my-custom-scrollbar">
@@ -137,16 +140,19 @@
                                         <tr>
 
                                             <th class="">#</th>
-                                            <th>Test</th>
+                                            <th>Referred Date & Time</th>
                                             <th>Referred by</th>
+                                            <th>Papsmear</th>
+                                            <th>Breast Exam</th>
+                                            <th>Examined by</th>
                                             <th>Date & Time</th>
-                                            <th>Status</th>
+                                            <th>Action</th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="text-center" ng-show="loader">
-                                            <td colspan="6">
+                                            <td colspan="8">
                                                 <div class="sk-spinner sk-spinner-double-bounce">
                                                     <div class="sk-double-bounce1"></div>
                                                     <div class="sk-double-bounce2"></div>
@@ -159,16 +165,16 @@
                                                 <label class="text-danger">NO INFORMATION FOUND!</label>
                                             </td>
                                         </tr>
-                                        <tr ng-repeat="lab in labReq">
+                                        <tr ng-repeat="hist in pbeHistory">
                                             <td>{{$index + 1}}</td>
-                                            <td><strong>{{lab.labTestName}}</strong></td>
-                                            <td>{{lab.consultPersonnel[0].personnel_firstName}} {{lab.consultPersonnel[0].personnel_middleName}} {{lab.consultPersonnel[0].personnel_lastName}} {{lab.consultPersonnel[0].personnel_extName}}</td>
-                                            <td>{{lab.consultDT}}</td>
-                                            <td class="text-center">
-                                                <div class="checkbox checkbox-danger" style="margin-top: 3px !important;">
-                                                    <input type="checkbox" id="tagTested" ng-model="isTested" ng-change="tagTested(lab, isTested)">
-                                                    <label></label>
-                                                </div>
+                                            <td>{{hist.consultDT}}</td>
+                                            <td>{{hist.consultPersonnel[0].personnel_firstName}} {{hist.consultPersonnel[0].personnel_middleName}} {{hist.consultPersonnel[0].personnel_lastName}} {{hist.consultPersonnel[0].personnel_extName}}</td>
+                                            <td>{{hist.isPapsmear == null ? '' : hist.isPapsmear ? 'Yes':'No'}}</td>
+                                            <td>{{hist.isBreastExam == null ? '' : hist.isBreastExam ? 'Yes':'No'}}</td>
+                                            <td>{{hist.pbePersonnel[0].personnel_firstName}} {{hist.pbePersonnel[0].personnel_middleName}} {{hist.pbePersonnel[0].personnel_lastName}} {{hist.pbePersonnel[0].personnel_extName}}</td>
+                                            <td>{{hist.pbeDT == 'Invalid date' ? '':hist.pbeDT}}</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-warning" ng-click="performPBE(hist)" ng-disabled="(hist.isPapsmear && hist.isBreastExam) || showPerformPanel"><i class="fa fa-check"></i> Perform</button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -176,67 +182,51 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="panel panel-success" style="min-height: 200px; height: 409px;">
+                </div>
+                <div class="col-lg-4 col-md-4">
+                    <div class="panel panel-danger" ng-show="showPerformPanel">
                         <div class="panel-heading text-center">
-                            <label class="text-center">LABORATORY HISTORY</label>
+                            <label class="text-center">FEMALE REPRODUCTIVE EXAM</label>
                         </div>
                         <div class="panel-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table class="table table-stripped">
-                                    <thead>
-                                        <tr>
-
-                                            <th class="">#</th>
-                                            <th>Test</th>
-                                            <th>Lab. Personnel</th>
-                                            <th>Lab. Date & Time</th>
-                                            <th>Referred by</th>
-                                            <th>Date & Time</th>
-                                            <th>Status</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="text-center" ng-show="loader">
-                                            <td colspan="6">
-                                                <div class="sk-spinner sk-spinner-double-bounce">
-                                                    <div class="sk-double-bounce1"></div>
-                                                    <div class="sk-double-bounce2"></div>
-                                                </div>
-                                                <text><i>Please wait, we are loading your data...</i></text>
-                                            </td>
-                                        </tr>
-                                        <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                            <td colspan="6">
-                                                <label class="text-danger">NO INFORMATION FOUND!</label>
-                                            </td>
-                                        </tr>
-                                        <tr ng-repeat="hist in testHistory">
-                                            <td>{{$index + 1}}</td>
-                                            <td>{{hist.labTestName}}</td>
-                                            <td>{{hist.labPersonnel[0].personnel_firstName}} {{hist.labPersonnel[0].personnel_middleName}} {{hist.labPersonnel[0].personnel_lastName}} {{hist.labPersonnel[0].personnel_extName}}</td>
-                                            <td>{{hist.labDT}}</td>
-                                            <td>{{hist.consultPersonnel[0].personnel_firstName}} {{hist.consultPersonnel[0].personnel_middleName}} {{hist.consultPersonnel[0].personnel_lastName}} {{hist.consultPersonnel[0].personnel_extName}}</td>
-                                            <td>{{hist.consultDT}}</td>
-                                            <td class="text-center">
-                                                <div class="checkbox checkbox-danger" style="margin-top: 3px !important;">
-                                                    <input type="checkbox" id="tagTested" value="true" ng-model="hist.isTested" ng-change="tagTested(hist, hist.isTested)">
-                                                    <label></label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6  text-center">
+                                    <label class="control-label">Papsmear</label>
+                                    <div class="form-group">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="radio_papsmear_y" value=" true" name="radio_Papsmear" ng-model="pbe.isPapsmear" />
+                                            <label for="radio_papsmear_y"> Yes </label>
+                                        </div>
+                                        <div class="radio radio-danger radio-inline">
+                                            <input type="radio" id="radio_papsmear_n" value="false" name="radio_Papsmear" ng-model="pbe.isPapsmear" />
+                                            <label for="radio_papsmear_n"> No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 text-center">
+                                    <label class="control-label">Breast Exam</label>
+                                    <div class="form-group">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="radio_breastExam_y" value="true" name="radio_breastExam" ng-model="pbe.isBreastExam" />
+                                            <label for="radio_breastExam_y"> Yes </label>
+                                        </div>
+                                        <div class="radio radio-danger radio-inline">
+                                            <input type="radio" id="radio_breastExam_n" value="false" name="radio_breastExam" ng-model="pbe.isBreastExam" />
+                                            <label for="radio_breastExam_n"> No </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="col-lg-12">
+                                    <button class="btn pull-right btn-danger" ng-click="showPerformPanel = !showPerformPanel" style="margin-left: 2px;"><i class="fa fa-cross"></i> Cancel </button>
+                                    <button class="btn pull-right btn-success" ng-click="savePBE()"><i class="fa fa-save"></i> Save </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
-        <!-- /QR CODE INFO FORM -->
-
 
         <!-- LIST OF PATIENTS -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
@@ -259,11 +249,11 @@
                                     <th>Sex</th>
                                     <th>Age</th>
                                     <th>Contact no.</th>
-                                    <th>Lab. Test</th>
-                                    <th>Lab. Date & Time</th>
-                                    <th>Referred by</th>
-                                    <th class="text-right" data-sort-ignore="true">Action</th>
-
+                                    <th>Papsmear</th>
+                                    <th>Breast Exam</th>
+                                    <th>Examined by</th>
+                                    <th>Examined Date & Time</th>
+                                    
                                 </tr>
                             </thead>
                         </table>
@@ -273,11 +263,11 @@
             </div>
         </div>
         <!-- /LIST OF PATIENTS -->
-
     </div>
+
 </div>
 
 @section scripts
 {
-    <script src="~/Scripts/AngularJS/Labtest/Labtest.js"></script>
+    <script src="~/Scripts/AngularJS/PapsmearBreastExam/PapsmearBreastExam.js"></script>
 }

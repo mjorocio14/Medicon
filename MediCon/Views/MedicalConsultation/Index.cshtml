@@ -164,9 +164,21 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Height: {{vitalSigns.height}}</label></div>
+                                    @*<div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Height: {{vitalSigns.height}}</label></div>
                                     <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Weight: {{vitalSigns.weight}}</label></div>
-                                    <div class="col-xs-12"><label class="form-control text-center" style="background: aliceblue;">BMI: {{BMI.value == null ? '' : BMI.value}} - {{BMI.desc}}</label></div>
+                                    <div class="col-xs-12"><label class="form-control text-center" style="background: aliceblue;">BMI: {{BMI.value == null ? '' : BMI.value}} - {{BMI.desc}}</label></div>*@
+                                    <div class="col-xs-6">
+                                        <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Height</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.height" readonly style="font-weight: 700;"></div>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Weight</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.weight" readonly style="font-weight: 700;"></div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <div class="input-group m-b">
+                                            <span class="input-group-addon" style="font-weight: 700;">BMI</span>
+                                            <input type="text" class="form-control text-center" ng-class="BMI.desc == 'UNDERWEIGHT' ? 'text-success' : BMI.desc == 'NORMAL' ? 'text-primary' : BMI.desc == 'OVERWEIGHT' ? 'text-warning' : 'text-danger'" ng-model="BMI.data" readonly style="font-weight: 700;">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                     <table class="table table-stripped">

@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="RectalDiagnosisCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Rectal Diagnosis</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li class="active">
+                    <strong>Rectal Diagnosis</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-sm-2" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
+            <button class="btn btn-danger" ng-show="showRx"><i class="fa fa-angle-double-left"></i> Back </button>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+
+    <div class="wrapper wrapper-content ">
+
+    </div>
+</div>

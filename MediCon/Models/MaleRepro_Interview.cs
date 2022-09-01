@@ -16,7 +16,7 @@ namespace MediCon.Models
     {
         public long recNo { get; set; }
         public string MRID { get; set; }
-        public string referralID { get; set; }
+        public string requestID { get; set; }
         public Nullable<bool> is1stDRE { get; set; }
         public byte DREfrequency { get; set; }
         public Nullable<bool> isProstateCancer { get; set; }

@@ -123,7 +123,7 @@
           </Key>
           <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MRID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="referralID" Type="varchar" MaxLength="15" />
+          <Property Name="requestID" Type="varchar" MaxLength="15" />
           <Property Name="is1stDRE" Type="bit" />
           <Property Name="DREfrequency" Type="tinyint" Nullable="false" />
           <Property Name="isProstateCancer" Type="bit" />
@@ -176,6 +176,17 @@
           <Property Name="userTypeID" Type="varchar" MaxLength="5" />
           <Property Name="mainMenu" Type="varchar" MaxLength="50" />
           <Property Name="orderNo" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="MRHrequest">
+          <Key>
+            <PropertyRef Name="requestID" />
+          </Key>
+          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="requestID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="referralID" Type="varchar" MaxLength="15" />
+          <Property Name="isDone" Type="bit" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="OutgoingItems">
           <Key>
@@ -359,6 +370,33 @@
             </CollectionType>
           </ReturnType>
         </Function>
+        <Function Name="fn_getPapsmearBreastExamClients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="labDT" Type="datetime" />
+                <Property Name="PBEID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="isPapsmear" Type="bit" />
+                <Property Name="isBreastExam" Type="bit" />
+                <Property Name="personnelID" Type="varchar" MaxLength="8" />
+                <Property Name="personnel_lastName" Type="varchar" MaxLength="50" />
+                <Property Name="personnel_firstName" Type="varchar" MaxLength="50" />
+                <Property Name="personnel_midInit" Type="char" MaxLength="1" />
+                <Property Name="referralID" Type="varchar" MaxLength="15" />
+                <Property Name="consultID" Type="varchar" MaxLength="15" />
+                <Property Name="consultDT" Type="datetime" />
+                <Property Name="vSignID" Type="varchar" MaxLength="15" />
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="lastName" Type="varchar" MaxLength="50" />
+                <Property Name="firstName" Type="varchar" MaxLength="50" />
+                <Property Name="middleName" Type="varchar" MaxLength="50" />
+                <Property Name="extName" Type="varchar" MaxLength="10" />
+                <Property Name="birthdate" Type="date" />
+                <Property Name="contactNo" Type="varchar" MaxLength="50" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="fn_MedicineList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <ReturnType>
             <CollectionType>
@@ -417,6 +455,7 @@
           <EntitySet Name="Measurement" EntityType="Self.Measurement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MedicalPrescription" EntityType="Self.MedicalPrescription" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MenuAccess" EntityType="Self.MenuAccess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MRHrequest" EntityType="Self.MRHrequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OutgoingItems" EntityType="Self.OutgoingItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PapsmearBreastExam" EntityType="Self.PapsmearBreastExam" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Personnel" EntityType="Self.Personnel" Schema="dbo" store:Type="Tables" />
@@ -439,7 +478,6 @@
           <EntitySet Name="Diagnosis" EntityType="MediconModel.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="MediconModel.MaleRepro_Diagnosis" />
-          <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
           <EntitySet Name="PapsmearBreastExams" EntityType="MediconModel.PapsmearBreastExam" />
           <EntitySet Name="ProductLists" EntityType="MediconModel.ProductList" />
           <EntitySet Name="Referrals" EntityType="MediconModel.Referral" />
@@ -467,6 +505,9 @@
           </FunctionImport>
           <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
           <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)" />
+          <FunctionImport Name="fn_getPapsmearBreastExamClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPapsmearBreastExamClients_Result)" />
+          <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
+          <EntitySet Name="MRHrequests" EntityType="MediconModel.MRHrequest" />
           </EntityContainer>
         <EntityType Name="BloodPressure">
           <Key>
@@ -541,32 +582,6 @@
           <Property Name="transrectalBiopsy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="TRUSBiopsy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="MaleRepro_Interview">
-          <Key>
-            <PropertyRef Name="MRID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MRID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="is1stDRE" Type="Boolean" />
-          <Property Name="DREfrequency" Type="Byte" Nullable="false" />
-          <Property Name="isProstateCancer" Type="Boolean" />
-          <Property Name="isAnyCancer" Type="Boolean" />
-          <Property Name="cancerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="isMedication" Type="Boolean" />
-          <Property Name="medicineName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="diNauubos" Type="Byte" />
-          <Property Name="kadalasUmihi" Type="Byte" />
-          <Property Name="patigiltiglNaIhi" Type="Byte" />
-          <Property Name="pagpigilNgIhi" Type="Byte" />
-          <Property Name="mahinangDaloy" Type="Byte" />
-          <Property Name="magpwersaNgIhi" Type="Byte" />
-          <Property Name="besesGumising" Type="Byte" />
-          <Property Name="sintomasNgIhi" Type="Byte" />
-          <Property Name="nadarama" Type="Byte" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
@@ -857,6 +872,64 @@
           <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
           <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <ComplexType Name="fn_getPapsmearBreastExamClients_Result">
+          <Property Type="DateTime" Name="labDT" Nullable="true" Precision="23" />
+          <Property Type="String" Name="PBEID" Nullable="false" MaxLength="15" />
+          <Property Type="Boolean" Name="isPapsmear" Nullable="true" />
+          <Property Type="Boolean" Name="isBreastExam" Nullable="true" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="personnel_lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="referralID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="consultID" Nullable="true" MaxLength="15" />
+          <Property Type="DateTime" Name="consultDT" Nullable="true" Precision="23" />
+          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="middleName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="extName" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
+          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <EntityType Name="MaleRepro_Interview">
+          <Key>
+            <PropertyRef Name="MRID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MRID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="requestID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="is1stDRE" Type="Boolean" />
+          <Property Name="DREfrequency" Type="Byte" Nullable="false" />
+          <Property Name="isProstateCancer" Type="Boolean" />
+          <Property Name="isAnyCancer" Type="Boolean" />
+          <Property Name="cancerName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isMedication" Type="Boolean" />
+          <Property Name="medicineName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="diNauubos" Type="Byte" />
+          <Property Name="kadalasUmihi" Type="Byte" />
+          <Property Name="patigiltiglNaIhi" Type="Byte" />
+          <Property Name="pagpigilNgIhi" Type="Byte" />
+          <Property Name="mahinangDaloy" Type="Byte" />
+          <Property Name="magpwersaNgIhi" Type="Byte" />
+          <Property Name="besesGumising" Type="Byte" />
+          <Property Name="sintomasNgIhi" Type="Byte" />
+          <Property Name="nadarama" Type="Byte" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MRHrequest">
+          <Key>
+            <PropertyRef Name="requestID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="requestID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="isDone" Type="Boolean" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -940,33 +1013,6 @@
                 <ScalarProperty Name="PEfindings" ColumnName="PEfindings" />
                 <ScalarProperty Name="MRID" ColumnName="MRID" />
                 <ScalarProperty Name="MRDiagnosisID" ColumnName="MRDiagnosisID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MaleRepro_Interview">
-            <EntityTypeMapping TypeName="MediconModel.MaleRepro_Interview">
-              <MappingFragment StoreEntitySet="MaleRepro_Interview">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="nadarama" ColumnName="nadarama" />
-                <ScalarProperty Name="sintomasNgIhi" ColumnName="sintomasNgIhi" />
-                <ScalarProperty Name="besesGumising" ColumnName="besesGumising" />
-                <ScalarProperty Name="magpwersaNgIhi" ColumnName="magpwersaNgIhi" />
-                <ScalarProperty Name="mahinangDaloy" ColumnName="mahinangDaloy" />
-                <ScalarProperty Name="pagpigilNgIhi" ColumnName="pagpigilNgIhi" />
-                <ScalarProperty Name="patigiltiglNaIhi" ColumnName="patigiltiglNaIhi" />
-                <ScalarProperty Name="kadalasUmihi" ColumnName="kadalasUmihi" />
-                <ScalarProperty Name="diNauubos" ColumnName="diNauubos" />
-                <ScalarProperty Name="medicineName" ColumnName="medicineName" />
-                <ScalarProperty Name="isMedication" ColumnName="isMedication" />
-                <ScalarProperty Name="cancerName" ColumnName="cancerName" />
-                <ScalarProperty Name="isAnyCancer" ColumnName="isAnyCancer" />
-                <ScalarProperty Name="isProstateCancer" ColumnName="isProstateCancer" />
-                <ScalarProperty Name="DREfrequency" ColumnName="DREfrequency" />
-                <ScalarProperty Name="is1stDRE" ColumnName="is1stDRE" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="MRID" ColumnName="MRID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1295,6 +1341,70 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="fn_getPapsmearBreastExamClients" FunctionName="MediconModel.Store.fn_getPapsmearBreastExamClients">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getPapsmearBreastExamClients_Result">
+                <ScalarProperty Name="labDT" ColumnName="labDT" />
+                <ScalarProperty Name="PBEID" ColumnName="PBEID" />
+                <ScalarProperty Name="isPapsmear" ColumnName="isPapsmear" />
+                <ScalarProperty Name="isBreastExam" ColumnName="isBreastExam" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="consultDT" ColumnName="consultDT" />
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="MaleRepro_Interview">
+            <EntityTypeMapping TypeName="MediconModel.MaleRepro_Interview">
+              <MappingFragment StoreEntitySet="MaleRepro_Interview">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="nadarama" ColumnName="nadarama" />
+                <ScalarProperty Name="sintomasNgIhi" ColumnName="sintomasNgIhi" />
+                <ScalarProperty Name="besesGumising" ColumnName="besesGumising" />
+                <ScalarProperty Name="magpwersaNgIhi" ColumnName="magpwersaNgIhi" />
+                <ScalarProperty Name="mahinangDaloy" ColumnName="mahinangDaloy" />
+                <ScalarProperty Name="pagpigilNgIhi" ColumnName="pagpigilNgIhi" />
+                <ScalarProperty Name="patigiltiglNaIhi" ColumnName="patigiltiglNaIhi" />
+                <ScalarProperty Name="kadalasUmihi" ColumnName="kadalasUmihi" />
+                <ScalarProperty Name="diNauubos" ColumnName="diNauubos" />
+                <ScalarProperty Name="medicineName" ColumnName="medicineName" />
+                <ScalarProperty Name="isMedication" ColumnName="isMedication" />
+                <ScalarProperty Name="cancerName" ColumnName="cancerName" />
+                <ScalarProperty Name="isAnyCancer" ColumnName="isAnyCancer" />
+                <ScalarProperty Name="isProstateCancer" ColumnName="isProstateCancer" />
+                <ScalarProperty Name="DREfrequency" ColumnName="DREfrequency" />
+                <ScalarProperty Name="is1stDRE" ColumnName="is1stDRE" />
+                <ScalarProperty Name="requestID" ColumnName="requestID" />
+                <ScalarProperty Name="MRID" ColumnName="MRID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MRHrequests">
+            <EntityTypeMapping TypeName="MediconModel.MRHrequest">
+              <MappingFragment StoreEntitySet="MRHrequest">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="isDone" ColumnName="isDone" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="requestID" ColumnName="requestID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

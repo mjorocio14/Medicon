@@ -32,7 +32,6 @@ namespace MediCon.Models
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
-        public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
         public virtual DbSet<PapsmearBreastExam> PapsmearBreastExams { get; set; }
         public virtual DbSet<ProductList> ProductLists { get; set; }
         public virtual DbSet<Referral> Referrals { get; set; }
@@ -50,6 +49,8 @@ namespace MediCon.Models
         public virtual DbSet<MedicalPrescription> MedicalPrescriptions { get; set; }
         public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
         public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
+        public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
+        public virtual DbSet<MRHrequest> MRHrequests { get; set; }
     
         [DbFunction("MediconEntities", "fn_vitalSignList")]
         public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()
@@ -90,6 +91,12 @@ namespace MediCon.Models
         public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
+        public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients]()");
         }
     }
 }

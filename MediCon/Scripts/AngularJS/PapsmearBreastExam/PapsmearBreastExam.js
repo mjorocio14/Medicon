@@ -1,8 +1,9 @@
-﻿app.controller('LabTestCtrl', ['$scope', '$http', function (s, h) {
+﻿app.controller('PBEctrl', ['$scope', '$http', function (s, h) {
     s.loader = false;
     s.qrData = {};
     s.showClientListBTN = true;
     s.showClientList = false;
+    s.showPerformPanel = false;
 
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner(
@@ -69,90 +70,101 @@
         })
     }
 
+    s.savePBE = function () {
+        if (s.pbe.isPapsmear == null || s.pbe.isBreastExam == null)
+        {
+            swal({
+                title: "ERROR",
+                text: "Please fill all the fields required",
+                type: "error"
+            });
+        }
+
+        else {
+            swal({
+                title: "SAVING",
+                text: "Please wait while we are saving your data.",
+                type: "info",
+                showConfirmButton: false
+            });
+
+            h.post('../PapsmearBreastExam/savePBE', { PBEID: s.pbe.PBEID, isPapsmear: s.pbe.isPapsmear, isBreastExam: s.pbe.isBreastExam }).then(function (d) {
+                if (d.data.status == "error") {
+                    swal({
+                        title: "ERROR",
+                        text: "<labal>" + d.data.msg + "</label>",
+                        type: "error",
+                        html: true
+                    });
+                }
+
+                else {
+                    swal({
+                        title: "SUCCESSFUL",
+                        text: d.data.msg,
+                        type: "success",
+                        html: true
+                    });
+
+                    s.getLabtest(s.pbe.qrCode);
+                    s.performPBE(s.pbe);
+                }
+            });
+        }
+    }
+
     s.getLabtest = function (qrCode) {
-        // GET LAB HISTORY AND REQUEST
-        h.post('../Labtest/getPersonLabReq?qrCode=' + qrCode).then(function (d) {
+        h.post('../PapsmearBreastExam/getPatientPBE?qrCode=' + qrCode).then(function (d) {
+            s.pbeHistory = {};
+
             if (d.data.length == 0) {
                 swal({
                     title: "ERROR",
-                    text: "Patient has no record of laboratory referral. Please refer the patient to medical consultation",
+                    text: "Patient has no record of papsmear & breast exam referral. Please refer the patient to medical consultation",
                     type: "error"
                 });
             }
 
             else {
                 angular.forEach(d.data, function (d1) {
-                    angular.forEach(d1, function (d2) {
-                        d2.consultDT = moment(d2.consultDT).format('lll');
-                        d2.labDT = moment(d2.labDT).format('lll');
-                    });
+                    d1.pbeDT = moment(d1.pbeDT).format('lll');
+                    d1.consultDT = moment(d1.consultDT).format('lll');
                 });
-
-                if (d.data[0][0].isTested == null || d.data[0][0].isTested == false) {
-                    s.labReq = d.data[0];
-                    s.testHistory = d.data.length > 1 ? d.data[1] : {};
-                }
-
-                else {
-                    s.testHistory = d.data[0];
-                    s.labReq = d.data.length > 1 ? d.data[1] : {};
-                }
+                
+                s.pbeHistory = d.data;
+                s.pbeHistory.status = s.pbeHistory.isPapsmear && s.pbeHistory.isBreastExam ? true : false;
             }
         });
     }
 
-    s.tagTested = function (lab, isTested) {
-        swal({
-            title: "SAVING",
-            text: "Please wait while we are saving your data.",
-            type: "info",
-            showConfirmButton: false
-        });
-
-        h.post('../Labtest/saveTestStatus', { labID: lab.labID, isTest: isTested }).then(function (d) {
-            if (d.data.status == "error") {
-                swal({
-                    title: "ERROR",
-                    text: "<labal>" + d.data.msg + "</label>",
-                    type: "error",
-                    html: true
-                });
-            }
-
-            else {
-                swal({
-                    title: "SUCCESSFUL",
-                    text: d.data.msg,
-                    type: "success",
-                    html: true
-                });
-
-                s.getLabtest(lab.qrCode);
-            }
-        });
+    s.performPBE = function (data) {
+        s.pbe = {}
+        s.pbe.PBEID = data.PBEID;
+        s.pbe.qrCode = data.qrCode;
+        s.showPerformPanel = !s.showPerformPanel;
     }
 
     s.showDiagnoseList = function () {
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
-            getLabClients();
+            getPBEclients();
         }
     }
 
-    function getLabClients() {
+    function getPBEclients() {
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
             $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url('../Labtest/getPatientList').load();
+            $('#clientList_tbl').DataTable().ajax.url('../PapsmearBreastExam/getPatientList').load();
         }
 
         else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableLabList = $('#clientList_tbl').DataTable({
                 "ajax": {
-                    "url": '../Labtest/getPatientList',
+                    "url": '../PapsmearBreastExam/getPatientList',
                     "type": 'POST',
                     "dataSrc": "",
                     "recordsTotal": 20,
@@ -209,11 +221,15 @@
                    "data": 'contactNo'
                },
                {
-                   "data": 'labTestName'
+                    "data": null,
+                    render: function (row) {
+                        return row.isPapsmear ? 'Yes' : 'No';
+                    }
                },
                {
-                   "data": null, render: function (row) {
-                       return moment(row.labDT).format('lll');
+                   "data": null,
+                   render: function (row) {
+                       return row.isBreastExam ? 'Yes' : 'No';
                    }
                },
                {
@@ -223,14 +239,13 @@
                },
                {
                    "data": null, render: function (row) {
-                       return moment(row.consultDT).format('lll');
+                       return moment(row.labDT).format('lll');
                    }
                }
                 ],
                 "order": [[0, "asc"]]
             });
         }
-
     }
 
 }]);

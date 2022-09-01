@@ -66,6 +66,15 @@
                     <li id="LAB">
                         <a href="../Labtest/Index"><i class="fa fa-eyedropper"></i> <span class="nav-label">Laboratory</span></a>
                     </li>
+                    <li id="PBE">
+                        <a href="../PapsmearBreastExam/Index"><i class="fa fa-female"></i> <span class="nav-label">Papsmear & Breast</span></a>
+                    </li>
+                    <li id="MRH">
+                        <a><i class="fa fa-male"></i> <span class="nav-label">Male Reproductive</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse" id="MRHsub">
+                            @*<li><a href="../MaleRepro/Index"><i class="fa fa-male"></i> <span class="nav-label">Initial Interview</span></a></li>*@
+                        </ul>
+                    </li>
                     <li id="HEALTH">
                         <a href="widgets.html"><i class="fa fa-stethoscope"></i> <span class="nav-label">Health</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="HEALTHsub">
@@ -138,12 +147,16 @@
             var vitalSigns = $('#VITALSIGNS'); 
             var medcon = $('#MEDCON');
             var lab = $('#LAB');
+            var pbe = $('#PBE');
+            var mrh = $('#MRH');
 
             health.hide();
             utility.hide();
             vitalSigns.hide();
             medcon.hide();
             lab.hide();
+            pbe.hide();
+            mrh.hide();
 
             $.post('../Home/gMenuAccess').then(function (d) {
                 for(var x =0;x<d.length;x++){
@@ -167,6 +180,15 @@
 
                     else if (d[x].mainMenu == 'LAB') {
                         lab.show();
+                    }
+
+                    else if (d[x].mainMenu == 'PBE') {
+                        pbe.show();
+                    }
+
+                    else if(d[x].mainMenu =='MRH'){
+                        mrh.show();
+                        $('#MRHsub').append('<li class="nav-item"><a href="../'+d[x].controller+'/'+d[x].action+'" class="nav-link"><i class="fa fa-angle-double-right"></i> '+d[x].menuDesc+'</a></li>');
                     }
                 }
             })

@@ -132,6 +132,25 @@ namespace MediCon.Controllers
                                 dbMed.LaboratoryExams.Add(labEx);
                             }
                         }
+
+                        else if(item == "SERVICE005")
+                        {
+                            PapsmearBreastExam pbe = new PapsmearBreastExam();
+                            pbe.PBEID = generateID(Ref.referralID).Substring(0, 15);
+                            pbe.referralID = Ref.referralID;
+                            dbMed.PapsmearBreastExams.Add(pbe);
+                        }
+
+                        else if (item == "SERVICE004")
+                        {
+                            MRHrequest mrhq = new MRHrequest();
+                            mrhq.requestID = generateID(Ref.referralID).Substring(0, 15);
+                            mrhq.referralID = Ref.referralID;
+                            mrhq.dateTimeLog = DateTime.Now;
+                            mrhq.isDone = false;
+                            mrhq.personnelID = Session["personnelID"].ToString();
+                            dbMed.MRHrequests.Add(mrhq);
+                        }
                     }
                 }
                 //......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE

@@ -11,11 +11,6 @@ namespace MediCon.Controllers
     public class LabtestController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
-        static string checkDate = DateTime.Now.ToShortDateString();
-        static string checkDateStart = checkDate + " 00:00:00";
-        static string checkDateEnd = checkDate + " 23:59:59";
-        DateTime cds = DateTime.Parse(checkDateStart);
-        DateTime cde = DateTime.Parse(checkDateEnd);
 
         // GET: Labtest
         public ActionResult Index()

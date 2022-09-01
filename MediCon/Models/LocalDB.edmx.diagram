@@ -10,7 +10,6 @@
         <EntityTypeShape EntityType="MediconModel.Diagnosi" Width="1.5" PointX="4.75" PointY="0.75" />
         <EntityTypeShape EntityType="MediconModel.DietCounseling" Width="1.5" PointX="4.75" PointY="3.75" />
         <EntityTypeShape EntityType="MediconModel.MaleRepro_Diagnosis" Width="1.5" PointX="6.75" PointY="3.75" />
-        <EntityTypeShape EntityType="MediconModel.MaleRepro_Interview" Width="1.5" PointX="0.75" PointY="7.75" />
         <EntityTypeShape EntityType="MediconModel.PapsmearBreastExam" Width="1.5" PointX="10.75" PointY="0.75" />
         <EntityTypeShape EntityType="MediconModel.ProductList" Width="1.5" PointX="10.75" PointY="4.75" />
         <EntityTypeShape EntityType="MediconModel.Referral" Width="1.5" PointX="10.75" PointY="8.75" />
@@ -28,6 +27,8 @@
         <EntityTypeShape EntityType="MediconModel.MedicalPrescription" Width="1.5" PointX="7.375" PointY="14.75" />
         <EntityTypeShape EntityType="MediconModel.OutgoingItem" Width="1.5" PointX="9.375" PointY="14.75" />
         <EntityTypeShape EntityType="MediconModel.LaboratoryExam" Width="1.5" PointX="13.375" PointY="7.75" />
+        <EntityTypeShape EntityType="MediconModel.MaleRepro_Interview" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="MediconModel.MRHrequest" Width="1.5" PointX="7.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,0 +1,977 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="MaleReproCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Male Reproductive Health</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li class="active">
+                    <strong>Male Reproductive Health</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-sm-2" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
+            <button class="btn btn-danger" ng-show="showRx"><i class="fa fa-angle-double-left"></i> Back </button>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+
+        <div class="animated fadeInRight ecommerce" ng-show="!showClientList && !showInterview">
+            <div class="row">
+                <!-- QR CODE INFO FORM -->
+                <div class="col-lg-5 col-md-5">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title text-center">
+                            <label class="text-center">QR CODE INFORMATION</label>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="profile_img">
+                                <!-- Current avatar -->
+                                <video id="preview" class="img-responsive avatar-view" style="width: 100%; height: 100%;" />
+                            </div>
+                            <form name="qrSearchForm">
+                                <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                    <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                    </span>
+                                </div>
+                            </form>
+                            <br />
+
+                            <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                <div class="sk-spinner sk-spinner-double-bounce">
+                                    <div class="sk-double-bounce1"></div>
+                                    <div class="sk-double-bounce2"></div>
+                                </div>
+                                <text><i>Please wait, we are getting your data...</i></text>
+                            </div>
+                            <div ng-show="!loader">
+                                <form id="QR_FORM" name="QR_FORM">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_lastName">Last name</label>
+                                                <input type="text" id="qr_lastName" name="qr_lastName" ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_firstName">First name</label>
+                                                <input type="text" id="qr_firstName" name="qr_firstName" ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_mi">Middle name</label>
+                                                <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_suffix">Suffix</label>
+                                                <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                <input type="date" id="qr_birthdate" name="qr_birthdate" ng-model="qrData.birthdate" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="control-label">Sex</label>
+                                            <div class="form-group text-center">
+                                                <div class="radio radio-primary radio-inline">
+                                                    <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                    <label for="radio_sex_male"> Male </label>
+                                                </div>
+                                                <div class="radio radio-danger radio-inline">
+                                                    <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                    <label for="radio_sex_female"> Female </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                <input type="text" id="qr_contactNo" name="qr_contactNo" ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_address">Address</label>
+                                                <input type="text" id="qr_address" name="qr_address" ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- /QR CODE INFO FORM -->
+
+                <div class="col-lg-7 col-md-7">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="panel panel-warning" style="min-height: 200px; height: 410px;">
+                                <div class="panel-heading text-center">
+                                    <label class="text-center">RECTAL EXAMINATION REQUEST</label>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="">#</th>
+                                                    <th>Referred by</th>
+                                                    <th>Date & Time</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="loader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="req in mhrReq">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{req.requestPerson[0].personnel_firstName}} {{req.requestPerson[0].personnel_middleName}} {{req.requestPerson[0].personnel_lastName}} {{req.requestPerson[0].personnel_extName}}</td>
+                                                    <td>{{req.requestDT}}</td>
+                                                    <td class="text-center">
+                                                        <button class="btn btn-warning" ng-click="proceedInterview(req)">Proceed</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="panel panel-success" style="min-height: 200px; height: 410px;">
+                                <div class="panel-heading text-center">
+                                    <label class="text-center">VITAL SIGNS INFORMATION</label>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Height</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.height" readonly style="font-weight: 700;"></div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Weight</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.weight" readonly style="font-weight: 700;"></div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="input-group m-b">
+                                                <span class="input-group-addon" style="font-weight: 700;">BMI</span>
+                                                <input type="text" class="form-control text-center" ng-class="BMI.desc == 'UNDERWEIGHT' ? 'text-success' : BMI.desc == 'NORMAL' ? 'text-primary' : BMI.desc == 'OVERWEIGHT' ? 'text-warning' : 'text-danger'" ng-model="BMI.data" readonly style="font-weight: 700;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="">#</th>
+                                                    <th>Temp.</th>
+                                                    <th>BP</th>
+                                                    <th>Pulse Rate</th>
+                                                    <th>Date & Time</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="bpLoader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="vs in bpHistoryList">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{vs.temperature}}</td>
+                                                    <td>{{vs.systolic}}/{{vs.diastolic}}</td>
+                                                    <td>{{vs.pulseRate}}</td>
+                                                    <td>{{vs.dateTimeLog }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="panel panel-danger" style="min-height: 200px; height: 410px;">
+                                <div class="panel-heading text-center">
+                                    <label class="text-center">MEDICAL HISTORY</label>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="">#</th>
+                                                    <th>Service</th>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="bpLoader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="mh in medHistoryList">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{mh[0].serviceName}}</td>
+                                                    <td>{{mh[0].dateTimeLog }}</td>
+                                                    <td><button class="btn btn-sm btn-danger" ng-click="showDiagnoseHistory(mh[0])">Show</button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- INITIAL INTERVIEW -->
+        <div class="animated fadeInRight ecommerce" ng-show="showInterview">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
+                    <label class="text-center">DIGITAL RECTAL EXAMINATION</label>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-9 col-md-9">
+                            <div class="input-group m-b">
+                                <span class="input-group-addon">Name</span>
+                                <input type="text" class="form-control text-center" ng-model="mrh.fullName" readonly style="font-weight: 700;">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <div class="input-group m-b">
+                                <span class="input-group-addon">Age</span>
+                                <input type="text" class="form-control text-center" ng-model="mrh.age" readonly style="font-weight: 700;">
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
+                    <form name="MREform" class="form-horizontal">
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-6 control-label">Ito ba ang una ninyong DRE?</label>
+                                <div class="col-sm-6">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="dre_ou" name="radio_is1stDRE" value="true" ng-model="mrh.is1stDRE" />
+                                        <label for="dre_ou"> Ou </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="dre_hindi" name="radio_is1stDRE" value="false" ng-model="mrh.is1stDRE" />
+                                        <label for="dre_hindi"> Hindi </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-6 control-label">Gaano kadalas kayong magpaDRE?</label>
+                                <div class="col-sm-6">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="dre_1" name="radio_DREfrequency" value="1" ng-model="mrh.DREfrequency" />
+                                        <label for="dre_1"> 1 sa isang taon </label>
+                                    </div>
+                                    <div class="radio radio-success radio-inline">
+                                        <input type="radio" id="dre_2" name="radio_DREfrequency" value="2" ng-model="mrh.DREfrequency" />
+                                        <label for="dre_2"> 2 sa isang taon </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="dre_3" name="radio_DREfrequency" value="3" ng-model="mrh.DREfrequency" />
+                                        <label for="dre_3"> Mahigit sa 2 sa isang taon </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-6 control-label">Mayroon bang miyembro ng pamilya na nagkaroon na ng Kanser sa prostata?</label>
+                                <div class="col-sm-6">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="dre_ou_isProstateCancer" name="radio_isProstateCancer" value="true" ng-model="mrh.isProstateCancer" />
+                                        <label for="dre_ou_isProstateCancer"> Ou </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="dre_hindi_isProstateCancer" name="radio_isProstateCancer" value="false" ng-model="mrh.isProstateCancer" />
+                                        <label for="dre_hindi_isProstateCancer"> Wala </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-6 control-label">Mayroon bang miyembro ng pamilya na nagkaroon na ng anumang klase ng Kanser?</label>
+                                <div class="col-sm-3">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="dre_ou_isAnyCancer" name="radio_isAnyCancer" value="true" ng-model="mrh.isAnyCancer" />
+                                        <label for="dre_ou_isAnyCancer"> Ou </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="dre_hindi_isAnyCancer" name="radio_isAnyCancer" value="false" ng-model="mrh.isAnyCancer" />
+                                        <label for="dre_hindi_isAnyCancer"> Wala </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-show="mrh.isAnyCancer == 'true'">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="control-label pull-right" for="cancerName">Anong Kanser?</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" id="cancerName" name="cancerName" ng-model="mrh.cancerName" class="form-control text-center" style="width: 70%;" ng-required="mrh.isAnyCancer == 'true'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <label class="col-sm-6 control-label">Mayroon ba kayong iniinom na gamot sa kasalukuyan?</label>
+                                <div class="col-sm-3">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="dre_ou_isMedication" name="radio_isMedication" value="true" ng-model="mrh.isMedication" />
+                                        <label for="dre_ou_isMedication"> Ou </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="dre_hindi_isMedication" name="radio_isMedication" value="false" ng-model="mrh.isMedication" />
+                                        <label for="dre_hindi_isMedication"> Wala </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" ng-show="mrh.isMedication == 'true'">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="control-label pull-right" for="cancerName">Anong gamot?</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="text" id="medicineName" name="medicineName" ng-model="mrh.medicineName" class="form-control text-center" style="width: 70%;" ng-required="mrh.isMedication == 'true'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hr-line-dashed"></div>
+                        <label class="col-sm-12">Nakakaramdam ka ba ng mga sumusunod?</label>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr><th class="text-center" colspan="7">PAGTALA NG SINTOMAS NG PAG-IHI</th></tr>
+                                <tr>
+                                    <th></th>
+                                    <th>Hindi Kailanman</th>
+                                    <th>Minsan <i>(Mga Isang Beses sa Lima)</i></th>
+                                    <th>Hindi Kadalasan <i>(Mga Isang Beses sa Tatlo)</i></th>
+                                    <th>Halos Kalahati ng Panahon <i>(Mga Isang Beses sa Dalawa)</i></th>
+                                    <th>Halos Madalas <i>(Mga Dalawang Beses sa Tatlo)</i></th>
+                                    <th>Madalas <i>(Halos Palagi o Kadalasan)</i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1. Gaano kadalas kayong nakaramdam na di nauubos ang laman ng pantog pagkatapos umihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_diNauubos" name="radio_diNauubos" value=0 ng-model="mrh.diNauubos" />
+                                            <label for="dre_0_diNauubos"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_diNauubos" name="radio_diNauubos" value=1 ng-model="mrh.diNauubos" />
+                                            <label for="dre_1_diNauubos"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_diNauubos" name="radio_diNauubos" value=2 ng-model="mrh.diNauubos" />
+                                            <label for="dre_2_diNauubos"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_diNauubos" name="radio_diNauubos" value=3 ng-model="mrh.diNauubos" />
+                                            <label for="dre_3_diNauubos"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_diNauubos" name="radio_diNauubos" value=4 ng-model="mrh.diNauubos" />
+                                            <label for="dre_4_diNauubos"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_diNauubos" name="radio_diNauubos" value=5 ng-model="mrh.diNauubos" />
+                                            <label for="dre_5_diNauubos"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2. Gaano kadalas kayo kailangang umihi nang madalas sa kada-dalawang oras ng pagitan?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_kadalasUmihi" name="radio_kadalasUmihi" value=0 ng-model="mrh.kadalasUmihi" />
+                                            <label for="dre_0_kadalasUmihi"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_kadalasUmihi" name="radio_kadalasUmihi" value=1 ng-model="mrh.kadalasUmihi" />
+                                            <label for="dre_1_kadalasUmihi"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_kadalasUmihi" name="radio_kadalasUmihi" value=2 ng-model="mrh.kadalasUmihi" />
+                                            <label for="dre_2_kadalasUmihi"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_kadalasUmihi" name="radio_kadalasUmihi" value=3 ng-model="mrh.kadalasUmihi" />
+                                            <label for="dre_3_kadalasUmihi"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_kadalasUmihi" name="radio_kadalasUmihi" value=4 ng-model="mrh.kadalasUmihi" />
+                                            <label for="dre_4_kadalasUmihi"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_kadalasUmihi" name="radio_kadalasUmihi" value=5 ng-model="mrh.kadalasUmihi" />
+                                            <label for="dre_5_kadalasUmihi"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3. Gaano kadalas kayong nakaranas ng patigil-tigil o paputol-putol na pagdaloy ng ihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=0 ng-model="mrh.patigiltiglNaIhi" />
+                                            <label for="dre_0_patigiltiglNaIhi"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=1 ng-model="mrh.patigiltiglNaIhi" />
+                                            <label for="dre_1_patigiltiglNaIhi"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=2 ng-model="mrh.patigiltiglNaIhi" />
+                                            <label for="dre_2_patigiltiglNaIhi"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=3 ng-model="mrh.patigiltiglNaIhi" />
+                                            <label for="dre_3_patigiltiglNaIhi"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=4 ng-model="mrh.patigiltiglNaIhi" />
+                                            <label for="dre_4_patigiltiglNaIhi"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=5 ng-model="mrh.patigiltiglNaIhi" />
+                                            <label for="dre_5_patigiltiglNaIhi"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>4. Gaano kadalas kayong nakaranas ng mahirap na pagpigil ng pag-ihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=0 ng-model="mrh.pagpigilNgIhi" />
+                                            <label for="dre_0_pagpigilNgIhi"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=1 ng-model="mrh.pagpigilNgIhi" />
+                                            <label for="dre_1_pagpigilNgIhi"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=2 ng-model="mrh.pagpigilNgIhi" />
+                                            <label for="dre_2_pagpigilNgIhi"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=3 ng-model="mrh.pagpigilNgIhi" />
+                                            <label for="dre_3_pagpigilNgIhi"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=4 ng-model="mrh.pagpigilNgIhi" />
+                                            <label for="dre_4_pagpigilNgIhi"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=5 ng-model="mrh.pagpigilNgIhi" />
+                                            <label for="dre_5_pagpigilNgIhi"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5. Gaano kadalas ninyong napansin ang mahinang pagdaloy o paglabas ng inyong ihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_mahinangDaloy" name="radio_mahinangDaloy" value=0 ng-model="mrh.mahinangDaloy" />
+                                            <label for="dre_0_mahinangDaloy"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_mahinangDaloy" name="radio_mahinangDaloy" value=1 ng-model="mrh.mahinangDaloy" />
+                                            <label for="dre_1_mahinangDaloy"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_mahinangDaloy" name="radio_mahinangDaloy" value=2 ng-model="mrh.mahinangDaloy" />
+                                            <label for="dre_2_mahinangDaloy"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_mahinangDaloy" name="radio_mahinangDaloy" value=3 ng-model="mrh.mahinangDaloy" />
+                                            <label for="dre_3_mahinangDaloy"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_mahinangDaloy" name="radio_mahinangDaloy" value=4 ng-model="mrh.mahinangDaloy" />
+                                            <label for="dre_4_mahinangDaloy"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_mahinangDaloy" name="radio_mahinangDaloy" value=5 ng-model="mrh.mahinangDaloy" />
+                                            <label for="dre_5_mahinangDaloy"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>6. Gaano kadalas kayong nakaranas ng pangangailangan umiri o magpwersa upang makalabas ang inyong ihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=0 ng-model="mrh.magpwersaNgIhi" />
+                                            <label for="dre_0_magpwersaNgIhi"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=1 ng-model="mrh.magpwersaNgIhi" />
+                                            <label for="dre_1_magpwersaNgIhi"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=2 ng-model="mrh.magpwersaNgIhi" />
+                                            <label for="dre_2_magpwersaNgIhi"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=3 ng-model="mrh.magpwersaNgIhi" />
+                                            <label for="dre_3_magpwersaNgIhi"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=4 ng-model="mrh.magpwersaNgIhi" />
+                                            <label for="dre_4_magpwersaNgIhi"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=5 ng-model="mrh.magpwersaNgIhi" />
+                                            <label for="dre_5_magpwersaNgIhi"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>7. Ilang beses kayong gumising o bumangon sa gabi upang umihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_besesGumising" name="radio_besesGumising" value=0 ng-model="mrh.besesGumising" />
+                                            <label for="dre_0_besesGumising"> 0 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_besesGumising" name="radio_besesGumising" value=1 ng-model="mrh.besesGumising" />
+                                            <label for="dre_1_besesGumising"> 1 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_besesGumising" name="radio_besesGumising" value=2 ng-model="mrh.besesGumising" />
+                                            <label for="dre_2_besesGumising"> 2 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_besesGumising" name="radio_besesGumising" value=3 ng-model="mrh.besesGumising" />
+                                            <label for="dre_3_besesGumising"> 3 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_besesGumising" name="radio_besesGumising" value=4 ng-model="mrh.besesGumising" />
+                                            <label for="dre_4_besesGumising"> 4 </label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_besesGumising" name="radio_besesGumising" value=5 ng-model="mrh.besesGumising" />
+                                            <label for="dre_5_besesGumising"> 5 </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center"><label>TOTAL</label></td>
+                                    <td class="text-center">
+                                        
+                                    </td>
+                                    <td class="text-center">
+                                        
+                                    </td>
+                                    <td class="text-center">
+                                        
+                                    </td>
+                                    <td class="text-center">
+                                       
+                                    </td>
+                                    <td class="text-center">
+                                       
+                                    </td>
+                                    <td class="text-center">
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr><th class="text-center" colspan="7">MGA TANONG NA NAKABABAHALA</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>8. Nakababahala ba ang mga sintomas sa pag-ihi mo nitong nakaraang buwan?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_sintomasNgIhi" name="radio_sintomasNgIhi" value=0 ng-model="mrh.sintomasNgIhi" />
+                                            <label for="dre_0_sintomasNgIhi"><i>HINDI</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_sintomasNgIhi" name="radio_sintomasNgIhi" value=1 ng-model="mrh.sintomasNgIhi" />
+                                            <label for="dre_1_sintomasNgIhi"><i>MINSAN</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_sintomasNgIhi" name="radio_sintomasNgIhi" value=2 ng-model="mrh.sintomasNgIhi" />
+                                            <label for="dre_2_sintomasNgIhi"><i>MADALAS</i></label>
+                                        </div>
+                                    </td>
+                                    <td colspan="3">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>9. Ano ang inyong nadarama kung patuloy kang mabubuhay na may suliraning dulot ng inyong sakit sa pag-ihi?</td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_0_nadarama" name="radio_nadarama" value=0 ng-model="mrh.nadarama" />
+                                            <label for="dre_0_nadarama"><i>Matutuwa</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_1_nadarama" name="radio_nadarama" value=1 ng-model="mrh.nadarama" />
+                                            <label for="dre_1_nadarama"><i>Nasisiyahan</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_2_nadarama" name="radio_nadarama" value=2 ng-model="mrh.nadarama" />
+                                            <label for="dre_2_nadarama"><i>Halos lubos na Nasisiyahan</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_3_nadarama" name="radio_nadarama" value=3 ng-model="mrh.nadarama" />
+                                            <label for="dre_3_nadarama"><i>Halo-(Parehong nasisiyahan at di nasisiyahan)</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_4_nadarama" name="radio_nadarama" value=4 ng-model="mrh.nadarama" />
+                                            <label for="dre_4_nadarama"><i>Halos lubos na di nasisiyahan</i></label>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="dre_5_nadarama" name="radio_nadarama" value=5 ng-model="mrh.nadarama" />
+                                            <label for="dre_5_nadarama"><i>Di Masaya</i></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="hr-line-dashed"></div>
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <button class="btn btn-danger pull-right" type="button" ng-click="proceedInterview()">Cancel</button>
+                                <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!MREform.$invalid ? saveInterview(mrh, MREform):''">Save Interview</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /INITIAL INTERVIEW -->
+
+        <!-- LIST OF PATIENTS -->
+        <div class="animated fadeInRight ecommerce" ng-show="showClientList">
+
+            <div class="panel panel-success">
+                <div class="panel-heading text-center">
+                    <label class="text-center">LIST OF PATIENTS</label>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+
+                                    <th>#</th>
+                                    <th>Last name</th>
+                                    <th>First name</th>
+                                    <th>M.I.</th>
+                                    <th>Suffix</th>
+                                    <th>Sex</th>
+                                    <th>Age</th>
+                                    <th>Contact no.</th>
+                                    <th>Lab. Test</th>
+                                    <th>Lab. Date & Time</th>
+                                    <th>Referred by</th>
+                                    <th class="text-right" data-sort-ignore="true">Action</th>
+
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /LIST OF PATIENTS -->
+
+    </div>
+
+    <!-- MODAL MEDICAL DIAGNOSIS HISTORY-->
+    <div id="medHistory_modal" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header red-bg">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h2 class="modal-title text-center">MEDICAL HISTORY</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label class="control-label" for="service">Service</label>
+                                <input type="text" id="service" name="service" ng-model="diagnosisInfo.serviceName" class="form-control text-center" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label class="control-label" for="referral">Refer to Health Facility</label>
+                                <input type="text" id="referral" name="referral" ng-model="diagnosisInfo.outsideReferral" class="form-control text-center" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="control-label" for="remarks">Remarks</label>
+                                <input type="text" id="remarks" name="remarks" ng-model="diagnosisInfo.remarks" class="form-control text-center" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8 col-md-8">
+                            <p class="red-bg text-center" style="width: 100%;"> DIAGNOSIS </p>
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th class="">#</th>
+                                            <th>Diagnosis</th>
+                                            <th>Other</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center" ng-show="medHistLoader_modal">
+                                            <td colspan="6">
+                                                <div class="sk-spinner sk-spinner-double-bounce">
+                                                    <div class="sk-double-bounce1"></div>
+                                                    <div class="sk-double-bounce2"></div>
+                                                </div>
+                                                <text><i>Please wait, we are loading your data...</i></text>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center" ng-show="diagnoseHistoryList.length == 0 && bpLoader == false">
+                                            <td colspan="6">
+                                                <label class="text-danger">NO INFORMATION FOUND!</label>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="dh in diagnoseHistoryList">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{dh.diagnoseName}}</td>
+                                            <td>{{dh.otherDiagnosis}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <p class="red-bg text-center" style="width: 100%;"> PRESCRIPTION/S </p>
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th class="">#</th>
+                                            <th>Drug/Medicine</th>
+                                            <th>Unit</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center" ng-show="medHistLoader_modal">
+                                            <td colspan="6">
+                                                <div class="sk-spinner sk-spinner-double-bounce">
+                                                    <div class="sk-double-bounce1"></div>
+                                                    <div class="sk-double-bounce2"></div>
+                                                </div>
+                                                <text><i>Please wait, we are loading your data...</i></text>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center" ng-show="rxHistoryList.length == 0 && bpLoader == false">
+                                            <td colspan="6">
+                                                <label class="text-danger">NO INFORMATION FOUND!</label>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="rx in rxHistoryList">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{rx.productDesc}} {{rx.measurementDesc}}</td>
+                                            <td>{{rx.unitDesc}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label class="control-label" for="personnel">Health Personnel</label>
+                                <input type="text" id="personnel" name="personnel" ng-model="diagnosisInfo.personnelFullname" class="form-control text-center" readonly />
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="form-group">
+                                <label class="control-label" for="dateTimeLog">Date attended</label>
+                                <input type="text" id="dateTimeLog" name="dateTimeLog" ng-model="diagnosisInfo.dateTimeLog" class="form-control text-center" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL MEDICAL DIAGNOSIS  HISTORY -->
+
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/MaleRepro/MaleRepro.js"></script>
+}
