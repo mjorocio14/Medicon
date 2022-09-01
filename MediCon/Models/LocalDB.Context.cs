@@ -29,40 +29,28 @@ namespace MediCon.Models
     
         public virtual DbSet<BloodPressure> BloodPressures { get; set; }
         public virtual DbSet<BrandList> BrandLists { get; set; }
+        public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
+        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
+        public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
+        public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
+        public virtual DbSet<Measurement> Measurements { get; set; }
+        public virtual DbSet<MedicalPrescription> MedicalPrescriptions { get; set; }
+        public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
+        public virtual DbSet<MRHrequest> MRHrequests { get; set; }
+        public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
         public virtual DbSet<PapsmearBreastExam> PapsmearBreastExams { get; set; }
+        public virtual DbSet<Personnel> Personnels { get; set; }
         public virtual DbSet<ProductList> ProductLists { get; set; }
+        public virtual DbSet<ProductUnit> ProductUnits { get; set; }
         public virtual DbSet<Referral> Referrals { get; set; }
+        public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
-        public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
-        public virtual DbSet<Measurement> Measurements { get; set; }
-        public virtual DbSet<ProductUnit> ProductUnits { get; set; }
-        public virtual DbSet<Personnel> Personnels { get; set; }
-        public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
-        public virtual DbSet<Consultation> Consultations { get; set; }
-        public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
-        public virtual DbSet<MedicalPrescription> MedicalPrescriptions { get; set; }
-        public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
-        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
-        public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
-        public virtual DbSet<MRHrequest> MRHrequests { get; set; }
-    
-        [DbFunction("MediconEntities", "fn_vitalSignList")]
-        public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList]()");
-        }
-    
-        [DbFunction("MediconEntities", "fn_MedicineList")]
-        public virtual IQueryable<fn_MedicineList_Result> fn_MedicineList()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_MedicineList_Result>("[MediconEntities].[fn_MedicineList]()");
-        }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)
@@ -72,6 +60,85 @@ namespace MediCon.Models
                 new ObjectParameter("serviceID", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getDiagnoseClients_Result>("[MediconEntities].[fn_getDiagnoseClients](@serviceID)", serviceIDParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getLabPatients")]
+        public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
+        public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_MedicineList")]
+        public virtual IQueryable<fn_MedicineList_Result> fn_MedicineList()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_MedicineList_Result>("[MediconEntities].[fn_MedicineList]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_vitalSignList")]
+        public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList]()");
+        }
+    
+        public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_creatediagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var versionParameter = version.HasValue ?
+                new ObjectParameter("version", version) :
+                new ObjectParameter("version", typeof(int));
+    
+            var definitionParameter = definition != null ?
+                new ObjectParameter("definition", definition) :
+                new ObjectParameter("definition", typeof(byte[]));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
+        }
+    
+        public virtual int sp_dropdiagram(string diagramname, Nullable<int> owner_id)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
         }
     
         public virtual ObjectResult<sp_getRxHistory_Result> sp_getRxHistory(string consultID, string referralID)
@@ -87,16 +154,52 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_getRxHistory_Result>("sp_getRxHistory", consultIDParameter, referralIDParameter);
         }
     
-        [DbFunction("MediconEntities", "fn_getLabPatients")]
-        public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients()
+        public virtual ObjectResult<sp_helpdiagramdefinition_Result> sp_helpdiagramdefinition(string diagramname, Nullable<int> owner_id)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
         }
     
-        [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
-        public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients()
+        public virtual ObjectResult<sp_helpdiagrams_Result> sp_helpdiagrams(string diagramname, Nullable<int> owner_id)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients]()");
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
+        }
+    
+        public virtual int sp_renamediagram(string diagramname, Nullable<int> owner_id, string new_diagramname)
+        {
+            var diagramnameParameter = diagramname != null ?
+                new ObjectParameter("diagramname", diagramname) :
+                new ObjectParameter("diagramname", typeof(string));
+    
+            var owner_idParameter = owner_id.HasValue ?
+                new ObjectParameter("owner_id", owner_id) :
+                new ObjectParameter("owner_id", typeof(int));
+    
+            var new_diagramnameParameter = new_diagramname != null ?
+                new ObjectParameter("new_diagramname", new_diagramname) :
+                new ObjectParameter("new_diagramname", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
+        }
+    
+        public virtual int sp_upgraddiagrams()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("sp_upgraddiagrams");
         }
     }
 }

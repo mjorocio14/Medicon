@@ -31,7 +31,7 @@
           <Key>
             <PropertyRef Name="qrCode" />
           </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="recNo" Type="bigint" Nullable="false" />
           <Property Name="qrCode" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="lastName" Type="varchar" MaxLength="50" />
           <Property Name="firstName" Type="varchar" MaxLength="50" />
@@ -94,7 +94,7 @@
           <Key>
             <PropertyRef Name="qrCode" />
           </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="recNo" Type="Int64" Nullable="false" />
           <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
