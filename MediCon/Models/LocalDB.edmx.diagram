@@ -29,6 +29,7 @@
         <EntityTypeShape EntityType="MediconModel.sysdiagram" Width="1.5" PointX="6.75" PointY="12.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.UserType" Width="1.5" PointX="12.75" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.VitalSign" Width="1.5" PointX="12.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MediconModel.BloodChem" Width="1.5" PointX="9.375" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

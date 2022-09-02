@@ -4,7 +4,35 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BloodChem">
+          <Key>
+            <PropertyRef Name="bloodChemID" />
+          </Key>
+          <Property Name="recNO" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="bloodChemID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="labID" Type="varchar" MaxLength="15" />
+          <Property Name="fbs" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="serumUricAcid" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="creatinine" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="cholesterol" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="triglycerides" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="hdl" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="ldl" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="vldl" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="sgpt" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="sgot" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="bun" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="potassium" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="sodium" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="chloride" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="calcium" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="glycosylatedHemoglobin" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="pathologist" Type="varchar" MaxLength="8" />
+          <Property Name="medtech" Type="varchar" MaxLength="8" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+        </EntityType>
         <EntityType Name="BloodPressure">
           <Key>
             <PropertyRef Name="BPID" />
@@ -75,6 +103,7 @@
           <Property Name="isTested" Type="bit" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="isEncoded" Type="bit" />
         </EntityType>
         <EntityType Name="LaboratoryTest">
           <Key>
@@ -474,6 +503,7 @@
         </Function>
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="MediconModelStoreContainer">
+          <EntitySet Name="BloodChem" EntityType="Self.BloodChem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BloodPressure" EntityType="Self.BloodPressure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandList" EntityType="Self.BrandList" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consultation" EntityType="Self.Consultation" Schema="dbo" store:Type="Tables" />
@@ -499,8 +529,7 @@
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MediconModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -663,6 +692,7 @@
           <Property Name="isTested" Type="Boolean" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+          <Property Name="isEncoded" Type="Boolean" />
         </EntityType>
         <EntityType Name="LaboratoryTest">
           <Key>
@@ -932,7 +962,7 @@
           <EntitySet Name="UserTypes" EntityType="Self.UserType" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSign" />
           <FunctionImport Name="fn_getDiagnoseClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getDiagnoseClients_Result)">
-            <Parameter Name="serviceID" Mode="In" Type="String" />
+          <Parameter Name="serviceID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)" />
           <FunctionImport Name="fn_getPapsmearBreastExamClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPapsmearBreastExamClients_Result)" />
@@ -972,6 +1002,7 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="BloodChems" EntityType="MediconModel.BloodChem" />
         </EntityContainer>
         <ComplexType Name="sp_getRxHistory_Result">
           <Property Type="Int64" Name="recNo" Nullable="false" />
@@ -1003,6 +1034,34 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+        <EntityType Name="BloodChem">
+          <Key>
+            <PropertyRef Name="bloodChemID" />
+          </Key>
+          <Property Name="recNO" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="bloodChemID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="fbs" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="serumUricAcid" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="creatinine" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="cholesterol" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="triglycerides" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="hdl" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="ldl" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="vldl" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="sgpt" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="sgot" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="bun" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="potassium" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="sodium" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="chloride" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="calcium" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="glycosylatedHemoglobin" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+          <Property Name="pathologist" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="medtech" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1076,6 +1135,7 @@
           <EntitySetMapping Name="LaboratoryExams">
             <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
               <MappingFragment StoreEntitySet="LaboratoryExam">
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
                 <ScalarProperty Name="labID" ColumnName="labID" />
                 <ScalarProperty Name="referralID" ColumnName="referralID" />
@@ -1502,6 +1562,35 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="MediconModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="MediconModel.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="BloodChems">
+            <EntityTypeMapping TypeName="MediconModel.BloodChem">
+              <MappingFragment StoreEntitySet="BloodChem">
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="medtech" ColumnName="medtech" />
+                <ScalarProperty Name="pathologist" ColumnName="pathologist" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="glycosylatedHemoglobin" ColumnName="glycosylatedHemoglobin" />
+                <ScalarProperty Name="calcium" ColumnName="calcium" />
+                <ScalarProperty Name="chloride" ColumnName="chloride" />
+                <ScalarProperty Name="sodium" ColumnName="sodium" />
+                <ScalarProperty Name="potassium" ColumnName="potassium" />
+                <ScalarProperty Name="bun" ColumnName="bun" />
+                <ScalarProperty Name="sgot" ColumnName="sgot" />
+                <ScalarProperty Name="sgpt" ColumnName="sgpt" />
+                <ScalarProperty Name="vldl" ColumnName="vldl" />
+                <ScalarProperty Name="ldl" ColumnName="ldl" />
+                <ScalarProperty Name="hdl" ColumnName="hdl" />
+                <ScalarProperty Name="triglycerides" ColumnName="triglycerides" />
+                <ScalarProperty Name="cholesterol" ColumnName="cholesterol" />
+                <ScalarProperty Name="creatinine" ColumnName="creatinine" />
+                <ScalarProperty Name="serumUricAcid" ColumnName="serumUricAcid" />
+                <ScalarProperty Name="fbs" ColumnName="fbs" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="bloodChemID" ColumnName="bloodChemID" />
+                <ScalarProperty Name="recNO" ColumnName="recNO" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

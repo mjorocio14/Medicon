@@ -19,7 +19,7 @@ namespace MediCon.Controllers
         {
             return View();
         }
-
+        
 
         [HttpPost]
         public ActionResult getLab()

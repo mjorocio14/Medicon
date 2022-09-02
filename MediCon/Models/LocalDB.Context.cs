@@ -51,6 +51,7 @@ namespace MediCon.Models
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
+        public virtual DbSet<BloodChem> BloodChems { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)
