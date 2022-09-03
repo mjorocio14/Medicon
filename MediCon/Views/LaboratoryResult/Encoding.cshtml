@@ -6,9 +6,22 @@
     .swal2-container {
         z-index: 20000 !important;
     }
+
     .borderless tr td {
-    border: none !important;
-    padding: 2px !important;
+        border: none !important;
+        padding: 2px !important;
+    }
+
+     .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        height: 330px !important;
+        overflow: auto;
+        border: none;
+        width: 100%;
     }
 </style>
 <div ng-controller="LabResultCtrl">
@@ -133,65 +146,14 @@
                     </div>
                 </div>
                 <div class="col-lg-7 col-md-7">
-                    @*<div class="panel panel-danger" style="min-height: 200px; height: 409px;">
-                        <div class="panel-heading text-center">
-                            <label class="text-center">LABORATORY REQUEST</label>
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table class="table table-stripped">
-                                    <thead>
-                                        <tr>
-
-                                            <th class="">#</th>
-                                            <th>Test</th>
-                                            <th>Referred by</th>
-                                            <th>Date & Time</th>
-                                            <th>Status</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="text-center" ng-show="loader">
-                                            <td colspan="6">
-                                                <div class="sk-spinner sk-spinner-double-bounce">
-                                                    <div class="sk-double-bounce1"></div>
-                                                    <div class="sk-double-bounce2"></div>
-                                                </div>
-                                                <text><i>Please wait, we are loading your data...</i></text>
-                                            </td>
-                                        </tr>
-                                        <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                            <td colspan="6">
-                                                <label class="text-danger">NO INFORMATION FOUND!</label>
-                                            </td>
-                                        </tr>
-                                        <tr ng-repeat="lab in labReq">
-                                            <td>{{$index + 1}}</td>
-                                            <td><strong>{{lab.labTestName}}</strong></td>
-                                            <td>{{lab.consultPersonnel[0].personnel_firstName}} {{lab.consultPersonnel[0].personnel_middleName}} {{lab.consultPersonnel[0].personnel_lastName}} {{lab.consultPersonnel[0].personnel_extName}}</td>
-                                            <td>{{lab.consultDT}}</td>
-                                            <td class="text-center">
-                                                <div class="checkbox checkbox-danger" style="margin-top: 3px !important;">
-                                                    <input type="checkbox" id="tagTested" ng-model="isTested" ng-change="tagTested(lab, isTested)">
-                                                    <label></label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>*@
-
-                    <div class="panel panel-success" style="min-height: 200px; height: 409px;">
+                    <div class="panel panel-success" style="min-height: 210px; height: 840px;">
                         <div class="panel-heading text-center">
                             <label class="text-center">LABORATORY HISTORY</label>
                         </div>
                         <div class="panel-body">
                             <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <div class="row" >
-                                    <div class="col-lg-12 table-responsive">
+                                
+                                    @*<div class="table-responsive">*@
                                         <table class="table table-stripped ">
                                             <thead>
                                                 <tr>
@@ -201,14 +163,14 @@
                                                     <th>Lab. Date & Time</th>
                                                     <th>Referred by</th>
                                                     <th>Date & Time</th>
-                                                    <th>Encode Status</th>
+                                                    <th>Status</th>
                                                     <th>Action</th>
 
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr class="text-center" ng-show="loader">
-                                                    <td colspan="6">
+                                                    <td colspan="8">
                                                         <div class="sk-spinner sk-spinner-double-bounce">
                                                             <div class="sk-double-bounce1"></div>
                                                             <div class="sk-double-bounce2"></div>
@@ -221,22 +183,22 @@
                                                         <label class="text-danger">NO INFORMATION FOUND!</label>
                                                     </td>
                                                 </tr>
-                                                <tr ng-repeat="hist in testHistory">
+                                                <tr ng-repeat="hist in testHistory | orderBy: '-labDT'">
                                                     <td>{{$index + 1}}</td>
                                                     <td>{{hist.labTestName}}</td>
                                                     <td>{{hist.labPersonnel[0].personnel_firstName}} {{hist.labPersonnel[0].personnel_middleName}} {{hist.labPersonnel[0].personnel_lastName}} {{hist.labPersonnel[0].personnel_extName}}</td>
                                                     <td>{{hist.labDT}}</td>
                                                     <td>{{hist.consultPersonnel[0].personnel_firstName}} {{hist.consultPersonnel[0].personnel_middleName}} {{hist.consultPersonnel[0].personnel_lastName}} {{hist.consultPersonnel[0].personnel_extName}}</td>
                                                     <td>{{hist.consultDT}}</td>
-                                                    <td>Not Encoded</td>
+                                                    <td><b ng-class="hist.isEncoded == true ? 'text-success' : 'text-danger'">{{hist.isEncoded == true ? 'Encoded' : 'Not Encoded'}}</b></td>
                                                     <td>
-                                                        <button ng-click="encodeResult(hist.labTestID,hist.labID,hist.labTestName)">Encode</button>
+                                                        <button ng-disabled="hist.isEncoded == true" class="btn btn-success btn-sm" ng-click="encodeResult(hist.labTestID, hist.labID, hist.labTestName)">Encode</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div>
-                                </div>
+                                    @*</div>*@
+                                
                             </div>
                         </div>
                     </div>
@@ -280,22 +242,17 @@
             </div>
         </div>
         <!-- /LIST OF PATIENTS -->
-
-
-
         <!-- Modal -->
         <div class="modal fade" id="modalBLoodChem">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white" >
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">{{tempLabTestName}}</h4>
                     </div>
                     <form role="form" id="bloodChemForm" novalidate>
-
-
-                        <div class="modal-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <div class="modal-body" style="height: 100%;">
+                            @*<div class="table-wrapper-scroll-y my-custom-scrollbar">*@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
@@ -313,7 +270,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="fbs" name="fbs" placeholder="Enter result" ng-model="blood.fbs" required>
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 3.9 - 5.8 mmol/L
@@ -327,7 +284,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="serumUricAcid" name="serumUricAcid" placeholder="Enter result" ng-model="blood.serumUricAcid" required>
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">umol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 <b>MALE:</b> 208 - 430 umol/L
@@ -343,7 +300,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="creatinine" name="creatinine" placeholder="Enter result" ng-model="blood.creatinine">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 <b>MALE:</b> 62 - 115 umol/L
@@ -359,7 +316,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="cholesterol" name="cholesterol" placeholder="Enter result" ng-model="blood.cholesterol">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 3.6 - 5.7 mmol/L
@@ -373,7 +330,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="triglycerides" name="triglycerides" placeholder="Enter result" ng-model="blood.triglycerides">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 0.7 - 2.26 mmol/L
@@ -387,7 +344,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="hdl" name="hdl" placeholder="Enter result" ng-model="blood.hdl">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 0.79 - 1.94 mmol/L
@@ -401,7 +358,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="ldl" name="ldl" placeholder="Enter result" ng-model="blood.ldl">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 0.78 - 2.9 mmol/L
@@ -415,7 +372,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="vldl" name="vldl" placeholder="Enter result" ng-model="blood.vldl">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 0.10 - 1.70 mmol/L
@@ -429,7 +386,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="sgpt" name="sgpt" placeholder="Enter result" ng-model="blood.sgpt">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">U/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 <b>MALE:</b> 4 - 41 U/L
@@ -445,7 +402,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="sgot" name="sgot" placeholder="Enter result" ng-model="blood.sgot">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                </div> 
+                                                </div>
                                             </td>
                                             <td>
                                                 <b>MALE:</b> 6 - 37 U/L
@@ -461,8 +418,8 @@
                                                         <input type="number" class="form-control form-control-sm" id="bun" name="bun" placeholder="Enter result" ng-model="blood.bun">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                   
-                                                </div> 
+
+                                                </div>
                                             </td>
                                             <td>
                                                 2.2 - 7.1 mmol/L
@@ -476,8 +433,8 @@
                                                         <input type="number" class="form-control form-control-sm" id="potassium" name="potassium" placeholder="Enter result" ng-model="blood.potassium">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                
-                                                </div> 
+
+                                                </div>
                                             </td>
                                             <td>
                                                 3.50 - 5.30 mmol/L
@@ -491,8 +448,8 @@
                                                         <input type="number" class="form-control form-control-sm" id="sodium" name="sodium" placeholder="Enter result" ng-model="blood.sodium">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                    
-                                                </div> 
+
+                                                </div>
                                             </td>
                                             <td>
                                                 135 - 148.0 mmol/L
@@ -506,8 +463,8 @@
                                                         <input type="number" class="form-control form-control-sm" id="chloride" name="chloride" placeholder="Enter result" ng-model="blood.chloride">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                   
-                                                </div> 
+
+                                                </div>
                                             </td>
                                             <td>
                                                 98.0 - 107.0 mmol/L
@@ -521,8 +478,8 @@
                                                         <input type="number" class="form-control form-control-sm" id="calcium" name="calcium" placeholder="Enter result" ng-model="blood.calcium">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                     </div>
-                                                 
-                                                </div> 
+
+                                                </div>
                                             </td>
                                             <td>
                                                 1.10 - 1.30 mmol/L
@@ -536,7 +493,7 @@
                                                         <input type="number" class="form-control form-control-sm" id="glycosylatedHemoglobin" name="glycosylatedHemoglobin" placeholder="Enter result" ng-model="blood.glycosylatedHemoglobin">
                                                         <span class="input-group-addon" style="background-color:#F5F5F6">%</span>
                                                     </div>
-                                                    
+
                                                 </div>
                                             </td>
                                             <td>
@@ -545,12 +502,12 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                            </div>
+                            @*</div>*@
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="submit" class="btn btn-success" ng-click="saveBloodChem()">Save</button>
                             <button type="button" class="btn btn-default">Close</button>
-                        </div>  
+                        </div>
                     </form>
                 </div>
             </div>
@@ -564,346 +521,346 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">{{tempLabTestName}}</h4>
                     </div>
-                        <form role="form" id="urinalysisForm" novalidate>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-lg-12 table-responsive">
-                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th width="25%" rowspan="2" style="text-align:center">MACROSCOPIC</th>
-                                                        <th width="75%" colspan="3" style="text-align:center">MICROSCOPIC</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th width="25%"></th>
-                                                        <th width="25%">CAST/IPF</th>
-                                                        <th width="50%">CRYSTAL/IPF</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="row">
-                                                                <div class="col-lg-12 table-responsive">
-                                                                    <table class="table borderless">
-                                                                        <thead>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="color">Color:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="color" name="color" ng-model="uri.color" placeholder="Enter Result" class="form-control" required />
-                                                                                        </div>
+                    <form role="form" id="urinalysisForm" novalidate>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-lg-12 table-responsive">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th width="25%" rowspan="2" style="text-align:center">MACROSCOPIC</th>
+                                                    <th width="75%" colspan="3" style="text-align:center">MICROSCOPIC</th>
+                                                </tr>
+                                                <tr>
+                                                    <th width="25%"></th>
+                                                    <th width="25%">CAST/IPF</th>
+                                                    <th width="50%">CRYSTAL/IPF</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 table-responsive">
+                                                                <table class="table borderless">
+                                                                    <thead>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="color">Color:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="color" name="color" ng-model="uri.color" placeholder="Enter Result" class="form-control" required />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="transparency">Transparency:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="transparency" name="transparency" ng-model="uri.transparency" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="transparency">Transparency:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="transparency" name="transparency" ng-model="uri.transparency" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="albumin">Albumin:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="albumin" name="albumin" ng-model="uri.albumin" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="albumin">Albumin:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="albumin" name="albumin" ng-model="uri.albumin" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="sugar">Sugar:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="sugar" name="sugar" ng-model="uri.sugar" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="sugar">Sugar:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="sugar" name="sugar" ng-model="uri.sugar" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="reaction">Reaction:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="reaction" name="reaction" ng-model="uri.reaction" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="reaction">Reaction:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="reaction" name="reaction" ng-model="uri.reaction" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="spGravity">Sp. Gravity:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="spGravity" name="spGravity" ng-model="uri.spGravity" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="spGravity">Sp. Gravity:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="spGravity" name="spGravity" ng-model="uri.spGravity" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
-                                                        </td>
-                                                        <td>
-                                                            <table class="table borderless">
-                                                                <thead>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <table class="table borderless">
+                                                            <thead>
 
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="pusCells">Pus Cells:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="pusCells" name="pusCells" ng-model="uri.amourphousUrates" placeholder="Enter Result" class="form-control" />
-                                                                                    <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                                </div>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="pusCells">Pus Cells:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="pusCells" name="pusCells" ng-model="uri.amourphousUrates" placeholder="Enter Result" class="form-control" />
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="rbcCells">RBC Cells:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="rbcCells" name="rbcCells" ng-model="uri.amourphousPhospates" placeholder="Enter Result" class="form-control" />
-                                                                                    <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="rbcCells">RBC Cells:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="rbcCells" name="rbcCells" ng-model="uri.amourphousPhospates" placeholder="Enter Result" class="form-control" />
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="epithelialCells">Epithelial Cells:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="epithelialCells" name="epithelialCells" ng-model="uri.triplePhospates" placeholder="Enter Result" class="form-control" />
-                                                                                    <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="epithelialCells">Epithelial Cells:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="epithelialCells" name="epithelialCells" ng-model="uri.triplePhospates" placeholder="Enter Result" class="form-control" />
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="renalCells">Renal Cells:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="renalCells" name="renalCells" ng-model="uri.uricAcid" placeholder="Enter Result" class="form-control" />
-                                                                                    <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="renalCells">Renal Cells:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="renalCells" name="renalCells" ng-model="uri.uricAcid" placeholder="Enter Result" class="form-control" />
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="mucusThread">Mucus Thread:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="mucusThread" name="mucusThread" ng-model="uri.mucusThread" placeholder="Enter Result" class="form-control" />
-                                                                                    <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="mucusThread">Mucus Thread:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="mucusThread" name="mucusThread" ng-model="uri.mucusThread" placeholder="Enter Result" class="form-control" />
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="bacteria">Backteria:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="bacteria" name="bacteria" ng-model="uri.pregnancyTest" placeholder="Enter Result" class="form-control" />
-                                                                                    <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="bacteria">Backteria:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="bacteria" name="bacteria" ng-model="uri.pregnancyTest" placeholder="Enter Result" class="form-control" />
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="yeastCells">Yeast Cells:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="yeastCells" name="yeastCells" ng-model="uri.yeastCells" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="yeastCells">Yeast Cells:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="yeastCells" name="yeastCells" ng-model="uri.yeastCells" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
-                                                        <td>
-                                                            <div class="row">
-                                                                <div class="col-lg-12 table-responsive">
-                                                                    <table class="table borderless">
-                                                                        <thead>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="coarseGranular">Coarse Granular:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="coarseGranular" name="coarseGranular" ng-model="uri.coarseGranular" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-lg-12 table-responsive">
+                                                                <table class="table borderless">
+                                                                    <thead>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="coarseGranular">Coarse Granular:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="coarseGranular" name="coarseGranular" ng-model="uri.coarseGranular" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="fineGranular">Fine Granular:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="fineGranular" name="fineGranular" ng-model="uri.fineGranular" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="fineGranular">Fine Granular:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="fineGranular" name="fineGranular" ng-model="uri.fineGranular" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="hyaline">Hyaline:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="hyaline" name="hyaline" ng-model="uri.hyaline" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="hyaline">Hyaline:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="hyaline" name="hyaline" ng-model="uri.hyaline" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="pusCellsCast">Pus Cells Cast:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="pusCellsCast" name="pusCellsCast" ng-model="uri.pusCellsCast" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="pusCellsCast">Pus Cells Cast:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="pusCellsCast" name="pusCellsCast" ng-model="uri.pusCellsCast" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="reaction">RBC Cast:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="rbcCast" name="rbcCast" ng-model="uri.rbcCast" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="reaction">RBC Cast:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="rbcCast" name="rbcCast" ng-model="uri.rbcCast" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <td><label class="control-label" for="waxyCast">Waxy Cast:</label></td>
-                                                                                <td>
-                                                                                    <div class="form-group ">
-                                                                                        <div class="input-group">
-                                                                                            <input type="text" id="waxyCast" name="waxyCast" ng-model="uri.waxyCast" placeholder="Enter Result" class="form-control" />
-                                                                                        </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td><label class="control-label" for="waxyCast">Waxy Cast:</label></td>
+                                                                            <td>
+                                                                                <div class="form-group ">
+                                                                                    <div class="input-group">
+                                                                                        <input type="text" id="waxyCast" name="waxyCast" ng-model="uri.waxyCast" placeholder="Enter Result" class="form-control" />
                                                                                     </div>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
                                                             </div>
-                                                        </td>
-                                                        <td>
-                                                            <table class="table borderless">
-                                                                <thead>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <table class="table borderless">
+                                                            <thead>
 
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="amourphousUrates">Amourphous Urates:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="amourphousUrates" name="amourphousUrates" ng-model="uri.amourphousUrates" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="amourphousUrates">Amourphous Urates:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="amourphousUrates" name="amourphousUrates" ng-model="uri.amourphousUrates" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="amourphousPhospates">Amourphous Phospates:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="amourphousPhospates" name="amourphousPhospates" ng-model="uri.amourphousPhospates" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="amourphousPhospates">Amourphous Phospates:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="amourphousPhospates" name="amourphousPhospates" ng-model="uri.amourphousPhospates" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="triplePhospates">Triple Phosphates:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="triplePhospates" name="triplePhospates" ng-model="uri.triplePhospates" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="triplePhospates">Triple Phosphates:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="triplePhospates" name="triplePhospates" ng-model="uri.triplePhospates" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="uricAcid">Uric Acid:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="uricAcid" name="uricAcid" ng-model="uri.uricAcid" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="uricAcid">Uric Acid:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="uricAcid" name="uricAcid" ng-model="uri.uricAcid" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="calciumOxalates">Calcium Oxalates:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="calciumOxalates" name="calciumOxalates" ng-model="uri.calciumOxalates" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="calciumOxalates">Calcium Oxalates:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="calciumOxalates" name="calciumOxalates" ng-model="uri.calciumOxalates" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="pregnancyTest">Pregnancy Test:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="pregnancyTest" name="pregnancyTest" ng-model="uri.pregnancyTest" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="pregnancyTest">Pregnancy Test:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="pregnancyTest" name="pregnancyTest" ng-model="uri.pregnancyTest" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="others">Others:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="others" name="others" ng-model="uri.others" placeholder="Enter Result" class="form-control" />
-                                                                                </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td><label class="control-label" for="others">Others:</label></td>
+                                                                    <td>
+                                                                        <div class="form-group ">
+                                                                            <div class="input-group">
+                                                                                <input type="text" id="others" name="others" ng-model="uri.others" placeholder="Enter Result" class="form-control" />
                                                                             </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Save</button>
-                                <button type="button" class="btn btn-default">Close</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-default">Close</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EQPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EQPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Brgy">
           <Key>
             <PropertyRef Name="brgyCode" />
@@ -31,7 +31,7 @@
           <Key>
             <PropertyRef Name="qrCode" />
           </Key>
-          <Property Name="recNo" Type="bigint" Nullable="false" />
+          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="qrCode" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="lastName" Type="varchar" MaxLength="50" />
           <Property Name="firstName" Type="varchar" MaxLength="50" />
@@ -63,8 +63,7 @@
           <EntitySet Name="PersonalInfo" EntityType="Self.PersonalInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EQPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -94,7 +93,7 @@
           <Key>
             <PropertyRef Name="qrCode" />
           </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" />
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -110,22 +109,22 @@
           <Property Name="userID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="registrationType" Type="Byte" />
         </EntityType>
-        <EntityType Name="Province">
-          <Key>
-            <PropertyRef Name="provCode" />
-          </Key>
-          <Property Name="id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="psgcCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="provDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="regCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="provCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
         <EntityContainer Name="EQPEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Brgies" EntityType="Self.Brgy" />
           <EntitySet Name="CityMuns" EntityType="Self.CityMun" />
           <EntitySet Name="PersonalInfoes" EntityType="Self.PersonalInfo" />
-          <EntitySet Name="Provinces" EntityType="Self.Province" />
+          <EntitySet Name="Provinces" EntityType="EQPModel.Province" />
         </EntityContainer>
+        <EntityType Name="Province">
+          <Key>
+            <PropertyRef Name="provCode" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="psgcCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="provDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="regCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="provCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -180,11 +179,11 @@
           <EntitySetMapping Name="Provinces">
             <EntityTypeMapping TypeName="EQPModel.Province">
               <MappingFragment StoreEntitySet="Province">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
-                <ScalarProperty Name="provDesc" ColumnName="provDesc" />
-                <ScalarProperty Name="regCode" ColumnName="regCode" />
                 <ScalarProperty Name="provCode" ColumnName="provCode" />
+                <ScalarProperty Name="regCode" ColumnName="regCode" />
+                <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+                <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

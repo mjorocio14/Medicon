@@ -182,13 +182,13 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BloodChem.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BloodPressure.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\BrandList.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Brgy.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
@@ -197,7 +197,7 @@
       <DependentUpon>DCIMS.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Consultation.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DCIMS.Context.cs">
       <AutoGen>True</AutoGen>
@@ -215,114 +215,111 @@
       <DependentUpon>DCIMS.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Diagnosi.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DietCounseling.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_getDiagnoseClients_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_getLabPatients_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_getMRHclients_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_getPapsmearBreastExamClients_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_MedicineList_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_vitalSignList_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LaboratoryExam.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LaboratoryTest.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\LocalDB.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalDB.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\LocalDB.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\LocalDB.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LocalDB.edmx</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MaleRepro_Diagnosis.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MaleRepro_Interview.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Measurement.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MedicalPrescription.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Medicon.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Medicon.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Medicon.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Medicon.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Medicon.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\MenuAccess.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MRHrequest.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\OutgoingItem.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PapsmearBreastExam.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PersonalInfo.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Personnel.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductList.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductUnit.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Province.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Referral.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ResultDiagnosi.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Service.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_getRxHistory_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserType.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\VitalSign.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -375,15 +372,15 @@
       <DependentUpon>DCIMS.edmx</DependentUpon>
       <LastGenOutput>DCIMS.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\LocalDB.Context.tt">
+    <Content Include="Models\Medicon.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LocalDB.edmx</DependentUpon>
-      <LastGenOutput>LocalDB.Context.cs</LastGenOutput>
+      <DependentUpon>Medicon.edmx</DependentUpon>
+      <LastGenOutput>Medicon.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\LocalDB.tt">
+    <Content Include="Models\Medicon.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>LocalDB.edmx</DependentUpon>
-      <LastGenOutput>LocalDB.cs</LastGenOutput>
+      <DependentUpon>Medicon.edmx</DependentUpon>
+      <LastGenOutput>Medicon.cs</LastGenOutput>
     </Content>
     <Content Include="myIcon1.ico" />
     <Content Include="myIcon16.ico" />
@@ -414,13 +411,6 @@
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regulard41d.eot" />
-    <EntityDeploy Include="Models\LocalDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>LocalDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\LocalDB.edmx.diagram">
-      <DependentUpon>LocalDB.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\DCIMS.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DCIMS.Designer.cs</LastGenOutput>
@@ -428,139 +418,18 @@
     <Content Include="Models\DCIMS.edmx.diagram">
       <DependentUpon>DCIMS.edmx</DependentUpon>
     </Content>
+    <EntityDeploy Include="Models\Medicon.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Medicon.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Medicon.edmx.diagram">
+      <DependentUpon>Medicon.edmx</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\Medicon.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery-validation\additional-methods.js" />
-    <Content Include="Scripts\jquery-validation\additional-methods.min.js" />
-    <Content Include="Scripts\jquery-validation\jquery.validate.js" />
-    <Content Include="Scripts\jquery-validation\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ar.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ar.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_az.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_az.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_bg.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_bg.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_bn_BD.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_bn_BD.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ca.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ca.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_cs.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_cs.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_da.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_da.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_de.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_de.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_el.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_el.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_es.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_es.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_es_AR.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_es_AR.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_es_PE.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_es_PE.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_et.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_et.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_eu.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_eu.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_fa.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_fa.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_fi.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_fi.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_fr.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_fr.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ge.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ge.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_gl.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_gl.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_he.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_he.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_hr.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_hr.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_hu.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_hu.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_hy_AM.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_hy_AM.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_id.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_id.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_is.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_is.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_it.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_it.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ja.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ja.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ka.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ka.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_kk.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_kk.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ko.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ko.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_lt.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_lt.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_lv.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_lv.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_mk.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_mk.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_my.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_my.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_nl.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_nl.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_no.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_no.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_pl.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_pl.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_pt_BR.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_pt_BR.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_pt_PT.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_pt_PT.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ro.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ro.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ru.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ru.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sd.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sd.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_si.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_si.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sk.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sk.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sl.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sl.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sr.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sr.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sr_lat.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sr_lat.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sv.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_sv.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_th.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_th.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_tj.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_tj.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_tr.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_tr.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_uk.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_uk.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ur.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_ur.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_vi.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_vi.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_zh.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_zh.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_zh_TW.js" />
-    <Content Include="Scripts\jquery-validation\localization\messages_zh_TW.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_de.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_de.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_es_CL.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_es_CL.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_fi.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_fi.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_it.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_it.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_nl.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_nl.min.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_pt.js" />
-    <Content Include="Scripts\jquery-validation\localization\methods_pt.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -574,7 +443,6 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\sweetalert2%4011.2.1.all.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

@@ -160,6 +160,32 @@
         });
     }
 
+    function getLabHistory(qrCode) {
+        s.bpLoader = true;
+        s.labHistoryList = {};
+
+        h.post('../MedicalConsultation/getLabHistory?qrCode=' + qrCode).then(function (d) {
+            if (d.data.status == 'error') {
+                swal({
+                    title: "ERROR",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (value) {
+                    angular.forEach(value, function (val) {
+                        val.dateTimeLog = moment(val.dateTimeLog).format('lll');
+                    });
+                });
+                s.medHistoryList = d.data;
+            }
+
+            s.bpLoader = false;
+        });
+    }
+
     s.showDiagnoseHistory = function (history) {
         history.personnelFullname = history.personnel_firstName + ' ' + history.personnel_midInit + ' ' + history.personnel_lastName + ' ' + history.personnel_extName;
         s.medHistLoader_modal = true;
@@ -521,13 +547,6 @@
                     else {
                         detail = [];
                         detail2 = [];
-
-                        // Push all checked referral to referralList
-                        //var referralList = [];
-                        //angular.forEach(refer, function (key, value) {
-                        //    if (key)
-                        //        referralList.push(value);
-                        //});
                         
                         // Push all checked diagnosis to diagnosisList
                         angular.forEach(d.data, function (item) {
@@ -537,7 +556,6 @@
                         });
                         
                         s.resultDiag.detail = detail;
-                        console.log(detail2);
                         s.consultationTbl = d.data;
                     }
                 });

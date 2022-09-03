@@ -79,5 +79,19 @@ namespace MediCon.Controllers
 
         }
 
+        public ActionResult getMRHclients()
+        {
+            try
+            {
+                var lab = dbMed.fn_getMRHclients().OrderBy(x => x.lastName).ThenBy(y => y.firstName).ToList();
+
+                return Json(lab, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }

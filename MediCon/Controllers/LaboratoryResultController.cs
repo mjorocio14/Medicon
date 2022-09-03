@@ -5,11 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using MediCon.Models;
 using System.Net;
+using System.Data.Entity;
 namespace MediCon.Controllers
 {
     public class LaboratoryResultController : Controller
     {
         MediconEntities db = new MediconEntities();
+
         // GET: LaboratoryResult
         public ActionResult Encoding()
         {
@@ -28,40 +30,27 @@ namespace MediCon.Controllers
                 }
                 else
                 {
-                    using (MediconEntities dbb = new MediconEntities())
-                    {
-                        var data = new BloodChem();
-                        data.bloodChemID=generateID(result.labID).Substring(0, 15);
-                        data.labID = result.labID;
-                        data.fbs = result.fbs;
-                        data.serumUricAcid = result.serumUricAcid;
-                        data.creatinine = result.creatinine;
-                        data.cholesterol = result.cholesterol;
-                        data.triglycerides = result.triglycerides;
-                        data.hdl = result.hdl;
-                        data.ldl = result.ldl;
-                        data.vldl = result.vldl;
-                        data.sgpt = result.sgpt;
-                        data.sgot = result.sgot;
-                        data.bun = result.bun;
-                        data.potassium = result.potassium;
-                        data.sodium = result.sodium;
-                        data.chloride = result.chloride;
-                        data.calcium = result.calcium;
-                        data.glycosylatedHemoglobin = result.glycosylatedHemoglobin;
-                        data.dateTimeLog = DateTime.Now;
-                        data.personnelID = Session["personnelID"].ToString();
-                        dbb.BloodChems.Add(data);
-                        dbb.SaveChanges();
-                    }
-                    return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+                    // SAVE LAB RESULT OF BLOOD CHEM
+                    result.bloodChemID = generateID(result.labID).Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    db.BloodChems.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = db.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    db.Entry(findLab).State = EntityState.Modified;
+
+                    db.SaveChanges();
                 }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
             }
             catch (Exception ex)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
             }
         }
+
         public string generateID(string source)
         {
             return string.Format("{1:N}", source, Guid.NewGuid());

@@ -44,7 +44,7 @@
             else {
                 if (d.data != null && d.data != "") {
                     s.qrData = {};
-                    s.testHistory = {};
+                    s.testHistory = [];
                     s.labReq = {};
 
                     d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
@@ -86,49 +86,15 @@
                         d2.labDT = moment(d2.labDT).format('lll');
                     });
                 });
-
+                
                 if (d.data[0][0].isTested == null || d.data[0][0].isTested == false) {
-                    s.labReq = d.data[0];
-                    s.testHistory = d.data.length > 1 ? d.data[1] : {};
-                    console.log(s.testHistory);
+                    s.testHistory = d.data.length > 1 ? d.data[1] : [];
                 }
 
                 else {
                     s.testHistory = d.data[0];
-                    s.labReq = d.data.length > 1 ? d.data[1] : {};
-                    console.log(s.testHistory);
                 }
-            }
-        });
-    }
-
-    s.tagTested = function (lab, isTested) {
-        swal({
-            title: "SAVING",
-            text: "Please wait while we are saving your data.",
-            type: "info",
-            showConfirmButton: false
-        });
-
-        h.post('../Labtest/saveTestStatus', { labID: lab.labID, isTest: isTested }).then(function (d) {
-            if (d.data.status == "error") {
-                swal({
-                    title: "ERROR",
-                    text: "<labal>" + d.data.msg + "</label>",
-                    type: "error",
-                    html: true
-                });
-            }
-
-            else {
-                swal({
-                    title: "SUCCESSFUL",
-                    text: d.data.msg,
-                    type: "success",
-                    html: true
-                });
-
-                s.getLabtest(lab.qrCode);
+                console.log(s.testHistory);
             }
         });
     }
@@ -233,6 +199,7 @@
         }
 
     }
+
     s.encodeResult = function (labTestID, labID, labTestName) {
         s.tempLabTestName = labTestName;
         s.tempLabID=labID;
@@ -244,82 +211,117 @@
         }
 
     }
-    $('#bloodChemForm').validate({
-        rules: {
-          
-        },
-        
-        submitHandler: function () {
-            // console.log(s.blood);
-            // swal({
-            //     title: "SUCCESSFULLY SAVED",
-            //     type: "success",
-            //     html: true
-            // });
-            // $('#modalBLoodChem').modal('hide');
-            Swal.fire({
-                title: 'Saved Result?',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Saved!',
-                showLoaderOnConfirm: true,
-                icon:'question',
-                preConfirm: () => { 
-                s.blood.labID=s.tempLabID;
-                alert(s.blood.labID);
-            return h.post('../LaboratoryResult/saveBloodChemResult', { result: s.blood })
-            .then(response => {
-                return response
-            }).catch(error => {
-            if(error.status==500){
-                Swal.showValidationMessage(
-                    `Request failed: ${error.statusText}`
-                  )
-                        }else if(error.status==404){
-                            Swal.showValidationMessage(
-                                `Request failed: Page Not Found`
-                              )
-                        }
-                        else if(error.status==-1){
-                            Swal.showValidationMessage(
-                                `Request failed: No Internet Connection`
-                              )
-                        }else{
-                            Swal.showValidationMessage(
-                                `Request failed: Unknown Error ${error.status}`
-                              )
-                        }
-                })
-                },
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                    Swal.fire({title: 'Successfully Save!', icon: 'success',
-                    }).then((result) => {
-                        ('#modalBLoodChem').modal('hide');
 
-                     })
-                }else if(result.isDismissed){
-                    Swal.fire({title: 'Canceled', icon: 'info',
-                    }).then((result) => {
-                      
-                })
-                }
-                })
-
-
-        },
-        errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
-        highlight: function (element, errorClass, validClass) {
-            $(element).closest('.form-group').removeClass('has-info').addClass('has-error');
-        },
-        unhighlight: function (element, errorClass, validClass) {
-            $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
-        }
+    s.saveBloodChem = function () {
+        swal({
+            title: "SAVING",
+            text: "Please wait while we are saving your data.",
+            type: "info",
+            showConfirmButton: false
         });
+       
+        s.blood.labID = s.tempLabID;
+        h.post('../LaboratoryResult/saveBloodChemResult', { result: s.blood }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "<labal>" + d.data.msg + "</label>",
+                    type: "error",
+                    html: true
+                });
+            }
+
+            else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                    html: true
+                });
+
+                s.blood = {};
+                $('#modalBLoodChem').modal('hide');
+                s.getLabtest(s.qrData.qrCode);
+            }
+        });
+    }
+
+    //$('#bloodChemForm').validate({
+    //    rules: {
+          
+    //    },
+        
+    //    submitHandler: function () {
+    //        // console.log(s.blood);
+    //        // swal({
+    //        //     title: "SUCCESSFULLY SAVED",
+    //        //     type: "success",
+    //        //     html: true
+    //        // });
+    //        // $('#modalBLoodChem').modal('hide');
+    //        Swal.fire({
+    //            title: 'Saved Result?',
+    //            showCancelButton: true,
+    //            confirmButtonText: 'Yes, Saved!',
+    //            showLoaderOnConfirm: true,
+    //            icon:'question',
+    //            preConfirm: () => { 
+    //            s.blood.labID=s.tempLabID;
+    //            alert(s.blood.labID);
+    //        return h.post('../LaboratoryResult/saveBloodChemResult', { result: s.blood })
+    //        .then(response => {
+    //            return response
+    //        }).catch(error => {
+    //        if(error.status==500){
+    //            Swal.showValidationMessage(
+    //                `Request failed: ${error.statusText}`
+    //              )
+    //                    }else if(error.status==404){
+    //                        Swal.showValidationMessage(
+    //                            `Request failed: Page Not Found`
+    //                          )
+    //                    }
+    //                    else if(error.status==-1){
+    //                        Swal.showValidationMessage(
+    //                            `Request failed: No Internet Connection`
+    //                          )
+    //                    }else{
+    //                        Swal.showValidationMessage(
+    //                            `Request failed: Unknown Error ${error.status}`
+    //                          )
+    //                    }
+    //            })
+    //            },
+    //                allowOutsideClick: () => !Swal.isLoading()
+    //            }).then((result) => {
+    //                if (result.isConfirmed) {
+    //                Swal.fire({title: 'Successfully Save!', icon: 'success',
+    //                }).then((result) => {
+    //                    ('#modalBLoodChem').modal('hide');
+
+    //                 })
+    //            }else if(result.isDismissed){
+    //                Swal.fire({title: 'Canceled', icon: 'info',
+    //                }).then((result) => {
+                      
+    //            })
+    //            }
+    //            })
+
+
+    //    },
+    //    errorElement: 'span',
+    //        errorPlacement: function (error, element) {
+    //            error.addClass('invalid-feedback');
+    //            element.closest('.form-group').append(error);
+    //        },
+    //    highlight: function (element, errorClass, validClass) {
+    //        $(element).closest('.form-group').removeClass('has-info').addClass('has-error');
+    //    },
+    //    unhighlight: function (element, errorClass, validClass) {
+    //        $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
+    //    }
+    //    });
     
     $('#urinalysisForm').validate({
         rules: {

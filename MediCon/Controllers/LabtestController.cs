@@ -34,6 +34,7 @@ namespace MediCon.Controllers
                                                        b.res3.res2.res1.le.labTestID,
                                                        b.res3.res2.res1.lt.labTestName,
                                                        b.res3.res2.res1.le.isTested,
+                                                       b.res3.res2.res1.le.isEncoded,
                                                        labPersonID = b.res3.res2.res1.le.personnelID,
                                                        labDT = b.res3.res2.res1.le.dateTimeLog,
                                                        labPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.res2.res1.le.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName}),

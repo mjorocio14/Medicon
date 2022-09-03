@@ -74,9 +74,9 @@
     s.showDiagnoseList = function () {
         s.showClientList = !s.showClientList;
 
-        //if (s.showClientList) {
-        //    getPBEclients();
-        //}
+        if (s.showClientList) {
+            getMRHclients();
+        }
     }
 
     function getBPhistory(qrCode) {
@@ -208,6 +208,13 @@
     }
 
     s.saveInterview = function (mrhData, form) {
+        swal({
+            title: "SAVING",
+            text: "Please wait while we are saving your data.",
+            type: "info",
+            showConfirmButton: false
+        });
+
         h.post('../MaleRepro/saveInterview', { mrh: mrhData }).then(function (d) {
             if (d.data.status == "error") {
                 swal({
@@ -235,6 +242,141 @@
                 s.BMI = {};
             }
         });
+    }
+
+    function getMRHclients() {
+        indexNo = 1;
+
+        if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
+            $('#clientList_tbl').DataTable().clear();
+            $('#clientList_tbl').DataTable().ajax.url('../MaleRepro/getMRHclients').load();
+        }
+
+        else {
+            //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
+            var tblMRH = $('#clientList_tbl').DataTable({
+                "ajax": {
+                    "url": '../MaleRepro/getMRHclients',
+                    "type": 'POST',
+                    "dataSrc": "",
+                    "recordsTotal": 20,
+                    "recordsFiltered": 20,
+                    "deferRender": true
+                },
+                "pageLength": 10,
+                "searching": true,
+                "language":
+                 {
+                     "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
+                     "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
+                 },
+                "processing": false,
+                "columns": [{
+                    "data": "index", "render": function () { return indexNo++; }
+                }, {
+                    "data": null,
+                    render: function (row) {
+                        return '<strong>' + row.lastName + '</strong>';
+                    }
+                }, {
+                    "data": null,
+                    render: function (row) {
+                        return '<strong>' + row.firstName + '</strong>';
+                    }
+                }
+                , {
+                    "data": null,
+                    render: function (row) {
+                        return row.middleName == null ? '' : '<strong>' + row.middleName + '</strong>';
+                    }
+                },
+               {
+                   "data": null,
+                   render: function (row) {
+                       return row.extName == null ? '' : '<strong>' + row.extName + '</strong>';
+                   }
+               },
+               {
+                   "data": null,
+                   render: function (row) {
+                       return row.sex ? "M" : "F";
+                   }
+               },
+               {
+                   "data": null,
+                   render: function (row) {
+                       var age = moment().diff(moment(row.birthdate).format('L'), 'years');
+                       return '<span class="label label-success">' + age + '</span>';
+                   }
+               },
+               {
+                   "data": 'contactNo'
+               },
+               {
+                   "data": null, render: function (row) {
+                       return row.personnel_firstName + " " + row.personnel_midInit + " " + row.personnel_lastName
+                   }
+               },
+               {
+                   "data": null, render: function (row) {
+                       return moment(row.interviewDT).format('lll');
+                   }
+               },
+               {
+                   "data": null, render: function () {
+                       return '<button class="btn-success btn btn-xs" id="btnShowMRH"> Show <i class="fa fa-external-link"></i></button>'
+                   }
+               }
+                ],
+                "order": [[0, "asc"]]
+            });
+
+            $('#clientList_tbl tbody').off('click');
+
+            $('#clientList_tbl tbody').on('click', '#btnShowMRH', function () {
+                var data = tblMRH.row($(this).parents('tr')).data();
+
+                console.log(data);
+                s.proceedInterview({ requestID: null });
+                s.showClientList = false;
+                s.$apply();
+
+                //data.birthdate = moment(data.birthdate).format('ll');
+                //data.sex = data.sex ? 'Male' : 'Female';
+
+                //$('#personDiagnosis_modal').modal('show');
+                //s.consultationTbl = {};
+                //s.resultDiag = {};
+                //s.resultDiag.info = data;
+
+                //h.post('../MedicalConsultation/getPersonDiagnoseResult?consultID=' + data.consultID).then(function (d) {
+                //    if (d.data.status == 'error') {
+                //        swal({
+                //            title: "ERROR",
+                //            text: d.data.msg,
+                //            type: "error"
+                //        });
+                //    }
+
+                //    else {
+                //        detail = [];
+                //        detail2 = [];
+
+                //        angular.forEach(d.data, function (item) {
+                //            detail.push(item.diagnoseID);
+
+                //            if (item.diagnoseID == 'DIAG023') { s.resultDiag.detail.otherDiagnosis = item.otherDiagnosis }
+                //        });
+
+                //        s.resultDiag.detail = detail;
+                //        console.log(detail2);
+                //        s.consultationTbl = d.data;
+                //    }
+                //});
+            });
+
+
+        }
     }
 
 }]);

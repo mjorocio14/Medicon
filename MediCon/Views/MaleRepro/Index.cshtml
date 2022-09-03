@@ -3,6 +3,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+     .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        height: 330px !important;
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+</style>
+
 <div ng-controller="MaleReproCtrl">
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -830,9 +844,8 @@
                                     <th>Sex</th>
                                     <th>Age</th>
                                     <th>Contact no.</th>
-                                    <th>Lab. Test</th>
-                                    <th>Lab. Date & Time</th>
-                                    <th>Referred by</th>
+                                    <th>Interviewed by</th>
+                                    <th>Date & Time Interviewed</th>
                                     <th class="text-right" data-sort-ignore="true">Action</th>
 
                                 </tr>

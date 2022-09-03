@@ -72,6 +72,59 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
+        public ActionResult getLabHistory(string qrCode)
+        {
+            try
+            {
+                var medHist = dbMed.BloodChems.Join(dbMed.LaboratoryExams, bc => bc.labID, le => le.labID, (bc, le) => new { bc, le })
+                                              .Join(dbMed.Referrals, r1 => r1.le.referralID, r => r.referralID, (r1, r) => new { r1, r })
+                                              .Join(dbMed.Consultations, r2 => r2.r.consultID, c => c.consultID, (r2, c) => new { r2, c })
+                                              .Join(dbMed.VitalSigns, r3 => r3.c.vSignID, vs => vs.vSignID, (r3, vs) => new { r3, vs })
+                                              .Join(dbMed.LaboratoryTests, r4 => r4.r3.r2.r1.le.labTestID, lt => lt.labTestID, (r4, lt) => new { r4, lt })
+                                              .Where(e => e.r4.vs.qrCode == qrCode)
+                                              .Select(a => new
+                                              {
+                                                  a.r4.vs.qrCode,
+                                                  a.r4.r3.c.consultID,
+                                                  a.r4.r3.r2.r.referralID,
+                                                  a.r4.r3.r2.r1.le.labID,
+                                                  a.r4.r3.r2.r1.le.isTested,
+                                                  a.r4.r3.r2.r1.le.isEncoded,
+                                                  a.lt.labTestID,
+                                                  a.lt.labTestName,
+                                                  a.r4.r3.r2.r1.bc.bloodChemID,
+                                                  a.r4.r3.r2.r1.bc.fbs,
+                                                  a.r4.r3.r2.r1.bc.serumUricAcid,
+                                                  a.r4.r3.r2.r1.bc.creatinine,
+                                                  a.r4.r3.r2.r1.bc.cholesterol,
+                                                  a.r4.r3.r2.r1.bc.triglycerides,
+                                                  a.r4.r3.r2.r1.bc.hdl,
+                                                  a.r4.r3.r2.r1.bc.ldl,
+                                                  a.r4.r3.r2.r1.bc.vldl,
+                                                  a.r4.r3.r2.r1.bc.sgpt,
+                                                  a.r4.r3.r2.r1.bc.sgot,
+                                                  a.r4.r3.r2.r1.bc.bun,
+                                                  a.r4.r3.r2.r1.bc.potassium,
+                                                  a.r4.r3.r2.r1.bc.sodium,
+                                                  a.r4.r3.r2.r1.bc.chloride,
+                                                  a.r4.r3.r2.r1.bc.calcium,
+                                                  a.r4.r3.r2.r1.bc.glycosylatedHemoglobin,
+                                                  a.r4.r3.r2.r1.bc.pathologist,
+                                                  pathologistName = dbMed.Personnels.Where(b => b.personnelID == a.r4.r3.r2.r1.bc.pathologist).Select(c => new { c.personnel_firstName, c.personnel_midInit, c.personnel_lastName, c.personnel_extName }),
+                                                  a.r4.r3.r2.r1.bc.medtech,
+                                                  medTechName = dbMed.Personnels.Where(b => b.personnelID == a.r4.r3.r2.r1.bc.medtech).Select(c => new { c.personnel_firstName, c.personnel_midInit, c.personnel_lastName, c.personnel_extName }),
+                                                  a.r4.r3.r2.r1.bc.dateTimeLog
+                                                }).OrderByDescending(b => b.dateTimeLog).ToList();
+
+                return Json(medHist, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
         public ActionResult getDiagnosisHistory(string consultID)
         {
             try
