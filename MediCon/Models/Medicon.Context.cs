@@ -30,6 +30,7 @@ namespace MediCon.Models
         public virtual DbSet<BloodChem> BloodChems { get; set; }
         public virtual DbSet<BloodPressure> BloodPressures { get; set; }
         public virtual DbSet<BrandList> BrandLists { get; set; }
+        public virtual DbSet<CBC> CBCs { get; set; }
         public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
@@ -50,6 +51,7 @@ namespace MediCon.Models
         public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
     
@@ -69,12 +71,6 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
         }
     
-        [DbFunction("MediconEntities", "fn_getMRHclients")]
-        public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getMRHclients_Result>("[MediconEntities].[fn_getMRHclients]()");
-        }
-    
         [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
         public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients()
         {
@@ -91,6 +87,12 @@ namespace MediCon.Models
         public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getMRHclients")]
+        public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getMRHclients_Result>("[MediconEntities].[fn_getMRHclients]()");
         }
     
         public virtual ObjectResult<sp_getRxHistory_Result> sp_getRxHistory(string consultID, string referralID)

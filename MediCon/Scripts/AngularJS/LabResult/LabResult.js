@@ -208,8 +208,9 @@
         }
         else if (labTestID == "L0003") {
             $('#modalBLoodChem').modal('show');
+        }else if(labTestID=="L0002"){
+            $('#modalCbc').modal('show');
         }
-
     }
 
     s.saveBloodChem = function () {
@@ -327,7 +328,6 @@
         rules: {
             
         },
-        
         submitHandler: function () {
             
             swal({
@@ -336,8 +336,32 @@
                 html: true
             });
             $('#modalUrinalysis').modal('hide');
-
-
+        },
+        errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+        highlight: function (element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass('has-info').addClass('has-error');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
+        }
+        });
+    
+    $('#cbcForm').validate({
+        rules: {
+            
+        },
+        submitHandler: function () {
+            
+            swal({
+                title: "SUCCESSFULLY SAVED",
+                type: "success",
+                html: true
+            });
+            $('#modalCbc').modal('hide');
         },
         errorElement: 'span',
             errorPlacement: function (error, element) {
