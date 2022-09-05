@@ -105,5 +105,24 @@ namespace MediCon.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_getRxHistory_Result>("sp_getRxHistory", consultIDParameter, referralIDParameter);
         }
+    
+        [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
+        public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)
+        {
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientLabHistory_Result>("[MediconEntities].[fn_getPatientLabHistory](@qrCode)", qrCodeParameter);
+        }
+    
+        public virtual ObjectResult<spOT_MedicineDispensing_Result> spOT_MedicineDispensing(string qrCode)
+        {
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spOT_MedicineDispensing_Result>("spOT_MedicineDispensing", qrCodeParameter);
+        }
     }
 }

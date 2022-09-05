@@ -83,10 +83,13 @@
                         </ul>
                     </li>
                     <li id="HEALTH">
-                        <a href="widgets.html"><i class="fa fa-stethoscope"></i> <span class="nav-label">Health</span><span class="fa arrow"></span></a>
+                        <a href="widgets.html"><i class="fa fa-stethoscope"></i> <span class="nav-label">Dental</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="HEALTHsub">
                             @*<li><a href="~/SystemUser/Index">Accounts</a></li>*@
                         </ul>
+                    </li>
+                    <li id="PHARM">
+                        <a href="../Pharmacy/Dispensing"><i class="fa fa-female"></i> <span class="nav-label">Pharmacy</span></a>
                     </li>
                     <li id="UTILITY">
                         <a href="widgets.html"><i class="fa fa-gear"></i> <span class="nav-label">Utility</span><span class="fa arrow"></span></a>
@@ -156,6 +159,7 @@
             var lab = $('#LAB');
             var pbe = $('#PBE');
             var mrh = $('#MRH');
+            var pharm = $('#PHARM');
 
             health.hide();
             utility.hide();
@@ -164,6 +168,7 @@
             lab.hide();
             pbe.hide();
             mrh.hide();
+            pharm.hide();
 
             $.post('../Home/gMenuAccess').then(function (d) {
                 for(var x =0;x<d.length;x++){
@@ -197,6 +202,11 @@
                     else if(d[x].mainMenu =='MRH'){
                         mrh.show();
                         $('#MRHsub').append('<li class="nav-item"><a href="../'+d[x].controller+'/'+d[x].action+'" class="nav-link"><i class="fa fa-angle-double-right"></i> '+d[x].menuDesc+'</a></li>');
+                    }
+
+                    else if (d[x].mainMenu == 'PHARM') {
+                        pharm.show();
+                        $('#MRHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-angle-double-right"></i> ' + d[x].menuDesc + '</a></li>');
                     }
                 }
             })

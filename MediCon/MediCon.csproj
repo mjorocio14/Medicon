@@ -170,6 +170,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MedicalConsultationController.cs" />
     <Compile Include="Controllers\PapsmearBreastExamController.cs" />
+    <Compile Include="Controllers\PharmacyController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\QRPersonalInfoController.cs" />
     <Compile Include="Controllers\RectalDiagnosisController.cs" />
@@ -230,6 +231,9 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_getPapsmearBreastExamClients_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_getPatientLabHistory_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_MedicineList_Result.cs">
@@ -309,6 +313,9 @@
     <Compile Include="Models\Service.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\spOT_MedicineDispensing_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sp_getRxHistory_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -386,6 +393,7 @@
     <Content Include="myIcon16.ico" />
     <Content Include="Scripts\AngularJS\angular.min.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
+    <Content Include="Scripts\AngularJS\Dental\ToothExtraction.js" />
     <Content Include="Scripts\AngularJS\LabResult\LabResult.js" />
     <Content Include="Scripts\AngularJS\Labtest\Labtest.js" />
     <Content Include="Scripts\AngularJS\MaleRepro\MaleRepro.js" />
@@ -393,6 +401,7 @@
     <Content Include="Scripts\AngularJS\MedConApp.js" />
     <Content Include="Scripts\AngularJS\Medicines\MedicineProducts.js" />
     <Content Include="Scripts\AngularJS\PapsmearBreastExam\PapsmearBreastExam.js" />
+    <Content Include="Scripts\AngularJS\Pharmacy\pharmacyDispensing.js" />
     <Content Include="Scripts\AngularJS\RectalDiagnosis\RectalDiagnosis.js" />
     <Content Include="Scripts\AngularJS\UserManagment\UserManagement.js" />
     <Content Include="Scripts\AngularJS\Utility\Laboratory.js" />
@@ -491,6 +500,8 @@
     <Content Include="Views\MaleRepro\Index.cshtml" />
     <Content Include="Views\RectalDiagnosis\Index.cshtml" />
     <Content Include="Views\LaboratoryResult\Encoding.cshtml" />
+    <Content Include="Views\Dental\ToothExtraction.cshtml" />
+    <Content Include="Views\Pharmacy\Dispensing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
