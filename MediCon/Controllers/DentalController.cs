@@ -168,7 +168,7 @@ namespace MediCon.Controllers
                 MP.serviceID = "DENTAL";
                 MP.consultID = consultID;
                 MP.dateTimeRx = DateTime.Now;
-                MP.personnelID = Session["userTypeID"].ToString();
+                MP.personnelID = Session["personnelID"].ToString();
                 db.MedicalPrescriptions.Add(MP);
                 
                 foreach (var item in listRx)

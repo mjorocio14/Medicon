@@ -132,7 +132,7 @@ namespace MediCon.Controllers
                              data.qtyReleased = item.qtyReleased;
                              //data.qtyReleased = item.qtyRx > item.AVAILABLE ? item.AVAILABLE : data.qtyRx;
                              data.dateTimeReleased = DateTime.Now;
-                             data.userIDreleased = Session["userTypeID"].ToString();
+                             data.userIDreleased = Session["personnelID"].ToString();
                              db.Entry(data).State = EntityState.Modified;
                          }
                      }
