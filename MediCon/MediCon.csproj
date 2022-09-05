@@ -316,9 +316,6 @@
     <Compile Include="Models\spOT_MedicineDispensing_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sp_getRxHistory_Result.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>

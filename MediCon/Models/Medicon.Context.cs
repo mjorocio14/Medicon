@@ -81,6 +81,16 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients]()");
         }
     
+        [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
+        public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)
+        {
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientLabHistory_Result>("[MediconEntities].[fn_getPatientLabHistory](@qrCode)", qrCodeParameter);
+        }
+    
         [DbFunction("MediconEntities", "fn_MedicineList")]
         public virtual IQueryable<fn_MedicineList_Result> fn_MedicineList()
         {
@@ -91,29 +101,6 @@ namespace MediCon.Models
         public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList]()");
-        }
-    
-        public virtual ObjectResult<sp_getRxHistory_Result> sp_getRxHistory(string consultID, string referralID)
-        {
-            var consultIDParameter = consultID != null ?
-                new ObjectParameter("consultID", consultID) :
-                new ObjectParameter("consultID", typeof(string));
-    
-            var referralIDParameter = referralID != null ?
-                new ObjectParameter("referralID", referralID) :
-                new ObjectParameter("referralID", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_getRxHistory_Result>("sp_getRxHistory", consultIDParameter, referralIDParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
-        public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)
-        {
-            var qrCodeParameter = qrCode != null ?
-                new ObjectParameter("qrCode", qrCode) :
-                new ObjectParameter("qrCode", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientLabHistory_Result>("[MediconEntities].[fn_getPatientLabHistory](@qrCode)", qrCodeParameter);
         }
     
         public virtual ObjectResult<spOT_MedicineDispensing_Result> spOT_MedicineDispensing(string qrCode)

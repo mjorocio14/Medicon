@@ -242,6 +242,7 @@
             </div>
         </div>
         <!-- /LIST OF PATIENTS -->
+
         <!-- Modal -->
         <div class="modal fade" id="modalBLoodChem">
             <div class="modal-dialog modal-lg">
@@ -506,7 +507,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success" ng-click="saveBloodChem()">Save</button>
-                            <button type="button" class="btn btn-default">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
@@ -525,7 +526,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-lg-12 table-responsive">
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 500px !important;">
                                         <table class="table table-bordered">
                                             <thead>
                                                 <tr>
@@ -857,7 +858,254 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Save</button>
-                            <button type="button" class="btn btn-default">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalCbc">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">{{tempLabTestName}}</h4>
+                    </div>
+                    <form role="form" id="cbcForm" novalidate>
+                        <div class="modal-body" style="height: 100%;">
+                            @*<div class="table-wrapper-scroll-y my-custom-scrollbar">*@
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="30%" style="text-align:center">Result</th>
+                                        <th width="20%" style="text-align:center">Reference</th>
+                                        <th width="30%"  style="text-align:center">Result</th>
+                                        <th width="20%" style="text-align:center">Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                    <div class="col-ld-12">
+                                                        <div class="col-md-4">
+                                                            <label class="form-control" style="border:none" for="wbc">WBC:</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="number" class="form-control form-control-sm" id="wbc" name="wbc" ng-model="blood.chloride" placeholder="Enter result" required>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            5.00 - 10.00  10^9/L
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="rbc">RBC</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="wbc" name="rbc" ng-model="cbc.rbc" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            4.00 - 4.5  10^12/L
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="neu">NEU%:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="neu" name="neu" ng-model="cbc.neu" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            55.0 - 65.0  %
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="hgb">HGB</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="hgb" name="hgb" ng-model="cbc.hgb" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            120-150 g/L
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="lym">Lym%:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="lym" name="lym" ng-model="cbc.lym" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            25.0 - 35.0  %
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="hct">HCT</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="hct" name="hct" ng-model="cbc.hct" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            37.0 - 47.0 %
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="mon">Mon%:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="mon" name="mon" ng-model="cbc.mon" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            2.0 - 6.0 %
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="mcv">MCV</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="mcv" name="mcv" ng-model="cbc.mcv" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            80.0 - 96.0 fl
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="eos">Eos%:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="eos" name="eos" ng-model="cbc.eos" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            2.0 - 4.0 %
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="mch">MCH</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="mch" name="mch" ng-model="cbc.mch" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            80.0 - 96.0 fl
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="bas">Bas%:</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="bas" name="bas" ng-model="cbc.bas" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            0.0 - 0.5 %
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="mchc">MCHC</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="mchc" name="mchc" ng-model="cbc.mchc" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            334 - 335 g/L
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                          
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td>
+                                            <div class="form-group" style="margin:0px">
+                                                <div class="col-ld-12">
+                                                    <div class="col-md-4">
+                                                        <label class="form-control" style="border:none" for="plt">PLT</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="number" class="form-control form-control-sm" id="plt" name="plt" ng-model="cbc.plt" placeholder="Enter result">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            150 - 350 10^9L
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            @*</div>*@
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>

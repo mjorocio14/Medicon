@@ -270,7 +270,7 @@
 
                     s.isEditting = false;
                     s.qrData = {};
-                    getDispensedList();
+                    //getDispensedList();
                     s.prescripted = {};
                     s.searchQRcode = '';
 
