@@ -242,6 +242,7 @@
             </div>
         </div>
         <!-- /LIST OF PATIENTS -->
+
         <!-- Modal -->
         <div class="modal fade" id="modalBLoodChem">
             <div class="modal-dialog modal-lg">
@@ -507,7 +508,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success" ng-click="saveBloodChem()">Save</button>
-                            <button type="button" class="btn btn-default">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
@@ -857,7 +858,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Save</button>
-                            <button type="button" class="btn btn-default">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
@@ -968,10 +969,10 @@
                                             <div class="form-group" style="margin:0px">
                                                 <div class="col-ld-12">
                                                     <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="htc">HTC</label>
+                                                        <label class="form-control" style="border:none" for="hct">HCT</label>
                                                     </div>
                                                     <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="htc" name="htc" ng-model="cbc.htc" placeholder="Enter result">
+                                                        <input type="number" class="form-control form-control-sm" id="hct" name="hct" ng-model="cbc.hct" placeholder="Enter result">
                                                     </div>
                                                 </div>
                                             </div>
@@ -1104,7 +1105,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-success">Save</button>
-                            <button type="button" class="btn btn-default">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>
                 </div>
