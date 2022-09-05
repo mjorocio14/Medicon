@@ -91,6 +91,7 @@
           <Property Name="remarks" Type="varchar" MaxLength="200" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="toothNum" Type="varchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Diagnosis">
           <Key>
@@ -137,8 +138,8 @@
           <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="labTestID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="labTestName" Type="varchar" MaxLength="50" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
         </EntityType>
         <EntityType Name="MaleRepro_Diagnosis">
           <Key>
@@ -229,7 +230,7 @@
           <Property Name="action" Type="varchar" MaxLength="50" />
           <Property Name="userTypeID" Type="varchar" MaxLength="5" />
           <Property Name="mainMenu" Type="varchar" MaxLength="50" />
-          <Property Name="orderNo" Type="tinyint" />
+          <Property Name="orderNo" Type="int" />
         </EntityType>
         <EntityType Name="MRHrequest">
           <Key>
@@ -258,6 +259,9 @@
           <Property Name="qtyReleased" Type="int" />
           <Property Name="userIDreleased" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeReleased" Type="datetime" />
+          <Property Name="dosage" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="perDay" Type="int" />
+          <Property Name="noDay" Type="varchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="PapsmearBreastExam">
           <Key>
@@ -282,7 +286,6 @@
           <Property Name="personnel_midInit" Type="char" MaxLength="1" />
           <Property Name="personnel_extName" Type="varchar" MaxLength="10" />
           <Property Name="sex" Type="bit" />
-          <Property Name="contactNum" Type="varchar" MaxLength="50" />
           <Property Name="position" Type="varchar" MaxLength="100" />
           <Property Name="serviceID" Type="varchar" MaxLength="10" />
           <Property Name="username" Type="varchar" MaxLength="20" />
@@ -291,12 +294,13 @@
           <Property Name="userTypeID" Type="varchar" MaxLength="5" />
           <Property Name="userEncoder" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="contactNum" Type="varchar" MaxLength="13" />
         </EntityType>
         <EntityType Name="ProductList">
           <Key>
             <PropertyRef Name="productCode" />
           </Key>
-          <Property Name="recNo" Type="int" />
+          <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="productCode" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="productDesc" Type="varchar" MaxLength="50" />
           <Property Name="measurementID" Type="varchar" MaxLength="5" />
@@ -312,8 +316,8 @@
           <Property Name="recNo" Type="tinyint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="unitID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="unitDesc" Type="varchar" MaxLength="50" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
         </EntityType>
         <EntityType Name="Referral">
           <Key>
@@ -1724,23 +1728,22 @@
           <FunctionImportMapping FunctionName="MediconModel.Store.fn_vitalSignList" FunctionImportName="fn_vitalSignList">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.fn_vitalSignList_Result">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.spOT_MedicineDispensing_Result">
                 <ScalarProperty Name="qrCode" ColumnName="qrCode" />
-                <ScalarProperty Name="weight" ColumnName="weight" />
-                <ScalarProperty Name="height" ColumnName="height" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="lastName" ColumnName="lastName" />
-                <ScalarProperty Name="firstName" ColumnName="firstName" />
-                <ScalarProperty Name="middleName" ColumnName="middleName" />
-                <ScalarProperty Name="extName" ColumnName="extName" />
-                <ScalarProperty Name="sex" ColumnName="sex" />
-                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
-                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
-                <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
-                <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
-                <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="outID" ColumnName="outID" />
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="productDesc" ColumnName="productDesc" />
+                <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+                <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+                <ScalarProperty Name="dosage" ColumnName="dosage" />
+                <ScalarProperty Name="perDay" ColumnName="perDay" />
+                <ScalarProperty Name="noDay" ColumnName="noDay" />
+                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
+                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
+                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

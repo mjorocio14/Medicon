@@ -48,7 +48,6 @@ namespace MediCon.Models
         public virtual DbSet<ProductList> ProductLists { get; set; }
         public virtual DbSet<ProductUnit> ProductUnits { get; set; }
         public virtual DbSet<Referral> Referrals { get; set; }
-        public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Urinalysi> Urinalysis { get; set; }
@@ -83,10 +82,22 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_MedicineList_Result>("[MediconEntities].[fn_MedicineList]()");
         }
     
-        [DbFunction("MediconEntities", "fn_vitalSignList")]
-        public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList()
+        public virtual ObjectResult<spOT_MedicineDispensing_Result> spOT_MedicineDispensing(string qrCode)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList]()");
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spOT_MedicineDispensing_Result>("spOT_MedicineDispensing", qrCodeParameter);
+        }
+    
+        public virtual int spOT_MedicineList(string serviceID)
+        {
+            var serviceIDParameter = serviceID != null ?
+                new ObjectParameter("serviceID", serviceID) :
+                new ObjectParameter("serviceID", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("spOT_MedicineList", serviceIDParameter);
         }
     
         [DbFunction("MediconEntities", "fn_getMRHclients")]

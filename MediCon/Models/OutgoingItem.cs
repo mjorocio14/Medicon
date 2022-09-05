@@ -26,5 +26,8 @@ namespace MediCon.Models
         public Nullable<int> qtyReleased { get; set; }
         public string userIDreleased { get; set; }
         public Nullable<System.DateTime> dateTimeReleased { get; set; }
+        public Nullable<decimal> dosage { get; set; }
+        public Nullable<int> perDay { get; set; }
+        public string noDay { get; set; }
     }
 }

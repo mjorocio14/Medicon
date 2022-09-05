@@ -17,7 +17,7 @@ namespace MediCon.Models
         public byte recNo { get; set; }
         public string unitID { get; set; }
         public string unitDesc { get; set; }
-        public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string personnelID { get; set; }
     }
 }

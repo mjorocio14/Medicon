@@ -14,7 +14,7 @@ namespace MediCon.Models
     
     public partial class ProductList
     {
-        public Nullable<int> recNo { get; set; }
+        public int recNo { get; set; }
         public string productCode { get; set; }
         public string productDesc { get; set; }
         public string measurementID { get; set; }

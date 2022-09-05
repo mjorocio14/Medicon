@@ -186,6 +186,7 @@
                    }
                }
                ],
+           
                "order": [[0, "asc"]],
                "responsive": true,
                'columnDefs': [
@@ -252,6 +253,10 @@
                       "className": "text-center"
                   }
                ],
+               //dom: 'Bfrtip',
+               //buttons: [
+               //     'print'
+               //],
                "lengthChange": true,
                "autoWidth": true,
                "scrollY": 200,
@@ -264,8 +269,6 @@
                s.$apply();
            });
 
-
-           //$.fn.DataTable.ext.pager.numbers_length = 5;
            $.fn.DataTable.FixedHeader;
            s.mesTable = 1;
        }

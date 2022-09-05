@@ -27,7 +27,8 @@ namespace MediCon.Models
     
         public virtual DbSet<Brgy> Brgies { get; set; }
         public virtual DbSet<CityMun> CityMuns { get; set; }
-        public virtual DbSet<PersonalInfo> PersonalInfoes { get; set; }
+        public virtual DbSet<PersonalStatu> PersonalStatus { get; set; }
         public virtual DbSet<Province> Provinces { get; set; }
+        public virtual DbSet<PersonalInfo> PersonalInfoes { get; set; }
     }
 }
