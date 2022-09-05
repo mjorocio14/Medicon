@@ -1,8 +1,9 @@
 ﻿
 @{
-    //ViewBag.Title = "OralExam";
+    //ViewBag.Title = "ToothExtraction";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 
 <style>
     .select2-container .select2-selection {
@@ -15,13 +16,12 @@
     }
 </style>
 
-
-<div ng-controller="OralExamCtrl">
+<div ng-controller="ToothExtractionCtrl">
 
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Oral Examination/Consultation</h2>
+            <h2>Tooth Extraction</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="">PHO</a>
@@ -30,17 +30,15 @@
                     <a href="">Dental</a>
                 </li>
                 <li class="active">
-                    <strong>Oral Examination/Consultation</strong>
+                    <strong>Tooth Extraction</strong>
                 </li>
             </ol>
         </div>
         <div class="col-sm-2" style="margin-top:30px; text-align:end;">
-            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN" ng-click="showClientList = !showClientList"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
-            <button class="btn btn-danger" ng-show="showRx" ng-click="resetForm()"><i class="fa fa-angle-double-left"></i> Back </button>
+            <button class="btn" ng-class="showRx == false ? 'btn-primary':'btn-danger'" ng-show="showRx" ng-click="showRx = !showRx"><i class="fa" ng-class="showRx == false ? 'fa-list':'fa-angle-double-left'"></i> Back </button>
         </div>
     </div>
     <!-- /HEADER -->
-
 
     <div class="wrapper wrapper-content ">
 
@@ -84,25 +82,25 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_lastName">Last name</label>
-                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_lastName" name="qr_lastName" ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_firstName">First name</label>
-                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_firstName" name="qr_firstName" ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_mi">Middle name</label>
-                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_suffix">Suffix</label>
-                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -110,7 +108,7 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_birthdate">Birthday</label>
-                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
@@ -129,7 +127,7 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_contactNo">Contact no.</label>
-                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -137,7 +135,7 @@
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_address">Address</label>
-                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly style="background-color: white;" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -210,125 +208,65 @@
                                 <label class="text-center">DIAGNOSIS</label>
                             </div>
                             <div class="panel-body">
-                                <form id="diagnosisDental_form" name="diagnosisDental_form">
-                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <div class="row">
-                                            <div class="checkbox checkbox-danger col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                                                <input type="checkbox" id="DIAG048" value="cellulitis" ng-model="diagnose.DIAG048">
-                                                <label for="DIAG048"> <b>Cellulitis/Dento Alveolar Abscess</b> </label>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="checkbox checkbox-danger col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                                                <input type="checkbox" id="DIAG049" value="ToothExtraction" ng-model="diagnose.DIAG049" ng-change="diagnose.DIAG049 == false ? diagnoseInfo.toothNum = '':''; diagnoseInfo.personnelID = '';">
-                                                <label for="DIAG049"> <b>Tooth Extraction</b> </label>
-                                            </div>
-                                            <div class="form-group col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                                                <input type="text" id="toothNum" name="toothNum" ng-model="diagnoseInfo.toothNum" ng-disabled="diagnose.DIAG049 == false || diagnose.DIAG049 == undefined" placeholder="Identify tooth number here..." class="form-control" ng-required="diagnose.DIAG049" />
-                                                @*<select name="toothNum" id="toothNum" style="width: 100%; text-transform : uppercase" ng-model="diagnoseInfo.toothNum" class="form-control" ng-disabled="diagnose.DIAG049 == false || diagnose.DIAG049 == undefined" ng-required="diagnose.DIAG049">
-                                                        <option value="">- Select Tooth Number -</option>
-                                                        <option value="11">11</option>
-                                                        <option value="12">12</option>
-                                                        <option value="13">13</option>
-                                                        <option value="14">14</option>
-                                                        <option value="15">15</option>
-                                                        <option value="16">16</option>
-                                                        <option value="17">17</option>
-                                                        <option value="18">18</option>
-
-                                                        <option value="21">21</option>
-                                                        <option value="22">22</option>
-                                                        <option value="23">23</option>
-                                                        <option value="24">24</option>
-                                                        <option value="25">25</option>
-                                                        <option value="26">26</option>
-                                                        <option value="27">27</option>
-                                                        <option value="28">28</option>
-
-                                                        <option value="31">31</option>
-                                                        <option value="32">32</option>
-                                                        <option value="33">33</option>
-                                                        <option value="34">34</option>
-                                                        <option value="35">35</option>
-                                                        <option value="36">36</option>
-                                                        <option value="37">37</option>
-                                                        <option value="38">38</option>
-
-                                                        <option value="41">41</option>
-                                                        <option value="42">42</option>
-                                                        <option value="43">43</option>
-                                                        <option value="44">44</option>
-                                                        <option value="45">45</option>
-                                                        <option value="46">46</option>
-                                                        <option value="47">47</option>
-                                                        <option value="48">48</option>
-
-                                                        <option value="51">51</option>
-                                                        <option value="52">52</option>
-                                                        <option value="53">53</option>
-                                                        <option value="54">54</option>
-                                                        <option value="55">55</option>
-
-                                                        <option value="61">61</option>
-                                                        <option value="62">62</option>
-                                                        <option value="63">63</option>
-                                                        <option value="64">64</option>
-                                                        <option value="65">65</option>
-
-                                                        <option value="71">71</option>
-                                                        <option value="72">72</option>
-                                                        <option value="73">73</option>
-                                                        <option value="74">74</option>
-                                                        <option value="75">75</option>
-
-                                                        <option value="81">81</option>
-                                                        <option value="82">82</option>
-                                                        <option value="83">83</option>
-                                                        <option value="84">84</option>
-                                                        <option value="85">85</option>
-                                                    </select>*@
-                                            </div>
-                                        </div>
-                                        <div class="row" ng-show="diagnose.DIAG049 == true">
-                                            <div class="form-group col-lg-12 col-xs-12">
-                                                <label class="control-label" for="dentist">Dentist</label>
-                                                <select name="personnelID" id="personnelID" style="width: 100%; text-transform : uppercase" ng-model="per.personnelID" class="form-control" ng-required="diagnose.DIAG049">
-                                                    <option value="">- Select Dentist -</option>
-                                                    <option ng-repeat="item in personnelList" value="{{item.personnelID}}">{{item.personnel_lastName}}, {{item.personnel_firstName}} {{item.personnel_midInitial}} {{item.personnel_extName}}</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="checkbox checkbox-danger col-lg-3 col-md-3">
-                                                <input type="checkbox" id="DIAG023" value="Others" ng-model="diagnose.DIAG023" ng-change="diagnose.DIAG023 == false ? diagnoseInfo.otherDiagnose = '':''">
-                                                <label for="DIAG023"> <b>Others</b> </label>
-                                            </div>
-                                            <div class="form-group col-lg-9 col-md-9">
-                                                <input type="text" id="otherDiagnose" name="otherDiagnose" ng-model="diagnoseInfo.otherDiagnose" ng-disabled="diagnose.DIAG023 == false || diagnose.DIAG023 == undefined" placeholder="Identify diagnosis here..." class="form-control" ng-required="diagnose.DIAG023" />
-                                            </div>
-                                        </div>
-                                        <hr class="hr-line-dashed" />
-                                        <div class="row">
-                                            <div class="form-group">
-                                                <label class="control-label" for="remarks">Refer</label>
-                                                <select name="referDesc" id="referDesc" style="width: 100%; text-transform : uppercase" ng-model="diagnoseInfo.outsideReferral" class="form-control">
-                                                    <option value="">- Select Referral -</option>
-                                                    <option value="Municipal Health Office/Dental Clinic">Municipal Health Office/Dental Clinic</option>
-                                                    <option value="Private Clinic">Private Clinic</option>
-                                                    <option value="Samal District Hospital Zone">Samal District Hospital Zone</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label" for="remarks">Remarks</label>
-                                                <input type="text" id="remarks" name="remarks" ng-model="diagnoseInfo.remarks" placeholder="Remarks here..." class="form-control" />
-                                            </div>
-                                            <hr class="hr-line-dashed" />
-                                            <div class="col-sm-12 col-xs-12">
-                                                <button class="btn btn-info pull-right" type="submit" ng-click="!diagnosisDental_form.$invalid ? saveDiagnosis(diagnose, diagnoseInfo, per.personnelID):''"><i class="fa fa-user-md"></i> Save Diagnosis </button>
-                                            </div>
-                                        </div>
+                                @*<div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <text>Doctor: <label>{{diagnosisInfo.doctorName}}</label></text>
                                     </div>
-                                </form>
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <text>Date & Time Diagnosed: <label>{{diagnosisInfo.dateTimeLog}}</label></text>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <text>Remarks: <label>{{diagnosisInfo.remarks}}</label></text>
+                                    </div>
+                                </div>
+                                <br />*@
+                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                    <table class="table table-stripped table-hover" style="width: 100%;">
+                                        <thead>
+                                            <tr style="background-color: antiquewhite;">
+                                                <td class="">#</td>
+                                                <td>Diagnosis</td>
+                                                <td>Tooth no.</td>
+                                                <td>Others</td>
+                                                <td>Referral</td>
+                                                <td>Doctor</td>
+                                                <td>Remarks</td>
+                                                <td>Date & Time Diagnosed</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center" ng-show="diagLoader">
+                                                <td colspan="5">
+                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                        <div class="sk-double-bounce1"></div>
+                                                        <div class="sk-double-bounce2"></div>
+                                                    </div>
+                                                    <text><i>Please wait, we are loading your data...</i></text>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center" ng-show="diagnosisList.length == 0  && diagLoader == false">
+                                                <td colspan="5">
+                                                    <text class="text-danger"><label><i>No record found</i></label></text>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="diag in diagnosisList">
+                                                <td>{{$index + 1}}</td>
+                                                <td><label>{{diag.diagnoseName}}</label></td>
+                                                <td>{{diag.toothNum}}</td>
+                                                <td>{{diag.otherDiagnosis}}</td>
+                                                <td>{{diag.outsideReferral}}</td>
+                                                <td>{{diag.personnel_firstName}} {{diag.personnel_midInit}} {{diag.personnel_lastName}}</td>
+                                                <td>{{diag.remarks}}</td>
+                                                <td>{{diag.dateTimeLog}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                        <button class="btn btn-info pull-right" type="submit" ng-click="showRx = !showRx"><i class="fa fa-medkit"></i> Prescription </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -348,13 +286,19 @@
                                         <h5 class="text-danger text-center">MEDICINE</h5>
                                         <form id="prescription_form" name="prescription_form" novalidate>
                                             <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                                                     <div class="form-group">
                                                         <label class="control-label" for="productCode">Name</label>
                                                         <select name="productCode" id="productCode" style="width: 100%; text-transform : uppercase" @*ng-model="meds.productCode" ng-change="getUnit(meds.productCode)"*@ class="form-control" required>
                                                             <option value=""></option>
-                                                            <option ng-repeat="med in medList" value="{{med}}">{{med.productDesc}} {{med.measurementDesc}} {{med.unitDesc}}</option>
+                                                          <option ng-repeat="med in medList" value="{{med}}">{{med.productDesc}} {{med.measurementDesc}} {{med.unitDesc}}</option>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="availability">Available</label>
+                                                        <label name="availability" id="availability" class="form-control text-center" ng-class="unit.AVAILABLE <= 10 ? 'red-bg':''">{{unit.AVAILABLE == null ? '0':unit.AVAILABLE }}</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -478,64 +422,10 @@
     </div>
 
 
-    <!-- MODAL DENTAL DIAGNOSIS -->
-    <div id="diagnosHistory_modal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header blue-bg">
-                    <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h2 class="modal-title text-center">DENTAL DIAGNOSIS</h2>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <text>Doctor: <label>{{diagnosisInfo.doctorName}}</label></text>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <text>Date & Time Diagnosed: <label>{{diagnosisInfo.dateTimeLog}}</label></text>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <text>Remarks: <label>{{diagnosisInfo.remarks}}</label></text>
-                        </div>
-                    </div>
-                    <br />
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table class="table table-stripped table-hover" style="width: 100%;">
-                            <thead style="background-color:aliceblue;">
-                                <tr>
-                                    <td class="">#</td>
-                                    <td>Diagnosis</td>
-                                    <td>Tooth no.</td>
-                                    <td>Others Specify</td>
-                                    <td>Referral Specify</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="text-center" ng-show="diagnosisList.length == 0">
-                                    <td colspan="5">
-                                        <text class="text-danger"><label><i>No record found</i></label></text>
-                                    </td>
-                                </tr>
-                                <tr ng-repeat="diag in diagnosisList">
-                                    <td>{{$index + 1}}</td>
-                                    <td><label>{{diag.diagnoseName}}</label></td>
-                                    <td>{{diag.toothNum}}</td>
-                                    <td>{{diag.otherDiagnose}}</td>
-                                    <td>{{diag.referDesc}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL DENTAL DIAGNOSIS -->
-
 
 </div>
 
 @section scripts
 {
-    <script src="~/Scripts/AngularJS/Dental/OralExam.js?v=1.0"></script>
+    <script src="~/Scripts/AngularJS/Dental/ToothExtraction.js"></script>
 }

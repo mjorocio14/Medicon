@@ -1,0 +1,304 @@
+﻿
+@{
+    //ViewBag.Title = "Dispensing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div ng-app="OT22app" ng-controller="pharmacyDispensingCtrl">
+
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-10">
+            <h2>Medicine Dispensing</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">PHO</a>
+                </li>
+                <li>
+                    <a href="">Pharmacy</a>
+                </li>
+                <li class="active">
+                    <strong>Medicine Dispensing</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-sm-2" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showQRpanel == true ? 'btn-primary':'btn-danger'" ng-click="showQRpanel = !showQRpanel"><i class="fa" ng-class="showQRpanel == true ? 'fa-list':'fa-angle-double-left'"></i> {{showQRpanel == true ? 'Patient List':'Back'}} </button>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+
+        <!-- QR CODE INFO FORM -->
+        <div class="animated fadeInRight ecommerce" ng-show="showQRpanel">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
+                    <label class="text-center">QR CODE INFORMATION</label>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                            <div class="profile_img">
+                                <!-- Current avatar -->
+                                <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
+                            </div>
+                            <form name="qrSearchForm">
+                                <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                    <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                    </span>
+                                </div>
+                            </form>
+                            <br />
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                            <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                <div class="sk-spinner sk-spinner-double-bounce">
+                                    <div class="sk-double-bounce1"></div>
+                                    <div class="sk-double-bounce2"></div>
+                                </div>
+                                <text><i>Please wait, we are getting your data...</i></text>
+                            </div>
+                            <div ng-show="!loader">
+                                <form id="QR_FORM" name="QR_FORM">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_lastName">Last name</label>
+                                                <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_firstName">First name</label>
+                                                <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_mi">Middle name</label>
+                                                <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_suffix">Suffix</label>
+                                                <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="control-label">Sex</label>
+                                            <div class="form-group text-center">
+                                                <div class="radio radio-primary radio-inline">
+                                                    <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled/>
+                                                    <label for="radio_sex_male"> Male </label>
+                                                </div>
+                                                <div class="radio radio-danger radio-inline">
+                                                    <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled/>
+                                                    <label for="radio_sex_female"> Female </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_address">Address</label>
+                                                <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
+                                        </div>
+                                        @*<hr />
+                                        <div class="col-sm-12" ng-show="isEditting == false">
+                                            <button type="button" class="btn btn-success pull-right" style="margin-right: 2px;" ng-click="isEditting = !isEditting" ng-disabled="qrData.qrCode == null"><i class="fa fa-pencil"></i> Edit QR </button>
+                                        </div>
+                                        <div class="col-sm-12" ng-show="isEditting == true">
+                                            <button type="button" class="btn btn-danger pull-right" ng-click="isEditting = !isEditting" ng-disabled=""><i class="fa fa-times"></i> Cancel </button>
+                                            <button type="submit" class="btn btn-primary pull-right" style="margin-right: 2px;" ng-click="!QR_FORM.$invalid ? updateQRinfo(qrData):''"><i class="fa fa-save"></i> Save Changes</button>
+                                        </div>*@
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /QR CODE INFO FORM -->
+
+        <!-- MEDICAL PRESCRIPTION -->
+        <div class="animated fadeInRight ecommerce" ng-show="showQRpanel">
+            <div class="panel panel-primary">
+                <div class="panel-heading text-center">
+                    <label class="text-center">MEDICAL PRESCRIPTION</label>
+                </div>
+                <div class="panel-body">
+                    <div class="text-center" ng-show="tableLoader">
+                        <div class="sk-spinner sk-spinner-double-bounce">
+                            <div class="sk-double-bounce1"></div>
+                            <div class="sk-double-bounce2"></div>
+                        </div>
+                        <text><i>Please wait, we are getting your data...</i></text>
+                    </div>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" ng-show="!tableLoader">
+                        <table id="listMeds_tbl" class="table table-stripped" style="width: 100%;">
+                            <tbody>
+                                <tr ng-repeat="item in prescripted">
+                                    <th class="text-danger vertical-align">{{item[0].serviceID}}</th>
+                                    <td>
+                                        <table class="table table-stripped">
+                                            <tr ng-repeat="med in item" ng-style="med.checkboxVal == true ? {'background-color': '#dd3f3f', 'color': 'white'}:''">
+                                                <td class="text-center ">{{$index + 1}}</td>
+                                                <td class="text-left"><b>{{med.productDesc}}</b></td>
+                                                <td class="text-left">
+                                                    {{med.dosage}}
+                                                    {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'ML':med.unitDesc == 'Tablet' || med.unitDesc == 'Softgel' ? 'Tablet/s':med.unitDesc == 'Capsule' ? 'Capsule/s':med.unitDesc == 'Nebule'? med.unitDesc:med.unitDesc == 'Cream' ? 'Apply':med.unitDesc == 'Respule' ? med.unitDesc:med.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
+                                                    {{med.perDay}} x a Day
+                                                </td>
+                                                <td class="text-right">{{med.noDay == 'maintenance' ? 'as Maintenance':med.noDay == 'needed' ? 'as Needed':med.noDay == 'single' ? 'Single Dose':med.noDay + ' Day/s'}}</td>
+                                                <td class="text-right"><b>{{med.qtyRx}} {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'Bottle/s':med.unitDesc == 'Cream' ? 'Tube':med.unitDesc + '/s'}}</b></td>
+                                                <td class="text-right" style="width:10%;">
+                                                    <input placeholder="{{med.qtyRx}}" ng-disabled="med.checkboxVal == true" class="form-control text-center" type="number" id="quantity" name="quantity" ng-model="med.qtyReleased" />
+                                                </td>
+                                                <td class="text-right"><input type="checkbox" ng-disabled="med.checkboxVal == true" class="i-checks icheckbox_square-green" name="isRelease" ng-model="med.isRelease"></td>                 
+                                                <td class="text-right">
+                                                    <label ng-class="med.checkboxVal ? '':'text-success'">{{med.checkboxVal ? 'RELEASED':'TO DISPENSE'}}</label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr class="hr-line-dashed" />
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="row pull-right">
+                            @*<div class="checkbox checkbox-danger checkbox-inline" style="margin-right: 20px;">
+                                <input type="checkbox" id="select-all" ng-change="checkAll(prescripted)">
+                                <label for="select-all"> <b>Check All</b> </label>
+                            </div>*@
+                            <div class="btn-group">
+                                <button class="btn btn-primary" ng-disabled="checkboxCounter == 0" ng-click="releaseMeds()"><i class="fa fa-send"></i> Release </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /MEDICAL PRESCRIPTION -->
+
+        <!-- LIST OF RELEASED MEDICINES PER PATIENT -->
+        <div class="animated fadeInRight ecommerce" ng-show="!showQRpanel">
+
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
+                    <label>LIST OF RELEASED MEDICINES PER PATIENT</label>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table id="listMedReleased_tbl" class="table table-stripped table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+
+                                    <th>#</th>
+                                    <th>Last name</th>
+                                    <th>First name</th>
+                                    <th>M.I.</th>
+                                    <th>Suffix</th>
+                                    <th>Sex</th>
+                                    <th>Age</th>
+                                    <th>Contact no.</th>
+                                    <th>Address</th>
+                                    <th>Date & Time Rx</th>
+                                    <th>Date & Time Released</th>
+                                    <th class="text-right" data-sort-ignore="true">Action</th>
+
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- /LIST OF RELEASED MEDICINES PER PATIENT -->
+
+    </div>
+
+
+    <!-- MODAL RELEASED MEDICINE PER CLIENT -->
+    <div id="medDispensed_modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header blue-bg">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h2 class="modal-title text-center">RELEASED MEDICINE/S</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table table-stripped table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th class="">#</th>
+                                    <th>Medicine Name</th>
+                                    <th>Doctor</th>
+                                    <th>Qty Rx</th>
+                                    <th>Qty Released</th>
+                                    <th>Dispenser</th>
+                                    <th>Date & Time Released</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" ng-show="diagnosisInfo.length == 0">
+                                    <td colspan="4">
+                                        <text class="text-danger"><label><i>No record found</i></label></text>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="rx in diagnosisInfo">
+                                    <td>{{$index + 1}}</td>
+                                    <td><label>{{rx.productDesc}}</label></td>
+                                    <td>{{rx.doctor_lastName}}, {{rx.doctor_firstName}} {{rx.doctor_middleName}} {{rx.doctor_extName}}</td>
+                                    <td>{{rx.qtyRx}}</td>
+                                    <td>{{rx.qtyReleased}}</td>
+                                    <td>{{rx.encoder_lastName}}, {{rx.encoder_firstName}} {{rx.encoder_middleName}} {{rx.encoder_extName}}</td>
+                                    <td>{{rx.dateTimeReleased}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL RELEASED MEDICINE PER CLIENT -->
+
+</div>
+
+
+
+
+
+
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/Pharmacy/pharmacyDispensing.js"></script>
+}
