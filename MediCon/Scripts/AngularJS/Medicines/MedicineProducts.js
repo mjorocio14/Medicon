@@ -64,7 +64,7 @@
             }, {
                 "data": null,
                 render: function (row) {
-                    return '<strong>' + row.productDesc + ' ' + (row.measurementDesc != null ? row.measurementDesc : '') + '</strong>';
+                    return '<strong>' + row.productDesc + ' ' + (row.measurmentDesc != null ? row.measurmentDesc : '') + '</strong>';
                 }
             }, 
             {
@@ -177,7 +177,7 @@
                }, {
                    "data": null,
                    render: function (row) {
-                       return '<strong>' + row.measurementDesc + '</strong>';
+                       return '<strong>' + row.measurmentDesc + '</strong>';
                    }
                },
                {

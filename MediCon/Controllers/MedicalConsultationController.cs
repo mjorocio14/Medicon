@@ -38,13 +38,32 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult getLabHistory(string qrCode)
+        public ActionResult getMedHistory(string qrCode)
         {
             try
             {
-                var labHist = dbMed.fn_getPatientLabHistory(qrCode).OrderByDescending(b => b.dateTested).ToList();
+                var medHist = dbMed.Consultations.Join(dbMed.Services, c => c.serviceID, s => s.serviceID, (c, s) => new { c, s })
+                                                .Join(dbMed.Personnels, res1 => res1.c.personnelID, p => p.personnelID, (res1, p) => new { res1, p })
+                                                .Join(dbMed.VitalSigns, res2 => res2.res1.c.vSignID, vs => vs.vSignID, (res2, vs) => new { res2, vs })
+                                                .Where(e => e.vs.qrCode == qrCode)
+                                                .Select(a => new
+                                                {
+                                                    a.res2.res1.c.consultID,
+                                                    a.res2.res1.c.serviceID,
+                                                    a.res2.res1.s.serviceName,
+                                                    a.res2.res1.c.outsideReferral,
+                                                    a.res2.res1.c.remarks,
+                                                    a.res2.res1.c.toothNum,
+                                                    a.res2.res1.c.personnelID,
+                                                    a.res2.res1.c.dateTimeLog,
+                                                    a.res2.p.personnel_lastName,
+                                                    a.res2.p.personnel_firstName,
+                                                    a.res2.p.personnel_midInit,
+                                                    a.res2.p.personnel_extName,
+                                                    a.res2.p.position
+                                                }).OrderByDescending(b => b.dateTimeLog).GroupBy(c => c.consultID).ToList();
 
-                return Json(labHist, JsonRequestBehavior.AllowGet);
+                return Json(medHist, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -53,61 +72,76 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult getDiagnosisHistory(string qrCode)
+        public ActionResult getLabHistory(string qrCode)
         {
             try
             {
-                var diagnosis = dbMed.ResultDiagnosis.Join(dbMed.Diagnosis, rd => rd.diagnoseID, d => d.diagnoseID, (rd, d) => new { rd, d })
-                                                   .Join(dbMed.Consultations, r1 => r1.rd.consultID, c => c.consultID, (r1, c) => new { r1, c })
-                                                   .Join(dbMed.VitalSigns, r2 => r2.c.vSignID, vs => vs.vSignID, (r2, vs) => new { r2, vs })
-                                                   .Where(a => a.vs.qrCode == qrCode)
-                                                   .Select(b => new
-                                                   {
-                                                       b.r2.r1.rd.diagnoseID,
-                                                       b.r2.r1.rd.otherDiagnosis,
-                                                       b.r2.r1.rd.resultID,
-                                                       b.r2.r1.d.diagnoseName,
-                                                       b.r2.c.consultID,
-                                                       b.r2.c.outsideReferral,
-                                                       b.r2.c.remarks,
-                                                       b.r2.c.personnelID,
-                                                       b.r2.c.dateTimeLog,
-                                                       physician = dbMed.Personnels.Where(c => c.personnelID == b.r2.c.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName })
+                var medHist = dbMed.BloodChems.Join(dbMed.LaboratoryExams, bc => bc.labID, le => le.labID, (bc, le) => new { bc, le })
+                                              .Join(dbMed.Referrals, r1 => r1.le.referralID, r => r.referralID, (r1, r) => new { r1, r })
+                                              .Join(dbMed.Consultations, r2 => r2.r.consultID, c => c.consultID, (r2, c) => new { r2, c })
+                                              .Join(dbMed.VitalSigns, r3 => r3.c.vSignID, vs => vs.vSignID, (r3, vs) => new { r3, vs })
+                                              .Join(dbMed.LaboratoryTests, r4 => r4.r3.r2.r1.le.labTestID, lt => lt.labTestID, (r4, lt) => new { r4, lt })
+                                              .Where(e => e.r4.vs.qrCode == qrCode)
+                                              .Select(a => new
+                                              {
+                                                  a.r4.vs.qrCode,
+                                                  a.r4.r3.c.consultID,
+                                                  a.r4.r3.r2.r.referralID,
+                                                  a.r4.r3.r2.r1.le.labID,
+                                                  a.r4.r3.r2.r1.le.isTested,
+                                                  a.r4.r3.r2.r1.le.isEncoded,
+                                                  a.lt.labTestID,
+                                                  a.lt.labTestName,
+                                                  a.r4.r3.r2.r1.bc.bloodChemID,
+                                                  a.r4.r3.r2.r1.bc.fbs,
+                                                  a.r4.r3.r2.r1.bc.serumUricAcid,
+                                                  a.r4.r3.r2.r1.bc.creatinine,
+                                                  a.r4.r3.r2.r1.bc.cholesterol,
+                                                  a.r4.r3.r2.r1.bc.triglycerides,
+                                                  a.r4.r3.r2.r1.bc.hdl,
+                                                  a.r4.r3.r2.r1.bc.ldl,
+                                                  a.r4.r3.r2.r1.bc.vldl,
+                                                  a.r4.r3.r2.r1.bc.sgpt,
+                                                  a.r4.r3.r2.r1.bc.sgot,
+                                                  a.r4.r3.r2.r1.bc.bun,
+                                                  a.r4.r3.r2.r1.bc.potassium,
+                                                  a.r4.r3.r2.r1.bc.sodium,
+                                                  a.r4.r3.r2.r1.bc.chloride,
+                                                  a.r4.r3.r2.r1.bc.calcium,
+                                                  a.r4.r3.r2.r1.bc.glycosylatedHemoglobin,
+                                                  a.r4.r3.r2.r1.bc.pathologist,
+                                                  pathologistName = dbMed.Personnels.Where(b => b.personnelID == a.r4.r3.r2.r1.bc.pathologist).Select(c => new { c.personnel_firstName, c.personnel_midInit, c.personnel_lastName, c.personnel_extName }),
+                                                  a.r4.r3.r2.r1.bc.medtech,
+                                                  medTechName = dbMed.Personnels.Where(b => b.personnelID == a.r4.r3.r2.r1.bc.medtech).Select(c => new { c.personnel_firstName, c.personnel_midInit, c.personnel_lastName, c.personnel_extName }),
+                                                  a.r4.r3.r2.r1.bc.dateTimeLog
+                                                }).OrderByDescending(b => b.dateTimeLog).ToList();
+
+                return Json(medHist, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult getDiagnosisHistory(string consultID)
+        {
+            try
+            {
+                var medHist = dbMed.ResultDiagnosis.Join(dbMed.Diagnosis, rd => rd.diagnoseID, d => d.diagnoseID, (rd, d) => new { rd, d })
+                                                   .Where(a => a.rd.consultID == consultID)
+                                                   .Select(b => new { 
+                                                        b.rd.diagnoseID,
+                                                        b.rd.otherDiagnosis,
+                                                        b.rd.resultID,
+                                                        b.d.diagnoseName
                                                    })
-                                                   .GroupBy(e => e.consultID).ToList();
+                                                   .OrderBy(a => a.diagnoseName).ToList();
 
-                var rxHist = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, c => c.vSignID, (vs, c) => new {vs, c})
-                                             .Join(dbMed.MedicalPrescriptions, r1 => r1.c.consultID, mp => mp.consultID, (r1, mp) => new {r1, mp})
-                                             .Join(dbMed.OutgoingItems, r2 => r2.mp.rxID, oi => oi.rxID, (r2, oi) => new {r2, oi})
-                                             .Join(dbMed.ProductLists, r3 => r3.oi.productCode, pl => pl.productCode, (r3, pl) => new {r3, pl})
-                                             .Join(dbMed.ProductUnits, r4 => r4.pl.unitID, pu => pu.unitID, (r4, pu) => new {r4, pu})
-                                             .Join(dbMed.Measurements, r5 => r5.r4.pl.measurementID, m => m.measurementID, (r5, m) => new {r5, m})
-                                             .Join(dbMed.Services, r6 => r6.r5.r4.r3.r2.mp.serviceID, s => s.serviceID, (r6, s) => new {r6, s})
-                                             .Where(a => a.r6.r5.r4.r3.r2.r1.vs.qrCode == qrCode)
-                                             .Select(b => new {
-                                                b.r6.r5.r4.r3.r2.r1.vs.qrCode,
-                                                b.r6.r5.r4.r3.r2.r1.vs.vSignID,
-                                                b.r6.r5.r4.r3.r2.r1.c.consultID,
-                                                b.r6.r5.r4.r3.r2.mp.rxID,
-                                                b.r6.r5.r4.r3.r2.mp.serviceID,
-                                                b.s.serviceName,
-                                                b.r6.r5.r4.r3.r2.mp.personnelID,
-                                                b.r6.r5.r4.r3.r2.mp.dateTimeRx,
-                                                physician = dbMed.Personnels.Where(c => c.personnelID == b.r6.r5.r4.r3.r2.mp.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName }),
-                                                b.r6.r5.r4.r3.oi.outID,
-                                                b.r6.r5.r4.r3.oi.productCode,
-                                                b.r6.r5.r4.r3.oi.qtyRx,
-                                                b.r6.r5.r4.r3.oi.dosage,
-                                                b.r6.r5.r4.r3.oi.perDay,
-                                                b.r6.r5.r4.r3.oi.noDay,
-                                                b.r6.r5.r4.pl.productDesc,
-                                                b.r6.r5.r4.pl.measurementID,
-                                                b.r6.r5.r4.pl.unitID,
-                                                b.r6.r5.pu.unitDesc,
-                                                b.r6.m.measurementDesc
-                                             }).GroupBy(c => c.rxID).ToList();
+                var rxHist = dbMed.sp_getRxHistory(consultID, "").OrderBy(a => a.productDesc).ToList();
 
-                return Json(new { diagnosis, rxHist }, JsonRequestBehavior.AllowGet);
+                return Json(new { medHist, rxHist }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

@@ -225,9 +225,6 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Content/Site.css">
       <publishTime>08/03/2022 11:13:13</publishTime>
     </File>
-    <File Include="Controllers/AccountController.cs">
-      <publishTime>08/17/2022 09:19:50</publishTime>
-    </File>
     <File Include="fonts/glyphicons-halflings-regular.eot">
       <publishTime>08/03/2022 11:13:22</publishTime>
     </File>

@@ -169,7 +169,6 @@
     <Compile Include="Controllers\MaleReproController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MedicalConsultationController.cs" />
-    <Compile Include="Controllers\PharmacyController.cs" />
     <Compile Include="Controllers\PapsmearBreastExamController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\QRPersonalInfoController.cs" />
@@ -233,9 +232,6 @@
     <Compile Include="Models\fn_getPapsmearBreastExamClients_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\fn_getPatientLabHistory_Result.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\fn_MedicineList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -292,9 +288,6 @@
     <Compile Include="Models\PersonalInfo.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\PersonalStatu.cs">
-      <DependentUpon>DCIMS.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Personnel.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -318,9 +311,6 @@
     </Compile>
     <Compile Include="Models\sp_getRxHistory_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\spOT_MedicineDispensing_Result.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
@@ -396,10 +386,6 @@
     <Content Include="myIcon16.ico" />
     <Content Include="Scripts\AngularJS\angular.min.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
-    <Content Include="Scripts\AngularJS\Dental\ToothExtraction.js" />
-    <Content Include="Scripts\AngularJS\MedicalConsultation\MedicalConsultation.js" />
-    <Content Include="Scripts\AngularJS\MedConApp.js" />
-    <Content Include="Scripts\AngularJS\Pharmacy\pharmacyDispensing.js" />
     <Content Include="Scripts\AngularJS\LabResult\LabResult.js" />
     <Content Include="Scripts\AngularJS\Labtest\Labtest.js" />
     <Content Include="Scripts\AngularJS\MaleRepro\MaleRepro.js" />
@@ -432,25 +418,12 @@
     <Content Include="Models\DCIMS.edmx.diagram">
       <DependentUpon>DCIMS.edmx</DependentUpon>
     </Content>
-    <EntityDeploy Include="Models\LocalDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>LocalDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\LocalDB.edmx.diagram">
-      <DependentUpon>LocalDB.edmx</DependentUpon>
     <EntityDeploy Include="Models\Medicon.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Medicon.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\Medicon.edmx.diagram">
       <DependentUpon>Medicon.edmx</DependentUpon>
-    </Content>
-    <EntityDeploy Include="Models\DCIMS.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>DCIMS.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\DCIMS.edmx.diagram">
-      <DependentUpon>DCIMS.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\Medicon.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -513,8 +486,6 @@
     <Content Include="Views\MedicalConsultation\Index.cshtml" />
     <Content Include="Views\Dental\OralExam.cshtml" />
     <Content Include="Views\Laboratory\Lists.cshtml" />
-    <Content Include="Views\Dental\ToothExtraction.cshtml" />
-    <Content Include="Views\Pharmacy\Dispensing.cshtml" />
     <Content Include="Views\Labtest\Index.cshtml" />
     <Content Include="Views\PapsmearBreastExam\Index.cshtml" />
     <Content Include="Views\MaleRepro\Index.cshtml" />

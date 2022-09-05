@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="EQPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="EQPModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Brgy">
           <Key>
             <PropertyRef Name="brgyCode" />
@@ -31,7 +31,7 @@
           <Key>
             <PropertyRef Name="qrCode" />
           </Key>
-          <Property Name="recNo" Type="bigint" Nullable="false" />
+          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="qrCode" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="lastName" Type="varchar" MaxLength="50" />
           <Property Name="firstName" Type="varchar" MaxLength="50" />
@@ -47,18 +47,6 @@
           <Property Name="userID" Type="nchar" MaxLength="10" />
           <Property Name="registrationType" Type="tinyint" />
         </EntityType>
-        <EntityType Name="PersonalStatus">
-          <Key>
-            <PropertyRef Name="recNo" />
-          </Key>
-          <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="qrCode" Type="varchar" MaxLength="12" Nullable="false" />
-          <Property Name="statusCode" Type="varchar" MaxLength="10" Nullable="false" />
-          <Property Name="remarks" Type="varchar" MaxLength="200" />
-          <Property Name="changedDateTime" Type="datetime" />
-          <Property Name="userID" Type="varchar" MaxLength="10" />
-          <Property Name="validityDate" Type="date" />
-        </EntityType>
         <EntityType Name="Province">
           <Key>
             <PropertyRef Name="provCode" />
@@ -73,27 +61,18 @@
           <EntitySet Name="Brgy" EntityType="Self.Brgy" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CityMun" EntityType="Self.CityMun" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PersonalInfo" EntityType="Self.PersonalInfo" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PersonalStatus" EntityType="Self.PersonalStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Province" EntityType="Self.Province" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="EQPModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="EQPEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Brgies" EntityType="EQPModel.Brgy" />
-          <EntitySet Name="CityMuns" EntityType="EQPModel.CityMun" />
-          <EntitySet Name="PersonalStatus" EntityType="EQPModel.PersonalStatu" />
-          <EntitySet Name="Provinces" EntityType="EQPModel.Province" />
-          <EntitySet Name="PersonalInfoes" EntityType="EQPModel.PersonalInfo" />
-        </EntityContainer>
         <EntityType Name="Brgy">
           <Key>
             <PropertyRef Name="brgyCode" />
           </Key>
-          <Property Name="id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="brgyCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="id" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="brgyCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="brgyDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="regCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="provCode" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
@@ -103,41 +82,19 @@
           <Key>
             <PropertyRef Name="citymunCode" />
           </Key>
-          <Property Name="id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="psgcCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="citymunDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="regDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="provCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="citymunCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="PersonalStatu">
-          <Key>
-            <PropertyRef Name="recNo" />
-          </Key>
-          <Property Name="recNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="qrCode" Type="String" Nullable="false" MaxLength="12" FixedLength="false" Unicode="false" />
-          <Property Name="statusCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="changedDateTime" Type="DateTime" Precision="3" />
-          <Property Name="userID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="validityDate" Type="DateTime" Precision="0" />
-        </EntityType>
-        <EntityType Name="Province">
-          <Key>
-            <PropertyRef Name="provCode" />
-          </Key>
-          <Property Name="id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="psgcCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="provDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="regCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="provCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="citymunCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
         </EntityType>
         <EntityType Name="PersonalInfo">
           <Key>
             <PropertyRef Name="qrCode" />
           </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" />
-          <Property Name="qrCode" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="middleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -152,22 +109,22 @@
           <Property Name="userID" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="registrationType" Type="Byte" />
         </EntityType>
-        <EntityType Name="Province">
-          <Key>
-            <PropertyRef Name="provCode" />
-          </Key>
-          <Property Name="id" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="psgcCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="provDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="regCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="provCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-        </EntityType>
         <EntityContainer Name="EQPEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Brgies" EntityType="Self.Brgy" />
           <EntitySet Name="CityMuns" EntityType="Self.CityMun" />
           <EntitySet Name="PersonalInfoes" EntityType="Self.PersonalInfo" />
-          <EntitySet Name="Provinces" EntityType="Self.Province" />
+          <EntitySet Name="Provinces" EntityType="EQPModel.Province" />
         </EntityContainer>
+        <EntityType Name="Province">
+          <Key>
+            <PropertyRef Name="provCode" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="psgcCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="provDesc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="regCode" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="provCode" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -177,48 +134,56 @@
           <EntitySetMapping Name="Brgies">
             <EntityTypeMapping TypeName="EQPModel.Brgy">
               <MappingFragment StoreEntitySet="Brgy">
-                <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
-                <ScalarProperty Name="provCode" ColumnName="provCode" />
-                <ScalarProperty Name="regCode" ColumnName="regCode" />
-                <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
-                <ScalarProperty Name="brgyCode" ColumnName="brgyCode" />
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="brgyCode" ColumnName="brgyCode" />
+                <ScalarProperty Name="brgyDesc" ColumnName="brgyDesc" />
+                <ScalarProperty Name="regCode" ColumnName="regCode" />
+                <ScalarProperty Name="provCode" ColumnName="provCode" />
+                <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="CityMuns">
             <EntityTypeMapping TypeName="EQPModel.CityMun">
               <MappingFragment StoreEntitySet="CityMun">
-                <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
-                <ScalarProperty Name="provCode" ColumnName="provCode" />
-                <ScalarProperty Name="regDesc" ColumnName="regDesc" />
-                <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
-                <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
                 <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
+                <ScalarProperty Name="citymunDesc" ColumnName="citymunDesc" />
+                <ScalarProperty Name="regDesc" ColumnName="regDesc" />
+                <ScalarProperty Name="provCode" ColumnName="provCode" />
+                <ScalarProperty Name="citymunCode" ColumnName="citymunCode" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PersonalStatus">
-            <EntityTypeMapping TypeName="EQPModel.PersonalStatu">
-              <MappingFragment StoreEntitySet="PersonalStatus">
-                <ScalarProperty Name="validityDate" ColumnName="validityDate" />
-                <ScalarProperty Name="userID" ColumnName="userID" />
-                <ScalarProperty Name="changedDateTime" ColumnName="changedDateTime" />
-                <ScalarProperty Name="remarks" ColumnName="remarks" />
-                <ScalarProperty Name="statusCode" ColumnName="statusCode" />
-                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+          <EntitySetMapping Name="PersonalInfoes">
+            <EntityTypeMapping TypeName="EQPModel.PersonalInfo">
+              <MappingFragment StoreEntitySet="PersonalInfo">
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="brgyCode" ColumnName="brgyCode" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+                <ScalarProperty Name="occupation" ColumnName="occupation" />
+                <ScalarProperty Name="timeLog" ColumnName="timeLog" />
+                <ScalarProperty Name="userID" ColumnName="userID" />
+                <ScalarProperty Name="registrationType" ColumnName="registrationType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Provinces">
             <EntityTypeMapping TypeName="EQPModel.Province">
               <MappingFragment StoreEntitySet="Province">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
-                <ScalarProperty Name="provDesc" ColumnName="provDesc" />
-                <ScalarProperty Name="regCode" ColumnName="regCode" />
                 <ScalarProperty Name="provCode" ColumnName="provCode" />
+                <ScalarProperty Name="regCode" ColumnName="regCode" />
+                <ScalarProperty Name="provDesc" ColumnName="provDesc" />
+                <ScalarProperty Name="psgcCode" ColumnName="psgcCode" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -16,8 +16,6 @@
     s.medHistLoader_modal = false;
     s.newlyAddedConsultID = '';
     s.isEditDiagnosis = true;
-    s.medicalRecord_loader = false;
-    s.showMedicalRecord = false;
 
     s.scanner = new Instascan.Scanner(
             {
@@ -87,9 +85,8 @@
                     s.diagnoseRemarks = '';
 
                     getBPhistory(info);
-                    getLabHistory(info);
+                    getMedicalHistory(info);
                     s.newlyAddedConsultID = '';
-                    s.showMedicalRecord = false;
                 }
 
                 else {
@@ -137,6 +134,32 @@
         });
     }
 
+    function getMedicalHistory(qrCode) {
+        s.bpLoader = true;
+        s.medHistoryList = {};
+
+        h.post('../MedicalConsultation/getMedHistory?qrCode=' + qrCode).then(function (d) {
+            if (d.data.status == 'error') {
+                swal({
+                    title: "ERROR",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (value) {
+                    angular.forEach(value, function (val) {
+                        val.dateTimeLog = moment(val.dateTimeLog).format('lll');
+                    });
+                });
+                s.medHistoryList = d.data;
+            }
+
+            s.bpLoader = false;
+        });
+    }
+
     function getLabHistory(qrCode) {
         s.bpLoader = true;
         s.labHistoryList = {};
@@ -152,125 +175,42 @@
 
             else {
                 angular.forEach(d.data, function (value) {
-                    value.bloodChemDateEncoded = moment(value.bloodChemDateEncoded).format('lll');
-                    value.dateTested = moment(value.dateTested).format('lll');
+                    angular.forEach(value, function (val) {
+                        val.dateTimeLog = moment(val.dateTimeLog).format('lll');
+                    });
                 });
-                s.labHistoryList = d.data;
+                s.medHistoryList = d.data;
             }
+
             s.bpLoader = false;
         });
     }
 
-    s.showMLR = function () {
-        s.showMedicalRecord = !s.showMedicalRecord;
+    s.showDiagnoseHistory = function (history) {
+        history.personnelFullname = history.personnel_firstName + ' ' + history.personnel_midInit + ' ' + history.personnel_lastName + ' ' + history.personnel_extName;
+        s.medHistLoader_modal = true;
+        s.diagnosisInfo = {};
+        s.diagnoseHistoryList = {};
+        s.rxHistoryList = {};
 
-        if (s.showMedicalRecord) {
-            s.medicalRecord_loader = true;
-            s.diagnoseHistoryList = [];
-            s.rxHistoryList = {};
+        h.post('../MedicalConsultation/getDiagnosisHistory?consultID=' + history.consultID).then(function (d) {
+            if (d.data.status == 'error') {
+                swal({
+                    title: "ERROR",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
 
-            h.post('../MedicalConsultation/getDiagnosisHistory?qrCode=' + s.qrData.qrCode).then(function (d) {
-                if (d.data.status == 'error') {
-                    swal({
-                        title: "ERROR",
-                        text: d.data.msg,
-                        type: "error"
-                    });
-                }
+            else {
+                s.diagnosisInfo = angular.copy(history);
+                s.diagnoseHistoryList = d.data.medHist;
+                s.rxHistoryList = d.data.rxHist; console.log(d.data);
+                $('#medHistory_modal').modal('show'); 
+            }
 
-                else {
-                    angular.forEach(d.data.diagnosis, function (value) {
-                        angular.forEach(value, function (val) {
-                            val.dateTimeLog = moment(val.dateTimeLog).format('lll');
-                        })
-                    });
-
-                    angular.forEach(d.data.rxHist, function (value) {
-                        angular.forEach(value, function (val) {
-                            val.dateTimeRx = moment(val.dateTimeRx).format('lll');
-                        })
-                    });
-
-                    s.diagnoseHistoryList = d.data.diagnosis;
-                    s.rxHistoryList = d.data.rxHist;
-                }
-
-                s.medicalRecord_loader = false;
-            });
-
-            s.scanner.stop();
-        }
-
-        else {
-            Instascan.Camera.getCameras().then(function (cameras) {
-                if (cameras.length > 0) {
-                    s.scanner.start(cameras[0]);
-                }
-                else {
-                    swal({
-                        title: "CAMERA ERROR",
-                        text: "Camera is not found, please refresh",
-                        type: "error"
-                    });
-                }
-            });
-        }
-
-        
-    }
-
-    s.viewLabResult = function (data) {
-        s.blood = {};
-        s.uri = {};
-        s.cbc = {};
-
-        s.uri = {
-            color: 'Yellow',
-            transparency: 'Clear',
-            albumin: 'Negative',
-            sugar: 'Negative',
-            reaction: '1.15',
-            spGravity: ' ',
-            pusCells: '0.2 /hpf',
-            rbcCells: '0.2 /hpf',
-            epithelialCells: ' ',
-            renalCells: '0.2 /hpf',
-            mucusThread: ' ',
-            bacteria: '+',
-            yeastCells: ' ',
-            coarseGranular: ' ',
-            fineGranular: ' ',
-            hyaline: ' ',
-            pusCellsCast: ' ',
-            rbcCast: ' ',
-            waxyCast: ' ',
-            amourphousUrates: ' ',
-            amourphousPhospates: ' ',
-            triplePhospates: ' ',
-            uricAcid: ' ',
-            calciumOxalates: ' ',
-            pregnancyTest: ' ',
-            others: ' '
-        };
-
-        s.cbc = {
-            wbc: 7.77,
-            rbc: 2.67,
-            neu: 68.4,
-            hgb: 76,
-            lym: 25.0,
-            hct: 23.9,
-            mon: 4.8,
-            mcv: 89.6,
-            eos: 1.5,
-            mch: 28.6,
-            bas: 0.3,
-            mchc: 320,
-            plt: 229
-        };
-
-        s.blood = data;
-        $('#modalBLoodChem').modal('show');
+            s.medHistLoader_modal = false;
+        });
     }
 
     s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest) {

@@ -67,60 +67,49 @@ namespace MediCon.Controllers
             //    ViewBag.message = "Invalid reCaptcha!";
             //    return View();
             //}
-
-            var granted = db.Personnels.SingleOrDefault(e => e.username == login.Username && e.password == login.Password);
+            
+            var granted = db.Personnels.SingleOrDefault(e => e.username == login.Username && e.password == login.Password && e.isActive == true);
             if (granted != null)
             {
-
-                if (granted.isActive == false)
-                {
-                    ViewBag.message = "Your account has been deactivated.";
-                    ViewBag.message2 = "Please go to the System Administrator to activate your account.";
-                    return View();
-                }
-
-                else
-                {
-                    Session["personnelID"] = granted.personnelID;
-                    Session["firstName"] = granted.personnel_firstName;
-                    Session["middleName"] = granted.personnel_midInit;
-                    Session["lastName"] = granted.personnel_lastName;
-                    Session["extName"] = granted.personnel_extName;
-                    Session["userTypeID"] = granted.userTypeID;
-                    var accessmenu = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).ToList();
-                    Session["MenuAccess"] = accessmenu;
-                    //  Session["MenuAccess"] = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).ToList();
-                    Session["userTypeDesc"] = db.UserTypes.Where(ut => ut.userTypeID == granted.userTypeID).FirstOrDefault().userTypeDesc;
+                Session["personnelID"] = granted.personnelID;
+                Session["firstName"] = granted.personnel_firstName;
+                Session["middleName"] = granted.personnel_midInit;
+                Session["lastName"] = granted.personnel_lastName;
+                Session["extName"] = granted.personnel_extName;
+                Session["userTypeID"] = granted.userTypeID;
+                var accessmenu = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).OrderBy(e => e.orderNo).ToList();
+                Session["MenuAccess"] = accessmenu;
+              //  Session["MenuAccess"] = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).ToList();
+                Session["userTypeDesc"] = db.UserTypes.Where(ut => ut.userTypeID == granted.userTypeID).FirstOrDefault().userTypeDesc;
 
 
-                    var identity = new ClaimsIdentity(new[] {
+                var identity = new ClaimsIdentity(new[] {
                             new Claim(ClaimTypes.Name, granted.username),
                             },
-                            DefaultAuthenticationTypes.ApplicationCookie,
-                            ClaimTypes.Name, ClaimTypes.Role);
+                        DefaultAuthenticationTypes.ApplicationCookie,
+                        ClaimTypes.Name, ClaimTypes.Role);
 
-                    identity.AddClaim(new Claim(ClaimTypes.Role, "guest"));
+                identity.AddClaim(new Claim(ClaimTypes.Role, "guest"));
 
-                    Authentication.SignIn(new AuthenticationProperties
-                    {
-                        //IsPersistent = input.RememberMe
-                        IsPersistent = false
+                Authentication.SignIn(new AuthenticationProperties
+                {
+                    //IsPersistent = input.RememberMe
+                    IsPersistent = false
 
-                    }, identity);
+                }, identity);
 
-                    //return Content("0");
+                //return Content("0");
 
-                    if (Session["controllerName"] != null && Session["actionName"] != null)
-                    {
-                        string controllerName = Session["controllerName"].ToString();
-                        string actionName = Session["actionName"].ToString();
+                if (Session["controllerName"] != null && Session["actionName"] != null)
+                {
+                    string controllerName = Session["controllerName"].ToString();
+                    string actionName = Session["actionName"].ToString();
 
-                        return RedirectToAction(actionName, controllerName);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
+                    return RedirectToAction(actionName, controllerName);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
                 }
 
             }

@@ -10,17 +10,25 @@
 namespace MediCon.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class ProductList
+    public partial class sp_getRxHistory_Result
     {
-        public Nullable<int> recNo { get; set; }
+        public long recNo { get; set; }
+        public string rxID { get; set; }
+        public string serviceID { get; set; }
+        public string consultID { get; set; }
+        public string referralID { get; set; }
+        public string personnelID { get; set; }
+        public Nullable<System.DateTime> dateTimeRx { get; set; }
         public string productCode { get; set; }
+        public Nullable<int> qtyRx { get; set; }
+        public Nullable<decimal> dosage { get; set; }
+        public Nullable<int> perDay { get; set; }
+        public string noDay { get; set; }
         public string productDesc { get; set; }
         public string measurementID { get; set; }
-        public string brandID { get; set; }
         public string unitID { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string unitDesc { get; set; }
+        public string measurementDesc { get; set; }
     }
 }
