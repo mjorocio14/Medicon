@@ -22,5 +22,6 @@ namespace MediCon.Models
         public string remarks { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string toothNum { get; set; }
     }
 }

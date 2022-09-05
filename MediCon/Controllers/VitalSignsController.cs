@@ -52,26 +52,27 @@ namespace MediCon.Controllers
             }
         }
 
-        public ActionResult getVitalSignList()
-        {
-            try
-            {
-                var vs = dbMed.fn_vitalSignList().ToList();
+        //public ActionResult getVitalSignList()
+        //{
+        //    try
+        //    {
+        //        var vs = dbMed.fn_vitalSignList().ToList();
 
-                return Json(vs, JsonRequestBehavior.AllowGet);
+        //        return Json(vs, JsonRequestBehavior.AllowGet);
 
-            }
-            catch (Exception e)
-            {
-                return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve vital signs information.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve vital signs information.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         public ActionResult getVitalSigns(string qrCode)
         {
             try
             {
                 var vsRes = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= cds && a.dateTimeLog <= cde);
+
 
                 return Json(vsRes, JsonRequestBehavior.AllowGet);
 
@@ -128,5 +129,8 @@ namespace MediCon.Controllers
                 return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
     }
 }

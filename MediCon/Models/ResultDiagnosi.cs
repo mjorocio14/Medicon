@@ -19,6 +19,5 @@ namespace MediCon.Models
         public string consultID { get; set; }
         public string diagnoseID { get; set; }
         public string otherDiagnosis { get; set; }
-        public string toothNum { get; set; }
     }
 }

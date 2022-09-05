@@ -19,11 +19,12 @@ namespace MediCon.Models
         public string rxID { get; set; }
         public string productCode { get; set; }
         public Nullable<int> qtyRx { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeRx { get; set; }
         public Nullable<bool> isRelease { get; set; }
         public Nullable<int> qtyReleased { get; set; }
         public string userIDreleased { get; set; }
         public Nullable<System.DateTime> dateTimeReleased { get; set; }
+        public Nullable<decimal> dosage { get; set; }
+        public Nullable<int> perDay { get; set; }
+        public string noDay { get; set; }
     }
 }

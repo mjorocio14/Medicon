@@ -21,7 +21,6 @@ namespace MediCon.Models
         public string personnel_midInit { get; set; }
         public string personnel_extName { get; set; }
         public Nullable<bool> sex { get; set; }
-        public string contactNum { get; set; }
         public string position { get; set; }
         public string serviceID { get; set; }
         public string username { get; set; }
@@ -30,5 +29,6 @@ namespace MediCon.Models
         public string userTypeID { get; set; }
         public string userEncoder { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string contactNum { get; set; }
     }
 }

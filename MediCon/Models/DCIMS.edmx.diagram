@@ -5,10 +5,11 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="9978edd2c39a4a2bbe0aae5c40517a88" Name="Diagram1">
-        <EntityTypeShape EntityType="EQPModel.Brgy" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="EQPModel.CityMun" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="EQPModel.PersonalInfo" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="EQPModel.Province" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="EQPModel.Brgy" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EQPModel.CityMun" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="EQPModel.PersonalStatu" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="EQPModel.Province" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="EQPModel.PersonalInfo" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -166,6 +166,7 @@
     <Compile Include="Controllers\LaboratoryController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MedicalConsultationController.cs" />
+    <Compile Include="Controllers\PharmacyController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\QRPersonalInfoController.cs" />
     <Compile Include="Controllers\SessionTimeoutAttribute.cs" />
@@ -210,9 +211,6 @@
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DietCounseling.cs">
-      <DependentUpon>LocalDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\fn_vitalSignList_Result.cs">
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
@@ -262,6 +260,9 @@
     <Compile Include="Models\PersonalInfo.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PersonalStatu.cs">
+      <DependentUpon>DCIMS.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Personnel.cs">
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
@@ -281,6 +282,9 @@
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Service.cs">
+      <DependentUpon>LocalDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\spOT_MedicineDispensing_Result.cs">
       <DependentUpon>LocalDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
@@ -357,10 +361,10 @@
     <Content Include="myIcon16.ico" />
     <Content Include="Scripts\AngularJS\angular.min.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
+    <Content Include="Scripts\AngularJS\Dental\ToothExtraction.js" />
     <Content Include="Scripts\AngularJS\MedicalConsultation\MedicalConsultation.js" />
     <Content Include="Scripts\AngularJS\MedConApp.js" />
-    <Content Include="Scripts\AngularJS\Medicines\MedicineProducts.js" />
-    <Content Include="Scripts\AngularJS\UserManagment\UserManagement.js" />
+    <Content Include="Scripts\AngularJS\Pharmacy\pharmacyDispensing.js" />
     <Content Include="Scripts\AngularJS\Utility\Laboratory.js" />
     <Content Include="Scripts\AngularJS\Utility\MedicineProducts.js" />
     <Content Include="Scripts\AngularJS\Utility\UserManagement.js" />
@@ -377,19 +381,19 @@
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regulard41d.eot" />
-    <EntityDeploy Include="Models\LocalDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>LocalDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\LocalDB.edmx.diagram">
-      <DependentUpon>LocalDB.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\DCIMS.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DCIMS.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\DCIMS.edmx.diagram">
       <DependentUpon>DCIMS.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\LocalDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>LocalDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\LocalDB.edmx.diagram">
+      <DependentUpon>LocalDB.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\Medicon.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -452,6 +456,8 @@
     <Content Include="Views\MedicalConsultation\Index.cshtml" />
     <Content Include="Views\Dental\OralExam.cshtml" />
     <Content Include="Views\Laboratory\Lists.cshtml" />
+    <Content Include="Views\Dental\ToothExtraction.cshtml" />
+    <Content Include="Views\Pharmacy\Dispensing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
