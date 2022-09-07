@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4b8345c76eb14bdc8507d9810e39fc51" Name="Diagram1">
+      <Diagram DiagramId="4b8345c76eb14bdc8507d9810e39fc51" Name="Diagram1" ZoomLevel="88">
         <EntityTypeShape EntityType="MediconModel.BloodChem" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.BloodPressure" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.BrandList" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
@@ -32,6 +32,7 @@
         <EntityTypeShape EntityType="MediconModel.VitalSign" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.CBC" Width="1.5" PointX="3.375" PointY="14.75" />
         <EntityTypeShape EntityType="MediconModel.Urinalysi" Width="1.5" PointX="5.375" PointY="14.75" />
+        <EntityTypeShape EntityType="MediconModel.Temp_LabPrices" Width="1.5" PointX="0.75" PointY="15.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

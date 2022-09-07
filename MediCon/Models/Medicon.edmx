@@ -352,6 +352,17 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="Temp_LabPrices">
+          <Key>
+            <PropertyRef Name="labPriceID" />
+          </Key>
+          <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="labPriceID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="labTestID" Type="varchar" MaxLength="15" />
+          <Property Name="price" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="male" Type="int" />
+          <Property Name="female" Type="int" />
+        </EntityType>
         <EntityType Name="Urinalysis">
           <Key>
             <PropertyRef Name="urinalysisID" />
@@ -596,6 +607,7 @@
           <EntitySet Name="ResultDiagnosis" EntityType="Self.ResultDiagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Temp_LabPrices" EntityType="Self.Temp_LabPrices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Urinalysis" EntityType="Self.Urinalysis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
@@ -1143,6 +1155,7 @@
           </FunctionImport>
           <EntitySet Name="CBCs" EntityType="MediconModel.CBC" />
           <EntitySet Name="Urinalysis" EntityType="MediconModel.Urinalysi" />
+          <EntitySet Name="Temp_LabPrices" EntityType="MediconModel.Temp_LabPrices" />
         </EntityContainer>
         <ComplexType Name="spOT_MedicineDispensing_Result">
           <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
@@ -1222,6 +1235,17 @@
           <Property Name="medtech" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Temp_LabPrices">
+          <Key>
+            <PropertyRef Name="labPriceID" />
+          </Key>
+          <Property Name="recNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labPriceID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="labTestID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="price" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="male" Type="Int32" />
+          <Property Name="female" Type="Int32" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1805,6 +1829,18 @@
                 <ScalarProperty Name="color" ColumnName="color" />
                 <ScalarProperty Name="labID" ColumnName="labID" />
                 <ScalarProperty Name="urinalysisID" ColumnName="urinalysisID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Temp_LabPrices">
+            <EntityTypeMapping TypeName="MediconModel.Temp_LabPrices">
+              <MappingFragment StoreEntitySet="Temp_LabPrices">
+                <ScalarProperty Name="female" ColumnName="female" />
+                <ScalarProperty Name="male" ColumnName="male" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="labPriceID" ColumnName="labPriceID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
