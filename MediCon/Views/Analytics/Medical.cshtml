@@ -1,0 +1,75 @@
+﻿
+@{
+    //ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div ng-controller="labCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-4">
+            <h2>LABORATORY</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Laboratory</a>
+                </li>
+                <li class="active">
+                    <strong>List</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div id="wrapper" class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <h2>MEDICAL ANALYTICS</h2>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" class="btn btn-w-m btn-primary" disabled><b style="font-size:16px;">MALE</b></button>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">40 886,200</h1>
+                        <div class="stat-percent font-bold text-success">98% <i class="fa fa-bolt"></i></div>
+                        <small>Total income</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" class="btn btn-w-m btn-primary" disabled><b style="font-size:16px;">MALE</b></button>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">275,800</h1>
+                        <div class="stat-percent font-bold text-info">20% <i class="fa fa-level-up"></i></div>
+                        <small>New orders</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5 class="label label-primary pull-right">TOTAL # of EMPLOYEE AVAILEDVistits</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">106,120</h1>
+                        <div class="stat-percent font-bold text-navy">44% <i class="fa fa-level-up"></i></div>
+                        <small>New visits</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/Utility/Laboratory.js"></script>
+}
+
+
+
+
