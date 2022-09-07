@@ -208,9 +208,11 @@
         }
         else if (labTestID == "L0003") {
             $('#modalBLoodChem').modal('show');
-        }else if(labTestID=="L0002"){
+        }
+        else if (labTestID == "L0002") {
             $('#modalCbc').modal('show');
         }
+
     }
 
     s.saveBloodChem = function () {
@@ -247,87 +249,11 @@
         });
     }
 
-    //$('#bloodChemForm').validate({
-    //    rules: {
-          
-    //    },
-        
-    //    submitHandler: function () {
-    //        // console.log(s.blood);
-    //        // swal({
-    //        //     title: "SUCCESSFULLY SAVED",
-    //        //     type: "success",
-    //        //     html: true
-    //        // });
-    //        // $('#modalBLoodChem').modal('hide');
-    //        Swal.fire({
-    //            title: 'Saved Result?',
-    //            showCancelButton: true,
-    //            confirmButtonText: 'Yes, Saved!',
-    //            showLoaderOnConfirm: true,
-    //            icon:'question',
-    //            preConfirm: () => { 
-    //            s.blood.labID=s.tempLabID;
-    //            alert(s.blood.labID);
-    //        return h.post('../LaboratoryResult/saveBloodChemResult', { result: s.blood })
-    //        .then(response => {
-    //            return response
-    //        }).catch(error => {
-    //        if(error.status==500){
-    //            Swal.showValidationMessage(
-    //                `Request failed: ${error.statusText}`
-    //              )
-    //                    }else if(error.status==404){
-    //                        Swal.showValidationMessage(
-    //                            `Request failed: Page Not Found`
-    //                          )
-    //                    }
-    //                    else if(error.status==-1){
-    //                        Swal.showValidationMessage(
-    //                            `Request failed: No Internet Connection`
-    //                          )
-    //                    }else{
-    //                        Swal.showValidationMessage(
-    //                            `Request failed: Unknown Error ${error.status}`
-    //                          )
-    //                    }
-    //            })
-    //            },
-    //                allowOutsideClick: () => !Swal.isLoading()
-    //            }).then((result) => {
-    //                if (result.isConfirmed) {
-    //                Swal.fire({title: 'Successfully Save!', icon: 'success',
-    //                }).then((result) => {
-    //                    ('#modalBLoodChem').modal('hide');
-
-    //                 })
-    //            }else if(result.isDismissed){
-    //                Swal.fire({title: 'Canceled', icon: 'info',
-    //                }).then((result) => {
-                      
-    //            })
-    //            }
-    //            })
-
-
-    //    },
-    //    errorElement: 'span',
-    //        errorPlacement: function (error, element) {
-    //            error.addClass('invalid-feedback');
-    //            element.closest('.form-group').append(error);
-    //        },
-    //    highlight: function (element, errorClass, validClass) {
-    //        $(element).closest('.form-group').removeClass('has-info').addClass('has-error');
-    //    },
-    //    unhighlight: function (element, errorClass, validClass) {
-    //        $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
-    //    }
-    //    });
-    
     $('#urinalysisForm').validate({
         rules: {
             
         },
+        
         submitHandler: function () {
             
             swal({
@@ -336,6 +262,8 @@
                 html: true
             });
             $('#modalUrinalysis').modal('hide');
+
+
         },
         errorElement: 'span',
             errorPlacement: function (error, element) {
@@ -348,12 +276,14 @@
         unhighlight: function (element, errorClass, validClass) {
             $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
         }
-        });
-    
+    });
+
+
     $('#cbcForm').validate({
         rules: {
-            
+
         },
+
         submitHandler: function () {
             
             // swal({
@@ -419,15 +349,15 @@
 
         },
         errorElement: 'span',
-            errorPlacement: function (error, element) {
-                error.addClass('invalid-feedback');
-                element.closest('.form-group').append(error);
-            },
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
         highlight: function (element, errorClass, validClass) {
             $(element).closest('.form-group').removeClass('has-info').addClass('has-error');
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
         }
-        });
+    });
 }]);

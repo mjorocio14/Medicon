@@ -30,7 +30,6 @@ namespace MediCon.Models
         public virtual DbSet<BloodChem> BloodChems { get; set; }
         public virtual DbSet<BloodPressure> BloodPressures { get; set; }
         public virtual DbSet<BrandList> BrandLists { get; set; }
-        public virtual DbSet<CBC> CBCs { get; set; }
         public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
@@ -51,9 +50,10 @@ namespace MediCon.Models
         public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
-        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
+        public virtual DbSet<CBC> CBCs { get; set; }
+        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)
@@ -71,10 +71,26 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
         }
     
+        [DbFunction("MediconEntities", "fn_getMRHclients")]
+        public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getMRHclients_Result>("[MediconEntities].[fn_getMRHclients]()");
+        }
+    
         [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
         public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
+        public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)
+        {
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientLabHistory_Result>("[MediconEntities].[fn_getPatientLabHistory](@qrCode)", qrCodeParameter);
         }
     
         [DbFunction("MediconEntities", "fn_MedicineList")]
@@ -89,23 +105,13 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList]()");
         }
     
-        [DbFunction("MediconEntities", "fn_getMRHclients")]
-        public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients()
+        public virtual ObjectResult<spOT_MedicineDispensing_Result> spOT_MedicineDispensing(string qrCode)
         {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getMRHclients_Result>("[MediconEntities].[fn_getMRHclients]()");
-        }
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
     
-        public virtual ObjectResult<sp_getRxHistory_Result> sp_getRxHistory(string consultID, string referralID)
-        {
-            var consultIDParameter = consultID != null ?
-                new ObjectParameter("consultID", consultID) :
-                new ObjectParameter("consultID", typeof(string));
-    
-            var referralIDParameter = referralID != null ?
-                new ObjectParameter("referralID", referralID) :
-                new ObjectParameter("referralID", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_getRxHistory_Result>("sp_getRxHistory", consultIDParameter, referralIDParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spOT_MedicineDispensing_Result>("spOT_MedicineDispensing", qrCodeParameter);
         }
     }
 }

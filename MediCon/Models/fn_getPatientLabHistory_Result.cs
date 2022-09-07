@@ -10,13 +10,18 @@
 namespace MediCon.Models
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class BloodChem
+    public partial class fn_getPatientLabHistory_Result
     {
-        public long recNO { get; set; }
-        public string bloodChemID { get; set; }
+        public string qrCode { get; set; }
+        public string consultID { get; set; }
+        public string referralID { get; set; }
         public string labID { get; set; }
+        public Nullable<bool> isTested { get; set; }
+        public Nullable<bool> isEncoded { get; set; }
+        public string labTestID { get; set; }
+        public string labTestName { get; set; }
+        public string bloodChemID { get; set; }
         public Nullable<decimal> fbs { get; set; }
         public Nullable<decimal> serumUricAcid { get; set; }
         public Nullable<decimal> creatinine { get; set; }
@@ -33,9 +38,9 @@ namespace MediCon.Models
         public Nullable<decimal> chloride { get; set; }
         public Nullable<decimal> calcium { get; set; }
         public Nullable<decimal> glycosylatedHemoglobin { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
-        public string personnelID { get; set; }
         public string pathologist { get; set; }
         public string medtech { get; set; }
+        public Nullable<System.DateTime> bloodChemDateEncoded { get; set; }
+        public Nullable<System.DateTime> dateTested { get; set; }
     }
 }
