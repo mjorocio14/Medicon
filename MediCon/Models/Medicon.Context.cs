@@ -50,11 +50,13 @@ namespace MediCon.Models
         public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Temp_LabPrices> Temp_LabPrices { get; set; }
+        public virtual DbSet<Temp_Morbidity> Temp_Morbidity { get; set; }
+        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
         public virtual DbSet<CBC> CBCs { get; set; }
-        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
-        public virtual DbSet<Temp_LabPrices> Temp_LabPrices { get; set; }
+        public virtual DbSet<EditRemark> EditRemarks { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)
@@ -113,6 +115,12 @@ namespace MediCon.Models
                 new ObjectParameter("qrCode", typeof(string));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spOT_MedicineDispensing_Result>("spOT_MedicineDispensing", qrCodeParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getLabResult")]
+        public virtual IQueryable<fn_getLabResult_Result> fn_getLabResult()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabResult_Result>("[MediconEntities].[fn_getLabResult]()");
         }
     }
 }

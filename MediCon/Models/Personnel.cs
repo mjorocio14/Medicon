@@ -30,5 +30,7 @@ namespace MediCon.Models
         public string userTypeID { get; set; }
         public string userEncoder { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string licenseNo { get; set; }
+        public string title { get; set; }
     }
 }

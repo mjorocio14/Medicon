@@ -34,8 +34,8 @@ namespace MediCon.Models
         public Nullable<decimal> calcium { get; set; }
         public Nullable<decimal> glycosylatedHemoglobin { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
-        public string personnelID { get; set; }
         public string pathologist { get; set; }
         public string medtech { get; set; }
+        public string personnelID { get; set; }
     }
 }
