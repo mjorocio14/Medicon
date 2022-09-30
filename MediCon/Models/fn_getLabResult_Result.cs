@@ -33,8 +33,5 @@ namespace MediCon.Models
         public Nullable<System.DateTime> birthdate { get; set; }
         public string contactNo { get; set; }
         public Nullable<System.DateTime> encodeDT { get; set; }
-        public string encoderFirstname { get; set; }
-        public string encoderMiddlename { get; set; }
-        public string encoderLastname { get; set; }
     }
 }

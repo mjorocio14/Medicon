@@ -140,6 +140,7 @@
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
           <Property Name="isEncoded" Type="bit" />
+          <Property Name="dateEncoded" Type="datetime" />
         </EntityType>
         <EntityType Name="LaboratoryTest">
           <Key>
@@ -420,10 +421,10 @@
           <Property Name="calciumOxalates" Type="varchar" MaxLength="15" />
           <Property Name="pregnancyTest" Type="varchar" MaxLength="15" />
           <Property Name="others" Type="varchar" MaxLength="15" />
-          <Property Name="pathologist" Type="varchar" MaxLength="8" />
-          <Property Name="medtech" Type="varchar" MaxLength="8" />
+          <Property Name="signatory1" Type="varchar" MaxLength="8" />
+          <Property Name="signatory2" Type="varchar" MaxLength="8" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
-          <Property Name="dateTimeLog" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="UserType">
           <Key>
@@ -521,9 +522,6 @@
                 <Property Name="birthdate" Type="date" />
                 <Property Name="contactNo" Type="varchar" MaxLength="50" />
                 <Property Name="encodeDT" Type="datetime" />
-                <Property Name="encoderFirstname" Type="varchar" MaxLength="50" />
-                <Property Name="encoderMiddlename" Type="char" MaxLength="1" />
-                <Property Name="encoderLastname" Type="varchar" MaxLength="50" />
               </RowType>
             </CollectionType>
           </ReturnType>
@@ -849,7 +847,6 @@
           <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
           <EntitySet Name="Diagnosis" EntityType="MediconModel.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
-          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
           <EntitySet Name="LaboratoryTests" EntityType="MediconModel.LaboratoryTest" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="MediconModel.MaleRepro_Diagnosis" />
           <EntitySet Name="MaleRepro_Interview" EntityType="MediconModel.MaleRepro_Interview" />
@@ -868,12 +865,13 @@
           <EntitySet Name="sysdiagrams" EntityType="MediconModel.sysdiagram" />
           <EntitySet Name="Temp_LabPrices" EntityType="MediconModel.Temp_LabPrices" />
           <EntitySet Name="Temp_Morbidity" EntityType="MediconModel.Temp_Morbidity" />
-          <EntitySet Name="Urinalysis" EntityType="MediconModel.Urinalysi" />
           <EntitySet Name="UserTypes" EntityType="MediconModel.UserType" />
           <EntitySet Name="VitalSigns" EntityType="MediconModel.VitalSign" />
-          <FunctionImport Name="fn_getLabResult" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabResult_Result)" />
           <EntitySet Name="CBCs" EntityType="MediconModel.CBC" />
           <EntitySet Name="EditRemarks" EntityType="MediconModel.EditRemark" />
+          <EntitySet Name="Urinalysis" EntityType="MediconModel.Urinalysi" />
+          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
+          <FunctionImport Name="fn_getLabResult" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabResult_Result)" />
         </EntityContainer>
         <ComplexType Name="spOT_MedicineDispensing_Result">
           <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
@@ -977,19 +975,6 @@
           <Property Name="otherDesc" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="LaboratoryExam">
-          <Key>
-            <PropertyRef Name="labID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="isTested" Type="Boolean" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-          <Property Name="isEncoded" Type="Boolean" />
         </EntityType>
         <EntityType Name="LaboratoryTest">
           <Key>
@@ -1237,44 +1222,6 @@
           <Property Name="female" Type="Int32" />
           <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Urinalysi">
-          <Key>
-            <PropertyRef Name="urinalysisID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="urinalysisID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="color" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="transparency" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="albumin" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="sugar" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="reaction" Type="Decimal" Precision="5" Scale="3" />
-          <Property Name="spGravity" Type="Decimal" Precision="5" Scale="3" />
-          <Property Name="pusCells" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="rbcCells" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="epithelialCells" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="renalCells" Type="Decimal" Precision="6" Scale="2" />
-          <Property Name="mucusThread" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="bacteria" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="yeastCells" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="coarseGranular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="fineGranular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="hyaline" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="pusCellsCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="rbcCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="waxyCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="amourphousUrates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="amourphousPhospates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="triplePhospates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="uricAcid" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="calciumOxalates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="pregnancyTest" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="others" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="pathologist" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="medtech" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="UserType">
           <Key>
             <PropertyRef Name="userTypeID" />
@@ -1295,31 +1242,6 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <ComplexType Name="fn_getLabResult_Result">
-          <Property Type="DateTime" Name="labDT" Nullable="true" Precision="23" />
-          <Property Type="String" Name="labID" Nullable="false" MaxLength="15" />
-          <Property Type="String" Name="labTestID" Nullable="true" MaxLength="5" />
-          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
-          <Property Type="String" Name="personnel_lastName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="personnel_firstName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
-          <Property Type="String" Name="referralID" Nullable="true" MaxLength="15" />
-          <Property Type="String" Name="labTestName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="consultID" Nullable="true" MaxLength="15" />
-          <Property Type="DateTime" Name="consultDT" Nullable="true" Precision="23" />
-          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
-          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="lastName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="firstName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="middleName" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="extName" Nullable="true" MaxLength="10" />
-          <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
-          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
-          <Property Type="DateTime" Name="encodeDT" Nullable="true" Precision="23" />
-          <Property Type="String" Name="encoderFirstname" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="encoderMiddlename" Nullable="true" MaxLength="1" />
-          <Property Type="String" Name="encoderLastname" Nullable="true" MaxLength="50" />
-        </ComplexType>
         <EntityType Name="CBC">
           <Key>
             <PropertyRef Name="cbcID" />
@@ -1356,6 +1278,80 @@
           <Property Name="editedBy" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateEdited" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="Urinalysi">
+          <Key>
+            <PropertyRef Name="urinalysisID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="urinalysisID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="color" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="transparency" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="albumin" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="sugar" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="reaction" Type="Decimal" Precision="5" Scale="3" />
+          <Property Name="spGravity" Type="Decimal" Precision="5" Scale="3" />
+          <Property Name="pusCells" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="rbcCells" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="epithelialCells" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="renalCells" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="mucusThread" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="bacteria" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="yeastCells" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="coarseGranular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="fineGranular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="hyaline" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="pusCellsCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="rbcCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="waxyCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="amourphousUrates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="amourphousPhospates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="triplePhospates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="uricAcid" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="calciumOxalates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="pregnancyTest" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="others" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="signatory1" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="signatory2" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LaboratoryExam">
+          <Key>
+            <PropertyRef Name="labID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+          <Property Name="isEncoded" Type="Boolean" />
+          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
+        </EntityType>
+        <ComplexType Name="fn_getLabResult_Result">
+          <Property Type="DateTime" Name="labDT" Nullable="true" Precision="23" />
+          <Property Type="String" Name="labID" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="labTestID" Nullable="true" MaxLength="5" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="personnel_lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="referralID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="labTestName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="consultID" Nullable="true" MaxLength="15" />
+          <Property Type="DateTime" Name="consultDT" Nullable="true" Precision="23" />
+          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="middleName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="extName" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
+          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="encodeDT" Nullable="true" Precision="23" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1599,20 +1595,6 @@
                 <ScalarProperty Name="isHPN" ColumnName="isHPN" />
                 <ScalarProperty Name="referralID" ColumnName="referralID" />
                 <ScalarProperty Name="dietID" ColumnName="dietID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LaboratoryExams">
-            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
-              <MappingFragment StoreEntitySet="LaboratoryExam">
-                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="isTested" ColumnName="isTested" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1881,45 +1863,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Urinalysis">
-            <EntityTypeMapping TypeName="MediconModel.Urinalysi">
-              <MappingFragment StoreEntitySet="Urinalysis">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="medtech" ColumnName="medtech" />
-                <ScalarProperty Name="pathologist" ColumnName="pathologist" />
-                <ScalarProperty Name="others" ColumnName="others" />
-                <ScalarProperty Name="pregnancyTest" ColumnName="pregnancyTest" />
-                <ScalarProperty Name="calciumOxalates" ColumnName="calciumOxalates" />
-                <ScalarProperty Name="uricAcid" ColumnName="uricAcid" />
-                <ScalarProperty Name="triplePhospates" ColumnName="triplePhospates" />
-                <ScalarProperty Name="amourphousPhospates" ColumnName="amourphousPhospates" />
-                <ScalarProperty Name="amourphousUrates" ColumnName="amourphousUrates" />
-                <ScalarProperty Name="waxyCast" ColumnName="waxyCast" />
-                <ScalarProperty Name="rbcCast" ColumnName="rbcCast" />
-                <ScalarProperty Name="pusCellsCast" ColumnName="pusCellsCast" />
-                <ScalarProperty Name="hyaline" ColumnName="hyaline" />
-                <ScalarProperty Name="fineGranular" ColumnName="fineGranular" />
-                <ScalarProperty Name="coarseGranular" ColumnName="coarseGranular" />
-                <ScalarProperty Name="yeastCells" ColumnName="yeastCells" />
-                <ScalarProperty Name="bacteria" ColumnName="bacteria" />
-                <ScalarProperty Name="mucusThread" ColumnName="mucusThread" />
-                <ScalarProperty Name="renalCells" ColumnName="renalCells" />
-                <ScalarProperty Name="epithelialCells" ColumnName="epithelialCells" />
-                <ScalarProperty Name="rbcCells" ColumnName="rbcCells" />
-                <ScalarProperty Name="pusCells" ColumnName="pusCells" />
-                <ScalarProperty Name="spGravity" ColumnName="spGravity" />
-                <ScalarProperty Name="reaction" ColumnName="reaction" />
-                <ScalarProperty Name="sugar" ColumnName="sugar" />
-                <ScalarProperty Name="albumin" ColumnName="albumin" />
-                <ScalarProperty Name="transparency" ColumnName="transparency" />
-                <ScalarProperty Name="color" ColumnName="color" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="urinalysisID" ColumnName="urinalysisID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="UserTypes">
             <EntityTypeMapping TypeName="MediconModel.UserType">
               <MappingFragment StoreEntitySet="UserType">
@@ -1942,35 +1885,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="fn_getLabResult" FunctionName="MediconModel.Store.fn_getLabResult">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="MediconModel.fn_getLabResult_Result">
-                <ScalarProperty Name="labDT" ColumnName="labDT" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
-                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
-                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
-                <ScalarProperty Name="consultID" ColumnName="consultID" />
-                <ScalarProperty Name="consultDT" ColumnName="consultDT" />
-                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
-                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
-                <ScalarProperty Name="lastName" ColumnName="lastName" />
-                <ScalarProperty Name="firstName" ColumnName="firstName" />
-                <ScalarProperty Name="middleName" ColumnName="middleName" />
-                <ScalarProperty Name="extName" ColumnName="extName" />
-                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
-                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
-                <ScalarProperty Name="encodeDT" ColumnName="encodeDT" />
-                <ScalarProperty Name="encoderFirstname" ColumnName="encoderFirstname" />
-                <ScalarProperty Name="encoderMiddlename" ColumnName="encoderMiddlename" />
-                <ScalarProperty Name="encoderLastname" ColumnName="encoderLastname" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <EntitySetMapping Name="CBCs">
             <EntityTypeMapping TypeName="MediconModel.CBC">
               <MappingFragment StoreEntitySet="CBC">
@@ -2009,6 +1923,86 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Urinalysis">
+            <EntityTypeMapping TypeName="MediconModel.Urinalysi">
+              <MappingFragment StoreEntitySet="Urinalysis">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="signatory2" ColumnName="signatory2" />
+                <ScalarProperty Name="signatory1" ColumnName="signatory1" />
+                <ScalarProperty Name="others" ColumnName="others" />
+                <ScalarProperty Name="pregnancyTest" ColumnName="pregnancyTest" />
+                <ScalarProperty Name="calciumOxalates" ColumnName="calciumOxalates" />
+                <ScalarProperty Name="uricAcid" ColumnName="uricAcid" />
+                <ScalarProperty Name="triplePhospates" ColumnName="triplePhospates" />
+                <ScalarProperty Name="amourphousPhospates" ColumnName="amourphousPhospates" />
+                <ScalarProperty Name="amourphousUrates" ColumnName="amourphousUrates" />
+                <ScalarProperty Name="waxyCast" ColumnName="waxyCast" />
+                <ScalarProperty Name="rbcCast" ColumnName="rbcCast" />
+                <ScalarProperty Name="pusCellsCast" ColumnName="pusCellsCast" />
+                <ScalarProperty Name="hyaline" ColumnName="hyaline" />
+                <ScalarProperty Name="fineGranular" ColumnName="fineGranular" />
+                <ScalarProperty Name="coarseGranular" ColumnName="coarseGranular" />
+                <ScalarProperty Name="yeastCells" ColumnName="yeastCells" />
+                <ScalarProperty Name="bacteria" ColumnName="bacteria" />
+                <ScalarProperty Name="mucusThread" ColumnName="mucusThread" />
+                <ScalarProperty Name="renalCells" ColumnName="renalCells" />
+                <ScalarProperty Name="epithelialCells" ColumnName="epithelialCells" />
+                <ScalarProperty Name="rbcCells" ColumnName="rbcCells" />
+                <ScalarProperty Name="pusCells" ColumnName="pusCells" />
+                <ScalarProperty Name="spGravity" ColumnName="spGravity" />
+                <ScalarProperty Name="reaction" ColumnName="reaction" />
+                <ScalarProperty Name="sugar" ColumnName="sugar" />
+                <ScalarProperty Name="albumin" ColumnName="albumin" />
+                <ScalarProperty Name="transparency" ColumnName="transparency" />
+                <ScalarProperty Name="color" ColumnName="color" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="urinalysisID" ColumnName="urinalysisID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LaboratoryExams">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
+              <MappingFragment StoreEntitySet="LaboratoryExam">
+                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="fn_getLabResult" FunctionName="MediconModel.Store.fn_getLabResult">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getLabResult_Result">
+                <ScalarProperty Name="labDT" ColumnName="labDT" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="consultDT" ColumnName="consultDT" />
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+                <ScalarProperty Name="encodeDT" ColumnName="encodeDT" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

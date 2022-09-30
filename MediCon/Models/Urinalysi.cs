@@ -43,9 +43,9 @@ namespace MediCon.Models
         public string calciumOxalates { get; set; }
         public string pregnancyTest { get; set; }
         public string others { get; set; }
-        public string pathologist { get; set; }
-        public string medtech { get; set; }
+        public string signatory1 { get; set; }
+        public string signatory2 { get; set; }
         public string personnelID { get; set; }
-        public string dateTimeLog { get; set; }
+        public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
 }

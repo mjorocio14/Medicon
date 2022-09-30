@@ -39,6 +39,7 @@ namespace MediCon.Controllers
                     // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
                     var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
                     findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
                     dbMed.Entry(findLab).State = EntityState.Modified;
 
                     dbMed.SaveChanges();
@@ -72,6 +73,7 @@ namespace MediCon.Controllers
                     // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
                     var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
                     findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
                     dbMed.Entry(findLab).State = EntityState.Modified;
 
                     dbMed.SaveChanges();
@@ -83,6 +85,7 @@ namespace MediCon.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
             }
         }
+        
 
         public ActionResult editCBC([Bind(Exclude = "dateTimeLog,dateEdited")] CBC result, EditRemark EditRemarks)
         {
@@ -138,6 +141,41 @@ namespace MediCon.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
             }
         }
+        public ActionResult saveUrinalysis(Urinalysi result)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    // SAVE LAB RESULT OF BLOOD CHEM
+                    result.urinalysisID = generateID(result.labID).Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    dbMed.Urinalysis.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
+                    dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
         public string generateID(string source)
         {
             return string.Format("{1:N}", source, Guid.NewGuid());
@@ -181,6 +219,11 @@ namespace MediCon.Controllers
         public ActionResult getCBCresult(string labID)
         {
             var data = dbMed.CBCs.Where(e => e.labID == labID).FirstOrDefault();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult getUrinalysisResult(string labID)
+        {
+            var data = dbMed.Urinalysis.Where(e => e.labID == labID).FirstOrDefault();
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

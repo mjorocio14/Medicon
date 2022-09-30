@@ -33,7 +33,6 @@ namespace MediCon.Models
         public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
-        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
         public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
         public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
@@ -52,11 +51,12 @@ namespace MediCon.Models
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Temp_LabPrices> Temp_LabPrices { get; set; }
         public virtual DbSet<Temp_Morbidity> Temp_Morbidity { get; set; }
-        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
         public virtual DbSet<CBC> CBCs { get; set; }
         public virtual DbSet<EditRemark> EditRemarks { get; set; }
+        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
+        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)

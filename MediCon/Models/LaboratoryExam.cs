@@ -22,5 +22,6 @@ namespace MediCon.Models
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
         public Nullable<bool> isEncoded { get; set; }
+        public Nullable<System.DateTime> dateEncoded { get; set; }
     }
 }

@@ -255,6 +255,7 @@
         var a = data;
         console.log(a);
         s.isEditCbc = 1;
+        s.isEditUrinalysis = 1;
         s.$apply();
         s.viewLabResult(a.labTestID, a.labID, "test");
       });
@@ -262,6 +263,7 @@
         var data = tableLabList.row($(this).parents("tr")).data();
         var a = data;
         s.isEditCbc = null;
+        s.isEditUrinalysis = null;
         s.viewLabResult(a.labTestID, a.labID, "test");
       });
     }
@@ -272,6 +274,14 @@
             console.log(d.data);
             s.cbc = d.data;
             $("#modalCbc").modal("show");
+          }
+        );
+      }
+      if (labTestID == "L0001") {
+        h.post("../LaboratoryResult/getUrinalysisResult?labID=" + labID).then(
+          function (d) {
+            s.uri = d.data;
+            $("#modalUrinalysis").modal("show");
           }
         );
       }
@@ -288,10 +298,12 @@
       s.tempLabTestName = labTestName;
       s.tempLabID = labID;
       if (labTestID == "L0001") {
+        s.uri = {};
         $("#modalUrinalysis").modal("show");
       } else if (labTestID == "L0003") {
         $("#modalBLoodChem").modal("show");
       } else if (labTestID == "L0002") {
+        s.cbc = {};
         s.isEditCbc = 0;
         $("#modalCbc").modal("show");
       }
@@ -406,16 +418,66 @@
     //        $(element).closest('.form-group').removeClass('has-error').addClass('has-info');
     //    }
     //    });
-    s.cbcEdit = {};
+    s.uriEdit = {};
+    s.isEditUrinalysis = 0;
     $("#urinalysisForm").validate({
       rules: {},
       submitHandler: function () {
-        swal({
-          title: "SUCCESSFULLY SAVED",
-          type: "success",
-          html: true,
-        });
-        $("#modalUrinalysis").modal("hide");
+        console.log(s.uri);
+        if (s.isEditUrinalysis == 0) {
+          Swal.fire({
+            title: "Saved Result?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Saved!",
+            showLoaderOnConfirm: true,
+            icon: "question",
+            preConfirm: () => {
+              s.uri.labID = s.tempLabID;
+              return h
+                .post("../LaboratoryResult/saveUrinalysis", { result: s.uri })
+                .then((response) => {
+                  return response;
+                })
+                .catch((error) => {
+                  if (error.status == 500) {
+                    Swal.showValidationMessage(
+                      `Request failed: ${error.statusText}`
+                    );
+                  } else if (error.status == 404) {
+                    Swal.showValidationMessage(
+                      `Request failed: Page Not Found`
+                    );
+                  } else if (error.status == -1) {
+                    Swal.showValidationMessage(
+                      `Request failed: No Internet Connection`
+                    );
+                  } else {
+                    Swal.showValidationMessage(
+                      `Request failed: Unknown Error ${error.status}`
+                    );
+                  }
+                });
+            },
+            allowOutsideClick: () => !Swal.isLoading(),
+          }).then((result) => {
+            if (result.isConfirmed) {
+              swal({
+                title: "SUCCESSFULLY SAVED",
+                type: "success",
+                html: true,
+              });
+              s.uri = {};
+              $("#modalUrinalysis").modal("hide");
+              s.getLabtest(s.qrData.qrCode);
+            } else if (result.isDismissed) {
+              Swal.fire({ title: "Canceled", icon: "info" }).then(
+                (result) => {}
+              );
+            }
+          });
+        } else if (s.isEditUrinalysis == 1) {
+          alert("update");
+        }
       },
       errorElement: "span",
       errorPlacement: function (error, element) {
@@ -435,12 +497,11 @@
           .addClass("has-info");
       },
     });
+    s.cbcEdit = {};
     s.isEditCbc = 0;
     $("#cbcForm").validate({
       rules: {},
       submitHandler: function () {
-        // s.cbc.labID = s.tempLabID;
-        // console.log(s.cbc);
         if (s.isEditCbc == 0) {
           Swal.fire({
             title: "Saved Result?",
@@ -478,12 +539,6 @@
             allowOutsideClick: () => !Swal.isLoading(),
           }).then((result) => {
             if (result.isConfirmed) {
-              // Swal.fire({ title: "Successfully Save!", icon: "success" }).then(
-              //   (result) => {
-              //     "#modalCbc".modal("hide");
-              //     s.cbc = {};
-              //   }
-              // );
               swal({
                 title: "SUCCESSFULLY SAVED",
                 type: "success",
