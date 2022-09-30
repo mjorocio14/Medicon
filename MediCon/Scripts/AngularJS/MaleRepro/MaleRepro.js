@@ -1,4 +1,7 @@
-﻿app.controller('MaleReproCtrl', ['$scope', '$http', function (s, h) {
+﻿app.controller("MaleReproCtrl", [
+  "$scope",
+  "$http",
+  function (s, h) {
     s.loader = false;
     s.qrData = {};
     s.showClientListBTN = true;
@@ -9,42 +12,41 @@
     s.isEditting = false;
 
     // QR Scanner Initialization
-    s.scanner = new Instascan.Scanner(
-        {
-            video: document.getElementById('preview')
-        }
-    );
-
-    Instascan.Camera.getCameras().then(function (cameras) {
-        if (cameras.length > 0) {
-            s.scanner.start(cameras[0]);
-        }
-        else {
-            swal({
-                title: "CAMERA ERROR",
-                text: "Camera is not found, please refresh",
-                type: "error"
-            });
-        }
+    s.scanner = new Instascan.Scanner({
+      video: document.getElementById("preview"),
     });
 
-    s.scanner.addListener('scan', function (content) {
-        s.searchQRcode = "";
-        s.mainSearch(content);
+    Instascan.Camera.getCameras().then(function (cameras) {
+      if (cameras.length > 0) {
+        s.scanner.start(cameras[0]);
+      } else {
+        swal({
+          title: "CAMERA ERROR",
+          text: "Camera is not found, please refresh",
+          type: "error",
+        });
+      }
+    });
+
+    s.scanner.addListener("scan", function (content) {
+      s.searchQRcode = "";
+      s.mainSearch(content);
     });
     // /QR Scanner Initialization
 
     s.mainSearch = function (qrCode) {
-        s.loader = true;
+      s.loader = true;
 
-        h.post('../QRPersonalInfo/getQRInfo?qrCode=' + qrCode).then(function (d) {
-            if (d.data.status == 'error') {
-                swal({
-                    title: "QR code failed!",
-                    text: d.data.msg,
-                    type: "error"
-                });
-            }
+      h.post("../QRPersonalInfo/getQRInfo?qrCode=" + qrCode).then(function (d) {
+        if (d.data.status == "error") {
+          swal({
+            title: "QR code failed!",
+            text: d.data.msg,
+            type: "error",
+          });
+        } else {
+          if (d.data != null && d.data != "") {
+            s.qrData = {};
 
             else {
                 if (d.data != null && d.data != "") {
@@ -75,12 +77,12 @@
     }
 
     s.showDiagnoseList = function () {
-        s.showClientList = !s.showClientList;
+      s.showClientList = !s.showClientList;
 
-        if (s.showClientList) {
-            getMRHclients();
-        }
-    }
+      if (s.showClientList) {
+        getMRHclients();
+      }
+    };
 
     s.returnToList = function () {
         s.showClientList = true;
@@ -104,21 +106,36 @@
                 });
             }
 
-            else {
-                s.bpHistoryList = d.data.bp;
+          angular.forEach(s.bpHistoryList, function (value) {
+            value.dateTimeLog = moment(value.dateTimeLog).format("lll");
+          });
 
-                angular.forEach(s.bpHistoryList, function (value) {
-                    value.dateTimeLog = moment(value.dateTimeLog).format('lll');
-                });
+          s.vitalSigns = d.data.vs;
+          s.BMI.value =
+            Math.round(
+              (s.vitalSigns.weight /
+                (s.vitalSigns.height * s.vitalSigns.height)) *
+                100
+            ) / 100;
+          s.BMI.desc =
+            s.BMI.value < 18.5
+              ? "UNDERWEIGHT"
+              : s.BMI.value >= 18.5 && s.BMI.value <= 22.9
+              ? "NORMAL"
+              : s.BMI.value >= 23 && s.BMI.value <= 24.9
+              ? "OVERWEIGHT"
+              : s.BMI.value >= 25 && s.BMI.value <= 29.9
+              ? "PRE-OBESE"
+              : s.BMI.value >= 30 && s.BMI.value <= 40
+              ? "OBESE TYPE 1"
+              : s.BMI.value >= 40.1 && s.BMI.value <= 50
+              ? "OBESE TYPE 2"
+              : "OBESE TYPE 3";
+          s.BMI.data = s.BMI.value + " - " + s.BMI.desc;
+        }
 
-                s.vitalSigns = d.data.vs;
-                s.BMI.value = Math.round((s.vitalSigns.weight / (s.vitalSigns.height * s.vitalSigns.height)) * 100) / 100;
-                s.BMI.desc = s.BMI.value < 18.5 ? 'UNDERWEIGHT' : (s.BMI.value >= 18.5 && s.BMI.value <= 22.9) ? 'NORMAL' : (s.BMI.value >= 23 && s.BMI.value <= 24.9) ? 'OVERWEIGHT' : (s.BMI.value >= 25 && s.BMI.value <= 29.9) ? 'PRE-OBESE' : (s.BMI.value >= 30 && s.BMI.value <= 40) ? 'OBESE TYPE 1' : (s.BMI.value >= 40.1 && s.BMI.value <= 50) ? 'OBESE TYPE 2' : 'OBESE TYPE 3'
-                s.BMI.data = s.BMI.value + ' - ' + s.BMI.desc;
-            }
-
-            s.bpLoader = false;
-        });
+        s.bpLoader = false;
+      });
     }
 
     function getMedicalHistory(qrCode) {
@@ -173,14 +190,21 @@
     }
 
     function getMRHrequest(qrCode) {
-        h.post('../MaleRepro/getMRHrequest?qrCode=' + qrCode).then(function (d) {
-            if (d.data.status == 'error') {
-                swal({
-                    title: "ERROR",
-                    text: d.data.msg,
-                    type: "error"
-                });
-            }
+      h.post("../MaleRepro/getMRHrequest?qrCode=" + qrCode).then(function (d) {
+        if (d.data.status == "error") {
+          swal({
+            title: "ERROR",
+            text: d.data.msg,
+            type: "error",
+          });
+        } else if (d.data.length == 0) {
+          swal({
+            title: "ERROR",
+            text: "Patient has no record of rectal examination referral. Please refer the patient to medical consultation",
+            type: "error",
+          });
+        } else {
+          s.mhrReq = {};
 
             else if (d.data.length == 0) {
                 swal({
@@ -193,15 +217,8 @@
             else {
                 s.mhrReq = {};
 
-                angular.forEach(d.data, function (d2) {
-                    d2.requestDT = moment(d2.requestDT).format('lll');
-                });
-               
-                s.mhrReq = d.data; 
-            }
-
-            s.bpLoader = false;
-        });
+        s.bpLoader = false;
+      });
     }
 
     function getLabHistory(qrCode) {
@@ -272,15 +289,21 @@
             showConfirmButton: false
         });
 
-        h.post('../MaleRepro/saveInterview', { mrh: mrhData }).then(function (d) {
-            if (d.data.status == "error") {
-                swal({
-                    title: "ERROR",
-                    text: "<labal>" + d.data.msg + "</label>",
-                    type: "error",
-                    html: true
-                });
-            }
+      h.post("../MaleRepro/saveInterview", { mrh: mrhData }).then(function (d) {
+        if (d.data.status == "error") {
+          swal({
+            title: "ERROR",
+            text: "<labal>" + d.data.msg + "</label>",
+            type: "error",
+            html: true,
+          });
+        } else {
+          swal({
+            title: "SUCCESSFUL",
+            text: d.data.msg,
+            type: "success",
+            html: true,
+          });
 
             else {
                 swal({
@@ -342,93 +365,120 @@
     }
 
     function getMRHclients() {
-        indexNo = 1;
+      indexNo = 1;
 
-        if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
-            $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url('../MaleRepro/getMRHclients').load();
-        }
+      if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
+        $("#clientList_tbl").DataTable().clear();
+        $("#clientList_tbl")
+          .DataTable()
+          .ajax.url("../MaleRepro/getMRHclients")
+          .load();
+      } else {
+        //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
+        var tblMRH = $("#clientList_tbl").DataTable({
+          ajax: {
+            url: "../MaleRepro/getMRHclients",
+            type: "POST",
+            dataSrc: "",
+            recordsTotal: 20,
+            recordsFiltered: 20,
+            deferRender: true,
+          },
+          pageLength: 10,
+          searching: true,
+          language: {
+            loadingRecords:
+              '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
+            emptyTable:
+              '<label class="text-danger">NO INFORMATION FOUND!</label>',
+          },
+          processing: false,
+          columns: [
+            {
+              data: "index",
+              render: function () {
+                return indexNo++;
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                return "<strong>" + row.lastName + "</strong>";
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                return "<strong>" + row.firstName + "</strong>";
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                return row.middleName == null
+                  ? ""
+                  : "<strong>" + row.middleName + "</strong>";
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                return row.extName == null
+                  ? ""
+                  : "<strong>" + row.extName + "</strong>";
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                return row.sex ? "M" : "F";
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                var age = moment().diff(
+                  moment(row.birthdate).format("L"),
+                  "years"
+                );
+                return '<span class="label label-success">' + age + "</span>";
+              },
+            },
+            {
+              data: "contactNo",
+            },
+            {
+              data: null,
+              render: function (row) {
+                return (
+                  row.personnel_firstName +
+                  " " +
+                  row.personnel_midInit +
+                  " " +
+                  row.personnel_lastName
+                );
+              },
+            },
+            {
+              data: null,
+              render: function (row) {
+                return moment(row.interviewDT).format("lll");
+              },
+            },
+            {
+              data: null,
+              render: function () {
+                return '<button class="btn-success btn btn-xs" id="btnShowMRH"> Show <i class="fa fa-external-link"></i></button>';
+              },
+            },
+          ],
+          order: [[0, "asc"]],
+        });
 
-        else {
-            //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
-            var tblMRH = $('#clientList_tbl').DataTable({
-                "ajax": {
-                    "url": '../MaleRepro/getMRHclients',
-                    "type": 'POST',
-                    "dataSrc": "",
-                    "recordsTotal": 20,
-                    "recordsFiltered": 20,
-                    "deferRender": true
-                },
-                "pageLength": 10,
-                "searching": true,
-                "language":
-                 {
-                     "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
-                     "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
-                 },
-                "processing": false,
-                "columns": [{
-                    "data": "index", "render": function () { return indexNo++; }
-                }, {
-                    "data": null,
-                    render: function (row) {
-                        return '<strong>' + row.lastName + '</strong>';
-                    }
-                }, {
-                    "data": null,
-                    render: function (row) {
-                        return '<strong>' + row.firstName + '</strong>';
-                    }
-                }
-                , {
-                    "data": null,
-                    render: function (row) {
-                        return row.middleName == null ? '' : '<strong>' + row.middleName + '</strong>';
-                    }
-                },
-               {
-                   "data": null,
-                   render: function (row) {
-                       return row.extName == null ? '' : '<strong>' + row.extName + '</strong>';
-                   }
-               },
-               {
-                   "data": null,
-                   render: function (row) {
-                       return row.sex ? "M" : "F";
-                   }
-               },
-               {
-                   "data": null,
-                   render: function (row) {
-                       var age = moment().diff(moment(row.birthdate).format('L'), 'years');
-                       return '<span class="label label-success">' + age + '</span>';
-                   }
-               },
-               {
-                   "data": 'contactNo'
-               },
-               {
-                   "data": null, render: function (row) {
-                       return row.personnel_firstName + " " + row.personnel_midInit + " " + row.personnel_lastName
-                   }
-               },
-               {
-                   "data": null, render: function (row) {
-                       return moment(row.interviewDT).format('lll');
-                   }
-               },
-               {
-                   "data": null, render: function () {
-                       return '<button class="btn-success btn btn-xs" id="btnShowMRH"> Show <i class="fa fa-external-link"></i></button>'
-                   }
-               }
-                ],
-                "order": [[0, "asc"]]
-            });
+        $("#clientList_tbl tbody").off("click");
 
-            $('#clientList_tbl tbody').off('click');
+        $("#clientList_tbl tbody").on("click", "#btnShowMRH", function () {
+          var data = tblMRH.row($(this).parents("tr")).data();
 
             $('#clientList_tbl tbody').on('click', '#btnShowMRH', function () {
                 var data = tblMRH.row($(this).parents('tr')).data();
@@ -442,5 +492,5 @@
 
         }
     }
-
-}]);
+  },
+]);

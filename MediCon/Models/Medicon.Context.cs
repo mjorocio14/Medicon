@@ -54,8 +54,10 @@ namespace MediCon.Models
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Temp_LabPrices> Temp_LabPrices { get; set; }
         public virtual DbSet<Temp_Morbidity> Temp_Morbidity { get; set; }
+        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
+        public virtual DbSet<EditRemark> EditRemarks { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)
@@ -71,6 +73,12 @@ namespace MediCon.Models
         public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getLabResult")]
+        public virtual IQueryable<fn_getLabResult_Result> fn_getLabResult()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabResult_Result>("[MediconEntities].[fn_getLabResult]()");
         }
     
         [DbFunction("MediconEntities", "fn_getMRHclients")]

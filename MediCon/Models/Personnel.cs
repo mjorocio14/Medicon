@@ -23,6 +23,8 @@ namespace MediCon.Models
         public Nullable<bool> sex { get; set; }
         public string contactNum { get; set; }
         public string position { get; set; }
+        public string licenseNo { get; set; }
+        public string title { get; set; }
         public string serviceID { get; set; }
         public string username { get; set; }
         public string password { get; set; }

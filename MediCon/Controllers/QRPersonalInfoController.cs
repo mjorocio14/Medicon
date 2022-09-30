@@ -24,6 +24,8 @@ namespace MediCon.Controllers
         {
             try
             {
+                var person = db.PersonalInfoes.Single(a => a.qrCode == qrCode);
+
                 var result = db.PersonalInfoes.Join(db.Brgies, pi => pi.brgyCode, br => br.brgyCode, (pi, br) => new { pi, br })
                              .Join(db.CityMuns, res1 => res1.br.citymunCode, cm => cm.citymunCode, (res1, cm) => new { res1, cm })
                              .Join(db.Provinces, res2 => res2.res1.br.provCode, pr => pr.provCode, (res2, pr) => new { res2, pr })

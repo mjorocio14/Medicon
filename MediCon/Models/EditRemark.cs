@@ -12,17 +12,13 @@ namespace MediCon.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class LaboratoryExam
+    public partial class EditRemark
     {
         public long recNo { get; set; }
+        public string editID { get; set; }
         public string labID { get; set; }
-        public string referralID { get; set; }
-        public string labTestID { get; set; }
-        public string otherLabDesc { get; set; }
-        public Nullable<bool> isTested { get; set; }
-        public Nullable<bool> isEncoded { get; set; }
-        public Nullable<System.DateTime> dateEncoded { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string remarks { get; set; }
+        public string editedBy { get; set; }
+        public Nullable<System.DateTime> dateEdited { get; set; }
     }
 }
