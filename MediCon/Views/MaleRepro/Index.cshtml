@@ -10,10 +10,15 @@
 
     .my-custom-scrollbar {
         position: relative;
-        height: 330px !important;
+        height: 400px !important;
         overflow: auto;
         border: none;
         width: 100%;
+    }
+
+    .tabs-container .nav-tabs > li.active > a, .tabs-container .nav-tabs > li.active > a:hover, .tabs-container .nav-tabs > li.active > a:focus {
+        background-color: #1ab394;
+        color: white;
     }
 </style>
 
@@ -32,7 +37,7 @@
             </ol>
         </div>
         <div class="col-sm-2" style="margin-top:30px; text-align:end;">
-            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN && !showInterview" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
             <button class="btn btn-danger" ng-show="showRx"><i class="fa fa-angle-double-left"></i> Back </button>
         </div>
     </div>
@@ -90,7 +95,7 @@
                                                 <label class="control-label" for="qr_mi">Middle name</label>
                                                 <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly style="background-color: white;" />
                                             </div>
-                                        </div>
+                                        </div>re
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_suffix">Suffix</label>
@@ -144,7 +149,7 @@
                 <div class="col-lg-7 col-md-7">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
-                            <div class="panel panel-warning" style="min-height: 200px; height: 410px;">
+                            <div class="panel panel-warning" style="min-height: 200px; height: 350px;">
                                 <div class="panel-heading text-center">
                                     <label class="text-center">RECTAL EXAMINATION REQUEST</label>
                                 </div>
@@ -162,8 +167,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-center" ng-show="loader">
-                                                    <td colspan="6">
+                                                <tr class="text-center" ng-show="bpLoader">
+                                                    <td colspan="4">
                                                         <div class="sk-spinner sk-spinner-double-bounce">
                                                             <div class="sk-double-bounce1"></div>
                                                             <div class="sk-double-bounce2"></div>
@@ -171,7 +176,7 @@
                                                         <text><i>Please wait, we are loading your data...</i></text>
                                                     </td>
                                                 </tr>
-                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false && mhrReq.length == 0">
                                                     <td colspan="6">
                                                         <label class="text-danger">NO INFORMATION FOUND!</label>
                                                     </td>
@@ -181,7 +186,7 @@
                                                     <td>{{req.requestPerson[0].personnel_firstName}} {{req.requestPerson[0].personnel_middleName}} {{req.requestPerson[0].personnel_lastName}} {{req.requestPerson[0].personnel_extName}}</td>
                                                     <td>{{req.requestDT}}</td>
                                                     <td class="text-center">
-                                                        <button class="btn btn-warning" ng-click="proceedInterview(req)">Proceed</button>
+                                                        <button class="btn btn-warning" ng-click="proceedInterview(false, null ,req)">Proceed</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -191,7 +196,7 @@
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6">
-                            <div class="panel panel-success" style="min-height: 200px; height: 410px;">
+                            <div class="panel panel-success" style="min-height: 200px; height: 350px;">
                                 <div class="panel-heading text-center">
                                     <label class="text-center">VITAL SIGNS INFORMATION</label>
                                 </div>
@@ -253,47 +258,172 @@
                         </div>
 
                         <div class="col-lg-12">
-                            <div class="panel panel-danger" style="min-height: 200px; height: 410px;">
-                                <div class="panel-heading text-center">
-                                    <label class="text-center">MEDICAL HISTORY</label>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                        <table class="table table-stripped">
-                                            <thead>
-                                                <tr>
+                            <div>
+                                <div class="tabs-container">
 
-                                                    <th class="">#</th>
-                                                    <th>Service</th>
-                                                    <th>Date</th>
-                                                    <th>Action</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="text-center" ng-show="bpLoader">
-                                                    <td colspan="6">
-                                                        <div class="sk-spinner sk-spinner-double-bounce">
-                                                            <div class="sk-double-bounce1"></div>
-                                                            <div class="sk-double-bounce2"></div>
-                                                        </div>
-                                                        <text><i>Please wait, we are loading your data...</i></text>
-                                                    </td>
-                                                </tr>
-                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                                    <td colspan="6">
-                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                    </td>
-                                                </tr>
-                                                <tr ng-repeat="mh in medHistoryList">
-                                                    <td>{{$index + 1}}</td>
-                                                    <td>{{mh[0].serviceName}}</td>
-                                                    <td>{{mh[0].dateTimeLog }}</td>
-                                                    <td><button class="btn btn-sm btn-danger" ng-click="showDiagnoseHistory(mh[0])">Show</button></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#tab-MD"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
+                                        <li class=""><a data-toggle="tab" href="#tab-MP"><i class="fa fa-medkit"></i> Prescription</a></li>
+                                        <li class=""><a data-toggle="tab" href="#tab-Lab"><i class="fa fa-eyedropper"></i> Laboratory</a></li>
+                                    </ul>
+                                    <div class="tab-content ">
+                                        <div id="tab-MD" class="tab-pane active">
+                                            <div class="panel-body" style="height: 446px;">
+                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                    <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center" style="color: #1ab394;">#</th>
+                                                                <th style="color: #1ab394;">Diagnosis Date & Time</th>
+                                                                <th style="color: #1ab394;">Physician</th>
+                                                                <th style="color: #1ab394;">Service</th>
+                                                                <th style="color: #1ab394;">Refer to Health Facility</th>
+                                                                <th style="color: #1ab394;">Remarks</th>
+                                                                <th style="color: #1ab394;">Diagnosis</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="text-center" ng-show="medicalRecord_loader">
+                                                                <td colspan="7">
+                                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                                        <div class="sk-double-bounce1"></div>
+                                                                        <div class="sk-double-bounce2"></div>
+                                                                    </div>
+                                                                    <text><i>Please wait, we are loading your data...</i></text>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="text-center" ng-show="diagnoseHistoryList.length == 0 && medicalRecord_loader == false">
+                                                                <td colspan="7">
+                                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="dh in diagnoseHistoryList">
+                                                                <td class="text-center">{{$index + 1}}</td>
+                                                                <td>{{dh.dateTimeLog}}</td>
+                                                                <td>{{dh.personnelFullname}}</td>
+                                                                <td>{{dh.serviceName}}</td>
+                                                                <td>{{dh.outsideReferral}}</td>
+                                                                <td>{{dh.remarks}}</td>
+                                                                <td>
+                                                                    <table class="table table-stripped" style="width: 100%;">
+                                                                        <tbody>
+                                                                            <tr ng-repeat="diag in dh.diagnosis">
+                                                                                <td>{{diag.diagnoseName}}</td>
+                                                                                <td>{{diag.otherDiagnosis}}</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="tab-MP" class="tab-pane">
+                                            <div class="panel-body" style="height: 446px;">
+                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                    <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center" style="color: #1ab394;">#</th>
+                                                                <th style="color: #1ab394;">Physician</th>
+                                                                <th style="color: #1ab394;">Rx Date & Time</th>
+                                                                <th style="color: #1ab394;">Service</th>
+                                                                <th style="color: #1ab394;">Prescription/s</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="text-center" ng-show="medicalRecord_loader">
+                                                                <td colspan="6">
+                                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                                        <div class="sk-double-bounce1"></div>
+                                                                        <div class="sk-double-bounce2"></div>
+                                                                    </div>
+                                                                    <text><i>Please wait, we are loading your data...</i></text>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="text-center" ng-show="rxHistoryList.length == 0 && medicalRecord_loader == false">
+                                                                <td colspan="6">
+                                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="rx in rxHistoryList">
+                                                                <td class="text-center">{{$index + 1}}</td>
+                                                                <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
+                                                                <td>{{rx[0].dateTimeRx}}</td>
+                                                                <td>{{rx[0].serviceName}}</td>
+                                                                <td>
+                                                                    <table class="table table-stripped" style="width: 100%;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Medicine Name</th>
+                                                                                <th>Dosage</th>
+                                                                                <th># Days</th>
+                                                                                <th>Qty</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr ng-repeat="rx in rx">
+                                                                                <td>{{rx.productDesc}} {{rx.measurementDesc}}</td>
+                                                                                <td>{{rx.dosage}} {{rx.unitDesc}} x {{rx.perDay}} a Day</td>
+                                                                                <td>{{rx.noDay == 'maintenance' ? 'as Maintenance':rx.noDay == 'needed' ? 'as Needed':rx.noDay == 'single' ? 'Single Dose':rx.noDay + ' Day/s'}}</td>
+                                                                                <td>{{rx.qtyRx}} {{rx.unitDesc == 'Suspension' || rx.unitDesc == 'Syrup' || rx.unitDesc == 'Drops' || rx.unitDesc == 'Bottle' ? 'Bottle/s':rx.unitDesc == 'Cream' ? 'Tube':''}}</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="tab-Lab" class="tab-pane">
+                                            <div class="panel-body" style="height: 446px;">
+                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                    <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center" style="color: #1ab394;">#</th>
+                                                                <th style="color: #1ab394;">Test</th>
+                                                                <th style="color: #1ab394;" class="text-center">Tested</th>
+                                                                <th style="color: #1ab394;" class="text-center">With Result</th>
+                                                                <th style="color: #1ab394;">Date & Time Tested</th>
+                                                                <th style="color: #1ab394;" class="text-center">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="text-center" ng-show="medHistLoader_modal">
+                                                                <td colspan="6">
+                                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                                        <div class="sk-double-bounce1"></div>
+                                                                        <div class="sk-double-bounce2"></div>
+                                                                    </div>
+                                                                    <text><i>Please wait, we are loading your data...</i></text>
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
+                                                                <td colspan="6">
+                                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr ng-repeat="dh in labHistoryList">
+                                                                <td class="text-center">{{$index + 1}}</td>
+                                                                <td>{{dh.labTestName}}</td>
+                                                                <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
+                                                                <td class="text-center">Yes</td>
+                                                                <td>{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
+                                                                <td class="text-center"><button class="btn btn-primary btn-sm" ng-click="viewLabResult(dh)"> Show </button></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -332,11 +462,11 @@
                                 <label class="col-sm-6 control-label">Ito ba ang una ninyong DRE?</label>
                                 <div class="col-sm-6">
                                     <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="dre_ou" name="radio_is1stDRE" value="true" ng-model="mrh.is1stDRE" />
+                                        <input type="radio" id="dre_ou" name="radio_is1stDRE" value="true" ng-model="mrh.is1stDRE" ng-disabled="isViewing && !isEditting" required/>
                                         <label for="dre_ou"> Ou </label>
                                     </div>
                                     <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="dre_hindi" name="radio_is1stDRE" value="false" ng-model="mrh.is1stDRE" />
+                                        <input type="radio" id="dre_hindi" name="radio_is1stDRE" value="false" ng-model="mrh.is1stDRE" ng-disabled="isViewing && !isEditting" />
                                         <label for="dre_hindi"> Hindi </label>
                                     </div>
                                 </div>
@@ -348,15 +478,15 @@
                                 <label class="col-sm-6 control-label">Gaano kadalas kayong magpaDRE?</label>
                                 <div class="col-sm-6">
                                     <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="dre_1" name="radio_DREfrequency" value="1" ng-model="mrh.DREfrequency" />
+                                        <input type="radio" id="dre_1" name="radio_DREfrequency" value="1" ng-model="mrh.DREfrequency" ng-disabled="isViewing && !isEditting" required />
                                         <label for="dre_1"> 1 sa isang taon </label>
                                     </div>
                                     <div class="radio radio-success radio-inline">
-                                        <input type="radio" id="dre_2" name="radio_DREfrequency" value="2" ng-model="mrh.DREfrequency" />
+                                        <input type="radio" id="dre_2" name="radio_DREfrequency" value="2" ng-model="mrh.DREfrequency" ng-disabled="isViewing && !isEditting" />
                                         <label for="dre_2"> 2 sa isang taon </label>
                                     </div>
                                     <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="dre_3" name="radio_DREfrequency" value="3" ng-model="mrh.DREfrequency" />
+                                        <input type="radio" id="dre_3" name="radio_DREfrequency" value="3" ng-model="mrh.DREfrequency" ng-disabled="isViewing && !isEditting" />
                                         <label for="dre_3"> Mahigit sa 2 sa isang taon </label>
                                     </div>
                                 </div>
@@ -368,11 +498,11 @@
                                 <label class="col-sm-6 control-label">Mayroon bang miyembro ng pamilya na nagkaroon na ng Kanser sa prostata?</label>
                                 <div class="col-sm-6">
                                     <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="dre_ou_isProstateCancer" name="radio_isProstateCancer" value="true" ng-model="mrh.isProstateCancer" />
+                                        <input type="radio" id="dre_ou_isProstateCancer" name="radio_isProstateCancer" value="true" ng-model="mrh.isProstateCancer" ng-disabled="isViewing && !isEditting" required />
                                         <label for="dre_ou_isProstateCancer"> Ou </label>
                                     </div>
                                     <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="dre_hindi_isProstateCancer" name="radio_isProstateCancer" value="false" ng-model="mrh.isProstateCancer" />
+                                        <input type="radio" id="dre_hindi_isProstateCancer" name="radio_isProstateCancer" value="false" ng-model="mrh.isProstateCancer" ng-disabled="isViewing && !isEditting" />
                                         <label for="dre_hindi_isProstateCancer"> Wala </label>
                                     </div>
                                 </div>
@@ -384,11 +514,11 @@
                                 <label class="col-sm-6 control-label">Mayroon bang miyembro ng pamilya na nagkaroon na ng anumang klase ng Kanser?</label>
                                 <div class="col-sm-3">
                                     <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="dre_ou_isAnyCancer" name="radio_isAnyCancer" value="true" ng-model="mrh.isAnyCancer" />
+                                        <input type="radio" id="dre_ou_isAnyCancer" name="radio_isAnyCancer" value="true" ng-model="mrh.isAnyCancer" ng-disabled="isViewing && !isEditting" required />
                                         <label for="dre_ou_isAnyCancer"> Ou </label>
                                     </div>
                                     <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="dre_hindi_isAnyCancer" name="radio_isAnyCancer" value="false" ng-model="mrh.isAnyCancer" />
+                                        <input type="radio" id="dre_hindi_isAnyCancer" name="radio_isAnyCancer" value="false" ng-model="mrh.isAnyCancer" ng-disabled="isViewing && !isEditting" />
                                         <label for="dre_hindi_isAnyCancer"> Wala </label>
                                     </div>
                                 </div>
@@ -400,7 +530,7 @@
                                     <label class="control-label pull-right" for="cancerName">Anong Kanser?</label>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="text" id="cancerName" name="cancerName" ng-model="mrh.cancerName" class="form-control text-center" style="width: 70%;" ng-required="mrh.isAnyCancer == 'true'" />
+                                    <input type="text" id="cancerName" name="cancerName" ng-model="mrh.cancerName" class="form-control text-center" style="width: 70%;" ng-required="mrh.isAnyCancer == 'true'" ng-disabled="isViewing && !isEditting" />
                                 </div>
                             </div>
                         </div>
@@ -409,11 +539,11 @@
                                 <label class="col-sm-6 control-label">Mayroon ba kayong iniinom na gamot sa kasalukuyan?</label>
                                 <div class="col-sm-3">
                                     <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="dre_ou_isMedication" name="radio_isMedication" value="true" ng-model="mrh.isMedication" />
+                                        <input type="radio" id="dre_ou_isMedication" name="radio_isMedication" value="true" ng-model="mrh.isMedication" ng-disabled="isViewing && !isEditting" required />
                                         <label for="dre_ou_isMedication"> Ou </label>
                                     </div>
                                     <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="dre_hindi_isMedication" name="radio_isMedication" value="false" ng-model="mrh.isMedication" />
+                                        <input type="radio" id="dre_hindi_isMedication" name="radio_isMedication" value="false" ng-model="mrh.isMedication" ng-disabled="isViewing && !isEditting" />
                                         <label for="dre_hindi_isMedication"> Wala </label>
                                     </div>
                                 </div>
@@ -425,7 +555,7 @@
                                     <label class="control-label pull-right" for="cancerName">Anong gamot?</label>
                                 </div>
                                 <div class="col-sm-6">
-                                    <input type="text" id="medicineName" name="medicineName" ng-model="mrh.medicineName" class="form-control text-center" style="width: 70%;" ng-required="mrh.isMedication == 'true'" />
+                                    <input type="text" id="medicineName" name="medicineName" ng-model="mrh.medicineName" class="form-control text-center" style="width: 70%;" ng-required="mrh.isMedication == 'true'" ng-disabled="isViewing && !isEditting" />
                                 </div>
                             </div>
                         </div>
@@ -449,37 +579,37 @@
                                     <td>1. Gaano kadalas kayong nakaramdam na di nauubos ang laman ng pantog pagkatapos umihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_diNauubos" name="radio_diNauubos" value=0 ng-model="mrh.diNauubos" />
+                                            <input type="radio" id="dre_0_diNauubos" name="radio_diNauubos" value=0 ng-model="mrh.diNauubos" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_diNauubos"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_diNauubos" name="radio_diNauubos" value=1 ng-model="mrh.diNauubos" />
+                                            <input type="radio" id="dre_1_diNauubos" name="radio_diNauubos" value=1 ng-model="mrh.diNauubos" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_diNauubos"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_diNauubos" name="radio_diNauubos" value=2 ng-model="mrh.diNauubos" />
+                                            <input type="radio" id="dre_2_diNauubos" name="radio_diNauubos" value=2 ng-model="mrh.diNauubos" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_diNauubos"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_diNauubos" name="radio_diNauubos" value=3 ng-model="mrh.diNauubos" />
+                                            <input type="radio" id="dre_3_diNauubos" name="radio_diNauubos" value=3 ng-model="mrh.diNauubos" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_diNauubos"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_diNauubos" name="radio_diNauubos" value=4 ng-model="mrh.diNauubos" />
+                                            <input type="radio" id="dre_4_diNauubos" name="radio_diNauubos" value=4 ng-model="mrh.diNauubos" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_diNauubos"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_diNauubos" name="radio_diNauubos" value=5 ng-model="mrh.diNauubos" />
+                                            <input type="radio" id="dre_5_diNauubos" name="radio_diNauubos" value=5 ng-model="mrh.diNauubos" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_diNauubos"> 5 </label>
                                         </div>
                                     </td>
@@ -488,37 +618,37 @@
                                     <td>2. Gaano kadalas kayo kailangang umihi nang madalas sa kada-dalawang oras ng pagitan?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_kadalasUmihi" name="radio_kadalasUmihi" value=0 ng-model="mrh.kadalasUmihi" />
+                                            <input type="radio" id="dre_0_kadalasUmihi" name="radio_kadalasUmihi" value=0 ng-model="mrh.kadalasUmihi" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_kadalasUmihi"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_kadalasUmihi" name="radio_kadalasUmihi" value=1 ng-model="mrh.kadalasUmihi" />
+                                            <input type="radio" id="dre_1_kadalasUmihi" name="radio_kadalasUmihi" value=1 ng-model="mrh.kadalasUmihi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_kadalasUmihi"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_kadalasUmihi" name="radio_kadalasUmihi" value=2 ng-model="mrh.kadalasUmihi" />
+                                            <input type="radio" id="dre_2_kadalasUmihi" name="radio_kadalasUmihi" value=2 ng-model="mrh.kadalasUmihi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_kadalasUmihi"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_kadalasUmihi" name="radio_kadalasUmihi" value=3 ng-model="mrh.kadalasUmihi" />
+                                            <input type="radio" id="dre_3_kadalasUmihi" name="radio_kadalasUmihi" value=3 ng-model="mrh.kadalasUmihi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_kadalasUmihi"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_kadalasUmihi" name="radio_kadalasUmihi" value=4 ng-model="mrh.kadalasUmihi" />
+                                            <input type="radio" id="dre_4_kadalasUmihi" name="radio_kadalasUmihi" value=4 ng-model="mrh.kadalasUmihi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_kadalasUmihi"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_kadalasUmihi" name="radio_kadalasUmihi" value=5 ng-model="mrh.kadalasUmihi" />
+                                            <input type="radio" id="dre_5_kadalasUmihi" name="radio_kadalasUmihi" value=5 ng-model="mrh.kadalasUmihi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_kadalasUmihi"> 5 </label>
                                         </div>
                                     </td>
@@ -527,37 +657,37 @@
                                     <td>3. Gaano kadalas kayong nakaranas ng patigil-tigil o paputol-putol na pagdaloy ng ihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=0 ng-model="mrh.patigiltiglNaIhi" />
+                                            <input type="radio" id="dre_0_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=0 ng-model="mrh.patigiltiglNaIhi" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_patigiltiglNaIhi"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=1 ng-model="mrh.patigiltiglNaIhi" />
+                                            <input type="radio" id="dre_1_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=1 ng-model="mrh.patigiltiglNaIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_patigiltiglNaIhi"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=2 ng-model="mrh.patigiltiglNaIhi" />
+                                            <input type="radio" id="dre_2_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=2 ng-model="mrh.patigiltiglNaIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_patigiltiglNaIhi"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=3 ng-model="mrh.patigiltiglNaIhi" />
+                                            <input type="radio" id="dre_3_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=3 ng-model="mrh.patigiltiglNaIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_patigiltiglNaIhi"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=4 ng-model="mrh.patigiltiglNaIhi" />
+                                            <input type="radio" id="dre_4_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=4 ng-model="mrh.patigiltiglNaIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_patigiltiglNaIhi"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=5 ng-model="mrh.patigiltiglNaIhi" />
+                                            <input type="radio" id="dre_5_patigiltiglNaIhi" name="radio_patigiltiglNaIhi" value=5 ng-model="mrh.patigiltiglNaIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_patigiltiglNaIhi"> 5 </label>
                                         </div>
                                     </td>
@@ -566,37 +696,37 @@
                                     <td>4. Gaano kadalas kayong nakaranas ng mahirap na pagpigil ng pag-ihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=0 ng-model="mrh.pagpigilNgIhi" />
+                                            <input type="radio" id="dre_0_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=0 ng-model="mrh.pagpigilNgIhi" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_pagpigilNgIhi"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=1 ng-model="mrh.pagpigilNgIhi" />
+                                            <input type="radio" id="dre_1_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=1 ng-model="mrh.pagpigilNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_pagpigilNgIhi"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=2 ng-model="mrh.pagpigilNgIhi" />
+                                            <input type="radio" id="dre_2_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=2 ng-model="mrh.pagpigilNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_pagpigilNgIhi"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=3 ng-model="mrh.pagpigilNgIhi" />
+                                            <input type="radio" id="dre_3_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=3 ng-model="mrh.pagpigilNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_pagpigilNgIhi"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=4 ng-model="mrh.pagpigilNgIhi" />
+                                            <input type="radio" id="dre_4_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=4 ng-model="mrh.pagpigilNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_pagpigilNgIhi"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=5 ng-model="mrh.pagpigilNgIhi" />
+                                            <input type="radio" id="dre_5_pagpigilNgIhi" name="radio_pagpigilNgIhi" value=5 ng-model="mrh.pagpigilNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_pagpigilNgIhi"> 5 </label>
                                         </div>
                                     </td>
@@ -605,37 +735,37 @@
                                     <td>5. Gaano kadalas ninyong napansin ang mahinang pagdaloy o paglabas ng inyong ihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_mahinangDaloy" name="radio_mahinangDaloy" value=0 ng-model="mrh.mahinangDaloy" />
+                                            <input type="radio" id="dre_0_mahinangDaloy" name="radio_mahinangDaloy" value=0 ng-model="mrh.mahinangDaloy" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_mahinangDaloy"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_mahinangDaloy" name="radio_mahinangDaloy" value=1 ng-model="mrh.mahinangDaloy" />
+                                            <input type="radio" id="dre_1_mahinangDaloy" name="radio_mahinangDaloy" value=1 ng-model="mrh.mahinangDaloy" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_mahinangDaloy"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_mahinangDaloy" name="radio_mahinangDaloy" value=2 ng-model="mrh.mahinangDaloy" />
+                                            <input type="radio" id="dre_2_mahinangDaloy" name="radio_mahinangDaloy" value=2 ng-model="mrh.mahinangDaloy" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_mahinangDaloy"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_mahinangDaloy" name="radio_mahinangDaloy" value=3 ng-model="mrh.mahinangDaloy" />
+                                            <input type="radio" id="dre_3_mahinangDaloy" name="radio_mahinangDaloy" value=3 ng-model="mrh.mahinangDaloy" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_mahinangDaloy"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_mahinangDaloy" name="radio_mahinangDaloy" value=4 ng-model="mrh.mahinangDaloy" />
+                                            <input type="radio" id="dre_4_mahinangDaloy" name="radio_mahinangDaloy" value=4 ng-model="mrh.mahinangDaloy" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_mahinangDaloy"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_mahinangDaloy" name="radio_mahinangDaloy" value=5 ng-model="mrh.mahinangDaloy" />
+                                            <input type="radio" id="dre_5_mahinangDaloy" name="radio_mahinangDaloy" value=5 ng-model="mrh.mahinangDaloy" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_mahinangDaloy"> 5 </label>
                                         </div>
                                     </td>
@@ -644,37 +774,37 @@
                                     <td>6. Gaano kadalas kayong nakaranas ng pangangailangan umiri o magpwersa upang makalabas ang inyong ihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=0 ng-model="mrh.magpwersaNgIhi" />
+                                            <input type="radio" id="dre_0_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=0 ng-model="mrh.magpwersaNgIhi" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_magpwersaNgIhi"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=1 ng-model="mrh.magpwersaNgIhi" />
+                                            <input type="radio" id="dre_1_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=1 ng-model="mrh.magpwersaNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_magpwersaNgIhi"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=2 ng-model="mrh.magpwersaNgIhi" />
+                                            <input type="radio" id="dre_2_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=2 ng-model="mrh.magpwersaNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_magpwersaNgIhi"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=3 ng-model="mrh.magpwersaNgIhi" />
+                                            <input type="radio" id="dre_3_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=3 ng-model="mrh.magpwersaNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_magpwersaNgIhi"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=4 ng-model="mrh.magpwersaNgIhi" />
+                                            <input type="radio" id="dre_4_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=4 ng-model="mrh.magpwersaNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_magpwersaNgIhi"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=5 ng-model="mrh.magpwersaNgIhi" />
+                                            <input type="radio" id="dre_5_magpwersaNgIhi" name="radio_magpwersaNgIhi" value=5 ng-model="mrh.magpwersaNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_magpwersaNgIhi"> 5 </label>
                                         </div>
                                     </td>
@@ -683,37 +813,37 @@
                                     <td>7. Ilang beses kayong gumising o bumangon sa gabi upang umihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_besesGumising" name="radio_besesGumising" value=0 ng-model="mrh.besesGumising" />
+                                            <input type="radio" id="dre_0_besesGumising" name="radio_besesGumising" value=0 ng-model="mrh.besesGumising" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_besesGumising"> 0 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_besesGumising" name="radio_besesGumising" value=1 ng-model="mrh.besesGumising" />
+                                            <input type="radio" id="dre_1_besesGumising" name="radio_besesGumising" value=1 ng-model="mrh.besesGumising" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_besesGumising"> 1 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_besesGumising" name="radio_besesGumising" value=2 ng-model="mrh.besesGumising" />
+                                            <input type="radio" id="dre_2_besesGumising" name="radio_besesGumising" value=2 ng-model="mrh.besesGumising" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_besesGumising"> 2 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_besesGumising" name="radio_besesGumising" value=3 ng-model="mrh.besesGumising" />
+                                            <input type="radio" id="dre_3_besesGumising" name="radio_besesGumising" value=3 ng-model="mrh.besesGumising" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_besesGumising"> 3 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_besesGumising" name="radio_besesGumising" value=4 ng-model="mrh.besesGumising" />
+                                            <input type="radio" id="dre_4_besesGumising" name="radio_besesGumising" value=4 ng-model="mrh.besesGumising" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_besesGumising"> 4 </label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_besesGumising" name="radio_besesGumising" value=5 ng-model="mrh.besesGumising" />
+                                            <input type="radio" id="dre_5_besesGumising" name="radio_besesGumising" value=5 ng-model="mrh.besesGumising" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_besesGumising"> 5 </label>
                                         </div>
                                     </td>
@@ -750,19 +880,19 @@
                                     <td>8. Nakababahala ba ang mga sintomas sa pag-ihi mo nitong nakaraang buwan?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_sintomasNgIhi" name="radio_sintomasNgIhi" value=0 ng-model="mrh.sintomasNgIhi" />
+                                            <input type="radio" id="dre_0_sintomasNgIhi" name="radio_sintomasNgIhi" value=0 ng-model="mrh.sintomasNgIhi" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_sintomasNgIhi"><i>HINDI</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_sintomasNgIhi" name="radio_sintomasNgIhi" value=1 ng-model="mrh.sintomasNgIhi" />
+                                            <input type="radio" id="dre_1_sintomasNgIhi" name="radio_sintomasNgIhi" value=1 ng-model="mrh.sintomasNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_sintomasNgIhi"><i>MINSAN</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_sintomasNgIhi" name="radio_sintomasNgIhi" value=2 ng-model="mrh.sintomasNgIhi" />
+                                            <input type="radio" id="dre_2_sintomasNgIhi" name="radio_sintomasNgIhi" value=2 ng-model="mrh.sintomasNgIhi" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_sintomasNgIhi"><i>MADALAS</i></label>
                                         </div>
                                     </td>
@@ -773,37 +903,37 @@
                                     <td>9. Ano ang inyong nadarama kung patuloy kang mabubuhay na may suliraning dulot ng inyong sakit sa pag-ihi?</td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_0_nadarama" name="radio_nadarama" value=0 ng-model="mrh.nadarama" />
+                                            <input type="radio" id="dre_0_nadarama" name="radio_nadarama" value=0 ng-model="mrh.nadarama" ng-disabled="isViewing && !isEditting" required />
                                             <label for="dre_0_nadarama"><i>Matutuwa</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_1_nadarama" name="radio_nadarama" value=1 ng-model="mrh.nadarama" />
+                                            <input type="radio" id="dre_1_nadarama" name="radio_nadarama" value=1 ng-model="mrh.nadarama" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_1_nadarama"><i>Nasisiyahan</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_2_nadarama" name="radio_nadarama" value=2 ng-model="mrh.nadarama" />
+                                            <input type="radio" id="dre_2_nadarama" name="radio_nadarama" value=2 ng-model="mrh.nadarama" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_2_nadarama"><i>Halos lubos na Nasisiyahan</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_3_nadarama" name="radio_nadarama" value=3 ng-model="mrh.nadarama" />
+                                            <input type="radio" id="dre_3_nadarama" name="radio_nadarama" value=3 ng-model="mrh.nadarama" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_3_nadarama"><i>Halo-(Parehong nasisiyahan at di nasisiyahan)</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_4_nadarama" name="radio_nadarama" value=4 ng-model="mrh.nadarama" />
+                                            <input type="radio" id="dre_4_nadarama" name="radio_nadarama" value=4 ng-model="mrh.nadarama" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_4_nadarama"><i>Halos lubos na di nasisiyahan</i></label>
                                         </div>
                                     </td>
                                     <td class="text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="dre_5_nadarama" name="radio_nadarama" value=5 ng-model="mrh.nadarama" />
+                                            <input type="radio" id="dre_5_nadarama" name="radio_nadarama" value=5 ng-model="mrh.nadarama" ng-disabled="isViewing && !isEditting" />
                                             <label for="dre_5_nadarama"><i>Di Masaya</i></label>
                                         </div>
                                     </td>
@@ -813,8 +943,15 @@
                         <div class="hr-line-dashed"></div>
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <button class="btn btn-danger pull-right" type="button" ng-click="proceedInterview()">Cancel</button>
-                                <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!MREform.$invalid ? saveInterview(mrh, MREform):''">Save Interview</button>
+                                <div ng-show="!isViewing && !isEditting">
+                                    <button class="btn btn-danger pull-right" type="button" ng-click="proceedInterview(false, null, { requestID: null })">Cancel</button>
+                                    <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!MREform.$invalid ? saveInterview(mrh):''">Save Interview</button>
+                                </div>
+                                <div ng-show="isViewing">
+                                    <button class="btn btn-danger pull-right" type="button" ng-click="returnToList()">Cancel</button>
+                                    <button ng-show="!isEditting" class="btn btn-success pull-right" type="button" ng-click="isEditting = true; isViewing = true;" style="margin-right: 2px;">Edit Information</button>
+                                    <button ng-show="isEditting" class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!MREform.$invalid ? saveChanges(mrh):''">Save Changes</button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -890,7 +1027,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-8 col-md-8">
+                        <div class="col-lg-12 col-md-12">
                             <p class="red-bg text-center" style="width: 100%;"> DIAGNOSIS </p>
                             <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                 <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
@@ -920,41 +1057,6 @@
                                             <td>{{$index + 1}}</td>
                                             <td>{{dh.diagnoseName}}</td>
                                             <td>{{dh.otherDiagnosis}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-4">
-                            <p class="red-bg text-center" style="width: 100%;"> PRESCRIPTION/S </p>
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th class="">#</th>
-                                            <th>Drug/Medicine</th>
-                                            <th>Unit</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="text-center" ng-show="medHistLoader_modal">
-                                            <td colspan="6">
-                                                <div class="sk-spinner sk-spinner-double-bounce">
-                                                    <div class="sk-double-bounce1"></div>
-                                                    <div class="sk-double-bounce2"></div>
-                                                </div>
-                                                <text><i>Please wait, we are loading your data...</i></text>
-                                            </td>
-                                        </tr>
-                                        <tr class="text-center" ng-show="rxHistoryList.length == 0 && bpLoader == false">
-                                            <td colspan="6">
-                                                <label class="text-danger">NO INFORMATION FOUND!</label>
-                                            </td>
-                                        </tr>
-                                        <tr ng-repeat="rx in rxHistoryList">
-                                            <td>{{$index + 1}}</td>
-                                            <td>{{rx.productDesc}} {{rx.measurementDesc}}</td>
-                                            <td>{{rx.unitDesc}}</td>
                                         </tr>
                                     </tbody>
                                 </table>

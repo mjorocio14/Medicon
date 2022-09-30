@@ -161,6 +161,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AnalyticsController.cs" />
     <Compile Include="Controllers\DentalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LaboratoryController.cs" />
@@ -193,6 +194,9 @@
     </Compile>
     <Compile Include="Models\Brgy.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CBC.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CityMun.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
@@ -244,6 +248,9 @@
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LaboratoryExam.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LaboratoryGroupTest.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LaboratoryTest.cs">
@@ -319,6 +326,12 @@
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Temp_LabPrices.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Temp_Morbidity.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\UserType.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -386,8 +399,10 @@
       <DependentUpon>Medicon.edmx</DependentUpon>
       <LastGenOutput>Medicon.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\Scripts\AngularJS\Analytics\AnalyticsCtrl.js" />
     <Content Include="myIcon1.ico" />
     <Content Include="myIcon16.ico" />
+    <Content Include="Scripts\AngularJS\Analytics\AnalyticsCtrl.js" />
     <Content Include="Scripts\AngularJS\angular.min.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
     <Content Include="Scripts\AngularJS\Dental\ToothExtraction.js" />
@@ -442,6 +457,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\js\dataTables\datatables.min.css" />
     <Content Include="Scripts\js\dataTables\datatables.min.js" />
+    <Content Include="Scripts\js\Moment\moment-timezone-with-data.min.js" />
+    <Content Include="Scripts\js\Moment\moment.js" />
     <Content Include="Scripts\js\Moment\moment.min.js" />
     <Content Include="Scripts\js\QRScan\instascan.min.js" />
     <Content Include="Scripts\js\select2\select2.full.min.js" />
@@ -450,7 +467,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -499,6 +518,7 @@
     <Content Include="Views\LaboratoryResult\Encoding.cshtml" />
     <Content Include="Views\Dental\ToothExtraction.cshtml" />
     <Content Include="Views\Pharmacy\Dispensing.cshtml" />
+    <Content Include="Views\Analytics\Medical.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

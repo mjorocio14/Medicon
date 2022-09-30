@@ -164,7 +164,7 @@
                                     <th class="text-danger vertical-align">{{item[0].serviceID}}</th>
                                     <td>
                                         <table class="table table-stripped">
-                                            <tr ng-repeat="med in item" ng-style="med.checkboxVal == true ? {'background-color': '#dd3f3f', 'color': 'white'}:''">
+                                            <tr ng-repeat="med in item" ng-style="med.checkboxVal == true ? {'background-color': '#ed5565', 'color': 'white'}:''">
                                                 <td class="text-center ">{{$index + 1}}</td>
                                                 <td class="text-left"><b>{{med.productDesc}}</b></td>
                                                 <td class="text-left">
@@ -177,7 +177,7 @@
                                                 <td class="text-right" style="width:10%;">
                                                     <input placeholder="{{med.qtyRx}}" ng-disabled="med.checkboxVal == true" class="form-control text-center" type="number" id="quantity" name="quantity" ng-model="med.qtyReleased" />
                                                 </td>
-                                                <td class="text-right"><input type="checkbox" ng-disabled="med.checkboxVal == true" class="i-checks icheckbox_square-green" name="isRelease" ng-model="med.isRelease"></td>                 
+                                                <td class="text-right"><input type="checkbox" ng-disabled="med.checkboxVal == true" class="i-checks icheckbox_square-green" name="isRelease" ng-model="med.isRelease"></td>
                                                 <td class="text-right">
                                                     <label ng-class="med.checkboxVal ? '':'text-success'">{{med.checkboxVal ? 'RELEASED':'TO DISPENSE'}}</label>
                                                 </td>

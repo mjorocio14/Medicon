@@ -5,6 +5,8 @@
     s.showClientList = false;
     s.showInterview = false;
     s.mrh = {};
+    s.isViewing = false;
+    s.isEditting = false;
 
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner(
@@ -47,15 +49,16 @@
             else {
                 if (d.data != null && d.data != "") {
                     s.qrData = {};
-
                     d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
                     d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
+
                     s.qrData = d.data[0];
                     s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].brgyDesc + ' ' + d.data[0].citymunDesc + ' ' + d.data[0].provDesc;
 
+                    getMRHrequest(qrCode);
                     getBPhistory(qrCode);
                     getMedicalHistory(qrCode);
-                    getMRHrequest(qrCode);
+                    getLabHistory(qrCode);
                 }
 
                 else {
@@ -79,14 +82,21 @@
         }
     }
 
+    s.returnToList = function () {
+        s.showClientList = true;
+        s.showInterview = false;
+        s.isViewing = false;
+        s.isEditting = false;
+    }
+
     function getBPhistory(qrCode) {
         s.bpLoader = true;
-        s.bpHistoryList = {};
+        s.bpHistoryList = [];
         s.vitalSigns = {};
         s.BMI = {};
 
         h.post('../VitalSigns/getBPhistory?qrCode=' + qrCode).then(function (d) {
-            if (d.data.status == 'error') {
+            if (d.data.status == 'error' && s.mhrReq.length == 0) {
                 swal({
                     title: "ERROR",
                     text: d.data.msg,
@@ -113,9 +123,10 @@
 
     function getMedicalHistory(qrCode) {
         s.bpLoader = true;
-        s.medHistoryList = {};
+        s.diagnoseHistoryList = [];
+        s.rxHistoryList = [];
 
-        h.post('../MedicalConsultation/getMedHistory?qrCode=' + qrCode).then(function (d) {
+        h.post('../MedicalConsultation/getDiagnosisHistory?qrCode=' + qrCode).then(function (d) {
             if (d.data.status == 'error') {
                 swal({
                     title: "ERROR",
@@ -125,12 +136,36 @@
             }
 
             else {
-                angular.forEach(d.data, function (value) {
+                var tempDiag = {};
+
+                angular.forEach(d.data.diagnosis, function (value) {
+
+                    tempDiag = {
+                        consultID: value[0].consultID,
+                        serviceName: value[0].serviceName,
+                        outsideReferral: value[0].outsideReferral,
+                        remarks: value[0].remarks,
+                        personnelFullname: value[0].physician[0].personnel_firstName + ' ' + (value[0].physician[0].personnel_midInit == null ? '' : value[0].physician[0].personnel_midInit)
+                                           + ' ' + value[0].physician[0].personnel_lastName + ' ' + (value[0].physician[0].personnel_extName == null ? '' : value[0].physician[0].personnel_extName),
+                        dateTimeLog: moment(value[0].dateTimeLog).format('lll')
+                    };
+
                     angular.forEach(value, function (val) {
                         val.dateTimeLog = moment(val.dateTimeLog).format('lll');
                     });
+
+                    tempDiag.diagnosis = value;
+                    s.diagnoseHistoryList.push(tempDiag);
                 });
-                s.medHistoryList = d.data;
+
+                angular.forEach(d.data.rxHist, function (value) {
+                    angular.forEach(value, function (val) {
+                        val.dateTimeRx = moment(val.dateTimeRx).format('lll');
+                    })
+                });
+
+                s.rxHistoryList = d.data.rxHist;
+                s.rxHistoryList.concat(d.data.referralRx);
             }
 
             s.bpLoader = false;
@@ -154,7 +189,7 @@
                     type: "error"
                 });
             }
-
+                 
             else {
                 s.mhrReq = {};
 
@@ -168,15 +203,12 @@
             s.bpLoader = false;
         });
     }
-    
-    s.showDiagnoseHistory = function (history) {
-        history.personnelFullname = history.personnel_firstName + ' ' + history.personnel_midInit + ' ' + history.personnel_lastName + ' ' + history.personnel_extName;
-        s.medHistLoader_modal = true;
-        s.diagnosisInfo = {};
-        s.diagnoseHistoryList = {};
-        s.rxHistoryList = {};
 
-        h.post('../MedicalConsultation/getDiagnosisHistory?consultID=' + history.consultID).then(function (d) {
+    function getLabHistory(qrCode) {
+        s.bpLoader = true;
+        s.labHistoryList = [];
+
+        h.post('../MedicalConsultation/getLabHistory?qrCode=' + qrCode).then(function (d) {
             if (d.data.status == 'error') {
                 swal({
                     title: "ERROR",
@@ -186,28 +218,53 @@
             }
 
             else {
-                s.diagnosisInfo = angular.copy(history);
-                s.diagnoseHistoryList = d.data.medHist;
-                s.rxHistoryList = d.data.rxHist; console.log(d.data);
-                $('#medHistory_modal').modal('show');
+                angular.forEach(d.data, function (value) {
+                    value.bloodChemDateEncoded = moment(value.bloodChemDateEncoded).format('lll');
+                    value.dateTested = moment(value.dateTested).format('lll');
+                });
+                s.labHistoryList = d.data;
             }
-
-            s.medHistLoader_modal = false;
+            s.bpLoader = false;
         });
     }
-
-    s.proceedInterview = function (request) {
-        s.showInterview = !s.showInterview;
-        s.mrh = {};
-        s.mrh.fullName = s.qrData.firstName + ' ' + s.qrData.middleName + ' ' + s.qrData.lastName + ' ' + s.qrData.extName;
+    
+    s.proceedInterview = function (viewingBool, data, request) {
         
-        const startDate = new Date(); 
-        const endDate = new Date(s.qrData.birthdate);
+        s.showInterview = !s.showInterview;
+        s.isViewing = false;
+        s.mrh = {};
+        s.mrh.fullName = data != null ? data.firstName + ' ' + (data.middleName == null ? '' : data.middleName) + ' '
+                         + data.lastName + ' ' + (data.extName == null ? '' : data.extName) : s.qrData.firstName + ' ' + (s.qrData.middleName == null ? '' : s.qrData.middleName) + ' ' + s.qrData.lastName + ' ' + (s.qrData.extName == null ? '' : s.qrData.extName);
+        const startDate = new Date();
+        const endDate = new Date(data != null ? new Date(moment(data.birthdate).format()) : s.qrData.birthdate);
         s.mrh.age = Math.abs(moment.duration(endDate - startDate).years());
         s.mrh.requestID = request.requestID;
+       
+        if (viewingBool) {
+            s.isViewing = true;
+
+            // Viewing the INTERVIEW INFO
+            s.mrh.MRID = data.MRID;
+            s.mrh.is1stDRE = data.is1stDRE == false ? 'false' : 'true';
+            s.mrh.DREfrequency = data.DREfrequency == 1 ? '1' : data.DREfrequency == 2 ? '2' : '3';
+            s.mrh.isProstateCancer = data.isProstateCancer == false ? 'false' : 'true';
+            s.mrh.isAnyCancer = data.isAnyCancer == false ? 'false' : 'true';
+            s.mrh.cancerName = data.cancerName;
+            s.mrh.isMedication = data.isMedication == false ? 'false' : 'true';
+            s.mrh.medicineName = data.medicineName;
+            s.mrh.diNauubos = data.diNauubos == 0 ? '0' : data.diNauubos == 1 ? '1' : data.diNauubos == 2 ? '2' : data.diNauubos == 3 ? '3' : data.diNauubos == 4 ? '4' : '5';
+            s.mrh.kadalasUmihi = data.kadalasUmihi == 0 ? '0' : data.kadalasUmihi == 1 ? '1' : data.kadalasUmihi == 2 ? '2' : data.kadalasUmihi == 3 ? '3' : data.kadalasUmihi == 4 ? '4' : '5';
+            s.mrh.patigiltiglNaIhi = data.patigiltiglNaIhi == 0 ? '0' : data.patigiltiglNaIhi == 1 ? '1' : data.patigiltiglNaIhi == 2 ? '2' : data.patigiltiglNaIhi == 3 ? '3' : data.patigiltiglNaIhi == 4 ? '4' : '5';
+            s.mrh.pagpigilNgIhi = data.pagpigilNgIhi == 0 ? '0' : data.pagpigilNgIhi == 1 ? '1' : data.pagpigilNgIhi == 2 ? '2' : data.pagpigilNgIhi == 3 ? '3' : data.pagpigilNgIhi == 4 ? '4' : '5';
+            s.mrh.mahinangDaloy = data.mahinangDaloy == 0 ? '0' : data.mahinangDaloy == 1 ? '1' : data.mahinangDaloy == 2 ? '2' : data.mahinangDaloy == 3 ? '3' : data.mahinangDaloy == 4 ? '4' : '5';
+            s.mrh.magpwersaNgIhi = data.magpwersaNgIhi == 0 ? '0' : data.magpwersaNgIhi == 1 ? '1' : data.magpwersaNgIhi == 2 ? '2' : data.magpwersaNgIhi == 3 ? '3' : data.magpwersaNgIhi == 4 ? '4' : '5';
+            s.mrh.besesGumising = data.besesGumising == 0 ? '0' : data.besesGumising == 1 ? '1' : data.besesGumising == 2 ? '2' : data.besesGumising == 3 ? '3' : data.besesGumising == 4 ? '4' : '5';
+            s.mrh.sintomasNgIhi = data.sintomasNgIhi == 0 ? '0' : data.sintomasNgIhi == 1 ? '1' : '2';
+            s.mrh.nadarama = data.nadarama == 0 ? '0' : data.nadarama == 1 ? '1' : data.nadarama == 2 ? '2' : data.nadarama == 3 ? '3' : data.nadarama == 4 ? '4' : '5';
+        }
     }
 
-    s.saveInterview = function (mrhData, form) {
+    s.saveInterview = function (mrhData) {
         swal({
             title: "SAVING",
             text: "Please wait while we are saving your data.",
@@ -233,15 +290,55 @@
                     html: true
                 });
 
-                s.showInterview = !s.showInterview;
-                s.qrData = {};
-                s.medHistoryList = {};
-                s.mhrReq = {};
-                s.bpHistoryList = {};
-                s.vitalSigns = {};
-                s.BMI = {};
+                resetFields();
             }
         });
+    }
+
+    s.saveChanges = function (mrhData) {
+        
+        swal({
+            title: "UPDATING",
+            text: "Please wait while we are saving the updates.",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        h.post('../MaleRepro/saveChanges', { mrh: mrhData }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "<labal>" + d.data.msg + "</label>",
+                    type: "error",
+                    html: true
+                });
+            }
+
+            else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                    html: true
+                });
+
+                resetFields();
+            }
+        });
+    }
+
+    function resetFields() {
+        s.showInterview = !s.showInterview;
+        s.qrData = {};
+        s.diagnoseHistoryList = [];
+        s.rxHistoryList = [];
+        s.labHistoryList = [];
+        s.mhrReq = {};
+        s.bpHistoryList = [];
+        s.vitalSigns = {};
+        s.BMI = {};
+        s.isViewing = false;
+        s.isEditting = false;
     }
 
     function getMRHclients() {
@@ -335,44 +432,11 @@
 
             $('#clientList_tbl tbody').on('click', '#btnShowMRH', function () {
                 var data = tblMRH.row($(this).parents('tr')).data();
-
-                console.log(data);
-                s.proceedInterview({ requestID: null });
+               
+                s.proceedInterview(true, data, { requestID: null });
                 s.showClientList = false;
                 s.$apply();
-
-                //data.birthdate = moment(data.birthdate).format('ll');
-                //data.sex = data.sex ? 'Male' : 'Female';
-
-                //$('#personDiagnosis_modal').modal('show');
-                //s.consultationTbl = {};
-                //s.resultDiag = {};
-                //s.resultDiag.info = data;
-
-                //h.post('../MedicalConsultation/getPersonDiagnoseResult?consultID=' + data.consultID).then(function (d) {
-                //    if (d.data.status == 'error') {
-                //        swal({
-                //            title: "ERROR",
-                //            text: d.data.msg,
-                //            type: "error"
-                //        });
-                //    }
-
-                //    else {
-                //        detail = [];
-                //        detail2 = [];
-
-                //        angular.forEach(d.data, function (item) {
-                //            detail.push(item.diagnoseID);
-
-                //            if (item.diagnoseID == 'DIAG023') { s.resultDiag.detail.otherDiagnosis = item.otherDiagnosis }
-                //        });
-
-                //        s.resultDiag.detail = detail;
-                //        console.log(detail2);
-                //        s.consultationTbl = d.data;
-                //    }
-                //});
+               
             });
 
 

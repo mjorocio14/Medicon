@@ -53,6 +53,31 @@
           <Property Name="brandID" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="brandName" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="CBC">
+          <Key>
+            <PropertyRef Name="cbcID" />
+          </Key>
+          <Property Name="recNO" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cbcID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="labID" Type="varchar" MaxLength="15" />
+          <Property Name="wbc" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="neu" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="lym" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="mon" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="eos" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="bas" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="rbc" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="hgb" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="hct" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="mcv" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="mch" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="mchc" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="plt" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="signatory1" Type="varchar" MaxLength="8" />
+          <Property Name="signatory2" Type="varchar" MaxLength="8" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
+        </EntityType>
         <EntityType Name="Consultation">
           <Key>
             <PropertyRef Name="consultID" />
@@ -100,10 +125,19 @@
           <Property Name="labID" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="referralID" Type="varchar" MaxLength="15" />
           <Property Name="labTestID" Type="varchar" MaxLength="5" />
+          <Property Name="otherLabDesc" Type="varchar" MaxLength="50" />
           <Property Name="isTested" Type="bit" />
           <Property Name="isEncoded" Type="bit" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
+        </EntityType>
+        <EntityType Name="LaboratoryGroupTest">
+          <Key>
+            <PropertyRef Name="LabTestGroupID" />
+          </Key>
+          <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LabTestGroupID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="LabTestGroupDesc" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="LaboratoryTest">
           <Key>
@@ -112,6 +146,7 @@
           <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="labTestID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="labTestName" Type="varchar" MaxLength="50" />
+          <Property Name="LabTestGroupID" Type="varchar" MaxLength="10" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
@@ -326,6 +361,28 @@
           <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Temp_LabPrices">
+          <Key>
+            <PropertyRef Name="labPriceID" />
+          </Key>
+          <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="labPriceID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="labTestID" Type="varchar" MaxLength="15" />
+          <Property Name="price" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="male" Type="int" />
+          <Property Name="female" Type="int" />
+        </EntityType>
+        <EntityType Name="Temp_Morbidity">
+          <Key>
+            <PropertyRef Name="morbidityID" />
+          </Key>
+          <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="morbidityID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="diagnoseID" Type="varchar" MaxLength="15" />
+          <Property Name="male" Type="int" />
+          <Property Name="female" Type="int" />
+          <Property Name="type" Type="varchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="UserType">
           <Key>
@@ -553,10 +610,12 @@
           <EntitySet Name="BloodChem" EntityType="Self.BloodChem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BloodPressure" EntityType="Self.BloodPressure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandList" EntityType="Self.BrandList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CBC" EntityType="Self.CBC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consultation" EntityType="Self.Consultation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DietCounseling" EntityType="Self.DietCounseling" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LaboratoryExam" EntityType="Self.LaboratoryExam" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LaboratoryGroupTest" EntityType="Self.LaboratoryGroupTest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LaboratoryTest" EntityType="Self.LaboratoryTest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MaleRepro_Interview" EntityType="Self.MaleRepro_Interview" Schema="dbo" store:Type="Tables" />
@@ -573,6 +632,8 @@
           <EntitySet Name="ResultDiagnosis" EntityType="Self.ResultDiagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Services" EntityType="Self.Services" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Temp_LabPrices" EntityType="Self.Temp_LabPrices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Temp_Morbidity" EntityType="Self.Temp_Morbidity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -784,6 +845,31 @@
           <Property Name="brandID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="brandName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="CBC">
+          <Key>
+            <PropertyRef Name="cbcID" />
+          </Key>
+          <Property Name="recNO" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cbcID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="wbc" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="neu" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="lym" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="mon" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="eos" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="bas" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="rbc" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="hgb" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="hct" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="mcv" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="mch" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="mchc" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="plt" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="signatory1" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="signatory2" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="Consultation">
           <Key>
             <PropertyRef Name="consultID" />
@@ -831,10 +917,19 @@
           <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="isTested" Type="Boolean" />
           <Property Name="isEncoded" Type="Boolean" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="LaboratoryGroupTest">
+          <Key>
+            <PropertyRef Name="LabTestGroupID" />
+          </Key>
+          <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LabTestGroupID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="LabTestGroupDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="LaboratoryTest">
           <Key>
@@ -843,6 +938,7 @@
           <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="LabTestGroupID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
@@ -1058,6 +1154,28 @@
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
+        <EntityType Name="Temp_LabPrices">
+          <Key>
+            <PropertyRef Name="labPriceID" />
+          </Key>
+          <Property Name="recNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labPriceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="labTestID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="price" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="male" Type="Int32" />
+          <Property Name="female" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Temp_Morbidity">
+          <Key>
+            <PropertyRef Name="morbidityID" />
+          </Key>
+          <Property Name="recNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="morbidityID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="diagnoseID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="male" Type="Int32" />
+          <Property Name="female" Type="Int32" />
+          <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="UserType">
           <Key>
             <PropertyRef Name="userTypeID" />
@@ -1082,10 +1200,12 @@
           <EntitySet Name="BloodChems" EntityType="Self.BloodChem" />
           <EntitySet Name="BloodPressures" EntityType="Self.BloodPressure" />
           <EntitySet Name="BrandLists" EntityType="Self.BrandList" />
+          <EntitySet Name="CBCs" EntityType="Self.CBC" />
           <EntitySet Name="Consultations" EntityType="Self.Consultation" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="Self.DietCounseling" />
           <EntitySet Name="LaboratoryExams" EntityType="Self.LaboratoryExam" />
+          <EntitySet Name="LaboratoryGroupTests" EntityType="Self.LaboratoryGroupTest" />
           <EntitySet Name="LaboratoryTests" EntityType="Self.LaboratoryTest" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" />
           <EntitySet Name="MaleRepro_Interview" EntityType="Self.MaleRepro_Interview" />
@@ -1102,6 +1222,8 @@
           <EntitySet Name="ResultDiagnosis" EntityType="Self.ResultDiagnosi" />
           <EntitySet Name="Services" EntityType="Self.Service" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Temp_LabPrices" EntityType="Self.Temp_LabPrices" />
+          <EntitySet Name="Temp_Morbidity" EntityType="Self.Temp_Morbidity" />
           <EntitySet Name="UserTypes" EntityType="Self.UserType" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSign" />
           <FunctionImport Name="fn_getDiagnoseClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getDiagnoseClients_Result)">
@@ -1192,6 +1314,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="CBCs">
+            <EntityTypeMapping TypeName="MediconModel.CBC">
+              <MappingFragment StoreEntitySet="CBC">
+                <ScalarProperty Name="recNO" ColumnName="recNO" />
+                <ScalarProperty Name="cbcID" ColumnName="cbcID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="wbc" ColumnName="wbc" />
+                <ScalarProperty Name="neu" ColumnName="neu" />
+                <ScalarProperty Name="lym" ColumnName="lym" />
+                <ScalarProperty Name="mon" ColumnName="mon" />
+                <ScalarProperty Name="eos" ColumnName="eos" />
+                <ScalarProperty Name="bas" ColumnName="bas" />
+                <ScalarProperty Name="rbc" ColumnName="rbc" />
+                <ScalarProperty Name="hgb" ColumnName="hgb" />
+                <ScalarProperty Name="hct" ColumnName="hct" />
+                <ScalarProperty Name="mcv" ColumnName="mcv" />
+                <ScalarProperty Name="mch" ColumnName="mch" />
+                <ScalarProperty Name="mchc" ColumnName="mchc" />
+                <ScalarProperty Name="plt" ColumnName="plt" />
+                <ScalarProperty Name="signatory1" ColumnName="signatory1" />
+                <ScalarProperty Name="signatory2" ColumnName="signatory2" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Consultations">
             <EntityTypeMapping TypeName="MediconModel.Consultation">
               <MappingFragment StoreEntitySet="Consultation">
@@ -1241,10 +1389,20 @@
                 <ScalarProperty Name="labID" ColumnName="labID" />
                 <ScalarProperty Name="referralID" ColumnName="referralID" />
                 <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
                 <ScalarProperty Name="isTested" ColumnName="isTested" />
                 <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
                 <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LaboratoryGroupTests">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryGroupTest">
+              <MappingFragment StoreEntitySet="LaboratoryGroupTest">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="LabTestGroupID" ColumnName="LabTestGroupID" />
+                <ScalarProperty Name="LabTestGroupDesc" ColumnName="LabTestGroupDesc" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1254,6 +1412,7 @@
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
                 <ScalarProperty Name="labTestID" ColumnName="labTestID" />
                 <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="LabTestGroupID" ColumnName="LabTestGroupID" />
                 <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
@@ -1483,6 +1642,30 @@
                 <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
                 <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Temp_LabPrices">
+            <EntityTypeMapping TypeName="MediconModel.Temp_LabPrices">
+              <MappingFragment StoreEntitySet="Temp_LabPrices">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="labPriceID" ColumnName="labPriceID" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="male" ColumnName="male" />
+                <ScalarProperty Name="female" ColumnName="female" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Temp_Morbidity">
+            <EntityTypeMapping TypeName="MediconModel.Temp_Morbidity">
+              <MappingFragment StoreEntitySet="Temp_Morbidity">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="morbidityID" ColumnName="morbidityID" />
+                <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
+                <ScalarProperty Name="male" ColumnName="male" />
+                <ScalarProperty Name="female" ColumnName="female" />
+                <ScalarProperty Name="type" ColumnName="type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
