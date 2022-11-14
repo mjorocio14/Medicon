@@ -150,9 +150,6 @@
 
     s.check = function (a) {
 
-
-
-
         if (a.isActive == 1) {
             a.isActive = 0
         }
@@ -175,75 +172,102 @@
 
 
     s.saveUserz = function (a) {
-        console.log(a)
-        if (usern.test(a.username)) {
-            if (a.password != a.cpassword) {
-                swal({
-                    title: "Password does not match!",
-                    text: "",
-                    type: "error"
-                });
-                return;
-            }
-            else {
-                if (pass.test(a.password)) {
-                    h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
-                        if (d.data == "Exist") {
-                            swal({
-                                title: "Username already exist!",
-                                text: "Please use another username.",
-                                type: "error"
-                            });
-                            return;
-                        }
-                        else {
+        console.log(a.userTypeID);
 
-                            a.sex = a.sex == 'MALE' ? 1 : 0;
-
-                            h.post('../SystemUser/saveUser', a).then(function (d) {
-                                if (d.data.errCode != 1 && d.data.errCode != 0) {
-                                    if (d.data.status == 00) {
-                                        swal({
-                                            title: "SUCCESS!",
-                                            text: d.data.msg,
-                                            type: "success"
-                                        });
-                                       
-                                        s.users = {};
-                                        loadTable();
-                                    }
-                                }
-                                else {
-                                    swal({
-                                        title: "ERROR!",
-                                        text: d.data.msg,
-                                        type: "error"
-                                    });
-                                    return;
-                                }
-                            });
-                        }
-                    });
+        if (a.userTypeID === "3") {
+            a.sex = a.sex == 'MALE' ? 1 : 0;
+            h.post('../SystemUser/saveUser', a).then(function (d) {
+                if (d.data.errCode != 1 && d.data.errCode != 0) {
+                    if (d.data.status == 00) {
+                        swal({
+                            title: "SUCCESS!",
+                            text: d.data.msg,
+                            type: "success"
+                        });
+                        s.users = {};
+                        loadTable();
+                    }
                 }
                 else {
                     swal({
-                        title: "Password Error!",
-                        text: "Must contain atleast one alphabetical, one numeric character and minimum of 6 characters! ",
+                        title: "ERROR!",
+                        text: d.data.msg,
                         type: "error"
                     });
                     return;
                 }
-            }
-        }
-        else {
-            swal({
-                title: "Username Error!",
-                text: "Must be minimum of 6 characters! ",
-                type: "error"
             });
-            return;
         }
-        
+
+        else {
+            if (usern.test(a.username)) {
+                if (a.password != a.cpassword) {
+                    swal({
+                        title: "Password does not match!",
+                        text: "",
+                        type: "error"
+                    });
+                    return;
+                }
+                else {
+                    if (pass.test(a.password)) {
+                        h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
+                            if (d.data == "Exist") {
+                                swal({
+                                    title: "Username already exist!",
+                                    text: "Please use another username.",
+                                    type: "error"
+                                });
+                                return;
+                            }
+                            else {
+
+                                a.sex = a.sex == 'MALE' ? 1 : 0;
+
+                                h.post('../SystemUser/saveUser', a).then(function (d) {
+                                    if (d.data.errCode != 1 && d.data.errCode != 0) {
+                                        if (d.data.status == 00) {
+                                            swal({
+                                                title: "SUCCESS!",
+                                                text: d.data.msg,
+                                                type: "success"
+                                            });
+
+                                            s.users = {};
+                                            loadTable();
+                                        }
+                                    }
+                                    else {
+                                        swal({
+                                            title: "ERROR!",
+                                            text: d.data.msg,
+                                            type: "error"
+                                        });
+                                        return;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    else {
+                        swal({
+                            title: "Password Error!",
+                            text: "Must contain atleast one alphabetical, one numeric character and minimum of 6 characters! ",
+                            type: "error"
+                        });
+                        return;
+                    }
+                }
+            }
+            else {
+                swal({
+                    title: "Username Error!",
+                    text: "Must be minimum of 6 characters! ",
+                    type: "error"
+                });
+                return;
+            }
+        }  
     }
    
     //s.cancelBtn = function () {
@@ -251,5 +275,27 @@
     //    $('#unitSelect').val('').trigger('change');
     //    return;
     //}
+
+    s.credentials = true;
+
+    s.sService = function (a) {
+        if (a == 3) {
+            s.credentials = false;
+        }
+        else 
+        {
+            s.credentials = true;
+        }
+    }
+
+
+    s.printBtn = function () {
+    
+        var qrCode = "DDNBDKKAYZWX"
+
+        h.post('../Print/printAccomp?qrCode=' + qrCode ).then(function (d) {               
+            window.open("../Report/MediConRpt.aspx?type=lrrf");
+        })
+    }
 
 }]);

@@ -42,6 +42,7 @@
 
     <!-- USER TABLE -->
     <div class="wrapper wrapper-content animated fadeInRight">
+        <button type="submit" class="btn btn-info btn-sm" style="margin-right: 2px;" ng-click="printBtn()"><i class="fa fa-save"></i> Print </button>
         <div class="row">
             <div class="col-xs-12">
                 <div class="animated fadeInRight ecommerce">
@@ -72,7 +73,6 @@
                                         </table>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -162,16 +162,18 @@
                                                                         <option value="1">VITAL SIGN</option>
                                                                         <option value="2">MEDICAL CONSULTATION</option>
                                                                         <option value="3">DENTAL EXTRACTION</option>
+                                                                        <option value="4">X-RAY</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-4 col-xs-4 col-lg-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Select User Type</label><span style="color:#ff0000"> *</span>
-                                                                    <select ng-model="users.userTypeID" name="userType" id="userType" required style="width: 100%;" text-transform uppercase" class="form-control">
+                                                                    <select ng-model="users.userTypeID" ng-change="sService(users.userTypeID)" name="userType" id="userType" required style="width: 100%;" text-transform uppercase" class="form-control">
                                                                         <option value=""></option>
                                                                         <option value="1">ADMINISTRATOR</option>
                                                                         <option value="2">ENCODER</option>
+                                                                        <option value="3">PERSONNEL</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -183,17 +185,17 @@
                                                             </div>
                                                         </div>
                                                         <hr class="hr-line-dashed" />
-                                                        <div class="row">
+                                                        <div class="row" ng-show="credentials">
                                                             <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="username">Username</label><span style="color:#ff0000"> *</span>
-                                                                    <input type="text" id="username" name="username" required ng-model="users.username" placeholder="Username" class="form-control" />
+                                                                    <input type="text" id="username" name="username" ng-model="users.username" placeholder="Username" class="form-control" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="password">Password</label><span style="color:#ff0000"> *</span>
-                                                                    <input id="password1" name="password1" type="password" ng-model="users.password" class="form-control" placeholder="Password" required>
+                                                                    <input id="password1" name="password1" type="password" ng-model="users.password" class="form-control" placeholder="Password">
                                                                     @*<input type="checkbox" ng-click="showPass1()"> Show Password*@
                                                                     <div class="checkbox checkbox-danger">
                                                                         <input id="pass1" name="pass1" type="checkbox" ng-click="showPass1()" />
@@ -204,7 +206,7 @@
                                                             <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="cpassword">Confirm Password</label><span style="color:#ff0000"> *</span>
-                                                                    <input id="password2" type="password" name="password2" data-validate-linked="password" ng-model="users.cpassword" class="form-control" placeholder="Confirm Password" required>
+                                                                    <input id="password2" type="password" name="password2" data-validate-linked="password" ng-model="users.cpassword" class="form-control" placeholder="Confirm Password">
 
                                                                     <div class="checkbox checkbox-danger">
                                                                         <input id="pass2" name="pass2" type="checkbox" ng-click="showPass2()" />
