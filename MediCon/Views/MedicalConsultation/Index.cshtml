@@ -24,12 +24,18 @@
         color: #444;
         line-height: 32px;
     }
+
+    .tabs-container .nav-tabs > li.active > a, .tabs-container .nav-tabs > li.active > a:hover, .tabs-container .nav-tabs > li.active > a:focus {
+        background-color: #1ab394;
+        color: white;
+    }
+
 </style>
 
 <div ng-controller="MedConCtrl">
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-10">
+        <div class="col-lg-6">
             <h2>Medical Consultation</h2>
             <ol class="breadcrumb">
                 <li>
@@ -40,16 +46,21 @@
                 </li>
             </ol>
         </div>
-        <div class="col-sm-2" style="margin-top:30px; text-align:end;">
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showMedicalRecord == false ? 'btn-success':'btn-primary'" ng-show="!showClientList && !showRx" ng-click="getBPhistory()" ng-disabled="qrData.qrCode == undefined ? true : false">
+                <i class="fa" ng-class="showMedicalRecord == false ? 'fa-stethoscope':'fa-list'"></i> {{showMedicalRecord == false ? 'Diagnose':'Medical Records'}}
+            </button>
+            <button class="btn" ng-class="showMedicalRecord == false ? 'btn-success':'btn-primary'" ng-show="!showClientList && (!showMedicalRecord || showRx)" ng-click="returnToHome()" ng-disabled="qrData.qrCode == undefined ? true : false">
+                <i class="fa" ng-class="showMedicalRecord == false ? 'fa-medkit':'fa-list'"></i> {{showMedicalRecord == false ? 'Prescription':'Medical Records'}} 
+            </button>
             <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN && !showMedicalRecord" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
-            <button class="btn btn-danger" ng-show="showMedicalRecord" ng-click="showMLR()"><i class="fa fa-angle-double-left"></i> Back </button>
         </div>
     </div>
     <!-- /HEADER -->
 
     <div class="wrapper wrapper-content ">
 
-        <div class="animated fadeInRight ecommerce" ng-show="!showClientList">
+        <div ng-show="!showClientList">
             <div class="row">
 
                 <!-- QR CODE INFO FORM -->
@@ -155,275 +166,502 @@
                 </div>
                 <!-- /QR CODE INFO FORM -->
 
-                <div ng-show="!showRx  && !showMedicalRecord">
-                    <!-- VITAL SIGNS HISTORY -->
-                    <div class="col-sm-4">
-                        <button class="btn btn-danger btn-lg full-width" ng-click="showMLR()" ng-disabled="qrData.lastName == null"><i class="fa fa-hospital-o"></i> Medical & Laboratory Records</button>
-                        <br /><br />
-                        <div class="panel panel-success" style="height: 760px;">
-                            <div class="panel-heading text-center">
-                                <label class="text-center">VITAL SIGNS INFORMATION</label>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-xs-6">
-                                        <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Height</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.height" readonly style="font-weight: 700;"></div>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Weight</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.weight" readonly style="font-weight: 700;"></div>
-                                    </div>
-                                    <div class="col-xs-12">
-                                        <div class="input-group m-b">
-                                            <span class="input-group-addon" style="font-weight: 700;">BMI</span>
-                                            <input type="text" class="form-control text-center" ng-class="BMI.desc == 'UNDERWEIGHT' ? 'text-success' : BMI.desc == 'NORMAL' ? 'text-primary' : BMI.desc == 'OVERWEIGHT' ? 'text-warning' : 'text-danger'" ng-model="BMI.data" readonly style="font-weight: 700;">
+                <!-- MEDICAL RECORDS -->
+                <div class="animated fadeInRight ecommerce" ng-show="!showRx  && !showMedicalRecord">
+                    <div class="col-lg-12">
+                        <div class="tabs-container">
+
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#tab-MD"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-MP"><i class="fa fa-medkit"></i> Prescription</a></li>
+                                <li class=""><a data-toggle="tab" href="#tab-Lab"><i class="fa fa-eyedropper"></i> Laboratory</a></li>
+                            </ul>
+                            <div class="tab-content ">
+                                <div id="tab-MD" class="tab-pane active">
+                                    <div class="panel-body">
+                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="color: #1ab394;">#</th>
+                                                        <th style="color: #1ab394;">Diagnosis Date & Time</th>
+                                                        <th style="color: #1ab394;">Physician</th>
+                                                        <th style="color: #1ab394;">Service</th>
+                                                        <th style="color: #1ab394;">Refer to Health Facility</th>
+                                                        <th style="color: #1ab394;">Remarks</th>
+                                                        <th style="color: #1ab394;">Diagnosis</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="text-center" ng-show="medicalRecord_loader">
+                                                        <td colspan="7">
+                                                            <div class="sk-spinner sk-spinner-double-bounce">
+                                                                <div class="sk-double-bounce1"></div>
+                                                                <div class="sk-double-bounce2"></div>
+                                                            </div>
+                                                            <text><i>Please wait, we are loading your data...</i></text>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="text-center" ng-show="diagnoseHistoryList.length == 0 && medicalRecord_loader == false">
+                                                        <td colspan="7">
+                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-repeat="dh in diagnoseHistoryList">
+                                                        <td class="text-center">{{$index + 1}}</td>
+                                                        <td>{{dh[0].dateTimeLog}}</td>
+                                                        <td>{{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
+                                                        <td>{{dh[0].serviceName}}</td>
+                                                        <td>{{dh[0].outsideReferral}}</td>
+                                                        <td>{{dh[0].remarks}}</td>
+                                                        <td>
+                                                            <table class="table table-stripped" style="width: 100%;">
+                                                                <tbody>
+                                                                    <tr ng-repeat="diag in dh">
+                                                                        <td>{{diag.diagnoseName}}</td>
+                                                                        <td>{{diag.otherDiagnosis}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                    <table class="table table-stripped">
-                                        <thead>
-                                            <tr>
+                                <div id="tab-MP" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="color: #1ab394;">#</th>
+                                                        <th style="color: #1ab394;">Physician</th>
+                                                        <th style="color: #1ab394;">Rx Date & Time</th>
+                                                        <th style="color: #1ab394;">Service</th>
+                                                        <th style="color: #1ab394;">Prescription/s</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="text-center" ng-show="medicalRecord_loader">
+                                                        <td colspan="6">
+                                                            <div class="sk-spinner sk-spinner-double-bounce">
+                                                                <div class="sk-double-bounce1"></div>
+                                                                <div class="sk-double-bounce2"></div>
+                                                            </div>
+                                                            <text><i>Please wait, we are loading your data...</i></text>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="text-center" ng-show="rxHistoryList.length == 0 && medicalRecord_loader == false">
+                                                        <td colspan="6">
+                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-repeat="rx in rxHistoryList">
+                                                        <td class="text-center">{{$index + 1}}</td>
+                                                        <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
+                                                        <td>{{rx[0].dateTimeRx}}</td>
+                                                        <td>{{rx[0].serviceName}}</td>
+                                                        <td>
+                                                            <table class="table table-stripped" style="width: 100%;">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Medicine Name</th>
+                                                                        <th>Dosage</th>
+                                                                        <th># Days</th>
+                                                                        <th>Qty</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr ng-repeat="rx in rx">
+                                                                        <td>{{rx.productDesc}} {{rx.measurementDesc}}</td>
+                                                                        <td>{{rx.dosage}} {{rx.unitDesc}} x {{rx.perDay}} a Day</td>
+                                                                        <td>{{rx.noDay == 'maintenance' ? 'as Maintenance':rx.noDay == 'needed' ? 'as Needed':rx.noDay == 'single' ? 'Single Dose':rx.noDay + ' Day/s'}}</td>
+                                                                        <td>{{rx.qtyRx}} {{rx.unitDesc == 'Suspension' || rx.unitDesc == 'Syrup' || rx.unitDesc == 'Drops' || rx.unitDesc == 'Bottle' ? 'Bottle/s':rx.unitDesc == 'Cream' ? 'Tube':''}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="tab-Lab" class="tab-pane">
+                                    <div class="panel-body">
+                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center" style="color: #1ab394;">#</th>
+                                                        <th style="color: #1ab394;">Test</th>
+                                                        <th style="color: #1ab394;" class="text-center">Tested</th>
+                                                        <th style="color: #1ab394;" class="text-center">With Result</th>
+                                                        <th style="color: #1ab394;">Date & Time Tested</th>
+                                                        <th style="color: #1ab394;" class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="text-center" ng-show="medHistLoader_modal">
+                                                        <td colspan="6">
+                                                            <div class="sk-spinner sk-spinner-double-bounce">
+                                                                <div class="sk-double-bounce1"></div>
+                                                                <div class="sk-double-bounce2"></div>
+                                                            </div>
+                                                            <text><i>Please wait, we are loading your data...</i></text>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
+                                                        <td colspan="6">
+                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-repeat="dh in labHistoryList">
+                                                        <td class="text-center">{{$index + 1}}</td>
+                                                        <td>{{dh.labTestName}}</td>
+                                                        <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
+                                                        <td class="text-center">Yes</td>
+                                                        <td>{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
+                                                        <td class="text-center"><button class="btn btn-primary btn-sm" ng-click="viewLabResult(dh)"> Show </button></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                                <th class="">#</th>
-                                                <th>Temp.</th>
-                                                <th>BP</th>
-                                                <th>Pulse Rate</th>
-                                                <th>Date & Time</th>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="text-center" ng-show="bpLoader">
-                                                <td colspan="6">
-                                                    <div class="sk-spinner sk-spinner-double-bounce">
-                                                        <div class="sk-double-bounce1"></div>
-                                                        <div class="sk-double-bounce2"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /MEDICAL RECORDS -->
+
+                <div ng-show="showMedicalRecord && !showRx">
+                    <div class="animated fadeInRight ecommerce">
+                        <!-- VITAL SIGNS HISTORY -->
+                        <div class="col-sm-4">
+                            @*<button class="btn btn-danger btn-lg full-width" ng-click="showMLR()" ng-disabled="qrData.lastName == null"><i class="fa fa-hospital-o"></i> Medical & Laboratory Records</button>
+                            <br /><br />*@
+                            <div class="panel panel-success" style="height: 100%;">
+                                <div class="panel-heading text-center">
+                                    <label class="text-center">VITAL SIGNS INFORMATION</label>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Height</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.height" readonly style="font-weight: 700;"></div>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Weight</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.weight" readonly style="font-weight: 700;"></div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="input-group m-b">
+                                                <span class="input-group-addon" style="font-weight: 700;">BMI</span>
+                                                <input type="text" class="form-control text-center" ng-class="BMI.desc == 'UNDERWEIGHT' ? 'text-success' : BMI.desc == 'NORMAL' ? 'text-primary' : BMI.desc == 'OVERWEIGHT' ? 'text-warning' : 'text-danger'" ng-model="BMI.data" readonly style="font-weight: 700;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped">
+                                            <thead>
+                                                <tr>
+
+                                                    <th class="">#</th>
+                                                    <th>Temp.</th>
+                                                    <th>BP</th>
+                                                    <th>Pulse Rate</th>
+                                                    <th>Date & Time</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="bpLoader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="vs in bpHistoryList">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{vs.temperature}}</td>
+                                                    <td>{{vs.systolic}}/{{vs.diastolic}}</td>
+                                                    <td>{{vs.pulseRate}}</td>
+                                                    <td>{{vs.dateTimeLog }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /VITAL SIGNS HISTORY -->
+
+                        <!--  DIAGNOSIS  -->
+                        <div class="col-sm-8">
+                            <div class="panel panel-info">
+                                <div class="panel-heading text-center">
+                                    <label class="text-center">DIAGNOSIS</label>
+                                </div>
+                                <div class="panel-body">
+                                    <form id="diagnosis_form" name="diagnosis_form">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-sm-6 col-xs-6">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG005" value="Gastritis" ng-model="diagnose.DIAG005">
+                                                        <label for="DIAG005"> Acute Gastritis </label>
                                                     </div>
-                                                    <text><i>Please wait, we are loading your data...</i></text>
-                                                </td>
-                                            </tr>
-                                            <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                                <td colspan="6">
-                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                </td>
-                                            </tr>
-                                            <tr ng-repeat="vs in bpHistoryList">
-                                                <td>{{$index + 1}}</td>
-                                                <td>{{vs.temperature}}</td>
-                                                <td>{{vs.systolic}}/{{vs.diastolic}}</td>
-                                                <td>{{vs.pulseRate}}</td>
-                                                <td>{{vs.dateTimeLog }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG006" value="Gastroenteritis" ng-model="diagnose.DIAG006">
+                                                        <label for="DIAG006"> Acute Gastroenteritis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG018" value="Tonsillopharyngitis" ng-model="diagnose.DIAG018">
+                                                        <label for="DIAG018"> Acute Tonsillopharyngitis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG003" value="Rhinitis" ng-model="diagnose.DIAG003">
+                                                        <label for="DIAG003"> Allergic Rhinitis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG008" value="Amoebiasis" ng-model="diagnose.DIAG008">
+                                                        <label for="DIAG008"> Amoebiasis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG021" value="Arthritis" ng-model="diagnose.DIAG021">
+                                                        <label for="DIAG021"> Arthritis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG010" value="BPH" ng-model="diagnose.DIAG010">
+                                                        <label for="DIAG010"> BPH </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG004" value="Asthma" ng-model="diagnose.DIAG004">
+                                                        <label for="DIAG004"> Bronchial Asthma </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG011" value="Dermatitis" ng-model="diagnose.DIAG011">
+                                                        <label for="DIAG011"> Contact Dermatitis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG014" value="Diabetes" ng-model="diagnose.DIAG014">
+                                                        <label for="DIAG014"> Diabetes Mellitus </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG012" value="Eczema" ng-model="diagnose.DIAG012">
+                                                        <label for="DIAG012"> Eczema </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG020" value="Furuncle" ng-model="diagnose.DIAG020">
+                                                        <label for="DIAG020"> Furuncle/Carbuncle </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-xs-6">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG007" value="GERD" ng-model="diagnose.DIAG007">
+                                                        <label for="DIAG007"> GERD </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG015" value="Hyperlipidemia" ng-model="diagnose.DIAG015">
+                                                        <label for="DIAG015"> Hyperlipidemia </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG013" value="Hypertension" ng-model="diagnose.DIAG013">
+                                                        <label for="DIAG013"> Hypertension </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG016" value="Hyperuricemia" ng-model="diagnose.DIAG016">
+                                                        <label for="DIAG016"> Hyperuricemia </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG019" value="spasm" ng-model="diagnose.DIAG019">
+                                                        <label for="DIAG019"> Musculoskeletal spasm </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG022" value="Neuropathy" ng-model="diagnose.DIAG022">
+                                                        <label for="DIAG022"> Peripheral Neuropathy </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG002" value="Pneumonia" ng-model="diagnose.DIAG002">
+                                                        <label for="DIAG002"> Pneumonia </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG017" value="Headache" ng-model="diagnose.DIAG017">
+                                                        <label for="DIAG017"> Tension Headache </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG001" value="Respiratory" ng-model="diagnose.DIAG001">
+                                                        <label for="DIAG001"> Upper Respiratory Tract Infection </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG009" value="Urinary" ng-model="diagnose.DIAG009">
+                                                        <label for="DIAG009"> Urinary Tract Infection </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-4 col-md-4">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="DIAG023" value="Others" ng-model="diagnose.DIAG023" ng-change="diagnose.DIAG023 == false ? diagnoseInfo.otherDiagnosis = '':''">
+                                                        <label for="DIAG023"> Others </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8">
+                                                    <div class="form-group">
+                                                        <input type="text" id="otherDiagnosis" name="otherDiagnosis" ng-model="diagnoseInfo.otherDiagnosis" ng-disabled="diagnose.DIAG023 == false || diagnose.DIAG023 == undefined" placeholder="Identify diagnosis here..." class="form-control" ng-required="diagnose.DIAG023" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-12 col-md-12">
+                                                    <label class="control-label" for="remarks">Remarks</label>
+                                                    <input type="text" id="remarks" name="remarks" ng-model="diagnoseRemarks" placeholder="Remarks here..." class="form-control" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <label class="lazur-bg text-center" style="width: 100%;"> REFERRAL </label>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-4 col-md-4">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="SERVICE003" value="SERVICE003" ng-model="referral.SERVICE003">
+                                                        <label for="SERVICE003"> Diet Counseling </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="SERVICE004" value="SERVICE004" ng-model="referral.SERVICE004">
+                                                        <label for="SERVICE004"> Male Reproductive Health </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4 col-md-4">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="SERVICE005" value="SERVICE005" ng-model="referral.SERVICE005">
+                                                        <label for="SERVICE005"> Papsmear & Breast Exam </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            
+                                                <div class="col-lg-12">
+                                                    <div class="col-lg-4 col-md-4">
+                                                        <div class="checkbox checkbox-danger">
+                                                            <input type="checkbox" id="DIAG024" value="Refer" ng-model="diagnose.DIAG024" ng-change="diagnose.DIAG024 == false ? diagnoseInfo.referDesc = '':''">
+                                                            <label for="DIAG024"> Refer to Health Facility </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8">
+                                                        <div class="form-group">
+                                                            <input type="text" id="referDesc" name="referDesc" ng-model="diagnoseInfo.referDesc" ng-disabled="diagnose.DIAG024 == false || diagnose.DIAG024 == undefined" placeholder="Identify referral info here..." class="form-control" ng-required="diagnose.DIAG024" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            
+                                            <div class="col-lg-12">
+                                                <label class="lazur-bg text-center" style="width: 100%;"> LABORATORY </label>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-3 col-md-3">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0002" value="L0002" ng-model="labtest.L0002">
+                                                        <label for="L0002"> CBC </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0001" value="L0001" ng-model="labtest.L0001">
+                                                        <label for="L0001"> Urinalysis </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0003" value="L0003" ng-model="labtest.L0003">
+                                                        <label for="L0003"> Fecalysis </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0005" value="L0005" ng-model="labtest.L0005">
+                                                        <label for="L0005"> FBS </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0009" value="L0009" ng-model="labtest.L0009">
+                                                        <label for="L0009"> Creatinine </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="LTG002" value="LTG002" ng-model="labtest.LTG002">
+                                                        <label for="LTG002"> Lipid Profile </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0010" value="L0010" ng-model="labtest.L0010">
+                                                        <label for="L0010"> Uric Acid </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0011" value="L0011" ng-model="labtest.L0011">
+                                                        <label for="L0011"> SGPT </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0012" value="L0012" ng-model="labtest.L0012">
+                                                        <label for="L0012"> SGOT </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="LTG003" value="LTG003" ng-model="labtest.LTG003">
+                                                        <label for="LTG003"> Serum Electrolytes </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006">
+                                                        <label for="L0006"> Chest X-ray </label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004">
+                                                        <label for="L0004"> ECG-12L </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-4 col-md-4">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0022" value="OtherLab" ng-model="labtest.L0022" ng-change="labtest.L0022 == false ? labtest.otherLabDesc = '':''">
+                                                        <label for="L0022"> Other Laboratory </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8 col-md-8">
+                                                    <div class="form-group">
+                                                        <input type="text" id="otherLabDesc" name="otherLabDesc" ng-model="otherLabDesc" ng-disabled="labtest.L0022 == false || labtest.L0022 == undefined" placeholder="Identify other laboratory here..." class="form-control" ng-required="labtest.L0022" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="hr-line-dashed" style="margin: 15px;" />
+                                        <div class="row">
+                                            <div class="col-sm-12 col-xs-12">
+                                                <button class="btn btn-info pull-right" type="submit" ng-click="!diagnosis_form.$invalid ? saveDiagnosis(referral, diagnose, diagnoseInfo, diagnoseRemarks, labtest, otherLabDesc):''"><i class="fa fa-user-md"></i> Save Diagnosis </button>
+                                            </div>
+                                        </div>
+
+                                    </form>
                                 </div>
                             </div>
                         </div>
+                        <!--  /DIAGNOSIS  -->
                     </div>
-                    <!-- /VITAL SIGNS HISTORY -->
-
-                    <!--  DIAGNOSIS  -->
-                    <div class="col-sm-8">
-                        <div class="panel panel-info">
-                            <div class="panel-heading text-center">
-                                <label class="text-center">DIAGNOSIS</label>
-                            </div>
-                            <div class="panel-body">
-                                <form id="diagnosis_form" name="diagnosis_form">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="col-sm-6 col-xs-6">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG005" value="Gastritis" ng-model="diagnose.DIAG005">
-                                                    <label for="DIAG005"> Acute Gastritis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG006" value="Gastroenteritis" ng-model="diagnose.DIAG006">
-                                                    <label for="DIAG006"> Acute Gastroenteritis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG018" value="Tonsillopharyngitis" ng-model="diagnose.DIAG018">
-                                                    <label for="DIAG018"> Acute Tonsillopharyngitis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG003" value="Rhinitis" ng-model="diagnose.DIAG003">
-                                                    <label for="DIAG003"> Allergic Rhinitis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG008" value="Amoebiasis" ng-model="diagnose.DIAG008">
-                                                    <label for="DIAG008"> Amoebiasis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG021" value="Arthritis" ng-model="diagnose.DIAG021">
-                                                    <label for="DIAG021"> Arthritis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG010" value="BPH" ng-model="diagnose.DIAG010">
-                                                    <label for="DIAG010"> BPH </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG004" value="Asthma" ng-model="diagnose.DIAG004">
-                                                    <label for="DIAG004"> Bronchial Asthma </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG011" value="Dermatitis" ng-model="diagnose.DIAG011">
-                                                    <label for="DIAG011"> Contact Dermatitis </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG014" value="Diabetes" ng-model="diagnose.DIAG014">
-                                                    <label for="DIAG014"> Diabetes Mellitus </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG012" value="Eczema" ng-model="diagnose.DIAG012">
-                                                    <label for="DIAG012"> Eczema </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG020" value="Furuncle" ng-model="diagnose.DIAG020">
-                                                    <label for="DIAG020"> Furuncle/Carbuncle </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-xs-6">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG007" value="GERD" ng-model="diagnose.DIAG007">
-                                                    <label for="DIAG007"> GERD </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG015" value="Hyperlipidemia" ng-model="diagnose.DIAG015">
-                                                    <label for="DIAG015"> Hyperlipidemia </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG013" value="Hypertension" ng-model="diagnose.DIAG013">
-                                                    <label for="DIAG013"> Hypertension </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG016" value="Hyperuricemia" ng-model="diagnose.DIAG016">
-                                                    <label for="DIAG016"> Hyperuricemia </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG019" value="spasm" ng-model="diagnose.DIAG019">
-                                                    <label for="DIAG019"> Musculoskeletal spasm </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG022" value="Neuropathy" ng-model="diagnose.DIAG022">
-                                                    <label for="DIAG022"> Peripheral Neuropathy </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG002" value="Pneumonia" ng-model="diagnose.DIAG002">
-                                                    <label for="DIAG002"> Pneumonia </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG017" value="Headache" ng-model="diagnose.DIAG017">
-                                                    <label for="DIAG017"> Tension Headache </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG001" value="Respiratory" ng-model="diagnose.DIAG001">
-                                                    <label for="DIAG001"> Upper Respiratory Tract Infection </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG009" value="Urinary" ng-model="diagnose.DIAG009">
-                                                    <label for="DIAG009"> Urinary Tract Infection </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG023" value="Others" ng-model="diagnose.DIAG023" ng-change="diagnose.DIAG023 == false ? diagnoseInfo.otherDiagnosis = '':''">
-                                                    <label for="DIAG023"> Others </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-md-8">
-                                                <div class="form-group">
-                                                    <input type="text" id="otherDiagnosis" name="otherDiagnosis" ng-model="diagnoseInfo.otherDiagnosis" ng-disabled="diagnose.DIAG023 == false || diagnose.DIAG023 == undefined" placeholder="Identify diagnosis here..." class="form-control" ng-required="diagnose.DIAG023" />
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-lg-12 col-md-12">
-                                                <label class="control-label" for="remarks">Remarks</label>
-                                                <input type="text" id="remarks" name="remarks" ng-model="diagnoseRemarks" placeholder="Remarks here..." class="form-control" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <label class="lazur-bg text-center" style="width: 100%;"> REFERRAL </label>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="SERVICE003" value="SERVICE003" ng-model="referral.SERVICE003">
-                                                    <label for="SERVICE003"> Diet Counseling </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="SERVICE004" value="SERVICE004" ng-model="referral.SERVICE004">
-                                                    <label for="SERVICE004"> Male Reproductive Health </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="SERVICE005" value="SERVICE005" ng-model="referral.SERVICE005">
-                                                    <label for="SERVICE005"> Papsmear & Breast Exam </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <label class="lazur-bg text-center" style="width: 100%;"> LABORATORY </label>
-                                        </div>
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-6 col-md-6">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0002" value="L0002" ng-model="labtest.L0002">
-                                                    <label for="L0002"> CBC </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0001" value="L0001" ng-model="labtest.L0001">
-                                                    <label for="L0001"> Urinalysis </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6 col-md-6">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0003" value="L0003" ng-model="labtest.L0003">
-                                                    <label for="L0003"> Blood Chemistry </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004">
-                                                    <label for="L0004"> ECG </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="DIAG024" value="Refer" ng-model="diagnose.DIAG024" ng-change="diagnose.DIAG024 == false ? diagnoseInfo.referDesc = '':''">
-                                                    <label for="DIAG024"> Refer to Health Facility </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-md-8">
-                                                <div class="form-group">
-                                                    <input type="text" id="referDesc" name="referDesc" ng-model="diagnoseInfo.referDesc" ng-disabled="diagnose.DIAG024 == false || diagnose.DIAG024 == undefined" placeholder="Identify referral info here..." class="form-control" ng-required="diagnose.DIAG024" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr class="hr-line-dashed" style="margin: 15px;" />
-                                    <div class="row">
-                                        <div class="col-sm-12 col-xs-12">
-                                            <button class="btn btn-info pull-right" type="submit" ng-click="!diagnosis_form.$invalid ? saveDiagnosis(referral, diagnose, diagnoseInfo, diagnoseRemarks, labtest):''"><i class="fa fa-user-md"></i> Save Diagnosis </button>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!--  /DIAGNOSIS  -->
                 </div>
 
                 <!-- MEDICAL PRESCRIPTION -->
@@ -572,192 +810,6 @@
             </div>
         </div>
         <!-- /PATIENT LIST FOR CURRENT DAY -->
-
-        <!-- MEDICAL RECORDS -->
-        <div class="animated fadeInRight ecommerce" ng-show="showMedicalRecord">
-            <div class="row">
-                <div class="col-sm-12 col-xs-12">
-                    <div class="panel panel-danger">
-                        <div class="panel-heading text-center">
-                            <label class="text-center">MEDICAL RECORDS</label>
-                        </div>
-                        <div class="panel-body">
-                            <div class="tabs-container">
-
-                                <div class="tabs-left">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a data-toggle="tab" href="#tab-MD"> Medical Diagnosis</a></li>
-                                        <li class=""><a data-toggle="tab" href="#tab-MP"> Medical Prescription</a></li>
-                                        <li class=""><a data-toggle="tab" href="#tab-Lab"> Laboratory</a></li>
-                                    </ul>
-                                    <div class="tab-content ">
-                                        <div id="tab-MD" class="tab-pane active">
-                                            <div class="panel-body">
-                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                                    <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="text-center">#</th>
-                                                                <th>Diagnosis Date & Time</th>
-                                                                <th>Physician</th>
-                                                                <th>Refer to Health Facility</th>
-                                                                <th>Remarks</th>
-                                                                <th>Diagnosis</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr class="text-center" ng-show="medicalRecord_loader">
-                                                                <td colspan="6">
-                                                                    <div class="sk-spinner sk-spinner-double-bounce">
-                                                                        <div class="sk-double-bounce1"></div>
-                                                                        <div class="sk-double-bounce2"></div>
-                                                                    </div>
-                                                                    <text><i>Please wait, we are loading your data...</i></text>
-                                                                </td>
-                                                            </tr>
-                                                            <tr class="text-center" ng-show="diagnoseHistoryList.length == 0 && medicalRecord_loader == false">
-                                                                <td colspan="6">
-                                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                                </td>
-                                                            </tr>
-                                                            <tr ng-repeat="dh in diagnoseHistoryList">
-                                                                <td class="text-center">{{$index + 1}}</td>
-                                                                <td>{{dh[0].dateTimeLog}}</td>
-                                                                <td>{{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
-                                                                <td>{{dh[0].outsideReferral}}</td>
-                                                                <td>{{dh[0].remarks}}</td>
-                                                                <td>
-                                                                    <table class="table table-stripped" style="width: 100%;">
-                                                                        <tbody>
-                                                                            <tr ng-repeat="diag in dh">
-                                                                                <td>{{diag.diagnoseName}}</td>
-                                                                                <td>{{diag.otherDiagnosis}}</td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="tab-MP" class="tab-pane">
-                                            <div class="panel-body">
-                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                                    <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="text-center">#</th>
-                                                                <th>Physician</th>
-                                                                <th>Rx Date & Time</th>
-                                                                <th>Service</th>
-                                                                <th>Prescription/s</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr class="text-center" ng-show="medicalRecord_loader">
-                                                                <td colspan="6">
-                                                                    <div class="sk-spinner sk-spinner-double-bounce">
-                                                                        <div class="sk-double-bounce1"></div>
-                                                                        <div class="sk-double-bounce2"></div>
-                                                                    </div>
-                                                                    <text><i>Please wait, we are loading your data...</i></text>
-                                                                </td>
-                                                            </tr>
-                                                            <tr class="text-center" ng-show="rxHistoryList.length == 0 && medicalRecord_loader == false">
-                                                                <td colspan="6">
-                                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                                </td>
-                                                            </tr>
-                                                            <tr ng-repeat="rx in rxHistoryList">
-                                                                <td class="text-center">{{$index + 1}}</td>
-                                                                <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
-                                                                <td>{{rx[0].dateTimeRx}}</td>
-                                                                <td>{{rx[0].serviceName}}</td>
-                                                                <td>
-                                                                    <table class="table table-stripped" style="width: 100%;">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th>Medicine Name</th>
-                                                                                <th>Dosage</th>
-                                                                                <th># Days</th>
-                                                                                <th>Qty</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr ng-repeat="rx in rx">
-                                                                                <td>{{rx.productDesc}} {{rx.measurementDesc}}</td>
-                                                                                <td>{{rx.dosage}} {{rx.unitDesc}} x {{rx.perDay}} a Day</td>
-                                                                                <td>{{rx.noDay == 'maintenance' ? 'as Maintenance':rx.noDay == 'needed' ? 'as Needed':rx.noDay == 'single' ? 'Single Dose':rx.noDay + ' Day/s'}}</td>
-                                                                                <td>{{rx.qtyRx}} {{rx.unitDesc == 'Suspension' || rx.unitDesc == 'Syrup' || rx.unitDesc == 'Drops' || rx.unitDesc == 'Bottle' ? 'Bottle/s':rx.unitDesc == 'Cream' ? 'Tube':''}}</td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="tab-Lab" class="tab-pane">
-                                            <div class="panel-body">
-                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                                    <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th class="text-center">#</th>
-                                                                <th>Test</th>
-                                                                <th class="text-center">Tested</th>
-                                                                <th class="text-center">With Result</th>
-                                                                <th>Date & Time Tested</th>
-                                                                <th class="text-center">Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr class="text-center" ng-show="medHistLoader_modal">
-                                                                <td colspan="6">
-                                                                    <div class="sk-spinner sk-spinner-double-bounce">
-                                                                        <div class="sk-double-bounce1"></div>
-                                                                        <div class="sk-double-bounce2"></div>
-                                                                    </div>
-                                                                    <text><i>Please wait, we are loading your data...</i></text>
-                                                                </td>
-                                                            </tr>
-                                                            <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
-                                                                <td colspan="6">
-                                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                                </td>
-                                                            </tr>
-                                                            <tr ng-repeat="dh in labHistoryList">
-                                                                <td class="text-center">{{$index + 1}}</td>
-                                                                <td>{{dh.labTestName}}</td>
-                                                                <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
-                                                                @*<td class="text-center">{{dh.isEncoded == true ? 'Yes':'No'}}</td>*@
-                                                                <td class="text-center">Yes</td>
-                                                                <td>{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
-                                                                @*<td class="text-center"><button class="btn btn-danger btn-sm" ng-disabled="dh.isEncoded != true" ng-click="viewLabResult(dh)"> Show </button></td>*@
-                                                                <td class="text-center"><button class="btn btn-danger btn-sm" ng-click="viewLabResult(dh)"> Show </button></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /MEDICAL RECORDS -->
-
-
     </div>
 
     <!-- MODAL PERSON RESULT DIAGNOSIS -->
@@ -822,8 +874,8 @@
                         <div class="col-sm-4">
                             <p class="blue-bg text-center" style="width: 100%;"> VITAL SIGNS </p>
                             <div class="row">
-                                <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Ht: {{vitalSigns.height}}</label></div>
-                                <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Wt: {{vitalSigns.weight}}</label></div>
+                                <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Ht: {{resultDiag.vitalSign.height}}m</label></div>
+                                <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Wt: {{resultDiag.vitalSign.weight}}kg</label></div>
                             </div>
                             <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                 <table class="table table-stripped">
@@ -852,7 +904,7 @@
                                                 <label class="text-danger">NO INFORMATION FOUND!</label>
                                             </td>
                                         </tr>
-                                        <tr ng-repeat="vs in bpHistoryList">
+                                        <tr ng-repeat="vs in resultDiag.bp">
                                             <td>{{vs.temperature}}</td>
                                             <td>{{vs.systolic}}/{{vs.diastolic}}</td>
                                             <td>{{vs.pulseRate}}</td>
@@ -864,176 +916,241 @@
                         </div>
                         <!-- /VITAL SIGNS HISTORY -->
 
-                        <div class="col-sm-8" ng-style="customDisabling">
+                        <div class="col-sm-8">
                             <p class="blue-bg text-center" style="width: 100%;"> DIAGNOSIS </p>
                             <div class="col-sm-6 col-xs-6">
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG005" value="Gastritis" ng-model="resultDiag.detail.DIAG005" disabled>
-                                    <label for="DIAG005"> Acute Gastritis </label>
+                                    <input type="checkbox" id="edit_DIAG005" value="Gastritis" ng-model="resultDiag.diag.DIAG005" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG005"> Acute Gastritis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG006" value="Gastroenteritis" ng-model="resultDiag.detail.DIAG006" disabled>
-                                    <label for="DIAG006"> Acute Gastroenteritis </label>
+                                    <input type="checkbox" id="edit_DIAG006" value="Gastroenteritis" ng-model="resultDiag.diag.DIAG006" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG006"> Acute Gastroenteritis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG018" value="Tonsillopharyngitis" ng-model="resultDiag.detail.DIAG018" disabled>
-                                    <label for="DIAG018"> Acute Tonsillopharyngitis </label>
+                                    <input type="checkbox" id="edit_DIAG018" value="Tonsillopharyngitis" ng-model="resultDiag.diag.DIAG018" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG018"> Acute Tonsillopharyngitis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG003" value="Rhinitis" ng-model="resultDiag.detail.DIAG003" disabled>
-                                    <label for="DIAG003"> Allergic Rhinitis </label>
+                                    <input type="checkbox" id="edit_DIAG003" value="Rhinitis" ng-model="resultDiag.diag.DIAG003" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG003"> Allergic Rhinitis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG008" value="Amoebiasis" ng-model="resultDiag.detail.DIAG008" disabled>
-                                    <label for="DIAG008"> Amoebiasis </label>
+                                    <input type="checkbox" id="edit_DIAG008" value="Amoebiasis" ng-model="resultDiag.diag.DIAG008" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG008"> Amoebiasis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG021" value="Arthritis" ng-model="resultDiag.detail.DIAG021" disabled>
-                                    <label for="DIAG021"> Arthritis </label>
+                                    <input type="checkbox" id="edit_DIAG021" value="Arthritis" ng-model="resultDiag.diag.DIAG021" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG021"> Arthritis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG010" value="BPH" ng-model="resultDiag.detail.DIAG010" disabled>
-                                    <label for="DIAG010"> BPH </label>
+                                    <input type="checkbox" id="edit_DIAG010" value="BPH" ng-model="resultDiag.diag.DIAG010" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG010"> BPH </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG004" value="Asthma" ng-model="resultDiag.detail.DIAG004" disabled>
-                                    <label for="DIAG004"> Bronchial Asthma </label>
+                                    <input type="checkbox" id="edit_DIAG004" value="Asthma" ng-model="resultDiag.diag.DIAG004" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG004"> Bronchial Asthma </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG011" value="Dermatitis" ng-model="resultDiag.detail.DIAG011" disabled>
-                                    <label for="DIAG011"> Contact Dermatitis </label>
+                                    <input type="checkbox" id="edit_DIAG011" value="Dermatitis" ng-model="resultDiag.diag.DIAG011" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG011"> Contact Dermatitis </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG014" value="Diabetes" ng-model="resultDiag.detail.DIAG014" disabled>
-                                    <label for="DIAG014"> Diabetes Mellitus </label>
+                                    <input type="checkbox" id="edit_DIAG014" value="Diabetes" ng-model="resultDiag.diag.DIAG014" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG014"> Diabetes Mellitus </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG012" value="Eczema" ng-model="resultDiag.detail.DIAG012" disabled>
-                                    <label for="DIAG012"> Eczema </label>
+                                    <input type="checkbox" id="edit_DIAG012" value="Eczema" ng-model="resultDiag.diag.DIAG012" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG012"> Eczema </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG020" value="Furuncle" ng-model="resultDiag.detail.DIAG020" disabled>
-                                    <label for="DIAG020"> Furuncle/Carbuncle </label>
+                                    <input type="checkbox" id="edit_DIAG020" value="Furuncle" ng-model="resultDiag.diag.DIAG020" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG020"> Furuncle/Carbuncle </label>
                                 </div>
                             </div>
                             <div class="col-sm-6 col-xs-6">
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG007" value="GERD" ng-model="resultDiag.detail.DIAG007" disabled>
-                                    <label for="DIAG007"> GERD </label>
+                                    <input type="checkbox" id="edit_DIAG007" value="GERD" ng-model="resultDiag.diag.DIAG007" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG007"> GERD </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG015" value="Hyperlipidemia" ng-model="resultDiag.detail.DIAG015" disabled>
-                                    <label for="DIAG015"> Hyperlipidemia </label>
+                                    <input type="checkbox" id="edit_DIAG015" value="Hyperlipidemia" ng-model="resultDiag.diag.DIAG015" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG015"> Hyperlipidemia </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG013" value="Hypertension" ng-model="resultDiag.detail.DIAG013" disabled>
-                                    <label for="DIAG013"> Hypertension </label>
+                                    <input type="checkbox" id="edit_DIAG013" value="Hypertension" ng-model="resultDiag.diag.DIAG013" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG013"> Hypertension </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG016" value="Hyperuricemia" ng-model="resultDiag.detail.DIAG016" disabled>
-                                    <label for="DIAG016"> Hyperuricemia </label>
+                                    <input type="checkbox" id="edit_DIAG016" value="Hyperuricemia" ng-model="resultDiag.diag.DIAG016" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG016"> Hyperuricemia </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG019" value="spasm" ng-model="resultDiag.detail.DIAG019" disabled>
-                                    <label for="DIAG019"> Musculoskeletal spasm </label>
+                                    <input type="checkbox" id="edit_DIAG019" value="spasm" ng-model="resultDiag.diag.DIAG019" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG019"> Musculoskeletal spasm </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG022" value="Neuropathy" ng-model="resultDiag.detail.DIAG022" disabled>
-                                    <label for="DIAG022"> Peripheral Neuropathy </label>
+                                    <input type="checkbox" id="edit_DIAG022" value="Neuropathy" ng-model="resultDiag.diag.DIAG022" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG022"> Peripheral Neuropathy </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG002" value="Pneumonia" ng-model="resultDiag.detail.DIAG002" disabled>
-                                    <label for="DIAG002"> Pneumonia </label>
+                                    <input type="checkbox" id="edit_DIAG002" value="Pneumonia" ng-model="resultDiag.diag.DIAG002" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG002"> Pneumonia </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG017" value="Headache" ng-model="resultDiag.detail.DIAG017" disabled>
-                                    <label for="DIAG017"> Tension Headache </label>
+                                    <input type="checkbox" id="edit_DIAG017" value="Headache" ng-model="resultDiag.diag.DIAG017" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG017"> Tension Headache </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG001" value="Respiratory" ng-model="resultDiag.detail.DIAG001" disabled>
-                                    <label for="DIAG001"> Upper Respiratory Tract Infection </label>
+                                    <input type="checkbox" id="edit_DIAG001" value="Respiratory" ng-model="resultDiag.diag.DIAG001" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG001"> Upper Respiratory Tract Infection </label>
                                 </div>
                                 <div class="checkbox checkbox-danger">
-                                    <input type="checkbox" id="DIAG009" value="Urinary" ng-model="resultDiag.detail.DIAG009" disabled>
-                                    <label for="DIAG009"> Urinary Tract Infection </label>
+                                    <input type="checkbox" id="edit_DIAG009" value="Urinary" ng-model="resultDiag.diag.DIAG009" ng-disabled="!isEditting">
+                                    <label for="edit_DIAG009"> Urinary Tract Infection </label>
                                 </div>
                             </div>
 
                             <div class="col-lg-12">
-                                <div class="col-lg-3 col-md-3">
-                                    <div class="checkbox checkbox-danger">
-                                        <input type="checkbox" id="DIAG023" value="Others" ng-model="resultDiag.detail.DIAG023" ng-change="resultDiag.detail.DIAG023 == false ? diagnoseInfo.otherDiagnosis = '':''" disabled>
-                                        <label for="DIAG023"> Others </label>
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3">
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG023" value="Others" ng-model="resultDiag.diag.DIAG023" ng-change="resultDiag.diag.DIAG023 == false ? resultDiag.otherDiagnosis = '':''" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG023"> Others </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9">
+                                        <div class="form-group"> 
+                                            <input type="text" id="otherDiagnosis" name="otherDiagnosis" ng-model="resultDiag.otherDiagnosis" ng-disabled="resultDiag.diag.DIAG023 == false || resultDiag.diag.DIAG023 == undefined || !isEditting" placeholder="Identify diagnosis here..." class="form-control" ng-required="resultDiag.diag.DIAG023" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-9 col-md-9">
-                                    <div class="form-group">
-                                        <input type="text" id="otherDiagnosis" name="otherDiagnosis" ng-model="diagnoseInfo.otherDiagnosis" ng-disabled="resultDiag.detail.DIAG023 == false || resultDiag.detail.DIAG023 == undefined" class="form-control" ng-required="resultDiag.detail.DIAG023" disabled />
-                                    </div>
-                                </div>
+                               
                             </div>
 
                             <div class="form-group col-lg-12 col-md-12">
                                 <label class="control-label" for="remarks">Remarks</label>
-                                <input type="text" id="remarks" name="remarks" ng-model="resultDiag.remarks" class="form-control" disabled />
+                                <input type="text" id="remarks" name="remarks" ng-model="resultDiag.info.remarks" class="form-control" placeholder="Remarks here..." ng-disabled="!isEditting" />
                             </div>
                         </div>
                     </div>
 
-                    <div class="row" ng-style="customDisabling">
+                    <div class="row">
                         <div class="col-lg-12">
                             <p class="blue-bg text-center" style="width: 100%;"> REFERRAL </p>
                         </div>
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-4 col-md-4">
                             <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="SERVICE003" value="Diet" ng-model="resultDiag.SERVICE003" disabled>
-                                <label for="SERVICE003"> Diet Counseling </label>
-                            </div>
-                            <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="SERVICE004" value="MRH" ng-model="resultDiag.SERVICE004" disabled>
-                                <label for="SERVICE004"> Male Reproductive Health </label>
+                                <input type="checkbox" id="edit_SERVICE003" value="Diet" ng-model="resultDiag.ref.SERVICE003" ng-disabled="!isEditting">
+                                <label for="edit_SERVICE003"> Diet Counseling </label>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-4 col-md-4">
                             <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="SERVICE005" value="Papsmear" ng-model="resultDiag.SERVICE005" disabled>
-                                <label for="SERVICE005"> Papsmear & Breast Exam </label>
-                            </div>
-                            <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="SERVICE006" value="Lab - CBC" ng-model="resultDiag.SERVICE006" disabled>
-                                <label for="SERVICE006"> CBC (Lab) </label>
+                                <input type="checkbox" id="edit_SERVICE004" value="MRH" ng-model="resultDiag.ref.SERVICE004" ng-disabled="!isEditting">
+                                <label for="edit_SERVICE004"> Male Reproductive Health </label>
                             </div>
                         </div>
-                        <div class="col-lg-6 col-md-6">
+                        <div class="col-lg-4 col-md-4">
                             <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="SERVICE008" value="Lab - Urinalysis" ng-model="resultDiag.SERVICE008" disabled>
-                                <label for="SERVICE008"> Papsmear & Breast Exam </label>
+                                <input type="checkbox" id="edit_SERVICE005" value="Papsmear" ng-model="resultDiag.ref.SERVICE005" ng-disabled="!isEditting">
+                                <label for="edit_SERVICE005"> Papsmear & Breast Exam </label>
                             </div>
-                            <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="SERVICE009" value="Lab - Blood Chemistry" ng-model="resultDiag.SERVICE009" disabled>
-                                <label for="SERVICE009"> Blood Chemistry (Lab) </label>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_DIAG024" value="Refer" ng-model="resultDiag.diag.DIAG024" ng-change="resultDiag.diag.DIAG024 == false ? resultDiag.info.outsideReferral = '':''" ng-disabled="!isEditting">
+                                        <label for="edit_DIAG024"> Refer to Health Facility </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-9 col-md-9">
+                                    <div class="form-group">
+                                        <input type="text" id="referDesc" name="referDesc" ng-model="resultDiag.info.outsideReferral" ng-disabled="resultDiag.diag.DIAG024 == false || resultDiag.diag.DIAG024 == undefined || !isEditting" placeholder="Identify referral info here..." class="form-control" ng-required="resultDiag.diag.DIAG024" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row" ng-style="customDisabling">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p class="blue-bg text-center" style="width: 100%;"> LABORATORY </p>
+                        </div>
                         <div class="col-lg-3 col-md-3">
                             <div class="checkbox checkbox-danger">
-                                <input type="checkbox" id="DIAG024" value="Refer" ng-model="resultDiag.detail.DIAG024" ng-change="resultDiag.detail.DIAG024 == false ? resultDiag.detail.referDesc = '':''" disabled>
-                                <label for="DIAG024"> Refer to Health Facility </label>
+                                <input type="checkbox" id="edit_L0002" value="L0002" ng-model="resultDiag.laboratory.L0002" ng-disabled="!isEditting">
+                                <label for="edit_L0002"> CBC </label>
                             </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0001" value="L0001" ng-model="resultDiag.laboratory.L0001" ng-disabled="!isEditting">
+                                <label for="edit_L0001"> Urinalysis </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0003" value="L0003" ng-model="resultDiag.laboratory.L0003" ng-disabled="!isEditting">
+                                <label for="edit_L0003"> Fecalysis </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0005" value="L0005" ng-model="resultDiag.laboratory.L0005" ng-disabled="!isEditting">
+                                <label for="edit_L0005"> FBS </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0009" value="L0009" ng-model="resultDiag.laboratory.L0009" ng-disabled="!isEditting">
+                                <label for="edit_L0009"> Creatinine </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_LTG002" value="LTG002" ng-model="resultDiag.laboratory.LTG002" ng-disabled="!isEditting">
+                                <label for="edit_LTG002"> Lipid Profile </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0010" value="L0010" ng-model="resultDiag.laboratory.L0010" ng-disabled="!isEditting">
+                                <label for="edit_L0010"> Uric Acid </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0011" value="L0011" ng-model="resultDiag.laboratory.L0011" ng-disabled="!isEditting">
+                                <label for="edit_L0011"> SGPT </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0012" value="L0012" ng-model="resultDiag.laboratory.L0012" ng-disabled="!isEditting">
+                                <label for="edit_L0012"> SGOT </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_LTG003" value="LTG003" ng-model="resultDiag.laboratory.LTG003" ng-disabled="!isEditting">
+                                <label for="edit_LTG003"> Serum Electrolytes </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0006" value="L0006" ng-model="resultDiag.laboratory.L0006" ng-disabled="!isEditting">
+                                <label for="edit_L0006"> Chest X-ray </label>
+                            </div>
+                            <div class="checkbox checkbox-danger">
+                                <input type="checkbox" id="edit_L0004" value="L0004" ng-model="resultDiag.laboratory.L0004" ng-disabled="!isEditting">
+                                <label for="edit_L0004"> ECG-12L </label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                             <div class="checkbox checkbox-danger">
+                                 <input type="checkbox" id="edit_L0022" value="OtherLab" ng-model="resultDiag.laboratory.L0022" ng-change="resultDiag.laboratory.L0022 == false ? resultDiag.otherLabDesc = '':''" ng-disabled="!isEditting">
+                                 <label for="edit_L0022"> Other Laboratory </label>
+                             </div>
                         </div>
                         <div class="col-lg-9 col-md-9">
-                            <div class="form-group">
-                                <input type="text" id="referDesc" name="referDesc" ng-model="resultDiag.referDesc" ng-disabled="diagnose.DIAG024 == false || diagnose.DIAG024 == undefined" class="form-control" ng-required="diagnose.DIAG024" />
-                            </div>
+                             <div class="form-group">
+                                 <input type="text" id="otherLabDesc" name="otherLabDesc" ng-model="resultDiag.otherLabDesc" ng-disabled="resultDiag.laboratory.L0022 == false || resultDiag.laboratory.L0022 == undefined || !isEditting" placeholder="Identify other laboratory here..." class="form-control" ng-required="resultDiag.laboratory.L0022" />
+                             </div>
                         </div>
+                            
                     </div>
-
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn" ng-class="isEditting ? 'btn-primary':'btn-success'" ng-click="saveUpdate(resultDiag)">{{isEditting ? 'Save changes' : 'Edit diagnosis'}}</button>
                 </div>
             </div>
         </div>
@@ -1314,317 +1431,317 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="row">
-                                                    <div class="col-lg-12 table-responsive">
-                                                        <table class="table borderless">
-                                                            <thead>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="color">Color:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="color" name="color" ng-model="uri.color" class="form-control text-center" readonly />
-                                                                            </div>
+                                    <tr>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-lg-12 table-responsive">
+                                                    <table class="table borderless">
+                                                        <thead>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><label class="control-label" for="color">Color:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="color" name="color" ng-model="uri.color" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="transparency">Transparency:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="transparency" name="transparency" ng-model="uri.transparency" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="transparency">Transparency:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="transparency" name="transparency" ng-model="uri.transparency" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="albumin">Albumin:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="albumin" name="albumin" ng-model="uri.albumin" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="albumin">Albumin:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="albumin" name="albumin" ng-model="uri.albumin" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="sugar">Sugar:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="sugar" name="sugar" ng-model="uri.sugar" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="sugar">Sugar:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="sugar" name="sugar" ng-model="uri.sugar" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="reaction">Reaction:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="reaction" name="reaction" ng-model="uri.reaction" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="reaction">Reaction:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="reaction" name="reaction" ng-model="uri.reaction" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="spGravity">Sp. Gravity:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="spGravity" name="spGravity" ng-model="uri.spGravity" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="spGravity">Sp. Gravity:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="spGravity" name="spGravity" ng-model="uri.spGravity" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <table class="table borderless">
-                                                    <thead>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <table class="table borderless">
+                                                <thead>
 
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><label class="control-label" for="pusCells">Pus Cells:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="pusCells" name="pusCells" ng-model="uri.pusCells" class="form-control text-center" readonly/>
-                                                                        @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
-                                                                    </div>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><label class="control-label" for="pusCells">Pus Cells:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="pusCells" name="pusCells" ng-model="uri.pusCells" class="form-control text-center" readonly />
+                                                                    @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="rbcCells">RBC Cells:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="rbcCells" name="rbcCells" ng-model="uri.rbcCells" class="form-control text-center" readonly />
-                                                                        @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="rbcCells">RBC Cells:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="rbcCells" name="rbcCells" ng-model="uri.rbcCells" class="form-control text-center" readonly />
+                                                                    @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="epithelialCells">Epithelial Cells:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="epithelialCells" name="epithelialCells" ng-model="uri.epithelialCells" class="form-control text-center" readonly />
-                                                                        @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="epithelialCells">Epithelial Cells:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="epithelialCells" name="epithelialCells" ng-model="uri.epithelialCells" class="form-control text-center" readonly />
+                                                                    @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="renalCells">Renal Cells:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="renalCells" name="renalCells" ng-model="uri.renalCells" class="form-control text-center" readonly />
-                                                                        @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="renalCells">Renal Cells:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="renalCells" name="renalCells" ng-model="uri.renalCells" class="form-control text-center" readonly />
+                                                                    @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="mucusThread">Mucus Thread:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="mucusThread" name="mucusThread" ng-model="uri.mucusThread" class="form-control text-center" readonly />
-                                                                        @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="mucusThread">Mucus Thread:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="mucusThread" name="mucusThread" ng-model="uri.mucusThread" class="form-control text-center" readonly />
+                                                                    @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="bacteria">Backteria:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="bacteria" name="bacteria" ng-model="uri.bacteria" class="form-control text-center" readonly />
-                                                                        @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="bacteria">Backteria:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="bacteria" name="bacteria" ng-model="uri.bacteria" class="form-control text-center" readonly />
+                                                                    @*<span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>*@
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="yeastCells">Yeast Cells:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="yeastCells" name="yeastCells" ng-model="uri.yeastCells" class="form-control text-center" readonly />
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="yeastCells">Yeast Cells:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="yeastCells" name="yeastCells" ng-model="uri.yeastCells" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                            <td>
-                                                <div class="row">
-                                                    <div class="col-lg-12 table-responsive">
-                                                        <table class="table borderless">
-                                                            <thead>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="coarseGranular">Coarse Granular:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="coarseGranular" name="coarseGranular" ng-model="uri.coarseGranular" class="form-control text-center" readonly />
-                                                                            </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-lg-12 table-responsive">
+                                                    <table class="table borderless">
+                                                        <thead>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td><label class="control-label" for="coarseGranular">Coarse Granular:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="coarseGranular" name="coarseGranular" ng-model="uri.coarseGranular" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="fineGranular">Fine Granular:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="fineGranular" name="fineGranular" ng-model="uri.fineGranular" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="fineGranular">Fine Granular:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="fineGranular" name="fineGranular" ng-model="uri.fineGranular" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="hyaline">Hyaline:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="hyaline" name="hyaline" ng-model="uri.hyaline" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="hyaline">Hyaline:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="hyaline" name="hyaline" ng-model="uri.hyaline" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="pusCellsCast">Pus Cells Cast:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="pusCellsCast" name="pusCellsCast" ng-model="uri.pusCellsCast" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="pusCellsCast">Pus Cells Cast:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="pusCellsCast" name="pusCellsCast" ng-model="uri.pusCellsCast" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="reaction">RBC Cast:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="rbcCast" name="rbcCast" ng-model="uri.rbcCast" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="reaction">RBC Cast:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="rbcCast" name="rbcCast" ng-model="uri.rbcCast" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="waxyCast">Waxy Cast:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="waxyCast" name="waxyCast" ng-model="uri.waxyCast" class="form-control text-center" readonly />
-                                                                            </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><label class="control-label" for="waxyCast">Waxy Cast:</label></td>
+                                                                <td>
+                                                                    <div class="form-group ">
+                                                                        <div class="input-group">
+                                                                            <input type="text" id="waxyCast" name="waxyCast" ng-model="uri.waxyCast" class="form-control text-center" readonly />
                                                                         </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <table class="table borderless">
-                                                    <thead>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <table class="table borderless">
+                                                <thead>
 
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><label class="control-label" for="amourphousUrates">Amourphous Urates:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="amourphousUrates" name="amourphousUrates" ng-model="uri.amourphousUrates" class="form-control text-center" readonly />
-                                                                    </div>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td><label class="control-label" for="amourphousUrates">Amourphous Urates:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="amourphousUrates" name="amourphousUrates" ng-model="uri.amourphousUrates" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="amourphousPhospates">Amourphous Phospates:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="amourphousPhospates" name="amourphousPhospates" ng-model="uri.amourphousPhospates" class="form-control text-center" readonly/>
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="amourphousPhospates">Amourphous Phospates:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="amourphousPhospates" name="amourphousPhospates" ng-model="uri.amourphousPhospates" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="triplePhospates">Triple Phosphates:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="triplePhospates" name="triplePhospates" ng-model="uri.triplePhospates" class="form-control text-center" readonly />
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="triplePhospates">Triple Phosphates:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="triplePhospates" name="triplePhospates" ng-model="uri.triplePhospates" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="uricAcid">Uric Acid:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="uricAcid" name="uricAcid" ng-model="uri.uricAcid" class="form-control text-center" readonly />
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="uricAcid">Uric Acid:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="uricAcid" name="uricAcid" ng-model="uri.uricAcid" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="calciumOxalates">Calcium Oxalates:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="calciumOxalates" name="calciumOxalates" ng-model="uri.calciumOxalates" class="form-control text-center" readonly />
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="calciumOxalates">Calcium Oxalates:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="calciumOxalates" name="calciumOxalates" ng-model="uri.calciumOxalates" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="pregnancyTest">Pregnancy Test:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="pregnancyTest" name="pregnancyTest" ng-model="uri.pregnancyTest" class="form-control text-center" readonly />
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="pregnancyTest">Pregnancy Test:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="pregnancyTest" name="pregnancyTest" ng-model="uri.pregnancyTest" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><label class="control-label" for="others">Others:</label></td>
-                                                            <td>
-                                                                <div class="form-group ">
-                                                                    <div class="input-group">
-                                                                        <input type="text" id="others" name="others" ng-model="uri.others" class="form-control text-center" readonly />
-                                                                    </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><label class="control-label" for="others">Others:</label></td>
+                                                        <td>
+                                                            <div class="form-group ">
+                                                                <div class="input-group">
+                                                                    <input type="text" id="others" name="others" ng-model="uri.others" class="form-control text-center" readonly />
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
 
                             <table class="table table-bordered" ng-show="blood.labTestName == 'CBC'">
@@ -1850,7 +1967,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        
+
                         </div>
                     </div>
                     <div class="modal-footer">

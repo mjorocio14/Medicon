@@ -1,339 +1,543 @@
-﻿
-@{
+﻿@{
     //ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+    #chartdiv {
+        width: 100%;
+        height: 500px;
+    }
+
+    .chartdivLabPrice {
+        height: 250px;
+        align-content:center
+    }
+</style>
+
+<style>
+     .chartdivLabPrice {
+        height: 250px;
+        align-content:center
+    }
+</style>
 
 <div ng-controller="AnalyticsCtrl" ng-init="statsLoad()">
-    <!-- HEADER -->
-    @*<div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-4">
-            <h2>ANALYTICS</h2>
-            <ol class="breadcrumb">
-                <li>
-                    <a href="">Medical</a>
-                </li>
-                <li class="active">
-                    <strong>List</strong>
-                </li>
-            </ol>
-        </div>
-    </div>*@
+    
     <div id="wrapper" class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
-                <div class="ibox float-e-margins text-center">
-                    @*<div class="ibox-title">
-                        <h1 style="color:teal;"><b>MEDICAL ANALYTICS</b></h1>
-                    </div>*@
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <div class="text-center">
+                            <h1 style="color:teal;"><b>MEDICAL ANALYTICS</b></h1>
+                            <h3><b>As of JUNE 2022 - AUGUST 2022</b></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="row">
-                            <div class="col-lg-12 text-center">
-                                <h1 style="color:teal;"><b>MEDICAL ANALYTICS</b></h1>
-                                <h3><b>As of JUNE 2022 - AUGUST 2022</b></h3>
-                                @*<div class="col-lg-2" style="padding: 10px">
-
-                                </div>
-                                <div class="col-lg-4" style="padding: 10px; font-size:14px;">
-                                    <div class="input-group" style="font-size:14px;">
-                                        <span style="font-size:20px;" class="input-group-addon">From</span>
-                                        <input style="font-size:20px;" ng-change="getStatus(get.dtF,get.dtT, true)" ng-model="get.dtF" type="date" class="form-control" />
-                                        <input style="font-size:20px;" ng-change="getStatus(get.dtF,get.dtT, true)" ng-model="get.dtF" type="month" class="form-control" />
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg-10">
+                                <div class="col-lg-4">
+                                    <div class="widget style1 blue-bg">
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <i class="fa fa-male fa-5x"></i>
+                                            </div>
+                                            <div class="col-xs-9 text-center">
+                                                <h4 style="font-size: 16px;"> MALE EMPLOYEE </h4>
+                                                <h2 class="font-bold">113</h2>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4" style="padding: 10px;">
-                                    <div class="input-group">
-                                        <span style="font-size:20px;" class="input-group-addon"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;To</span>
-                                        <input style="font-size:20px;" ng-change="getStatus(get.dtF,get.dtT, false)" ng-model="get.dtT" type="date" class="form-control" />
-                                        <input style="font-size:20px;" ng-change="getStatus(get.dtF,get.dtT, false)" ng-model="get.dtT" type="month" class="form-control" />
+                                <div class="col-lg-4">
+                                    <div class="widget style1 red-bg">
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <i class="fa fa-female fa-5x"></i>
+                                            </div>
+                                            <div class="col-xs-9 text-center">
+                                                <h4 style="font-size: 16px;"> FEMALE EMPLOYEE </h4>
+                                                <h2 class="font-bold text-center">187</h2>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-2" style="padding: 10px">
-
-                                </div>*@
+                                <div class="col-lg-4">
+                                    <div class="widget style1 lazur-bg">
+                                        <div class="row">
+                                            <div class="col-xs-3">
+                                                <i class="fa fa-users fa-5x"></i>
+                                            </div>
+                                            <div class="col-xs-9 text-center">
+                                                <h4 style="font-size: 11px;"> TOTAL # OF EMPLOYEE AVAILED </h4>
+                                                <h2 class="font-bold">300</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <div class="col-lg-1"></div>
                         </div>
+
+                        @*MORBIDITY BAR CHART*@
+                        <div id="chartdiv"></div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="ibox-content">
-            <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-10">
-                    <div class="col-lg-4">
-                        <div class="widget style1 blue-bg">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-male fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-center">
-                                    <h4 style="font-size: 16px;"> MALE EMPLOYEE </h4>
-                                    <h2 class="font-bold">113</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="widget style1 red-bg">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-female fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-center">
-                                    <h4 style="font-size: 16px;"> FEMALE EMPLOYEE </h4>
-                                    <h2 class="font-bold text-center">187</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="widget style1 lazur-bg">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-users fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-center">
-                                    <h4 style="font-size: 11px;"> TOTAL # OF EMPLOYEE AVAILED </h4>
-                                    <h2 class="font-bold">300</h2>
-                                </div>
-                            </div>
-                        </div>
+
+            <div class="col-lg-4">
+                <div class="ibox" style="overflow:auto;width:100%;">
+                    <div class="ibox-content" style="height: 350px;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="7" style="background-color:#0ac2ab; color:white; font-weight:800; font-size:14px;" class="text-center">COMMUNICABLE SUMMARY</th>
+                                </tr>
+                                <tr>
+                                    <th>Morbidity</th>
+                                    <th class="text-center">Male</th>
+                                    <th class="text-center">Female</th>
+                                    <th class="text-center">Total Patient</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Upper Respiratory Tract Infection</td>
+                                    <td class="text-center">18</td>
+                                    <td class="text-center">43</td>
+                                    <td class="text-center">61</td>
+                                </tr>
+                                <tr>
+                                    <td>Lower Respiratory Tract Infection</td>
+                                    <td class="text-center">5</td>
+                                    <td class="text-center">4</td>
+                                    <td class="text-center">9</td>
+                                </tr>
+                                <tr>
+                                    <td>Systemic Viral Illness</td>
+                                    <td class="text-center">37</td>
+                                    <td class="text-center">46</td>
+                                    <td class="text-center">83</td>
+                                </tr>
+                                <tr>
+                                    <td>Tuberculosis</td>
+                                    <td class="text-center">2</td>
+                                    <td class="text-center">1</td>
+                                    <td class="text-center">3</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="3">TOTAL</th>
+                                    <th class="text-center">156</th>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="col-lg-1"></div>
             </div>
-        </div>
-
-        <div class="ibox-content">
-            <div class="row">
-                <div class="col-lg-12">
-                    <table class="table table-responsive table-hover table-bordered">
-                        <tr>
-                            <th colspan="7" style="background-color:#0ac2ab; color:white; font-weight:800; font-size:14px;" class="text-center">MEDICINE</th>
-                        </tr>
-                        <tr>
-                            <th>Diseases</th>
-                            <th>Medicine</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Total</th>
-                            <th>Total Client</th>
-                            <th>Total Cost</th>
-                        </tr>
-                        <tr>
-                            <td colspan="7"><b>COMMUNICABLE</b></td>
-                            @*<td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>*@
-
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Upper Respiratory Tract Infection</td>
-                       
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Ambroxol Tab</td>
-                            <td>21</td>
-                            <td>6.5</td>
-                            <td>136.5</td>
-                            <td>61</td>
-                            <td>8,326.50</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Salbutamol</td>
-                            <td>21</td>
-                            <td>0.8</td>
-                            <td>16.8</td>
-                            <td>61</td>
-                            <td>1,024.80</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Lower Respiratory Tract Infection</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>co-Amoxiclav 625mg</td>
-                            <td>21</td>
-                            <td>24.5</td>
-                            <td>514.5</td>
-                            <td>9</td>
-                            <td>4,630.50</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Ambroxol tab</td>
-                            <td>21</td>
-                            <td>6.5</td>
-                            <td>136.5</td>
-                            <td>9</td>
-                            <td>1,228.50</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Systemic Viral Illness</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Paracetamol</td>
-                            <td>10</td>
-                            <td>2</td>
-                            <td>20</td>
-                            <td>83</td>
-                            <td>1,660.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Tuberculosis</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Anti TB meds(6-months)</td>
-                            <td></td>
-                            <td>6,500</td>
-                            <td></td>
-                            <td>3</td>
-                            <td>19,500.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7"><b>NON-COMMUNICABLE</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Hypertension</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Amlodipine 5mg</td>
-                            <td>30</td>
-                            <td>0.25</td>
-                            <td>7.5</td>
-                            <td>157</td>
-                            <td>1,177.50</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Losartan 100mg</td>
-                            <td>30</td>
-                            <td>3.5</td>
-                            <td>105</td>
-                            <td>157</td>
-                            <td>16,485.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Diabetes</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Metformin 500mg</td>
-                            <td>90</td>
-                            <td>2.5</td>
-                            <td>225</td>
-                            <td>135</td>
-                            <td>30,375.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Arthritis</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Allopurinol 100mg</td>
-                            <td>90</td>
-                            <td>1.1</td>
-                            <td>9.9</td>
-                            <td>70</td>
-                            <td>6,930.00</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Celecoxib 200mg</td>
-                            <td>10</td>
-                            <td>2</td>
-                            <td>20</td>
-                            <td>70</td>
-                            <td>1,400.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">UTI</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Cefuroxime</td>
-                            <td>14</td>
-                            <td>15</td>
-                            <td>210</td>
-                            <td>43</td>
-                            <td>9,030.00</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Gastritis</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Omeprazole</td>
-                            <td>14</td>
-                            <td>8</td>
-                            <td>112</td>
-                            <td>39</td>
-                            <td>4,368.00</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Aluminum Magnesium</td>
-                            <td>21</td>
-                            <td>0.5</td>
-                            <td>10.5</td>
-                            <td>39</td>
-                            <td>409.50</td>
-                        </tr>
-                        <tr>
-                            <td colspan="7" style="color:teal; font-weight:700;">Bronchial Asthma</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Salbutamol</td>
-                            <td>21</td>
-                            <td>0.8</td>
-                            <td>16.8</td>
-                            <td>29</td>
-                            <td>487.20</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>Cetirizine</td>
-                            <td>7</td>
-                            <td>3</td>
-                            <td>21</td>
-                            <td>29</td>
-                            <td>609</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td style="font-size:16px" class="text-right"><b> TOTAL AMOUNT: </b></td>
-                            <td  style="font-size:18px;"><b>107,641.50</b></td>
-                        </tr>
-
-                    </table>
+            <div class="col-lg-4">
+                <div class="ibox" style="overflow:auto;width:100%;">
+                    <div class="ibox-content" style="height: 350px;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="7" style="background-color:#0ac2ab; color:white; font-weight:800; font-size:14px;" class="text-center">NON-COMMUNICABLE SUMMARY</th>
+                                </tr>
+                                <tr>
+                                    <th>Morbidity</th>
+                                    <th class="text-center">Male</th>
+                                    <th class="text-center">Female</th>
+                                    <th class="text-center">Total Patient</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hypertension</td>
+                                    <td class="text-center">82</td>
+                                    <td class="text-center">75</td>
+                                    <td class="text-center">157</td>
+                                </tr>
+                                <tr>
+                                    <td>Diabetes</td>
+                                    <td class="text-center">79</td>
+                                    <td class="text-center">56</td>
+                                    <td class="text-center">135</td>
+                                </tr>
+                                <tr>
+                                    <td>Arthritis</td>
+                                    <td class="text-center">42</td>
+                                    <td class="text-center">28</td>
+                                    <td class="text-center">70</td>
+                                </tr>
+                                <tr>
+                                    <td>Urinary Tract Infection</td>
+                                    <td class="text-center">18</td>
+                                    <td class="text-center">25</td>
+                                    <td class="text-center">43</td>
+                                </tr>
+                                <tr>
+                                    <td>Gastritis</td>
+                                    <td class="text-center">27</td>
+                                    <td class="text-center">12</td>
+                                    <td class="text-center">39</td>
+                                </tr>
+                                <tr>
+                                    <td>Bronchial Asthma</td>
+                                    <td class="text-center">13</td>
+                                    <td class="text-center">16</td>
+                                    <td class="text-center">29</td>
+                                </tr>
+                                <tr>
+                                    <th colspan="3">TOTAL</th>
+                                    <th class="text-center">473</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="col-lg-4">
+                <div class="ibox" style="overflow:auto;width:100%;">
+                    <div class="ibox-content" style="height: 350px;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="7" style="background-color:#0ac2ab; color:white; font-weight:800; font-size:14px;" class="text-center">OTHER MEDICAL SERVICES</th>
+                                </tr>
+                                <tr>
+                                    <th>Service</th>
+                                    <th class="text-center">Male</th>
+                                    <th class="text-center">Female</th>
+                                    <th class="text-center">Total Patient</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Diet Counseling</td>
+                                    <td class="text-center">52</td>
+                                    <td class="text-center">71</td>
+                                    <td class="text-center">123</td>
+                                </tr>
+                                <tr>
+                                    <td>Male Reproductive Health</td>
+                                    <td class="text-center">25</td>
+                                    <td class="text-center">0</td>
+                                    <td class="text-center">25</td>
+                                </tr>
+                                <tr>
+                                    <td>Papsmear & Breast Examination</td>
+                                    <td class="text-center">0</td>
+                                    <td class="text-center">47</td>
+                                    <td class="text-center">47</td>
+                                </tr>
+                                <tr>
+                                    <td>Dental</td>
+                                    <td class="text-center">31</td>
+                                    <td class="text-center">56</td>
+                                    <td class="text-center">87</td>
+                                </tr>
+                                <tr>
+                                    <th>TOTAL</th>
+                                    <th class="text-center">108</th>
+                                    <th class="text-center">174</th>
+                                    <th class="text-center">282</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
+            @*LABORATORY CHART*@
+            <div class="col-lg-6">
+                <div class="ibox" style="overflow:auto;width:100%">
+                    <div class="ibox-content">
+                        <h1 style="text-align:center">Male</h1>
+                        <div id="chartDivMale" class="chartdivLabPrice"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h1 style="text-align:center">Female</h1>
+                        <div id="chartDivFemale" class="chartdivLabPrice"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th colspan="7" style="background-color:#0ac2ab; color:white; font-weight:800; font-size:14px;" class="text-center">LABORATORY</th>
+                                </tr>
+                                <tr>
+                                    <th>Laboratory</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Male</th>
+                                    <th class="text-center">Female</th>
+                                    <th class="text-center">Total Patient</th>
+                                    <th class="text-center">Total Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="t in tempLabPricesData">
+                                    <td>{{t.labTestName}}</td>
+                                    <td class="text-center">{{t.price}}</td>
+                                    <td class="text-center">{{t.male}}</td>
+                                    <td class="text-center">{{t.female}}</td>
+                                    <td class="text-center">{{t.male+t.female}}</td>
+                                    <td class="text-center">{{t.price * (t.male+t.female)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+
+            @*MEDICINE CHART*@
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+                        <table class="table table-responsive table-hover table-bordered">
+                            <tr>
+                                <th colspan="7" style="background-color:#0ac2ab; color:white; font-weight:800; font-size:14px;" class="text-center">MEDICINE</th>
+                            </tr>
+                            <tr>
+                                <th>Diseases</th>
+                                <th>Medicine</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-center">Total</th>
+                                <th class="text-center">Total Client</th>
+                                <th class="text-center">Total Cost</th>
+                            </tr>
+                            <tr>
+                                <td colspan="7"><b>COMMUNICABLE</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Upper Respiratory Tract Infection</td>
+
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Ambroxol Tab</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">6.5</td>
+                                <td class="text-center">136.5</td>
+                                <td class="text-center">61</td>
+                                <td class="text-center">8,326.50</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Salbutamol</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">0.8</td>
+                                <td class="text-center">16.8</td>
+                                <td class="text-center">61</td>
+                                <td class="text-center">1,024.80</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Lower Respiratory Tract Infection</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>co-Amoxiclav 625mg</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">24.5</td>
+                                <td class="text-center">514.5</td>
+                                <td class="text-center">9</td>
+                                <td class="text-center">4,630.50</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Ambroxol tab</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">6.5</td>
+                                <td class="text-center">136.5</td>
+                                <td class="text-center">9</td>
+                                <td class="text-center">1,228.50</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Systemic Viral Illness</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Paracetamol</td>
+                                <td class="text-center">10</td>
+                                <td class="text-center">2</td>
+                                <td class="text-center">20</td>
+                                <td class="text-center">83</td>
+                                <td class="text-center">1,660.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Tuberculosis</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Anti TB meds(6-months)</td>
+                                <td></td>
+                                <td class="text-center">6,500</td>
+                                <td></td>
+                                <td class="text-center">3</td>
+                                <td class="text-center">19,500.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7"><b>NON-COMMUNICABLE</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Hypertension</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Amlodipine 5mg</td>
+                                <td class="text-center">30</td>
+                                <td class="text-center">0.25</td>
+                                <td class="text-center">7.5</td>
+                                <td class="text-center">157</td>
+                                <td class="text-center">1,177.50</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Losartan 100mg</td>
+                                <td class="text-center">30</td>
+                                <td class="text-center">3.5</td>
+                                <td class="text-center">105</td>
+                                <td class="text-center">157</td>
+                                <td class="text-center">16,485.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Diabetes</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Metformin 500mg</td>
+                                <td class="text-center">90</td>
+                                <td class="text-center">2.5</td>
+                                <td class="text-center">225</td>
+                                <td class="text-center">135</td>
+                                <td class="text-center">30,375.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Arthritis</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Allopurinol 100mg</td>
+                                <td class="text-center">90</td>
+                                <td class="text-center">1.1</td>
+                                <td class="text-center">9.9</td>
+                                <td class="text-center">70</td>
+                                <td class="text-center">6,930.00</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Celecoxib 200mg</td>
+                                <td class="text-center">10</td>
+                                <td class="text-center">2</td>
+                                <td class="text-center">20</td>
+                                <td class="text-center">70</td>
+                                <td class="text-center">1,400.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">UTI</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Cefuroxime</td>
+                                <td class="text-center">14</td>
+                                <td class="text-center">15</td>
+                                <td class="text-center">210</td>
+                                <td class="text-center">43</td>
+                                <td class="text-center">9,030.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Gastritis</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Omeprazole</td>
+                                <td class="text-center">14</td>
+                                <td class="text-center">8</td>
+                                <td class="text-center">112</td>
+                                <td class="text-center">39</td>
+                                <td class="text-center">4,368.00</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Aluminum Magnesium</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">0.5</td>
+                                <td class="text-center">10.5</td>
+                                <td class="text-center">39</td>
+                                <td class="text-center">409.50</td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" style="color:teal; font-weight:700;">Bronchial Asthma</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Salbutamol</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">0.8</td>
+                                <td class="text-center">16.8</td>
+                                <td class="text-center">29</td>
+                                <td class="text-center">487.20</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>Cetirizine</td>
+                                <td class="text-center">7</td>
+                                <td class="text-center">3</td>
+                                <td class="text-center">21</td>
+                                <td class="text-center">29</td>
+                                <td class="text-center">609</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td style="font-size:16px" class="text-right"><b> TOTAL AMOUNT: </b></td>
+                                <td style="font-size:18px;" class="text-center"><b>107,641.50</b></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
     </div>
+
+
 </div>
+
 @section scripts
-{
-    <script src="~/Scripts/AngularJS/Analytics/AnalyticsCtrl.js"></script>
+{ 
+    <!-- AMCHARTS Resources -->
+   <script src="~/Scripts/AngularJS/Analytics/AnalyticsCtrl.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+   
+
     <script src="~/Scripts/js/Moment/moment.js"></script>
     <script src="~/Scripts/js/Moment/moment-timezone-with-data.min.js"></script>
-  
+
 }
 
 
 
-
+  
+}

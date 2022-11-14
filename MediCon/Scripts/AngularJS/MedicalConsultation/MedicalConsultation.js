@@ -18,6 +18,7 @@
     s.isEditDiagnosis = true;
     s.medicalRecord_loader = false;
     s.showMedicalRecord = false;
+    s.isEditting = false;
 
     s.scanner = new Instascan.Scanner(
             {
@@ -82,14 +83,15 @@
                     s.qrData = d.data[0];
                     s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].fullAddress;
 
-                    s.diagnose = {};
-                    s.diagnoseInfo = {}
-                    s.diagnoseRemarks = '';
+                    //s.diagnose = {};
+                    //s.diagnoseInfo = {}
+                    //s.diagnoseRemarks = '';
 
-                    getBPhistory(info);
+                    //getBPhistory(info);
+                    s.showMLR(info);
                     getLabHistory(info);
-                    s.newlyAddedConsultID = '';
-                    s.showMedicalRecord = false;
+                    //s.newlyAddedConsultID = '';
+                    //s.showMedicalRecord = false;
                 }
 
                 else {
@@ -105,22 +107,30 @@
         })
     }
 
-    function getBPhistory(qrCode) {
-        s.bpLoader = true;
-        s.bpHistoryList = {};
-        s.vitalSigns = {};
-        s.BMI = {};
+    s.getBPhistory = function () {
 
-        h.post('../VitalSigns/getBPhistory?qrCode=' + qrCode).then(function (d) {
-            if (d.data.status == 'error') {
-                swal({
-                    title: "ERROR",
-                    text: d.data.msg,
-                    type: "error"
-                });
-            }
+        if (!s.showMedicalRecord)
+        {
+            s.diagnose = {};
+            s.diagnoseInfo = {}
+            s.diagnoseRemarks = '';
+            s.newlyAddedConsultID = '';
+            s.bpLoader = true;
+            s.bpHistoryList = {};
+            s.vitalSigns = {};
+            s.BMI = {};
 
-            else {
+            h.post('../VitalSigns/getBPhistory?qrCode=' + s.qrData.qrCode).then(function (d) {
+                if (d.data.status == 'error') {
+                    swal({
+                        title: "ERROR",
+                        text: d.data.msg,
+                        type: "error"
+                    });
+                }
+
+                else {
+                    s.showMedicalRecord = !s.showMedicalRecord;
                     s.bpHistoryList = d.data.bp;
 
                     angular.forEach(s.bpHistoryList, function (value) {
@@ -131,15 +141,21 @@
                     s.BMI.value = Math.round((s.vitalSigns.weight / (s.vitalSigns.height * s.vitalSigns.height)) * 100) / 100;
                     s.BMI.desc = s.BMI.value < 18.5 ? 'UNDERWEIGHT' : (s.BMI.value >= 18.5 && s.BMI.value <= 22.9) ? 'NORMAL' : (s.BMI.value >= 23 && s.BMI.value <= 24.9) ? 'OVERWEIGHT' : (s.BMI.value >= 25 && s.BMI.value <= 29.9) ? 'PRE-OBESE' : (s.BMI.value >= 30 && s.BMI.value <= 40) ? 'OBESE TYPE 1' : (s.BMI.value >= 40.1 && s.BMI.value <= 50) ? 'OBESE TYPE 2' : 'OBESE TYPE 3'
                     s.BMI.data = s.BMI.value + ' - ' + s.BMI.desc;
-            }
+                }
 
-            s.bpLoader = false;
-        });
+                s.bpLoader = false;
+            });
+        }
+
+        else
+        {
+            s.showMedicalRecord = !s.showMedicalRecord;
+        }
     }
 
     function getLabHistory(qrCode) {
         s.bpLoader = true;
-        s.labHistoryList = {};
+        s.labHistoryList = [];
 
         h.post('../MedicalConsultation/getLabHistory?qrCode=' + qrCode).then(function (d) {
             if (d.data.status == 'error') {
@@ -161,15 +177,15 @@
         });
     }
 
-    s.showMLR = function () {
-        s.showMedicalRecord = !s.showMedicalRecord;
+    s.showMLR = function (qrCode) {
+        //s.showMedicalRecord = !s.showMedicalRecord;
 
-        if (s.showMedicalRecord) {
+        //if (s.showMedicalRecord) {
             s.medicalRecord_loader = true;
             s.diagnoseHistoryList = [];
-            s.rxHistoryList = {};
+            s.rxHistoryList = [];
 
-            h.post('../MedicalConsultation/getDiagnosisHistory?qrCode=' + s.qrData.qrCode).then(function (d) {
+            h.post('../MedicalConsultation/getDiagnosisHistory?qrCode=' + qrCode).then(function (d) {
                 if (d.data.status == 'error') {
                     swal({
                         title: "ERROR",
@@ -193,28 +209,29 @@
 
                     s.diagnoseHistoryList = d.data.diagnosis;
                     s.rxHistoryList = d.data.rxHist;
+                    s.rxHistoryList.concat(d.data.referralRx);
                 }
 
                 s.medicalRecord_loader = false;
             });
 
-            s.scanner.stop();
-        }
+            //s.scanner.stop();
+        //}
 
-        else {
-            Instascan.Camera.getCameras().then(function (cameras) {
-                if (cameras.length > 0) {
-                    s.scanner.start(cameras[0]);
-                }
-                else {
-                    swal({
-                        title: "CAMERA ERROR",
-                        text: "Camera is not found, please refresh",
-                        type: "error"
-                    });
-                }
-            });
-        }
+        //else {
+        //    Instascan.Camera.getCameras().then(function (cameras) {
+        //        if (cameras.length > 0) {
+        //            s.scanner.start(cameras[0]);
+        //        }
+        //        else {
+        //            swal({
+        //                title: "CAMERA ERROR",
+        //                text: "Camera is not found, please refresh",
+        //                type: "error"
+        //            });
+        //        }
+        //    });
+        //}
 
         
     }
@@ -255,25 +272,26 @@
 
         s.cbc = {
             wbc: 7.77,
-            rbc: 2.67,
-            neu: 68.4,
-            hgb: 76,
+            rbc: 4.1,
+            neu: 60,
+            hgb: 123,
             lym: 25.0,
-            hct: 23.9,
+            hct: 42.2,
             mon: 4.8,
             mcv: 89.6,
-            eos: 1.5,
-            mch: 28.6,
+            eos: 2.5,
+            mch: 87,
             bas: 0.3,
-            mchc: 320,
-            plt: 229
+            mchc: 334,
+            plt: 163
         };
 
         s.blood = data;
         $('#modalBLoodChem').modal('show');
     }
 
-    s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest) {
+    s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, otherLabDesc) {
+        
         if (s.qrData.qrCode == '' || s.qrData.qrCode == null) {
             swal({
                 title: "ERROR",
@@ -309,8 +327,26 @@
             // Push all checked laboratory to labtestList
             var labtestList = [];
             angular.forEach(labtest, function (key, value) {
-                if (key)
-                    labtestList.push(value);
+                if(value == 'LTG002') {
+                    labtestList.push('L0007');
+                    labtestList.push('L0008');
+                    labtestList.push('L0013');
+                    labtestList.push('L0014');
+                    labtestList.push('L0015');
+                }
+
+                else if (value == 'LTG003') {
+                    labtestList.push('L0016');
+                    labtestList.push('L0017');
+                    labtestList.push('L0018');
+                    labtestList.push('L0019');
+                }
+                
+                else {
+                    if (key) {
+                        labtestList.push(value);
+                    }
+                }
             });
 
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
@@ -323,7 +359,7 @@
                 remarks: remarks
             };
            
-            h.post('../MedicalConsultation/saveDiagnosis', { qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList }).then(function (d) {
+            h.post('../MedicalConsultation/saveDiagnosis', { qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList, otherLab: otherLabDesc }).then(function (d) {
                     if (d.data.status == "error") {
                         swal({
                             title: "ERROR",
@@ -443,6 +479,7 @@
             s.showRxQty = false;
             selectProduct.val('').trigger('change');
             selectnoDay.val(null).trigger('change');
+
         }
     }
 
@@ -465,6 +502,12 @@
         s.referral = {};
         s.labtest = {};
         s.showClientListBTN = true;
+
+        // MEDICAL RECORDS
+        s.showMedicalRecord = false;
+        s.diagnoseHistoryList = [];
+        s.rxHistoryList = [];
+        s.labHistoryList = [];
     }
 
     s.savePrescription = function () {
@@ -589,13 +632,13 @@
                 var data = tableVSlist.row($(this).parents('tr')).data();
                 data.birthdate = moment(data.birthdate).format('ll');
                 data.sex = data.sex ? 'Male' : 'Female';
-
+               
                 $('#personDiagnosis_modal').modal('show');
-                s.consultationTbl = {};
                 s.resultDiag = {};
                 s.resultDiag.info = data;
-
-                h.post('../MedicalConsultation/getPersonDiagnoseResult?consultID=' + data.consultID).then(function (d) {
+                s.isEditting = false;
+                
+                h.post('../MedicalConsultation/getPersonVSignDiagnoseResult', { consultID: data.consultID, vSignID: data.vSignID }).then(function (d) {
                     if (d.data.status == 'error') {
                         swal({
                             title: "ERROR",
@@ -605,35 +648,302 @@
                     }
 
                     else {
-                        detail = [];
-                        detail2 = [];
+                        var diag = {};
                         
                         // Push all checked diagnosis to diagnosisList
-                        angular.forEach(d.data, function (item) {
-                            detail.push(item.diagnoseID);
+                        angular.forEach(d.data.resultDiag, function (item) {
 
-                            if (item.diagnoseID == 'DIAG023') { s.resultDiag.detail.otherDiagnosis = item.otherDiagnosis }
+                            if (item.diagnoseID == 'DIAG023') { s.resultDiag.otherDiagnosis = item.otherDiagnosis }
+
+                            switch(item.diagnoseID)
+                            {
+                                case 'DIAG005':
+                                    diag.DIAG005 = true;
+                                    break;
+                                case 'DIAG006':
+                                    diag.DIAG006 = true;
+                                    break;
+                                case 'DIAG018':
+                                    diag.DIAG018 = true;
+                                    break;
+                                case 'DIAG003':
+                                    diag.DIAG003 = true;
+                                    break;
+                                case 'DIAG008':
+                                    diag.DIAG008 = true;
+                                    break;
+                                case 'DIAG021':
+                                    diag.DIAG021 = true;
+                                    break;
+                                case 'DIAG010':
+                                    diag.DIAG010 = true;
+                                    break;
+                                case 'DIAG004':
+                                    diag.DIAG004 = true;
+                                    break;
+                                case 'DIAG011':
+                                    diag.DIAG011 = true;
+                                    break;
+                                case 'DIAG014':
+                                    diag.DIAG014 = true;
+                                    break;
+                                case 'DIAG012':
+                                    diag.DIAG012 = true;
+                                    break;
+                                case 'DIAG020':
+                                    diag.DIAG020 = true;
+                                    break;
+                                case 'DIAG007':
+                                    diag.DIAG007 = true;
+                                    break;
+                                case 'DIAG015':
+                                    diag.DIAG015 = true;
+                                    break;
+                                case 'DIAG013':
+                                    diag.DIAG013 = true;
+                                    break;
+                                case 'DIAG016':
+                                    diag.DIAG016 = true;
+                                    break;
+                                case 'DIAG019':
+                                    diag.DIAG019 = true;
+                                    break;
+                                case 'DIAG022':
+                                    diag.DIAG022 = true;
+                                    break;
+                                case 'DIAG002':
+                                    diag.DIAG002 = true;
+                                    break;
+                                case 'DIAG017':
+                                    diag.DIAG017 = true;
+                                    break;
+                                case 'DIAG001':
+                                    diag.DIAG001 = true;
+                                    break;
+                                case 'DIAG009':
+                                    diag.DIAG009 = true;
+                                    break;
+                                case 'DIAG023':
+                                    diag.DIAG023 = true;
+                                    break;
+                                case 'DIAG024':
+                                    diag.DIAG024 = true;
+                                    break;
+                            }
                         });
+                        s.resultDiag.diag = diag;
+                        s.resultDiag.vitalSign = d.data.vitalSign;
                         
-                        s.resultDiag.detail = detail;
-                        s.consultationTbl = d.data;
+                        angular.forEach(d.data.bp, function (value) {
+                            value.dateTimeLog = moment(value.dateTimeLog).format('lll');
+                        });
+                        s.resultDiag.bp = d.data.bp;
                     }
                 });
+
+                h.get('../MedicalConsultation/getPersonReferralLaboratory?consultID=' + data.consultID).then(function (d) {
+                    if (d.data.status == 'error') {
+                        swal({
+                            title: "ERROR",
+                            text: d.data.msg,
+                            type: "error"
+                        });
+                    }
+
+                    else {
+                        var ref = {};
+                        var laboratory = {};
+
+                        // Push all checked referral to referral
+                        angular.forEach(d.data.referral, function (item) {
+
+                            switch (item) {
+                                case 'SERVICE003':
+                                    ref.SERVICE003 = true;
+                                    break;
+                                case 'SERVICE004':
+                                    ref.SERVICE004 = true;
+                                    break;
+                                case 'SERVICE005':
+                                    ref.SERVICE005 = true;
+                                    break;
+                                case 'SERVICE006':
+                                    ref.SERVICE006 = true;
+                                    break;
+                            }
+                        });
+
+                        s.resultDiag.ref = ref;
+
+                        // Push all checked laboratory to laboratory
+                        angular.forEach(d.data.laboratory, function (item) {
+
+                            if (item.labTestID == 'L0022') {  s.resultDiag.otherLabDesc = item.otherLabDesc }
+
+                            switch (item.labTestID) {
+                                case 'L0001':
+                                    laboratory.L0001 = true;
+                                    break;
+                                case 'L0002':
+                                    laboratory.L0002 = true;
+                                    break;
+                                case 'L0003':
+                                    laboratory.L0003 = true;
+                                    break;
+                                case 'L0004':
+                                    laboratory.L0004 = true;
+                                    break;
+                                case 'L0005':
+                                    laboratory.L0005 = true;
+                                    break;
+                                case 'L0006':
+                                    laboratory.L0006 = true;
+                                    break;
+                                case 'L0007' || 'L0008' || 'L0013' || 'L0014' || 'L0015':
+                                    laboratory.LTG002 = true;
+                                    break;
+                                case 'L0009':
+                                    laboratory.L0009 = true;
+                                    break;
+                                case 'L0010':
+                                    laboratory.L0010 = true;
+                                    break;
+                                case 'L0011':
+                                    laboratory.L0011 = true;
+                                    break;
+                                case 'L0012':
+                                    laboratory.L0012 = true;
+                                    break;
+                                case 'L0016' || 'L0017' || 'L0018' || 'L0019':
+                                    laboratory.LTG003 = true;
+                                    break;
+                                case 'L0022':
+                                    laboratory.L0022 = true;
+                                    break;
+                            }
+                        });
+
+                        s.resultDiag.laboratory = laboratory;
+                    }
+                });
+
+                
             });
         }
 
     }
 
-    s.showDiagnoseList = function() {
+    s.showDiagnoseList = function () {
+       
         s.showClientList = !s.showClientList;
-
+        
         if (s.showClientList) {
             getDiagnoseClients();
         }
     }
 
-    s.customDisabling = { "pointer-events": "none",
-                          "cursor": "default" }
+    s.returnToHome = function () {
+        if (s.showClientList == false && s.showRx == false)
+        {
+            //s.showClientList = true;
+            s.showMedicalRecord = true;
+            s.showRx = true;
+        }
+
+        else
+        {
+            s.showRxQty = false;
+            s.showRx = false;
+            s.showClientListBTN = true;
+            s.showMedicalRecord = false;
+        }
+    }
+
+    s.saveUpdate = function (result) {
+        if (s.isEditting == false) {
+            s.isEditting = true;
+        }
+
+        else {
+            swal({
+                title: "SAVING",
+                text: "Please wait while we are saving your data.",
+                type: "info",
+                showConfirmButton: false
+            });
+
+            // Push all checked diagnosis to diagnosisList
+            var diagnosisList = [];
+            angular.forEach(result.diag, function (key, value) {
+                if (key)
+                   diagnosisList.push(value);
+            });
+
+            // Push all checked referral to referralList
+            var referralList = [];
+            angular.forEach(result.ref, function (key, value) {
+                if (key && value != 'SERVICE006')
+                    referralList.push(value);
+            });
+            
+            // Push all checked laboratory to labList
+            var labList = [];
+            angular.forEach(result.laboratory, function (key, value) {
+                if (value == 'LTG002') {
+                    labList.push('L0007');
+                    labList.push('L0008');
+                    labList.push('L0013');
+                    labList.push('L0014');
+                    labList.push('L0015');
+                }
+
+                else if (value == 'LTG003') {
+                    labList.push('L0016');
+                    labList.push('L0017');
+                    labList.push('L0018');
+                    labList.push('L0019');
+                }
+
+                else {
+                    if (key) {
+                        labList.push(value);
+                    }
+                }
+            });
+
+            // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
+            if (labList.length > 0) referralList.push('SERVICE006');
+
+            h.post('../MedicalConsultation/updateDiagnosis', {
+                qrCode: result.qrCode, consult: result.info, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
+                referral: referralList, otherReferral: result.info.outsideReferral, labReq: labList, otherLab: result.otherLabDesc
+            }).then(function (d) {
+                if (d.data.status == "error") {
+                    swal({
+                        title: "ERROR",
+                        text: "<labal>" + d.data.msg + "</label>",
+                        type: "error",
+                        html: true
+                    });
+                }
+
+                else {
+                    swal({
+                        title: "SUCCESSFUL",
+                        text: d.data.msg,
+                        type: "success",
+                    });
+
+                    $('#personDiagnosis_modal').modal('hide');
+                    getDiagnoseClients();
+                    s.$apply();
+                }
+            });
+
+            console.log(result);
+        }
+    }
+
       
 
 }]);

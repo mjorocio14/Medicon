@@ -12,13 +12,13 @@ namespace MediCon.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class LaboratoryTest
+    public partial class Temp_LabPrices
     {
-        public short recNo { get; set; }
+        public int recNo { get; set; }
+        public string labPriceID { get; set; }
         public string labTestID { get; set; }
-        public string labTestName { get; set; }
-        public string LabTestGroupID { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public Nullable<decimal> price { get; set; }
+        public Nullable<int> male { get; set; }
+        public Nullable<int> female { get; set; }
     }
 }

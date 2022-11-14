@@ -46,17 +46,10 @@
                     <li class="active">
                         <a href="~/Home/Index"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span></a>
                     </li>
-                    @*<li id="QR">
-                        <a><i class="fa fa-qrcode"></i> <span class="nav-label">QR Code</span><span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level collapse">
-                            <li id="EntranceScan">
-                                <a href="~/QPass/EntranceScanning">Entrance Scanning</a>
-                            </li>
-                            <li id="socialOthers">
-                                <a href="~/QPass/QRRegistration">QR Code Registrations</a>
-                            </li>
-                        </ul>
-                    </li>*@
+                    <li id="ANALYTICS">
+                        <a><i class="fa fa fa-bar-chart-o"></i> <span class="nav-label">Analytics</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse" id="ANALYTICSsub"></ul>
+                    </li>
                     <li id="VITALSIGNS">
                         <a href="../VitalSigns/VSview"><i class="fa fa-stethoscope"></i> <span class="nav-label">Vital Signs</span></a>
                     </li>
@@ -66,26 +59,19 @@
                     <li id="LAB">
                         <a><i class="fa fa-eyedropper"></i> <span class="nav-label">Laboratory</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="LABsub">
-                            @*<li><a href="../MaleRepro/Index"><i class="fa fa-male"></i> <span class="nav-label">Initial Interview</span></a></li>*@
                         </ul>
-                        @*<a href="../Labtest/Index"><i class="fa fa-eyedropper"></i> <span class="nav-label">Laboratory</span></a>*@
                     </li>
-                    @*<li id="LAB">
-                        <a href="../LaboratoryResult/Encoding"><i class="fa fa-eyedropper"></i> <span class="nav-label">Laboratory Result</span></a>
-                    </li>*@
                     <li id="PBE">
                         <a href="../PapsmearBreastExam/Index"><i class="fa fa-female"></i> <span class="nav-label">Papsmear & Breast</span></a>
                     </li>
                     <li id="MRH">
                         <a><i class="fa fa-male"></i> <span class="nav-label">Male Reproductive</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="MRHsub">
-                            @*<li><a href="../MaleRepro/Index"><i class="fa fa-male"></i> <span class="nav-label">Initial Interview</span></a></li>*@
                         </ul>
                     </li>
                     <li id="HEALTH">
                         <a href="widgets.html"><i class="fa fa-stethoscope"></i> <span class="nav-label">Dental</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="HEALTHsub">
-                            @*<li><a href="~/SystemUser/Index">Accounts</a></li>*@
                         </ul>
                     </li>
                     <li id="PHARM">
@@ -94,7 +80,6 @@
                     <li id="UTILITY">
                         <a href="widgets.html"><i class="fa fa-gear"></i> <span class="nav-label">Utility</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="UTILITYsub">
-                            @*<li><a href="~/SystemUser/Index">Accounts</a></li>*@
                         </ul>
                     </li>
                 </ul>
@@ -147,6 +132,7 @@
     <script src="~/Scripts/js/dataTables/datatables.min.js"></script>
     <script src="~/Scripts/js/select2/select2.full.min.js"></script>
     <script src="~/Content/ISPINIA/sweetalert/sweetalert.min.js"></script>
+    <script src="~/Scripts/js/Moment/moment.min.js"></script>
  
 
     <script>
@@ -160,6 +146,7 @@
             var pbe = $('#PBE');
             var mrh = $('#MRH');
             var pharm = $('#PHARM');
+            var analytics = $('#ANALYTICS');
 
             health.hide();
             utility.hide();
@@ -169,6 +156,7 @@
             pbe.hide();
             mrh.hide();
             pharm.hide();
+            analytics.hide();
 
             $.post('../Home/gMenuAccess').then(function (d) {
                 for(var x =0;x<d.length;x++){
@@ -192,7 +180,7 @@
 
                     else if (d[x].mainMenu == 'LAB') {
                         lab.show();
-                        $('#LABsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-angle-double-right"></i> ' + d[x].menuDesc + '</a></li>');
+                        $('#LABsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
                     }
 
                     else if (d[x].mainMenu == 'PBE') {
@@ -201,12 +189,16 @@
 
                     else if(d[x].mainMenu =='MRH'){
                         mrh.show();
-                        $('#MRHsub').append('<li class="nav-item"><a href="../'+d[x].controller+'/'+d[x].action+'" class="nav-link"><i class="fa fa-angle-double-right"></i> '+d[x].menuDesc+'</a></li>');
+                        $('#MRHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
                     }
 
                     else if (d[x].mainMenu == 'PHARM') {
                         pharm.show();
-                        $('#MRHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-angle-double-right"></i> ' + d[x].menuDesc + '</a></li>');
+                    }
+
+                    else if (d[x].mainMenu == 'ANALYTICS') {
+                        analytics.show();
+                        $('#ANALYTICSsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
                     }
                 }
             })

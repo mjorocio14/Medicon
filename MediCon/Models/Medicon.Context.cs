@@ -30,10 +30,12 @@ namespace MediCon.Models
         public virtual DbSet<BloodChem> BloodChems { get; set; }
         public virtual DbSet<BloodPressure> BloodPressures { get; set; }
         public virtual DbSet<BrandList> BrandLists { get; set; }
+        public virtual DbSet<CBC> CBCs { get; set; }
         public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
         public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
+        public virtual DbSet<LaboratoryGroupTest> LaboratoryGroupTests { get; set; }
         public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
         public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
@@ -50,8 +52,12 @@ namespace MediCon.Models
         public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
+        public virtual DbSet<Temp_LabPrices> Temp_LabPrices { get; set; }
+        public virtual DbSet<Temp_Morbidity> Temp_Morbidity { get; set; }
+        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
+        public virtual DbSet<EditRemark> EditRemarks { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)
@@ -67,6 +73,12 @@ namespace MediCon.Models
         public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getLabResult")]
+        public virtual IQueryable<fn_getLabResult_Result> fn_getLabResult()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabResult_Result>("[MediconEntities].[fn_getLabResult]()");
         }
     
         [DbFunction("MediconEntities", "fn_getMRHclients")]

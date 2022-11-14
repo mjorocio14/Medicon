@@ -79,11 +79,52 @@ namespace MediCon.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult saveChanges(MaleRepro_Interview mrh)
+        {
+            try
+            {
+                var findRec = dbMed.MaleRepro_Interview.SingleOrDefault(a => a.MRID == mrh.MRID);
+
+                findRec.besesGumising = mrh.besesGumising;
+                findRec.cancerName = mrh.cancerName;
+                findRec.dateTimeLog = DateTime.Now;
+                findRec.diNauubos = mrh.diNauubos;
+                findRec.DREfrequency = mrh.DREfrequency;
+                findRec.is1stDRE = mrh.is1stDRE;
+                findRec.isAnyCancer = mrh.isAnyCancer;
+                findRec.isMedication = mrh.isMedication;
+                findRec.isProstateCancer = mrh.isProstateCancer;
+                findRec.kadalasUmihi = mrh.kadalasUmihi;
+                findRec.magpwersaNgIhi = mrh.magpwersaNgIhi;
+                findRec.mahinangDaloy = mrh.mahinangDaloy;
+                findRec.medicineName = mrh.medicineName;
+                findRec.nadarama = mrh.nadarama;
+                findRec.pagpigilNgIhi = mrh.pagpigilNgIhi;
+                findRec.patigiltiglNaIhi = mrh.patigiltiglNaIhi;
+                findRec.personnelID = Session["personnelID"].ToString();
+                findRec.sintomasNgIhi = mrh.sintomasNgIhi;
+                dbMed.Entry(findRec).State = EntityState.Modified;
+
+                var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Rectal examination failed in updating!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Rectal examination is successfully updated!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
         public ActionResult getMRHclients()
         {
             try
             {
-                var lab = dbMed.fn_getMRHclients().OrderBy(x => x.lastName).ThenBy(y => y.firstName).ToList();
+                var lab = dbMed.fn_getMRHclients().OrderByDescending(x => x.interviewDT).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }

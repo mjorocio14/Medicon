@@ -18,8 +18,10 @@ namespace MediCon.Models
         public string labID { get; set; }
         public string referralID { get; set; }
         public string labTestID { get; set; }
+        public string otherLabDesc { get; set; }
         public Nullable<bool> isTested { get; set; }
         public Nullable<bool> isEncoded { get; set; }
+        public Nullable<System.DateTime> dateEncoded { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
