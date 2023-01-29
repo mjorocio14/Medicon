@@ -76,6 +76,7 @@ namespace MediCon.Controllers
                 Session["middleName"] = granted.personnel_midInit;
                 Session["lastName"] = granted.personnel_lastName;
                 Session["extName"] = granted.personnel_extName;
+                Session["position"] = granted.position;
                 Session["userTypeID"] = granted.userTypeID;
                 var accessmenu = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).OrderBy(e => e.orderNo).ToList();
                 Session["MenuAccess"] = accessmenu;

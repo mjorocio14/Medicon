@@ -88,6 +88,19 @@ namespace MediCon.Controllers
             db.SaveChanges();
             return Content("Okay");
         }
+        
+        public ActionResult getUserTypes()
+        {
+            var userTypes = db.UserTypes.ToList();
 
+            return Json(userTypes, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult getServices()
+        {
+            var userTypes = db.Services.ToList();
+
+            return Json(userTypes, JsonRequestBehavior.AllowGet);
+        }
     }
 }

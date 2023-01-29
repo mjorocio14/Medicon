@@ -1,0 +1,258 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        /*height: 250px !important;*/
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+
+    th {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0px;
+        z-index: 2;
+    }
+</style>
+
+<div ng-controller="XrayResultCtrl" ng-init="">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-6">
+            <h2>X-ray Result</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li>
+                    <a href="">X-ray</a>
+                </li>
+                <li class="active">
+                    <strong>X-ray Result</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+            @*<button class="btn" ng-show="!isViewingRecord" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>*@
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+        <div class="row">
+
+            <!-- PATIENT LIST -->
+            <div class="animated fadeInRight ecommerce">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                    <h4 style="margin-top: 9px !important;"><label> LIST OF X-RAY CLIENTS </label></h4>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <form name="searchForm">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control border-aero" ng-model="searchVaccInfo" placeholder="Search by Last name" style="width:100%;" required>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-primary" ng-disabled="searchForm.$invalid" ng-click="searchPerson(searchVaccInfo,'Name')"><i class="fa fa-search"></i> Find </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 0px !important; margin-bottom: 0px !important;"/>
+                        <div class="panel-body">
+                            <div class="row form-group form-horizontal form-label-left">
+                                <text class="control-label col-lg-8 col-md-8 col-sm-8 col-xs-12">Filter:</text>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <input type="text" class="form-control" ng-model="filterResult" placeholder="Filter result">
+                                </div>
+                            </div>
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="xray_table" class="table table-stripped table-hover" style="width: 100%; height: 100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>#</th>
+                                            <th>QR Code</th>
+                                            <th>Last name</th>
+                                            <th>First name</th>
+                                            <th>M.I.</th>
+                                            <th>Suffix</th>
+                                            <th class="text-center">Sex</th>
+                                            <th class="text-center">Birthday</th>
+                                            <th class="text-center">Contact no.</th>
+                                            <th class="text-center" data-sort-ignore="true">Action</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-show="tableLoader">
+                                            <td colspan="12" class="text-center">
+                                                <span class="fa fa-spinner fa-spin fa-4x"></span><br /><br />
+                                            </td>
+                                        </tr>
+                                        <tr role="row" ng-show="!tableLoader" ng-repeat="item in personList | filter: filterResult">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{item[0].qrCode}}</td>
+                                            <td>{{item[0].lastName}}</td>
+                                            <td>{{item[0].firstName}}</td>
+                                            <td>{{item[0].middleName}}</td>
+                                            <td>{{item[0].extName}}</td>
+                                            <td class="text-center">{{item[0].sex ? 'Male' : 'Female'}}</td>
+                                            <td class="text-center">{{item[0].birthdate}}</td>
+                                            <td class="text-center">{{item[0].contactNo}}</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-primary btn-sm" ng-click="showResults(item)" data-toggle="tooltip" data-placement="top" title="Result"><i class="fa fa-list-ol"></i> </button>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="personList.length == 0 && tableLoader == false">
+                                            <td class="text-center text-semibold" colspan="12"> No Record Found! </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /PATIENT LIST -->
+
+        </div>
+    </div>
+
+
+    <!-- MODAL PATIENT XRAY RESULT -->
+    <div id="resultHistory" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="resetForm()">×</button>
+                    <h4 class="modal-title text-semibold text-center"> X-RAY RESULT HISTORY </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <text>QR code:</text>
+                            <h3 ><strong>{{resultList[0].qrCode}}</strong></h3>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                            <text>Name:</text>
+                            <h3 ><strong>{{resultList[0].lastName}}, {{resultList[0].firstName}} {{resultList[0].middleName != null ? resultList[0].middleName:''}} {{resultList[0].extName != null ? resultList[0].extName:''}}</strong></h3>
+                        </div>
+                    </div>
+                    <hr style="margin-top: 10px;" />
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 300px !important;">
+                        <table id="historyTable" class="table table-striped">
+                            <thead style="background-color:rgba(208, 208, 208, 0.62);">
+                                <tr role="row">
+                                    <th>#</th>
+                                    <th class="text-center">Date of Screening</th>
+                                    <th class="text-center">Date of X-ray</th>
+                                    <th class="text-center">X-ray</th>
+                                    <th class="text-center">Scutum</th>
+                                    <th class="text-center">X-ray Result</th>
+                                    <th class="text-center">Result Date</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-show="vaccineTableLoader">
+                                    <td colspan="9" class="text-center">
+                                        <span class="fa fa-spinner fa-spin fa-4x"></span><br /><br />
+                                    </td>
+                                </tr>
+                                <tr role="row" ng-show="!vaccineTableLoader" ng-repeat="item in resultList">
+                                    <td>{{$index+1}}</td>
+                                    <td class="text-center">{{item.dateTimeLog}}</td>
+                                    <td class="text-center">{{item.DateXray}}</td>
+                                    <td class="text-center">{{item.isXray == true ? 'Yes':'No'}}</td>
+                                    <td class="text-center">{{item.isNeedScutum == true ? 'Yes' : 'No'}}</td>
+                                    <td class="text-center">{{item.xrayResult == null ? '---' : item.xrayResult}}</td>
+                                    <td class="text-center">{{item.xrayResultDate}}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-success btn-sm" ng-disabled="item.xrayResult == null" ng-click="encodeResult(item)"><i class="fa fa-pencil"></i></button>
+                                        <button class="btn btn-primary btn-sm" ng-disabled="item.xrayResult != null" ng-click="encodeResult(item)"><i class="fa fa-plus"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL PATIENT XRAY RESULT -->
+
+    <!-- MODAL ENCODE X-RAY RESULT -->
+    <div id="xrayResult_Modal" class="modal fade" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-green">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title text-semibold text-center"> X-RAY RESULT </h4>
+                </div>
+                <form name="xrayResult_form" style="padding-left:10px; padding-right: 10px;">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <text>QR code:</text>
+                                <h3><strong>{{result.qrCode}}</strong></h3>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <text>Name:</text>
+                                <h3><strong>{{result.lastName}}, {{result.firstName}} {{result.middleName != null ? result.middleName:''}} {{result.extName != null ? result.extName:''}}</strong></h3>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 10px;" />
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <label>Date of X-ray:</label>
+                                <input type="text" id="DateXray" name="DateXray" style="text-transform:uppercase" required ng-model="result.DateXray" class="text-center form-control" readonly>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 form-group">
+                                <label>Need Scutum?</label>
+                                <input type="text" id="isNeedScutumText" name="isNeedScutumText" style="text-transform:uppercase" required ng-model="result.isNeedScutumText" class="text-center form-control" readonly>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 10px;" />
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <label>Date of Result</label>
+                                <input type="date" id="xrayResultDate" name="xrayResultDate" style="text-transform:uppercase" required ng-model="result.xrayResultDate" class="text-center form-control">
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 form-group">
+                                <label>X-ray Result:</label>
+                                <textarea rows="7" cols="120" style="width: 100%; resize: none;" placeholder="X-ray result here..." ng-model="result.xrayResult" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-success" ng-show="!editting" ng-click="!xrayResult_form.$invalid ? saveResult(result):''">Save Result</button>
+                        <button class="btn bg-primary" ng-show="editting" ng-click="!xrayResult_form.$invalid ? updateResult(result):''">Update Result</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL ENCODE X-RAY RESULT -->
+
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/Xray/XrayResult.js"></script>
+}

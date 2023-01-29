@@ -14,11 +14,12 @@
     s.showClientList = false;
     s.showClientListBTN = true;
     s.medHistLoader_modal = false;
-    s.newlyAddedConsultID = '';
+    s.newlyAddedConsultID = null;
     s.isEditDiagnosis = true;
     s.medicalRecord_loader = false;
     s.showMedicalRecord = false;
     s.isEditting = false;
+    getSpecialist();
 
     s.scanner = new Instascan.Scanner(
             {
@@ -83,15 +84,8 @@
                     s.qrData = d.data[0];
                     s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].fullAddress;
 
-                    //s.diagnose = {};
-                    //s.diagnoseInfo = {}
-                    //s.diagnoseRemarks = '';
-
-                    //getBPhistory(info);
                     s.showMLR(info);
                     getLabHistory(info);
-                    //s.newlyAddedConsultID = '';
-                    //s.showMedicalRecord = false;
                 }
 
                 else {
@@ -101,7 +95,7 @@
                         type: "error"
                     });
                 }
-
+               
                 s.loader = false;
             }
         })
@@ -114,7 +108,7 @@
             s.diagnose = {};
             s.diagnoseInfo = {}
             s.diagnoseRemarks = '';
-            s.newlyAddedConsultID = '';
+            s.newlyAddedConsultID = null;
             s.bpLoader = true;
             s.bpHistoryList = {};
             s.vitalSigns = {};
@@ -167,10 +161,18 @@
             }
 
             else {
+                
                 angular.forEach(d.data, function (value) {
-                    value.bloodChemDateEncoded = moment(value.bloodChemDateEncoded).format('lll');
+                    if (value.bloodChemResult.length > 0)
+                    {
+                        angular.forEach(value.bloodChemResult, function (data) {
+                            data.bloodChemDateEncoded = moment(data.bloodChemDateEncoded).format('lll');
+                        });
+                    }
+                        
                     value.dateTested = moment(value.dateTested).format('lll');
                 });
+
                 s.labHistoryList = d.data;
             }
             s.bpLoader = false;
@@ -209,85 +211,77 @@
 
                     s.diagnoseHistoryList = d.data.diagnosis;
                     s.rxHistoryList = d.data.rxHist;
-                    s.rxHistoryList.concat(d.data.referralRx);
-                }
 
+                    angular.forEach(d.data.referralRx, function (record) {
+                        angular.forEach(record, function (val) {
+                            val.dateTimeRx = moment(val.dateTimeRx).format('lll');
+                            s.rxHistoryList.push(record);
+                        })
+                    });
+                }
+              
                 s.medicalRecord_loader = false;
             });
-
-            //s.scanner.stop();
-        //}
-
-        //else {
-        //    Instascan.Camera.getCameras().then(function (cameras) {
-        //        if (cameras.length > 0) {
-        //            s.scanner.start(cameras[0]);
-        //        }
-        //        else {
-        //            swal({
-        //                title: "CAMERA ERROR",
-        //                text: "Camera is not found, please refresh",
-        //                type: "error"
-        //            });
-        //        }
-        //    });
-        //}
-
         
     }
 
+    function getSpecialist() {
+        h.post("../LaboratoryResult/getSpecialist").then(function (d) {
+            s.specialistData = d.data;
+        });
+    }
+
     s.viewLabResult = function (data) {
-        s.blood = {};
-        s.uri = {};
-        s.cbc = {};
+        
+        //   URINALYSIS RESULT
+        if (data.labTestID == "L0001") {    
+            s.uri = {};
 
-        s.uri = {
-            color: 'Yellow',
-            transparency: 'Clear',
-            albumin: 'Negative',
-            sugar: 'Negative',
-            reaction: '1.15',
-            spGravity: ' ',
-            pusCells: '0.2 /hpf',
-            rbcCells: '0.2 /hpf',
-            epithelialCells: ' ',
-            renalCells: '0.2 /hpf',
-            mucusThread: ' ',
-            bacteria: '+',
-            yeastCells: ' ',
-            coarseGranular: ' ',
-            fineGranular: ' ',
-            hyaline: ' ',
-            pusCellsCast: ' ',
-            rbcCast: ' ',
-            waxyCast: ' ',
-            amourphousUrates: ' ',
-            amourphousPhospates: ' ',
-            triplePhospates: ' ',
-            uricAcid: ' ',
-            calciumOxalates: ' ',
-            pregnancyTest: ' ',
-            others: ' '
-        };
+            h.post("../LaboratoryResult/getUrinalysisResult?labID=" + data.labID).then(function (d) {
+                s.uri = d.data[0];
+            });
 
-        s.cbc = {
-            wbc: 7.77,
-            rbc: 4.1,
-            neu: 60,
-            hgb: 123,
-            lym: 25.0,
-            hct: 42.2,
-            mon: 4.8,
-            mcv: 89.6,
-            eos: 2.5,
-            mch: 87,
-            bas: 0.3,
-            mchc: 334,
-            plt: 163
-        };
+            $('#modalUrinalysis').modal('show');
+        }
 
-        s.blood = data;
-        $('#modalBLoodChem').modal('show');
+        //   CBC RESULT
+        else if (data.labTestID == "L0002") {
+            s.cbc = {};
+
+            h.post("../LaboratoryResult/getCBCresult?labID=" + data.labID).then(function (d) {
+                s.cbc = d.data[0];
+            });
+            
+            $('#modalCbc').modal('show');
+        }
+
+        //   FECALYSIS RESULT
+        else if (data.labTestID == "L0003") {
+            
+        }
+
+        //   CHEST X-RAY RESULT
+        else if (data.labTestID == "L0006") {
+
+        }
+
+        //   ECG-12L RESULT
+        else if (data.labTestID == "L0004") {
+            s.ecg = {};
+
+            h.post("../LaboratoryResult/getECGResult?labID=" + data.labID).then(function (d) {
+                s.ecg = d.data;
+            });
+
+            $('#modalECG').modal('show');
+        }
+
+        //   BLOOD CHEM RESULT
+        else {
+            s.BCResult = {};
+            s.BCResult = data;
+            $('#modalBLoodChem').modal('show');
+        }
     }
 
     s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, otherLabDesc) {
@@ -327,27 +321,31 @@
             // Push all checked laboratory to labtestList
             var labtestList = [];
             angular.forEach(labtest, function (key, value) {
-                if(value == 'LTG002') {
-                    labtestList.push('L0007');
-                    labtestList.push('L0008');
-                    labtestList.push('L0013');
-                    labtestList.push('L0014');
-                    labtestList.push('L0015');
-                }
-
-                else if (value == 'LTG003') {
-                    labtestList.push('L0016');
-                    labtestList.push('L0017');
-                    labtestList.push('L0018');
-                    labtestList.push('L0019');
-                }
-                
-                else {
-                    if (key) {
-                        labtestList.push(value);
-                    }
-                }
+                if (key)
+                    labtestList.push(value);
             });
+            //angular.forEach(labtest, function (key, value) {
+            //    if(value == 'LTG002') {
+            //        labtestList.push('L0007');
+            //        labtestList.push('L0008');
+            //        labtestList.push('L0013');
+            //        labtestList.push('L0014');
+            //        labtestList.push('L0015');
+            //    }
+
+            //    else if (value == 'LTG003') {
+            //        labtestList.push('L0016');
+            //        labtestList.push('L0017');
+            //        labtestList.push('L0018');
+            //        labtestList.push('L0019');
+            //    }
+                
+            //    else {
+            //        if (key) {
+            //            labtestList.push(value);
+            //        }
+            //    }
+            //});
 
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
             if (labtestList.length > 0) referralList.push('SERVICE006')
@@ -518,7 +516,7 @@
             showConfirmButton: false
         });
 
-        h.post('../MedicalConsultation/savePrescription', { consultID: s.newlyAddedConsultID, listRx: s.RxList }).then(function (d) {
+        h.post('../MedicalConsultation/savePrescription', { qrCode: s.qrData.qrCode, consultID: s.newlyAddedConsultID, listRx: s.RxList }).then(function (d) {
             if (d.data.status == "error") {
                 swal({
                     title: "ERROR",
@@ -609,7 +607,7 @@
                },
                {
                    "data": null, render: function (row) {
-                       return moment(row.dateTimeEncoded).format('lll');
+                       return moment(row.dateTimeLog).format('lll');
                    }
                },
                {
@@ -774,7 +772,7 @@
                         });
 
                         s.resultDiag.ref = ref;
-
+                        
                         // Push all checked laboratory to laboratory
                         angular.forEach(d.data.laboratory, function (item) {
 
@@ -799,8 +797,11 @@
                                 case 'L0006':
                                     laboratory.L0006 = true;
                                     break;
-                                case 'L0007' || 'L0008' || 'L0013' || 'L0014' || 'L0015':
-                                    laboratory.LTG002 = true;
+                                case 'L0007':
+                                    laboratory.L0007 = true;
+                                    break;
+                                case 'L0008':
+                                    laboratory.L0008 = true;
                                     break;
                                 case 'L0009':
                                     laboratory.L0009 = true;
@@ -814,9 +815,6 @@
                                 case 'L0012':
                                     laboratory.L0012 = true;
                                     break;
-                                case 'L0016' || 'L0017' || 'L0018' || 'L0019':
-                                    laboratory.LTG003 = true;
-                                    break;
                                 case 'L0022':
                                     laboratory.L0022 = true;
                                     break;
@@ -826,7 +824,6 @@
                         s.resultDiag.laboratory = laboratory;
                     }
                 });
-
                 
             });
         }
@@ -845,9 +842,23 @@
     s.returnToHome = function () {
         if (s.showClientList == false && s.showRx == false)
         {
-            //s.showClientList = true;
-            s.showMedicalRecord = true;
-            s.showRx = true;
+            h.post('../VitalSigns/getBPhistory?qrCode=' + s.qrData.qrCode).then(function (d) {
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "ERROR",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                //s.showClientList = true;
+                s.showMedicalRecord = true;
+                s.showRx = true;
+                getMedicineList();
+                }
+            });
         }
 
         else
@@ -915,7 +926,7 @@
             if (labList.length > 0) referralList.push('SERVICE006');
 
             h.post('../MedicalConsultation/updateDiagnosis', {
-                qrCode: result.qrCode, consult: result.info, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
+                qrCode: result.info.qrCode, consult: result.info, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
                 referral: referralList, otherReferral: result.info.outsideReferral, labReq: labList, otherLab: result.otherLabDesc
             }).then(function (d) {
                 if (d.data.status == "error") {
@@ -940,7 +951,6 @@
                 }
             });
 
-            console.log(result);
         }
     }
 

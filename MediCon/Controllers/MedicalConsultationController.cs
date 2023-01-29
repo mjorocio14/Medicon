@@ -5,22 +5,20 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MediCon.ModelTemp;
+using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
     public class MedicalConsultationController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
+       
 
         // GET: MedicalConsultation
         public ActionResult Index()
         {
             return View();
-        }
-
-        public string generateID(string source)
-        {
-            return string.Format("{1:N}", source, Guid.NewGuid());
         }
 
         [HttpPost]
@@ -34,7 +32,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching the medicines." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -43,13 +41,48 @@ namespace MediCon.Controllers
         {
             try
             {
-                var labHist = dbMed.fn_getPatientLabHistory(qrCode).OrderByDescending(b => b.dateTested).ToList();
+                //var labHist = dbMed.fn_getPatientLabHistory(qrCode).OrderByDescending(b => b.dateTested).GroupBy(c => c.labTestID).ToList();
+                var labHist = dbMed.LaboratoryExams.Join(dbMed.LaboratoryTests, le => le.labTestID, lt => lt.labTestID, (le, lt) => new { le, lt })
+                                                   .Join(dbMed.Referrals, res1 => res1.le.referralID, r => r.referralID, (res1, r) => new { res1, r })
+                                                   .Join(dbMed.Consultations, res2 => res2.r.consultID, c => c.consultID, (res2, c) => new { res2, c })
+                                                   .Join(dbMed.VitalSigns, res3 => res3.c.vSignID, vs => vs.vSignID, (res3, vs) => new { res3, vs })
+                                                   .Where(a => a.vs.qrCode == qrCode)
+                                                   .Select(b => new
+                                                   {
+                                                       b.res3.res2.res1.le.labID,
+                                                       b.res3.res2.res1.le.labTestID,
+                                                       b.res3.res2.res1.lt.labTestName,
+                                                       b.res3.res2.res1.le.isTested,
+                                                       b.res3.res2.res1.le.isEncoded,
+                                                       b.res3.res2.res1.le.otherLabDesc,
+                                                       b.res3.res2.res1.le.pathologist,
+                                                       b.res3.res2.res1.le.medtech,
+                                                       labPersonID = b.res3.res2.res1.le.personnelID,
+                                                       dateTested = b.res3.res2.res1.le.dateTimeLog,
+                                                       labPathologist = dbMed.Personnels.FirstOrDefault(c => c.personnelID == b.res3.res2.res1.le.pathologist).personnelID,
+                                                       labMedtech = dbMed.Personnels.FirstOrDefault(c => c.personnelID == b.res3.res2.res1.le.medtech).personnelID,
+                                                       b.res3.res2.r.referralID,
+                                                       b.res3.res2.r.MRDiagnosisID,
+                                                       ConsultServiceName = dbMed.Services.FirstOrDefault(aa => aa.serviceID == b.res3.c.serviceID).serviceName,
+                                                       refServiceName = dbMed.Services.FirstOrDefault(aa => aa.serviceID == b.res3.res2.r.referredServiceID).serviceName,
+                                                       b.res3.c.consultID,
+                                                       b.vs.qrCode,
+                                                       consultPersonID = b.res3.c.personnelID,
+                                                       consultDT = b.res3.c.dateTimeLog,
+                                                       consultPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.c.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
+                                                       bloodChemResult = dbMed.BloodChems.Where(dd => dd.labID == b.res3.res2.res1.le.labID).Select(ee => new { 
+                                                            ee.result,
+                                                            ee.bloodChemID,
+                                                            ee.LabTestGroupID,
+                                                            bloodChemDateEncoded = ee.dateTimeLog
+                                                       }).OrderBy(xx => xx.LabTestGroupID)
+                                                   }).ToList();
 
                 return Json(labHist, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching laboratory history." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -77,6 +110,7 @@ namespace MediCon.Controllers
                                                        b.s.serviceName,
                                                        physician = dbMed.Personnels.Where(c => c.personnelID == b.r3.r2.c.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName })
                                                    })
+                                                   .OrderByDescending(x => x.dateTimeLog)
                                                    .GroupBy(e => e.consultID).ToList();
 
                 var rxHist = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, c => c.vSignID, (vs, c) => new {vs, c})
@@ -108,7 +142,8 @@ namespace MediCon.Controllers
                                                 b.r6.r5.r4.pl.unitID,
                                                 b.r6.r5.pu.unitDesc,
                                                 b.r6.m.measurementDesc
-                                             }).GroupBy(c => c.rxID).ToList();
+                                             })
+                                             .OrderByDescending(x => x.dateTimeRx).GroupBy(c => c.rxID).ToList();
 
 
                 var referralRx = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, c => c.vSignID, (vs, c) => new { vs, c })
@@ -143,13 +178,13 @@ namespace MediCon.Controllers
                                                  b.r6.r5.r4.pl.unitID,
                                                  b.r6.r5.pu.unitDesc,
                                                  b.r6.m.measurementDesc
-                                             }).GroupBy(c => c.rxID).ToList();
+                                             }).OrderByDescending(x => x.dateTimeRx).GroupBy(c => c.rxID).ToList();
 
                 return Json(new { diagnosis, rxHist, referralRx }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching diagnosis history." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -159,21 +194,25 @@ namespace MediCon.Controllers
         {
             try
             {
-                //......  SAVE DATA TO CONSULTATION TABLE
-                consultation.consultID = generateID(consultation.vSignID).Substring(0, 15);
+                var consultID = new IDgenerator(consultation.vSignID);
+
+                //......  SAVE DATA TO CONSULTATION SURGERY TABLE
+                consultation.consultID = consultID.generateID.Substring(0, 15);
                 consultation.toothNum = null;
                 consultation.personnelID = Session["personnelID"].ToString();
                 consultation.dateTimeLog = DateTime.Now;
                 dbMed.Consultations.Add(consultation);
-                //......  /SAVE DATA TO CONSULATIONSURGERY TABLE
+                //......  /SAVE DATA TO CONSULATION SURGERY TABLE
 
                 //......  SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
                 if (referral != null)
                 {
                     foreach (var item in referral)
                     {
+                        var referralID = new IDgenerator(consultation.consultID);
+
                         Referral Ref = new Referral();
-                        Ref.referralID = generateID(consultation.consultID).Substring(0, 15);
+                        Ref.referralID = referralID.generateID.Substring(0, 15);
                         Ref.referredServiceID = item;
                         Ref.consultID = consultation.consultID;
                         dbMed.Referrals.Add(Ref);
@@ -182,8 +221,10 @@ namespace MediCon.Controllers
                         {
                             foreach(var labtest in lab)
                             {
+                                var labID = new IDgenerator(Ref.referralID);
+
                                 LaboratoryExam labEx = new LaboratoryExam();
-                                labEx.labID = generateID(Ref.referralID).Substring(0, 15);
+                                labEx.labID = labID.generateID.Substring(0, 15);
                                 labEx.referralID = Ref.referralID;
                                 labEx.labTestID = labtest;
                                 labEx.otherLabDesc = labtest == "L0022" ? otherLab : null;
@@ -193,20 +234,26 @@ namespace MediCon.Controllers
 
                         else if(item == "SERVICE005")
                         {
+                            var PBEID = new IDgenerator(Ref.referralID);
+
                             PapsmearBreastExam pbe = new PapsmearBreastExam();
-                            pbe.PBEID = generateID(Ref.referralID).Substring(0, 15);
+                            pbe.PBEID = PBEID.generateID.Substring(0, 15);
                             pbe.referralID = Ref.referralID;
                             dbMed.PapsmearBreastExams.Add(pbe);
                         }
 
                         else if (item == "SERVICE004")
                         {
+                            var requestID = new IDgenerator(Ref.referralID);
+
                             MRHrequest mrhq = new MRHrequest();
-                            mrhq.requestID = generateID(Ref.referralID).Substring(0, 15);
+                            mrhq.requestID = requestID.generateID.Substring(0, 15);
                             mrhq.referralID = Ref.referralID;
-                            mrhq.dateTimeLog = DateTime.Now;
-                            mrhq.isDone = false;
-                            mrhq.personnelID = Session["personnelID"].ToString();
+                            mrhq.requestDT = DateTime.Now;
+                            mrhq.requestPersonID = Session["personnelID"].ToString();
+                            mrhq.isInterviewDone = false;
+                            mrhq.isDiagnoseDone = false;
+                            
                             dbMed.MRHrequests.Add(mrhq);
                         }
                     }
@@ -218,8 +265,10 @@ namespace MediCon.Controllers
                 {
                     foreach (var item in checkedDiagnosis)
                     {
+                        var resultID = new IDgenerator(consultation.consultID);
+
                         ResultDiagnosi RS = new ResultDiagnosi();
-                        RS.resultID = generateID(consultation.consultID).Substring(0, 15);
+                        RS.resultID = resultID.generateID.Substring(0, 15);
                         RS.consultID = consultation.consultID;
                         RS.diagnoseID = item;
                         RS.otherDiagnosis = item == "DIAG023" ? detail.otherDiagnosis : null;
@@ -237,21 +286,45 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving the diagnosis.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
 
         }
 
         [HttpPost]
-        public ActionResult savePrescription(string consultID, List<OutgoingItem> listRx)
+        public ActionResult savePrescription(string qrCode, string consultID, List<OutgoingItem> listRx)
         {
             try
             {
+                var date = new CurrentDateTime();
+                var consultation = new Consultation();
+                
+               if (consultID == null)
+               {
+                   var vSignID = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= date.CurrentStartDT && a.dateTimeLog <= date.CurrentEndDT).vSignID;
+                   var conID = new IDgenerator(vSignID);
+
+                   //......  SAVE DATA TO CONSULTATION TABLE
+                   consultation.consultID = conID.generateID.Substring(0, 15);
+                   consultation.dateTimeLog = DateTime.Now;
+                   consultation.outsideReferral = null;
+                   consultation.personnelID = Session["personnelID"].ToString();
+                   consultation.remarks = null;
+                   consultation.serviceID = "SERVICE001";
+                   consultation.toothNum = null;
+                   consultation.vSignID = vSignID;
+                   dbMed.Consultations.Add(consultation);
+                   //......  /SAVE DATA TO CONSULATIONSURGERY TABLE
+                   
+               }
+
                 //........  SAVE MEDICAL PRESCRIPTION
+               var rxID = new IDgenerator(consultation.consultID);
+
                 MedicalPrescription mp = new MedicalPrescription();
-                mp.rxID = generateID(consultID).Substring(0, 15);
+                mp.rxID = rxID.generateID.Substring(0, 15);
                 mp.serviceID = "SERVICE001";
-                mp.consultID = consultID;
+                mp.consultID = consultID == null ? consultation.consultID : consultID;
                 mp.referralID = null;
                 mp.personnelID = Session["personnelID"].ToString();
                 mp.dateTimeRx = DateTime.Now;
@@ -261,7 +334,8 @@ namespace MediCon.Controllers
                 //........  SAVE MEDICINES
                 foreach (var item in listRx)
                 {
-                    item.outID = generateID(mp.rxID).Substring(0, 15);
+                    var outID = new IDgenerator(mp.rxID);
+                    item.outID = outID.generateID.Substring(0, 15);
                     item.rxID = mp.rxID;
                     //dbMed.OutgoingItems.Add(item);
                 }
@@ -276,7 +350,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving the prescription.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
 
         }
@@ -286,13 +360,13 @@ namespace MediCon.Controllers
         {
             try
             {
-                var medHist = dbMed.fn_getDiagnoseClients("SERVICE001").ToList();
+                var medHist = dbMed.fn_getDiagnoseClients("SERVICE001").OrderByDescending(a => a.dateTimeLog).ToList();
 
                 return Json(medHist, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching the client list." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -325,7 +399,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching client`s vital signs." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -335,7 +409,7 @@ namespace MediCon.Controllers
             {
                 var referral = dbMed.Referrals.Where(a => a.consultID == consultID).Select(b => b.referredServiceID).ToList();
                 var lab = dbMed.LaboratoryExams.Join(dbMed.Referrals, le => le.referralID, r => r.referralID, (le, r) => new { le, r })
-                                               .Where(a => a.r.consultID == consultID)
+                                               .Where(a => a.r.consultID == consultID && a.r.MRDiagnosisID == null)
                                                .Select(b => new
                                                {
                                                    b.le.labTestID,
@@ -347,7 +421,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching the laboratory referrals." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -361,7 +435,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching prescripted medicines." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -378,7 +452,7 @@ namespace MediCon.Controllers
                 dbMed.Entry(con).State = EntityState.Modified;
                 //......  /UPDATE DATA TO CONSULATIONSURGERY TABLE
 
-                //......  SAVE DATA TO RESULT DIAGNOSIS TABLE
+                //......  UPDATE DATA TO RESULT DIAGNOSIS TABLE
                 var diag = dbMed.ResultDiagnosis.Where(a => a.consultID == consult.consultID);
                 if(diag != null) { dbMed.ResultDiagnosis.RemoveRange(diag); }
 
@@ -387,27 +461,90 @@ namespace MediCon.Controllers
                     foreach (var item in diagnosis)
                     {
                         ResultDiagnosi RS = new ResultDiagnosi();
-                        RS.resultID = generateID(consult.consultID).Substring(0, 15);
+                        var resultID = new IDgenerator(consult.consultID);
+
+                        RS.resultID = resultID.generateID.Substring(0, 15);
                         RS.consultID = consult.consultID;
                         RS.diagnoseID = item;
                         RS.otherDiagnosis = item == "DIAG023" ? otherDiagnose : null;
                         dbMed.ResultDiagnosis.Add(RS);
                     }
-                    //......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
                 }
+                //......  /UPDATE DATA TO RESULT DIAGNOSIS TABLE
 
-                //......  SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
+                //......  UPDATE DATA TO REFERRAL AND LABORATORY EXAM TABLE
+                var existingRefID = string.Empty;
                 var existingRef = dbMed.Referrals.Where(a => a.consultID == consult.consultID);
+                
                 if (existingRef != null) {
-                    var existingRefID = existingRef.FirstOrDefault().referralID;
+                    //existingRefID = existingRef.FirstOrDefault().referralID;
+                    //dbMed.Referrals.RemoveRange(existingRef);
 
-                    dbMed.Referrals.RemoveRange(existingRef);
-                    var existingLab = dbMed.LaboratoryExams.Where(a => a.referralID == existingRefID);
-                    if (existingLab != null) { dbMed.LaboratoryExams.RemoveRange(existingLab); }
+                    //foreach ( var refRecord in existingRef)
+                    //{
+                    //    switch (refRecord.referredServiceID)
+                    //    {
+                    //        case "SERVICE006":
+                    //            var newReferLab = referral.SingleOrDefault(a => a == "SERVICE006");
 
-                    var existingPBE = dbMed.PapsmearBreastExams.Where(a => a.referralID == existingRefID);
-                    if (existingPBE != null) { dbMed.PapsmearBreastExams.RemoveRange(existingPBE); }
+                    //            if (newReferLab != null)
+                    //            {
 
+                    //            }
+
+                    //            var existingLab = dbMed.LaboratoryExams.Where(a => a.referralID == refRecord.referralID);
+
+                    //            if (existingLab != null)
+                    //            {
+                    //                if (existingLab.Count(a => a.isTested == true) > 0)
+                    //                    return Json(new { status = "error", msg = "You can`t uncheck/remove LABORATORY EXAM/s that already have tested!" }, JsonRequestBehavior.AllowGet);
+
+                    //                else
+                    //                {
+                    //                    dbMed.LaboratoryExams.RemoveRange(existingLab);
+
+                    //                    Referral Ref = new Referral();
+                    //                    Ref.referralID = refRecord.referralID;
+                    //                    Ref.referredServiceID = "SERVICE006";
+                    //                    Ref.consultID = consult.consultID;
+                    //                    dbMed.Referrals.Add(Ref);
+                    //                }
+
+                    //            }
+                    //    }
+                    //}
+
+
+                    //var existingLab = dbMed.LaboratoryExams.Where(a => a.referralID == existingRefID);
+                    //if (existingLab != null) {
+                    //    if (existingLab.Count(a => a.isTested == true) > 0)
+                    //        return Json(new { status = "error", msg = "You can`t uncheck/remove LABORATORY EXAM/s that already have tested!" }, JsonRequestBehavior.AllowGet);
+
+                    //    else
+                    //    {
+                    //        dbMed.LaboratoryExams.RemoveRange(existingLab);
+
+                    //        var referLab = referral.SingleOrDefault(a => a == "SERVICE006");
+                    //        Referral Ref = new Referral();
+                    //        Ref.referralID = existingRefID;
+                    //        Ref.referredServiceID = "SERVICE006";
+                    //        Ref.consultID = consult.consultID;
+                    //        dbMed.Referrals.Add(Ref);
+                    //    }
+                            
+                    //}
+
+                    var existingPBE = dbMed.PapsmearBreastExams.SingleOrDefault(a => a.referralID == existingRefID && !string.IsNullOrEmpty(a.personnelID));
+                    if (existingPBE != null) { 
+                        //dbMed.PapsmearBreastExams.Remove(existingPBE); 
+                        return Json(new { status = "error", msg = "You can`t uncheck/remove PAPSMEAR & BREAST EXAM that already have tested!" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    var existingMRH = dbMed.MRHrequests.SingleOrDefault(a => a.referralID == existingRefID);
+                    if (existingMRH != null) { 
+                        //dbMed.PapsmearBreastExams.Remove(existingMRH); 
+                        return Json(new { status = "error", msg = "You can`t uncheck/remove PAPSMEAR & BREAST EXAM that already have tested!" }, JsonRequestBehavior.AllowGet);
+                    }
                 }
 
                 if (referral != null)
@@ -415,7 +552,7 @@ namespace MediCon.Controllers
                     foreach (var item in referral)
                     {
                         Referral Ref = new Referral();
-                        Ref.referralID = generateID(consult.consultID).Substring(0, 15);
+                        Ref.referralID = existingRefID;
                         Ref.referredServiceID = item;
                         Ref.consultID = consult.consultID;
                         dbMed.Referrals.Add(Ref);
@@ -424,9 +561,11 @@ namespace MediCon.Controllers
                         {
                             foreach (var labtest in labReq)
                             {
+                                var labID = new IDgenerator(Ref.referralID);
+
                                 LaboratoryExam labEx = new LaboratoryExam();
-                                labEx.labID = generateID(Ref.referralID).Substring(0, 15);
-                                labEx.referralID = Ref.referralID;
+                                labEx.labID = labID.generateID.Substring(0, 15);
+                                labEx.referralID = existingRefID;
                                 labEx.labTestID = labtest;
                                 labEx.otherLabDesc = labtest == "L0022" ? otherLab : null;
                                 dbMed.LaboratoryExams.Add(labEx);
@@ -435,20 +574,25 @@ namespace MediCon.Controllers
 
                         else if (item == "SERVICE005")
                         {
+                            var PBEID = new IDgenerator(Ref.referralID);
+
                             PapsmearBreastExam pbe = new PapsmearBreastExam();
-                            pbe.PBEID = generateID(Ref.referralID).Substring(0, 15);
+                            pbe.PBEID = PBEID.generateID.Substring(0, 15);
                             pbe.referralID = Ref.referralID;
                             dbMed.PapsmearBreastExams.Add(pbe);
                         }
 
                         else if (item == "SERVICE004")
                         {
+                            var requestID = new IDgenerator(Ref.referralID);
+
                             MRHrequest mrhq = new MRHrequest();
-                            mrhq.requestID = generateID(Ref.referralID).Substring(0, 15);
+                            mrhq.requestID = requestID.generateID.Substring(0, 15);
                             mrhq.referralID = Ref.referralID;
-                            mrhq.dateTimeLog = DateTime.Now;
-                            mrhq.isDone = false;
-                            mrhq.personnelID = Session["personnelID"].ToString();
+                            mrhq.requestDT = DateTime.Now;
+                            mrhq.requestPersonID = Session["personnelID"].ToString();
+                            mrhq.isInterviewDone = false;
+                            mrhq.isDiagnoseDone = false;
                             dbMed.MRHrequests.Add(mrhq);
                         }
                     }
@@ -466,7 +610,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while updating the diagnosis.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
         }
     }

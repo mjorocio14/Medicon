@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MediCon.Models;
 using System.Web.Script.Serialization;
 using System.Data.Entity;
+using MediCon.ModelTemp;
 
 namespace MediCon.Controllers
 {
@@ -13,11 +14,6 @@ namespace MediCon.Controllers
     public class PharmacyController : Controller
     {
         MediconEntities db = new MediconEntities();
-        private static string checkDate = DateTime.Now.ToShortDateString();
-        private static string checkDateStart = checkDate + " 00:00:00";
-        private static string checkDateEnd = checkDate + " 23:59:59";
-        DateTime cds = DateTime.Parse(checkDateStart);
-        DateTime cde = DateTime.Parse(checkDateEnd);
 
         // GET: Pharmacy
         //[UserAccess]
@@ -79,7 +75,9 @@ namespace MediCon.Controllers
         //{
         //    try
         //    {
-        //        var list = db.fOT_ReleasedMedicines(cds, cde).Where(e => e.dateTimeRx >= cds && e.dateTimeRx <= cde).GroupBy(a => a.qrCode).ToList();
+        //        var date = new CurrentDateTime();
+
+        //        var list = db.fOT_ReleasedMedicines(date.CurrentStartDT, date.CurrentEndDT).Where(e => e.dateTimeRx >= date.CurrentStartDT && e.dateTimeRx <= date.CurrentEndDT).GroupBy(a => a.qrCode).ToList();
 
         //        var serializer = new JavaScriptSerializer();
         //        serializer.MaxJsonLength = Int32.MaxValue;

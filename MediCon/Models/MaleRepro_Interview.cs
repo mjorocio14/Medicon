@@ -33,7 +33,5 @@ namespace MediCon.Models
         public Nullable<byte> besesGumising { get; set; }
         public Nullable<byte> sintomasNgIhi { get; set; }
         public Nullable<byte> nadarama { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
 }

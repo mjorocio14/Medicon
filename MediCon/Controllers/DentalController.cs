@@ -8,6 +8,7 @@ using MediCon.Models;
 using System.Net.NetworkInformation;
 using System.Net;
 using System.Net.Sockets;
+using MediCon.ModelTemp;
 
 namespace MediCon.Controllers
 {
@@ -16,11 +17,6 @@ namespace MediCon.Controllers
         MediconEntities db = new MediconEntities();
         Guid guid;
 
-        private static string checkDate = DateTime.Now.ToShortDateString();
-        private static string checkDateStart = checkDate + " 00:00:00";
-        private static string checkDateEnd = checkDate + " 23:59:59";
-        DateTime cds = DateTime.Parse(checkDateStart);
-        DateTime cde = DateTime.Parse(checkDateEnd);
         // GET: Dental
         public ActionResult OralExam()
         {
@@ -54,14 +50,10 @@ namespace MediCon.Controllers
         {
             try
             {
-                var checkDate = DateTime.Now.ToShortDateString();
-                var checkDateStart = checkDate + " 00:00:00";
-                var checkDateEnd = checkDate + " 23:59:59";
-                DateTime cds = DateTime.Parse(checkDateStart);
-                DateTime cde = DateTime.Parse(checkDateEnd);
+                var date = new CurrentDateTime();
 
                 var countRecord = db.Consultations.FirstOrDefault(a => a.vSignID == detail.vSignID && a.serviceID == "SRV0022"
-                                                   && a.dateTimeLog >= cds && a.dateTimeLog <= cde);
+                                                   && a.dateTimeLog >= date.CurrentStartDT && a.dateTimeLog <= date.CurrentEndDT);
 
                 if (countRecord != null)
                 {

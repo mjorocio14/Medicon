@@ -18,5 +18,6 @@ namespace MediCon.Models
         public string referralID { get; set; }
         public string referredServiceID { get; set; }
         public string consultID { get; set; }
+        public string MRDiagnosisID { get; set; }
     }
 }

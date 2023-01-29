@@ -35,16 +35,18 @@ namespace MediCon.Controllers
                                                        b.res3.res2.res1.lt.labTestName,
                                                        b.res3.res2.res1.le.isTested,
                                                        b.res3.res2.res1.le.isEncoded,
+                                                       b.res3.res2.res1.le.pathologist,
+                                                       b.res3.res2.res1.le.medtech,
                                                        labPersonID = b.res3.res2.res1.le.personnelID,
                                                        labDT = b.res3.res2.res1.le.dateTimeLog,
-                                                       labPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.res2.res1.le.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName}),
+                                                       labPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.res2.res1.le.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
                                                        b.res3.res2.r.referralID,
                                                        b.res3.c.consultID,
                                                        b.vs.qrCode,
                                                        consultPersonID = b.res3.c.personnelID,
                                                        consultDT = b.res3.c.dateTimeLog,
                                                        consultPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.c.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
-                                                   }).GroupBy(q => q.isTested).ToList();
+                                                   }).GroupBy(q => q.isTested ).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }

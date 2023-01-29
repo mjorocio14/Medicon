@@ -31,10 +31,10 @@ namespace MediCon.Models
         public Nullable<byte> besesGumising { get; set; }
         public Nullable<byte> sintomasNgIhi { get; set; }
         public Nullable<byte> nadarama { get; set; }
-        public string personInterviewID { get; set; }
-        public Nullable<System.DateTime> interviewDT { get; set; }
         public string referralID { get; set; }
-        public Nullable<bool> isDone { get; set; }
+        public Nullable<bool> isInterviewDone { get; set; }
+        public Nullable<System.DateTime> interviewDT { get; set; }
+        public string interviewerID { get; set; }
         public string consultID { get; set; }
         public string vSignID { get; set; }
         public string lastName { get; set; }

@@ -16,6 +16,7 @@ namespace MediCon.Models
     {
         public short recNo { get; set; }
         public string LabTestGroupID { get; set; }
+        public string LabTestID { get; set; }
         public string LabTestGroupDesc { get; set; }
     }
 }

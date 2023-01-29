@@ -17,8 +17,13 @@ namespace MediCon.Models
         public long recNo { get; set; }
         public string requestID { get; set; }
         public string referralID { get; set; }
-        public Nullable<bool> isDone { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public Nullable<bool> isInterviewDone { get; set; }
+        public string interviewerID { get; set; }
+        public Nullable<System.DateTime> interviewDT { get; set; }
+        public Nullable<bool> isDiagnoseDone { get; set; }
+        public string diagPersonID { get; set; }
+        public Nullable<System.DateTime> diagnoseDT { get; set; }
+        public string requestPersonID { get; set; }
+        public Nullable<System.DateTime> requestDT { get; set; }
     }
 }

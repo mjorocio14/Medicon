@@ -20,15 +20,10 @@ namespace MediCon.Models
         public string PEfindings { get; set; }
         public string abdomen { get; set; }
         public string extGenita { get; set; }
-        public string DREsize { get; set; }
-        public string consistency_firm { get; set; }
-        public string consistency_soft { get; set; }
-        public string consistency_hard { get; set; }
-        public string texture_modular { get; set; }
-        public string texture_smooth { get; set; }
-        public string texture_indurated { get; set; }
-        public string mobility_movable { get; set; }
-        public string mobility_nonmovable { get; set; }
+        public Nullable<decimal> DREsize { get; set; }
+        public Nullable<byte> consistency { get; set; }
+        public Nullable<byte> texture { get; set; }
+        public Nullable<byte> mobility { get; set; }
         public string lowbackPain { get; set; }
         public string arthriticPain { get; set; }
         public string rectalFinding { get; set; }
@@ -38,7 +33,5 @@ namespace MediCon.Models
         public string transrectalBiopsy { get; set; }
         public string TRUSBiopsy { get; set; }
         public string Remarks { get; set; }
-        public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
 }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MediCon.Models;
+using MediCon.ModelTemp;
+using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
@@ -12,12 +14,6 @@ namespace MediCon.Controllers
     {
         MediconEntities dbMed = new MediconEntities();
 
-        static string checkDate = DateTime.Now.ToShortDateString();
-        static string checkDateStart = checkDate + " 00:00:00";
-        static string checkDateEnd = checkDate + " 23:59:59";
-        DateTime cds = DateTime.Parse(checkDateStart);
-        DateTime cde = DateTime.Parse(checkDateEnd);
-
         //[UserAccess]
         // GET: VitalSigns
         public ActionResult VSview()
@@ -25,23 +21,19 @@ namespace MediCon.Controllers
             return View();
         }
 
-        public string generateID(string source)
-        {
-            return string.Format("{1:N}", source, Guid.NewGuid());
-        }
-
         public ActionResult getBPhistory(string qrCode)
         {
             try
             {
-                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= cds && a.dateTimeLog <= cde);
+                var date = new CurrentDateTime();
+                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= date.CurrentStartDT && a.dateTimeLog <= date.CurrentEndDT);
 
                 if (vSign == null)
                     return Json(new { status = "error", msg = "Patient has no vital sign for today, please refer to vital sign station." });
 
                 else
                 {
-                    var bp = dbMed.BloodPressures.Where(a => a.vSignID == vSign.vSignID);
+                    var bp = dbMed.BloodPressures.Where(a => a.vSignID == vSign.vSignID).OrderByDescending(b => b.dateTimeLog);
                     return Json(new { bp = bp, vs = vSign }, JsonRequestBehavior.AllowGet);
                 }
             }
@@ -70,7 +62,8 @@ namespace MediCon.Controllers
         {
             try
             {
-                var vsRes = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= cds && a.dateTimeLog <= cde);
+                var date = new CurrentDateTime();
+                var vsRes = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= date.CurrentStartDT && a.dateTimeLog <= date.CurrentEndDT);
 
                 return Json(vsRes, JsonRequestBehavior.AllowGet);
 
@@ -86,7 +79,9 @@ namespace MediCon.Controllers
         {
             try
             {
-                vs.vSignID = generateID(qrCode).Substring(0,15);
+                var vSignID = new IDgenerator(qrCode);
+
+                vs.vSignID = vSignID.generateID.Substring(0, 15);
                 vs.personnelID = Session["personnelID"].ToString();
                 vs.dateTimeLog = DateTime.Now;
                 dbMed.VitalSigns.Add(vs);
@@ -109,10 +104,13 @@ namespace MediCon.Controllers
         {
             try
             {
-                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= cds && a.dateTimeLog <= cde).vSignID;
+                var date = new CurrentDateTime();
+                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.qrCode == qrCode && a.dateTimeLog >= date.CurrentStartDT && a.dateTimeLog <= date.CurrentEndDT).vSignID;
+                var BPID = new IDgenerator(qrCode);
 
                 bp.vSignID = vSign;
-                bp.BPID = generateID(qrCode).Substring(0, 15);
+                bp.BPID = BPID.generateID.Substring(0, 15);
+                bp.dateTimeLog = DateTime.Now;
                 dbMed.BloodPressures.Add(bp);
 
                 var affectedRow = dbMed.SaveChanges();

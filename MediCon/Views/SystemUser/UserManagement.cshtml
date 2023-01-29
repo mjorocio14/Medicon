@@ -159,10 +159,7 @@
                                                                     <label class="control-label" for="userType">Select Service</label><span style="color:#ff0000"> *</span>
                                                                     <select ng-model="users.serviceID" name="userType" id="service" required style="width: 100%;" text-transform uppercase" class="form-control">
                                                                         <option value=""></option>
-                                                                        <option value="1">VITAL SIGN</option>
-                                                                        <option value="2">MEDICAL CONSULTATION</option>
-                                                                        <option value="3">DENTAL EXTRACTION</option>
-                                                                        <option value="4">X-RAY</option>
+                                                                        <option ng-repeat="item in services" value={{item}}>{{item.serviceName}}</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -171,9 +168,7 @@
                                                                     <label class="control-label" for="userType">Select User Type</label><span style="color:#ff0000"> *</span>
                                                                     <select ng-model="users.userTypeID" ng-change="sService(users.userTypeID)" name="userType" id="userType" required style="width: 100%;" text-transform uppercase" class="form-control">
                                                                         <option value=""></option>
-                                                                        <option value="1">ADMINISTRATOR</option>
-                                                                        <option value="2">ENCODER</option>
-                                                                        <option value="3">PERSONNEL</option>
+                                                                        <option ng-repeat="item in userTypes" value={{item}}>{{item.userTypeDesc}}</option>
                                                                     </select>
                                                                 </div>
                                                             </div>

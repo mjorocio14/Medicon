@@ -17,9 +17,10 @@ namespace MediCon.Models
         public string labID { get; set; }
         public string labTestID { get; set; }
         public string personnelID { get; set; }
-        public string personnel_lastName { get; set; }
-        public string personnel_firstName { get; set; }
-        public string personnel_midInit { get; set; }
+        public string encoderLName { get; set; }
+        public string encoderFName { get; set; }
+        public string encoderMName { get; set; }
+        public string encoderEName { get; set; }
         public string referralID { get; set; }
         public string labTestName { get; set; }
         public string consultID { get; set; }
@@ -33,5 +34,9 @@ namespace MediCon.Models
         public Nullable<System.DateTime> birthdate { get; set; }
         public string contactNo { get; set; }
         public Nullable<System.DateTime> encodeDT { get; set; }
+        public string referLName { get; set; }
+        public string referFName { get; set; }
+        public string referMName { get; set; }
+        public string referEName { get; set; }
     }
 }

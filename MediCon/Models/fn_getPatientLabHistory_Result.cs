@@ -22,25 +22,13 @@ namespace MediCon.Models
         public string labTestID { get; set; }
         public string labTestName { get; set; }
         public string bloodChemID { get; set; }
-        public Nullable<decimal> fbs { get; set; }
-        public Nullable<decimal> serumUricAcid { get; set; }
-        public Nullable<decimal> creatinine { get; set; }
-        public Nullable<decimal> cholesterol { get; set; }
-        public Nullable<decimal> triglycerides { get; set; }
-        public Nullable<decimal> hdl { get; set; }
-        public Nullable<decimal> ldl { get; set; }
-        public Nullable<decimal> vldl { get; set; }
-        public Nullable<decimal> sgpt { get; set; }
-        public Nullable<decimal> sgot { get; set; }
-        public Nullable<decimal> bun { get; set; }
-        public Nullable<decimal> potassium { get; set; }
-        public Nullable<decimal> sodium { get; set; }
-        public Nullable<decimal> chloride { get; set; }
-        public Nullable<decimal> calcium { get; set; }
-        public Nullable<decimal> glycosylatedHemoglobin { get; set; }
-        public string pathologist { get; set; }
-        public string medtech { get; set; }
+        public Nullable<decimal> result { get; set; }
+        public string LabTestGroupID { get; set; }
         public Nullable<System.DateTime> bloodChemDateEncoded { get; set; }
         public Nullable<System.DateTime> dateTested { get; set; }
+        public string referredServiceID { get; set; }
+        public string MRDiagnosisID { get; set; }
+        public string ConsultServiceName { get; set; }
+        public string refServiceName { get; set; }
     }
 }

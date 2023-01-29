@@ -45,8 +45,6 @@
             else {
                 if (d.data != null && d.data != "") {
                     s.qrData = {};
-                    s.testHistory = {};
-                    s.labReq = {};
 
                     d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
                     d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
@@ -70,6 +68,9 @@
     }
 
     s.getLabtest = function (qrCode) {
+        s.testHistory = [];
+        s.labReq = [];
+
         // GET LAB HISTORY AND REQUEST
         h.post('../Labtest/getPersonLabReq?qrCode=' + qrCode).then(function (d) {
             if (d.data.length == 0) {
@@ -90,12 +91,12 @@
 
                 if (d.data[0][0].isTested == null || d.data[0][0].isTested == false) {
                     s.labReq = d.data[0];
-                    s.testHistory = d.data.length > 1 ? d.data[1] : {};
+                    s.testHistory = d.data.length > 1 ? d.data[1] : [];
                 }
 
                 else {
                     s.testHistory = d.data[0];
-                    s.labReq = d.data.length > 1 ? d.data[1] : {};
+                    s.labReq = d.data.length > 1 ? d.data[1] : [];
                 }
             }
         });
@@ -108,7 +109,7 @@
             type: "info",
             showConfirmButton: false
         });
-
+        
         h.post('../Labtest/saveTestStatus', { labID: lab.labID, isTest: isTested }).then(function (d) {
             if (d.data.status == "error") {
                 swal({

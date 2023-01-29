@@ -21,5 +21,6 @@ namespace MediCon.Models
         public Nullable<int> systolic { get; set; }
         public Nullable<int> diastolic { get; set; }
         public Nullable<int> pulseRate { get; set; }
+        public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
 }

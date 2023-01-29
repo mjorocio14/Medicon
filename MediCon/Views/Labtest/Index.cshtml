@@ -3,6 +3,32 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .borderless tr td {
+        border: none !important;
+        padding: 2px !important;
+    }
+
+    th {
+	    position: sticky;
+	    position: -webkit-sticky;
+	    top: 0px;
+	    z-index: 2;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        /*height: 330px !important;*/
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+</style>
+
 
 <div ng-controller="LabTestCtrl">
     <!-- HEADER -->
@@ -131,22 +157,20 @@
                             <label class="text-center">LABORATORY REQUEST</label>
                         </div>
                         <div class="panel-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table class="table table-stripped">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 330px !important;">
+                                <table class="table table-stripped table-bordered">
                                     <thead>
                                         <tr>
-
-                                            <th class="">#</th>
+                                            <th class="text-center">#</th>
                                             <th>Test</th>
                                             <th>Referred by</th>
-                                            <th>Date & Time</th>
-                                            <th>Status</th>
-
+                                            <th class="text-center">Date & Time</th>
+                                            <th class="text-center">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="text-center" ng-show="loader">
-                                            <td colspan="6">
+                                            <td colspan="5">
                                                 <div class="sk-spinner sk-spinner-double-bounce">
                                                     <div class="sk-double-bounce1"></div>
                                                     <div class="sk-double-bounce2"></div>
@@ -155,15 +179,15 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                            <td colspan="6">
+                                            <td colspan="5">
                                                 <label class="text-danger">NO INFORMATION FOUND!</label>
                                             </td>
                                         </tr>
-                                        <tr ng-repeat="lab in labReq">
-                                            <td>{{$index + 1}}</td>
-                                            <td><strong>{{lab.labTestName}}</strong></td>
+                                        <tr ng-repeat="lab in labReq | orderBy: '-consultDT'">
+                                            <td class="text-center">{{$index + 1}}</td>
+                                            <td><strong>{{lab.LabTestGroupID == null ? lab.labTestName : lab.labGroupName}}</strong></td>
                                             <td>{{lab.consultPersonnel[0].personnel_firstName}} {{lab.consultPersonnel[0].personnel_middleName}} {{lab.consultPersonnel[0].personnel_lastName}} {{lab.consultPersonnel[0].personnel_extName}}</td>
-                                            <td>{{lab.consultDT}}</td>
+                                            <td class="text-center">{{lab.consultDT}}</td>
                                             <td class="text-center">
                                                 <div class="checkbox checkbox-danger" style="margin-top: 3px !important;">
                                                     <input type="checkbox" id="tagTested" ng-model="isTested" ng-change="tagTested(lab, isTested)">
@@ -182,24 +206,22 @@
                             <label class="text-center">LABORATORY HISTORY</label>
                         </div>
                         <div class="panel-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table class="table table-stripped">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 330px !important;">
+                                <table class="table table-stripped table-bordered">
                                     <thead>
                                         <tr>
-
-                                            <th class="">#</th>
+                                            <th class="text-center">#</th>
                                             <th>Test</th>
                                             <th>Lab. Personnel</th>
-                                            <th>Lab. Date & Time</th>
+                                            <th class="text-center">Lab. Date & Time</th>
                                             <th>Referred by</th>
-                                            <th>Date & Time</th>
-                                            <th>Status</th>
-
+                                            <th class="text-center">Date & Time</th>
+                                            <th class="text-center">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="text-center" ng-show="loader">
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <div class="sk-spinner sk-spinner-double-bounce">
                                                     <div class="sk-double-bounce1"></div>
                                                     <div class="sk-double-bounce2"></div>
@@ -208,17 +230,17 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <label class="text-danger">NO INFORMATION FOUND!</label>
                                             </td>
                                         </tr>
-                                        <tr ng-repeat="hist in testHistory">
-                                            <td>{{$index + 1}}</td>
-                                            <td>{{hist.labTestName}}</td>
+                                        <tr ng-repeat="hist in testHistory | orderBy: '-labDT'">
+                                            <td class="text-center">{{$index + 1}}</td>
+                                            <td><strong>{{hist.LabTestGroupID == null ? hist.labTestName : hist.labGroupName}}</strong></td>
                                             <td>{{hist.labPersonnel[0].personnel_firstName}} {{hist.labPersonnel[0].personnel_middleName}} {{hist.labPersonnel[0].personnel_lastName}} {{hist.labPersonnel[0].personnel_extName}}</td>
-                                            <td>{{hist.labDT}}</td>
+                                            <td class="text-center">{{hist.labDT}}</td>
                                             <td>{{hist.consultPersonnel[0].personnel_firstName}} {{hist.consultPersonnel[0].personnel_middleName}} {{hist.consultPersonnel[0].personnel_lastName}} {{hist.consultPersonnel[0].personnel_extName}}</td>
-                                            <td>{{hist.consultDT}}</td>
+                                            <td class="text-center">{{hist.consultDT}}</td>
                                             <td class="text-center">
                                                 <div class="checkbox checkbox-danger" style="margin-top: 3px !important;">
                                                     <input type="checkbox" id="tagTested" value="true" ng-model="hist.isTested" ng-change="tagTested(hist, hist.isTested)">
@@ -246,7 +268,7 @@
                     <label class="text-center">LIST OF PATIENTS</label>
                 </div>
                 <div class="panel-body">
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: auto !important;">
                         <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>

@@ -3,7 +3,6 @@ namespace MediCon.Report.LRRF
     using System;
     using System.ComponentModel;
     using System.Drawing;
-    using System.Windows.Forms;
     using Telerik.Reporting;
     using Telerik.Reporting.Drawing;
 

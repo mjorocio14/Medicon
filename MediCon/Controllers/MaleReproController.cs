@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
@@ -17,10 +18,6 @@ namespace MediCon.Controllers
         {
             return View();
         }
-        public string generateID(string source)
-        {
-            return string.Format("{1:N}", source, Guid.NewGuid());
-        }
 
         [HttpPost]
         public ActionResult getMRHrequest(string qrCode)
@@ -30,18 +27,19 @@ namespace MediCon.Controllers
                 var lab = dbMed.MRHrequests.Join(dbMed.Referrals, mrh => mrh.referralID, r => r.referralID, (mrh, r) => new { mrh, r })
                                                    .Join(dbMed.Consultations, res1 => res1.r.consultID, c => c.consultID, (res1, c) => new { res1, c })
                                                    .Join(dbMed.VitalSigns, res2 => res2.c.vSignID, vs => vs.vSignID, (res2, vs) => new { res2, vs })
-                                                   .Where(a => a.vs.qrCode == qrCode && a.res2.res1.mrh.isDone == false)
+                                                   .Where(a => a.vs.qrCode == qrCode && a.res2.res1.mrh.isInterviewDone == false)
                                                    .Select(b => new
                                                    {
                                                        b.res2.res1.mrh.requestID,
                                                        b.res2.res1.mrh.referralID,
-                                                       requestDT = b.res2.res1.mrh.dateTimeLog,
-                                                       requestPersonID = b.res2.res1.mrh.personnelID,
-                                                       b.res2.res1.mrh.isDone,
+                                                       b.res2.res1.mrh.requestDT,
+                                                       b.res2.res1.mrh.requestPersonID,
+                                                       b.res2.res1.mrh.isInterviewDone,
+                                                       b.res2.res1.mrh.isDiagnoseDone,
                                                        b.res2.res1.r.consultID,
-                                                       requestPerson = dbMed.Personnels.Where(c => c.personnelID == b.res2.res1.mrh.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
+                                                       requestPerson = dbMed.Personnels.Where(c => c.personnelID == b.res2.res1.mrh.requestPersonID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
                                                        b.vs.qrCode,
-                                                   }).ToList();
+                                                   }).OrderByDescending(x => x.requestDT).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }
@@ -56,13 +54,15 @@ namespace MediCon.Controllers
         {
             try
             {
-                mrh.MRID = generateID(mrh.requestID).Substring(0, 15);
-                mrh.personnelID = Session["personnelID"].ToString();
-                mrh.dateTimeLog = DateTime.Now;
+                var MRID = new IDgenerator(mrh.requestID);
+
+                mrh.MRID = MRID.generateID.Substring(0, 15);
                 dbMed.MaleRepro_Interview.Add(mrh);
 
                 var request = dbMed.MRHrequests.SingleOrDefault(a => a.requestID == mrh.requestID);
-                request.isDone = true;
+                request.isInterviewDone = true;
+                request.interviewerID = Session["personnelID"].ToString();
+                request.interviewDT = DateTime.Now;
                 dbMed.Entry(request).State = EntityState.Modified;
 
                 var affectedRow = dbMed.SaveChanges();
@@ -85,10 +85,8 @@ namespace MediCon.Controllers
             try
             {
                 var findRec = dbMed.MaleRepro_Interview.SingleOrDefault(a => a.MRID == mrh.MRID);
-
                 findRec.besesGumising = mrh.besesGumising;
                 findRec.cancerName = mrh.cancerName;
-                findRec.dateTimeLog = DateTime.Now;
                 findRec.diNauubos = mrh.diNauubos;
                 findRec.DREfrequency = mrh.DREfrequency;
                 findRec.is1stDRE = mrh.is1stDRE;
@@ -102,9 +100,13 @@ namespace MediCon.Controllers
                 findRec.nadarama = mrh.nadarama;
                 findRec.pagpigilNgIhi = mrh.pagpigilNgIhi;
                 findRec.patigiltiglNaIhi = mrh.patigiltiglNaIhi;
-                findRec.personnelID = Session["personnelID"].ToString();
                 findRec.sintomasNgIhi = mrh.sintomasNgIhi;
                 dbMed.Entry(findRec).State = EntityState.Modified;
+
+                var findReq = dbMed.MRHrequests.SingleOrDefault(a => a.requestID == mrh.requestID);
+                findReq.interviewerID = Session["personnelID"].ToString();
+                findReq.interviewDT = DateTime.Now;
+                dbMed.Entry(findReq).State = EntityState.Modified;
 
                 var affectedRow = dbMed.SaveChanges();
 
@@ -120,11 +122,13 @@ namespace MediCon.Controllers
 
         }
 
-        public ActionResult getMRHclients()
+        public ActionResult getMRHclients(string date)
         {
             try
             {
-                var lab = dbMed.fn_getMRHclients().OrderByDescending(x => x.interviewDT).ToList();
+                DateTime dateParam = DateTime.Parse(date);
+
+                var lab = dbMed.fn_getMRHclients(dateParam).OrderByDescending(x => x.interviewDT).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }

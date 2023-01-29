@@ -174,7 +174,7 @@
                                             <td>{{hist.pbePersonnel[0].personnel_firstName}} {{hist.pbePersonnel[0].personnel_middleName}} {{hist.pbePersonnel[0].personnel_lastName}} {{hist.pbePersonnel[0].personnel_extName}}</td>
                                             <td>{{hist.pbeDT == 'Invalid date' ? '':hist.pbeDT}}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-warning" ng-click="performPBE(hist)" ng-disabled="(hist.isPapsmear && hist.isBreastExam) || showPerformPanel"><i class="fa fa-check"></i> Perform</button>
+                                                <button class="btn btn-sm btn-warning" ng-click="performPBE(hist)" ng-disabled="(hist.isPapsmear || hist.isBreastExam) || showPerformPanel"><i class="fa fa-check"></i> Perform</button>
                                             </td>
                                         </tr>
                                     </tbody>

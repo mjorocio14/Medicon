@@ -1,0 +1,531 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        /*height: 250px !important;*/
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+
+    th {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0px;
+        z-index: 2;
+    }
+</style>
+
+<div ng-controller="ClinicalScreeningCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-6">
+            <h2>Clinical Screening</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li>
+                    <a href="">X-ray</a>
+                </li>
+                <li class="active">
+                    <strong>Clinical Screening</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="!isScreening && !isViewingRecord" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+        <div class="row">
+
+            <!-- QR CODE INFO FORM -->
+            <div class="animated fadeInRight ecommerce" ng-show="!showClientList">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title text-center">
+                            <label class="text-center">QR CODE INFORMATION</label>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div ng-show="!isScreening && !isViewingRecord" class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                    <div class="profile_img">
+                                        <!-- Current avatar -->
+                                        <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
+                                    </div>
+                                    <form name="qrSearchForm">
+                                        <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                            <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                    <br />
+                                </div>
+                                <div ng-class="isScreening || isViewingRecord ? 'col-lg-12 col-md-12' : 'col-lg-9 col-md-9'" class="col-sm-12 col-xs-12">
+                                    <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are getting your data...</i></text>
+                                    </div>
+                                    <div ng-show="!loader">
+                                        <form id="QR_FORM" name="QR_FORM">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_lastName">Last name</label>
+                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_firstName">First name</label>
+                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_mi">Middle name</label>
+                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_suffix">Suffix</label>
+                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <label class="control-label">Sex</label>
+                                                    <div class="form-group text-center">
+                                                        <div class="radio radio-primary radio-inline">
+                                                            <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <label for="radio_sex_male"> Male </label>
+                                                        </div>
+                                                        <div class="radio radio-danger radio-inline">
+                                                            <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <label for="radio_sex_female"> Female </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_address">Address</label>
+                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <hr />
+                                </div>
+                                <div class="col-sm-12" ng-show="!isScreening && !isViewingRecord">
+                                    <button type="submit" class="btn btn-primary pull-right" ng-click="btnProceed(qrData)"><i class="fa fa-angle-double-right"></i> Proceed to Screening</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /QR CODE INFO FORM -->
+
+            <!-- X-RAY HISTORY -->
+            <div class="animated fadeInRight col-sm-12" ng-show="!showClientList && !isScreening && !isViewingRecord">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title text-center red-bg">
+                        <label class="text-center">X-RAY HISTORY</label>
+                    </div>
+                    <div class="ibox-content">
+
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar" style=" height: 250px !important;">
+                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="color: #1ab394;">#</th>
+                                        <th class="text-center" style="color: #1ab394;">Screened Date & Time</th>
+                                        <th style="color: #1ab394;">Screened By</th>
+                                        <th class="text-center" style="color: #1ab394;">X-ray Date & Time</th>
+                                        <th style="color: #1ab394;">RadTech</th>
+                                        <th class="text-center" style="color: #1ab394;">Xray</th>
+                                        <th class="text-center" style="color: #1ab394;">Scutum</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center" ng-show="xrayHist_loader">
+                                        <td colspan="7">
+                                            <div class="sk-spinner sk-spinner-double-bounce">
+                                                <div class="sk-double-bounce1"></div>
+                                                <div class="sk-double-bounce2"></div>
+                                            </div>
+                                            <text><i>Please wait, we are loading your data...</i></text>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center" ng-show="xrayHistoryList.length == 0 && xrayHist_loader == false">
+                                        <td colspan="7">
+                                            <label class="text-danger">NO INFORMATION FOUND!</label>
+                                        </td>
+                                    </tr>
+                                    <tr ng-repeat="dh in xrayHistoryList">
+                                        <td class="text-center">{{$index + 1}}</td>
+                                        <td class="text-center">{{dh.screenDT}}</td>
+                                        <td>{{dh.Screen_firstName}} {{dh.Screen_midInit}} {{dh.Screen_lastName}} {{dh.Screen_extName}}</td>
+                                        <td class="text-center">{{dh.xrayDT}}</td>
+                                        <td>{{dh.rad_firstName}} {{dh.rad_midInit}} {{dh.rad_lastName}} {{dh.rad_extName}}</td>
+                                        <td class="text-center">{{dh.isXray ? 'Yes' : 'No'}}</td>
+                                        <td class="text-center">{{dh.isNeedScutum ? 'Yes' : 'No'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- /X-RAY HISTORY -->
+
+            <!-- CLINICAL SCREENING INFORMATION -->
+            <div class="animated fadeInRight col-sm-12" ng-show="(!showClientList && isScreening) || isViewingRecord">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title text-center lazur-bg">
+                        <label class="text-center">CLINICAL SCREENING INFORMATION</label>
+                    </div>
+                    <div class="ibox-content">
+                        <form name="screeningForm">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label class="col-sm-3 control-label">1. Manigarilyo?</label>
+                                            <div class="col-sm-9">
+                                                <div class="radio radio-success radio-inline">
+                                                    <input type="radio" id="manigarilyo_ou" name="radio_manigarilyo" value="1" ng-model="screening.manigarilyo" ng-disabled="isViewingRecord && !isEditting" />
+                                                    <label for="manigarilyo_ou"> Ou </label>
+                                                </div>
+                                                <div class="radio radio-primary radio-inline">
+                                                    <input type="radio" id="manigarilyo_hindi" name="radio_manigarilyo" value="0" ng-model="screening.manigarilyo" ng-disabled="isViewingRecord && !isEditting" required />
+                                                    <label for="manigarilyo_hindi"> Hindi </label>
+                                                </div>
+                                                <div class="radio radio-danger radio-inline">
+                                                    <input type="radio" id="manigarilyo_niundang" name="radio_manigarilyo" value="2" ng-model="screening.manigarilyo" ng-disabled="isViewingRecord && !isEditting" />
+                                                    <label for="manigarilyo_niundang"> Niundang na </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label class="col-sm-3 control-label">2. Mo-inom og alak?</label>
+                                            <div class="col-sm-9">
+                                                <div class="radio radio-success radio-inline">
+                                                    <input type="radio" id="moInom_ou" name="radio_moInom" value="1" ng-model="screening.moInom" ng-disabled="isViewingRecord && !isEditting" required />
+                                                    <label for="moInom_ou"> Ou </label>
+                                                </div>
+                                                <div class="radio radio-primary radio-inline">
+                                                    <input type="radio" id="moInom_hindi" name="radio_moInom" value="0" ng-model="screening.moInom" ng-disabled="isViewingRecord && !isEditting" />
+                                                    <label for="moInom_hindi"> Hindi </label>
+                                                </div>
+                                                <div class="radio radio-danger radio-inline">
+                                                    <input type="radio" id="moInom_okasyon" name="radio_moInom" value="2" ng-model="screening.moInom" ng-disabled="isViewingRecord && !isEditting" />
+                                                    <label for="moInom_okasyon"> kung naay okasyon </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <label>3. Naa ba kay ginabati?</label>
+                                    <div style="padding-left: 20px;" >
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness001" value="Hilanat" ng-model="screening.gibati.illness001" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness001"> Hilanat </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness002" value="Ubo" ng-model="screening.gibati.illness002" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness002"> Ubo </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness003" value="DugoPlema" ng-model="screening.gibati.illness003" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness003"> Naay dugo ang plema </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness004" value="MaghuotDughan" ng-model="screening.gibati.illness004" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness004"> Maghuot ang dughan </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness005" value="MaglisodGinhawa" ng-model="screening.gibati.illness005" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness005"> Maglisod og ginhawa </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness006" value="PagUbosTimbang" ng-model="screening.gibati.illness006" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness006"> Pag-ubos sa timbang </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness007" value="DaliKapuyon" ng-model="screening.gibati.illness007" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness007"> Dali kapuyon </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness008" value="SigePanington" ng-model="screening.gibati.illness008" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness008"> Sige panington </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="illness009" value="MangurogLawas" ng-model="screening.gibati.illness009" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="illness009"> Mangurog ang lawas </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <label>4. Naa ba kay?</label>
+                                    <div style="padding-left: 20px;">
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor001" value="HighBlood" ng-model="screening.comorbidity.comor001" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="comor001"> High Blood </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor002" value="Diabetes" ng-model="screening.comorbidity.comor002" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="comor002"> Diabetes </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor003" value="Hubak" ng-model="screening.comorbidity.comor003" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="comor003"> Hubak </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor004" value="Allergy" ng-model="screening.comorbidity.comor004" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="comor004"> Allergy </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor005" value="SakitKasingKasing" ng-model="screening.comorbidity.comor005" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="comor005"> Sakit sa kasing-kasing </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor006" value="Cancer" ng-model="screening.comorbidity.comor006" ng-disabled="isViewingRecord && !isEditting">
+                                            <label for="comor006"> Cancer </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="comor007" value="Others" ng-model="screening.comorbidity.comor007" ng-disabled="isViewingRecord && !isEditting" ng-click="onOthersChange(screening.comorbidity.comor007)">
+                                            <label for="comor007"> Others </label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="otherComorbidity" name="otherComorbidity" ng-model="screening.otherComorbidity" ng-disabled="screening.comorbidity.comor007 == false || screening.comorbidity.comor007 == undefined || (isViewingRecord && !isEditting)" placeholder="Identify others here..." class="form-control" ng-required="screening.comorbidity.comor007" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label class="col-sm-5 control-label">5. Niagi naba kag tambalan sa TB?</label>
+                                            <div class="col-sm-7">
+                                                <div class="radio radio-success radio-inline">
+                                                    <input type="radio" id="tbHistory_ou" name="radio_tbHistory" value=true ng-model="screening.tbHistory" ng-disabled="isViewingRecord && !isEditting" />
+                                                    <label for="tbHistory_ou"> Ou </label>
+                                                </div>
+                                                <div class="radio radio-primary radio-inline">
+                                                    <input type="radio" id="tbHistory_hindi" name="radio_tbHistory" value=false ng-model="screening.tbHistory" ng-disabled="isViewingRecord && !isEditting" ng-click="onTBhistoryChange(screening.tbHistory)" required />
+                                                    <label for="tbHistory_hindi"> Hindi </label>
+                                                </div>
+                                                <br />
+                                                <div class="form-group" ng-show="screening.tbHistory == 'true'">
+                                                    <input type="text" id="kanusA" name="kanusA" ng-model="screening.kanusA" placeholder="Kanus-a nagpatambal" class="form-control" ng-disabled="isViewingRecord && !isEditting" ng-required="screening.tbHistory == 'true'" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <label class="col-sm-6 control-label">6. Naa ba kay paryente nagkasakit ug TB?</label>
+                                            <div class="col-sm-6">
+                                                <div class="radio radio-success radio-inline">
+                                                    <input type="radio" id="paryenteWithTB_ou" name="radio_paryenteWithTB" value=true ng-model="screening.paryenteWithTB" ng-disabled="isViewingRecord && !isEditting" />
+                                                    <label for="paryenteWithTB_ou"> Ou </label>
+                                                </div>
+                                                <div class="radio radio-primary radio-inline">
+                                                    <input type="radio" id="paryenteWithTB_hindi" name="radio_paryenteWithTB" value=false ng-model="screening.paryenteWithTB" ng-disabled="isViewingRecord && !isEditting" ng-click="onParyenteTBChange(screening.paryenteWithTB)" required />
+                                                    <label for="paryenteWithTB_hindi"> Hindi </label>
+                                                </div>
+                                                <br />
+                                                <div class="form-group" ng-show="screening.paryenteWithTB == 'true'">
+                                                    <input type="text" id="kinsa" name="kinsa" ng-model="screening.kinsa" placeholder="Kinsa na paryente" class="form-control" ng-disabled="isViewingRecord && !isEditting" ng-required="screening.paryenteWithTB == 'true'" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <label class="col-sm-12 control-label">Mga kauban sa balay:</label>
+                                <div ng-show="isScreening || (isViewingRecord && isEditting)">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <input type="text" id="kauban" name="kauban" ng-model="houseMembers.name" placeholder="Pangalan" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <div class="col-sm-12 text-center">
+                                                    <div class="radio radio-danger radio-inline">
+                                                        <input type="radio" id="kauban_sex_male" name="kauban_sex_male" value="true" ng-model="houseMembers.sex" />
+                                                        <label for="kauban_sex_male"> Male </label>
+                                                    </div>
+                                                    <div class="radio radio-primary radio-inline">
+                                                        <input type="radio" id="kauban_sex_female" name="kauban_sex_female" value="false" ng-model="houseMembers.sex" />
+                                                        <label for="kauban_sex_female"> Female </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <div class="form-group">
+                                            <input type="date" id="birthdate" name="birthdate" ng-model="houseMembers.birthdate" class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <div class="form-group">
+                                            <button class="btn btn-success pull-right" type="button" style="width: 100%;" ng-disabled="houseMembers.name == null || houseMembers.name == undefined || houseMembers.sex == undefined || houseMembers.birthdate == undefined || houseMembers.birthdate == null"
+                                                    ng-click="addHouseMember(houseMembers)">
+                                                <i class="fa fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table id="houseMember_tbl" class="table table-stripped table-hover table-bordered" style="width: 100%; height: 100%">
+                                            <thead>
+                                                <tr>
+
+                                                    <th>#</th>
+                                                    <th>Name</th>
+                                                    <th class="text-center">Sex</th>
+                                                    <th class="text-center">Age</th>
+                                                    <th ng-show="isScreening || (isViewingRecord && isEditting)" class="text-center" data-sort-ignore="true">Action</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in houseData">
+                                                    <td>{{$index + 1}}</td>
+                                                    <td>{{item.name}}</td>
+                                                    <td class="text-center">{{item.sex == 'true' ? 'Male' : 'Female'}}</td>
+                                                    <td class="text-center">{{item.age}}</td>
+                                                    <td ng-show="isScreening || (isViewingRecord && isEditting)" class="text-center"><button class="btn-danger btn btn-xs" type="button" ng-click="removeHouseMember($index)"><i class="fa fa-trash"></i> Remove </button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-show="!isViewingRecord && !isEditting">
+                                        <button class="btn btn-danger pull-right" type="button" ng-click="btnProceed(qrData)">Cancel</button>
+                                        <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!screeningForm.$invalid ? saveScreening(qrData, screening):''">Save Screening</button>
+                                    </div>
+                                    <div ng-show="isViewingRecord">
+                                        <button type="button" style="margin-left: 5px;" class="btn btn-danger pull-right" ng-click="cancelViewing()"><i class="fa fa-times"></i> Cancel</button>
+                                        <button ng-show="!isEditting" type="button" class="btn btn-success pull-right" ng-click="isEditting = !isEditting;"><i class="fa fa-pencil"></i> Edit</button>
+                                        <button ng-show="isEditting" type="submit" class="btn btn-primary pull-right" ng-click="!screeningForm.$invalid ? saveScreening(qrData, screening):''"><i class="fa fa-angle-double-right"></i> Save Updates</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /CLINICAL SCREENING INFORMATION -->
+
+            <!-- PATIENT LIST FOR CURRENT DAY -->
+            <div class="animated fadeInRight ecommerce" ng-show="showClientList">
+                <div class="col-lg-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label text-left">Date of Clinical Screening:</label>
+                            <div class="col-sm-2">
+                                <input type="date" id=" xrayfilterdate" ng-change="filterResult(xrayFilterDate)" name="xrayFilterDate" style="text-transform:uppercase" ng-model="xrayFilterDate" class="text-center form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br />
+                <div class="col-sm-12 col-xs-12">
+                    <div class="panel panel-success">
+                        <div class="panel-heading text-center">
+                            <label class="text-center">LIST OF SCREENED PATIENTS</label>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="screening_tbl" class="table table-stripped table-hover" style="width: 100%; height: 100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>#</th>
+                                            <th>Last name</th>
+                                            <th>First name</th>
+                                            <th>M.I.</th>
+                                            <th>Suffix</th>
+                                            <th>Sex</th>
+                                            <th>Age</th>
+                                            <th>Contact no.</th>
+                                            <th>Screening Personnel</th>
+                                            <th>Screened Date & Time</th>
+                                            <th class="text-right" data-sort-ignore="true">Action</th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /PATIENT LIST FOR CURRENT DAY -->
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/Xray/ClinicalScreening.js"></script>
+}

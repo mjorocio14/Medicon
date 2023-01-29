@@ -30,8 +30,6 @@ namespace MediCon.Models
         public Nullable<decimal> mch { get; set; }
         public Nullable<decimal> mchc { get; set; }
         public Nullable<decimal> plt { get; set; }
-        public string signatory1 { get; set; }
-        public string signatory2 { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
     }

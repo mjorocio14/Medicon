@@ -16,6 +16,13 @@
         width: 100%;
     }
 
+    th {
+	    position: sticky;
+	    position: -webkit-sticky;
+	    top: 0px;
+	    z-index: 2;
+    }
+
     .tabs-container .nav-tabs > li.active > a, .tabs-container .nav-tabs > li.active > a:hover, .tabs-container .nav-tabs > li.active > a:focus {
         background-color: #1ab394;
         color: white;
@@ -95,7 +102,7 @@
                                                 <label class="control-label" for="qr_mi">Middle name</label>
                                                 <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly style="background-color: white;" />
                                             </div>
-                                        </div>re
+                                        </div>
                                         <div class="col-sm-6">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_suffix">Suffix</label>
@@ -149,25 +156,23 @@
                 <div class="col-lg-7 col-md-7">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
-                            <div class="panel panel-warning" style="min-height: 200px; height: 350px;">
+                            <div class="panel panel-warning">
                                 <div class="panel-heading text-center">
                                     <label class="text-center">RECTAL EXAMINATION REQUEST</label>
                                 </div>
-                                <div class="panel-body">
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                        <table class="table table-stripped">
+                                <div class="panel-body" style="height: 303px;">
+                                    <div class="table-wrapper-scroll-y" style="position: relative; height: 270px !important; overflow: auto; border: none; width: 100%;">
+                                        <table class="table table-stripped table-bordered">
                                             <thead>
                                                 <tr>
-
                                                     <th class="">#</th>
                                                     <th>Referred by</th>
                                                     <th>Date & Time</th>
                                                     <th>Action</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="text-center" ng-show="bpLoader">
+                                                <tr class="text-center" ng-show="requestLoader">
                                                     <td colspan="4">
                                                         <div class="sk-spinner sk-spinner-double-bounce">
                                                             <div class="sk-double-bounce1"></div>
@@ -176,7 +181,7 @@
                                                         <text><i>Please wait, we are loading your data...</i></text>
                                                     </td>
                                                 </tr>
-                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false && mhrReq.length == 0">
+                                                <tr class="text-center" ng-show="requestLoader == false && mhrReq.length == 0">
                                                     <td colspan="6">
                                                         <label class="text-danger">NO INFORMATION FOUND!</label>
                                                     </td>
@@ -186,12 +191,13 @@
                                                     <td>{{req.requestPerson[0].personnel_firstName}} {{req.requestPerson[0].personnel_middleName}} {{req.requestPerson[0].personnel_lastName}} {{req.requestPerson[0].personnel_extName}}</td>
                                                     <td>{{req.requestDT}}</td>
                                                     <td class="text-center">
-                                                        <button class="btn btn-warning" ng-click="proceedInterview(false, null ,req)">Proceed</button>
+                                                        <button class="btn btn-warning" ng-disabled="req.isInterviewDone == true" ng-click="proceedInterview(false, null ,req)">Proceed</button>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
+                                  
                                 </div>
                             </div>
                         </div>
@@ -215,7 +221,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                    <div class="table-wrapper-scroll-y" style="position: relative; height: 170px !important; overflow: auto; border: none; width: 100%;">
                                         <table class="table table-stripped">
                                             <thead>
                                                 <tr>
@@ -268,7 +274,7 @@
                                     </ul>
                                     <div class="tab-content ">
                                         <div id="tab-MD" class="tab-pane active">
-                                            <div class="panel-body" style="height: 446px;">
+                                            <div class="panel-body" style="height: 430px;">
                                                 <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                                     <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
                                                         <thead>
@@ -297,7 +303,7 @@
                                                                     <label class="text-danger">NO INFORMATION FOUND!</label>
                                                                 </td>
                                                             </tr>
-                                                            <tr ng-repeat="dh in diagnoseHistoryList">
+                                                            <tr ng-repeat="dh in diagnoseHistoryList | orderBy: '-dateForSort'">
                                                                 <td class="text-center">{{$index + 1}}</td>
                                                                 <td>{{dh.dateTimeLog}}</td>
                                                                 <td>{{dh.personnelFullname}}</td>
@@ -321,7 +327,7 @@
                                             </div>
                                         </div>
                                         <div id="tab-MP" class="tab-pane">
-                                            <div class="panel-body" style="height: 446px;">
+                                            <div class="panel-body" style="height: 430px;">
                                                 <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                                     <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
                                                         <thead>
@@ -348,7 +354,7 @@
                                                                     <label class="text-danger">NO INFORMATION FOUND!</label>
                                                                 </td>
                                                             </tr>
-                                                            <tr ng-repeat="rx in rxHistoryList">
+                                                            <tr ng-repeat="rx in rxHistoryList | orderBy: 'dateForSort'">
                                                                 <td class="text-center">{{$index + 1}}</td>
                                                                 <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
                                                                 <td>{{rx[0].dateTimeRx}}</td>
@@ -356,11 +362,11 @@
                                                                 <td>
                                                                     <table class="table table-stripped" style="width: 100%;">
                                                                         <thead>
-                                                                            <tr>
-                                                                                <th>Medicine Name</th>
-                                                                                <th>Dosage</th>
-                                                                                <th># Days</th>
-                                                                                <th>Qty</th>
+                                                                            <tr style="font-weight: bold;">
+                                                                                <td>Medicine Name</td>
+                                                                                <td>Dosage</td>
+                                                                                <td># Days</td>
+                                                                                <td>Qty</td>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -380,22 +386,21 @@
                                             </div>
                                         </div>
                                         <div id="tab-Lab" class="tab-pane">
-                                            <div class="panel-body" style="height: 446px;">
+                                            <div class="panel-body" style="height: 430px;">
                                                 <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                                     <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
                                                         <thead>
                                                             <tr>
                                                                 <th class="text-center" style="color: #1ab394;">#</th>
                                                                 <th style="color: #1ab394;">Test</th>
+                                                                <th style="color: #1ab394;" class="text-center">Service</th>
                                                                 <th style="color: #1ab394;" class="text-center">Tested</th>
-                                                                <th style="color: #1ab394;" class="text-center">With Result</th>
-                                                                <th style="color: #1ab394;">Date & Time Tested</th>
-                                                                <th style="color: #1ab394;" class="text-center">Action</th>
+                                                                <th style="color: #1ab394;" class="text-center">Date & Time Tested</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr class="text-center" ng-show="medHistLoader_modal">
-                                                                <td colspan="6">
+                                                            <tr class="text-center" ng-show="labLoader">
+                                                                <td colspan="5">
                                                                     <div class="sk-spinner sk-spinner-double-bounce">
                                                                         <div class="sk-double-bounce1"></div>
                                                                         <div class="sk-double-bounce2"></div>
@@ -403,18 +408,17 @@
                                                                     <text><i>Please wait, we are loading your data...</i></text>
                                                                 </td>
                                                             </tr>
-                                                            <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
-                                                                <td colspan="6">
+                                                            <tr class="text-center" ng-show="labHistoryList.length == 0 && labLoader == false">
+                                                                <td colspan="5">
                                                                     <label class="text-danger">NO INFORMATION FOUND!</label>
                                                                 </td>
                                                             </tr>
-                                                            <tr ng-repeat="dh in labHistoryList">
+                                                            <tr ng-repeat="dh in labHistoryList | orderBy: 'dateForSort'">
                                                                 <td class="text-center">{{$index + 1}}</td>
-                                                                <td>{{dh.labTestName}}</td>
+                                                                <td>{{dh.LabTestGroupDesc == null ? dh.labTestName : dh.LabTestGroupDesc}}</td>
+                                                                <td class="text-center">{{dh.MRDiagnosisID == null ? dh.ConsultServiceName : dh.refServiceName}}</td>
                                                                 <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
-                                                                <td class="text-center">Yes</td>
-                                                                <td>{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
-                                                                <td class="text-center"><button class="btn btn-primary btn-sm" ng-click="viewLabResult(dh)"> Show </button></td>
+                                                                <td class="text-center">{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -962,34 +966,45 @@
 
         <!-- LIST OF PATIENTS -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
-
-            <div class="panel panel-success">
-                <div class="panel-heading text-center">
-                    <label class="text-center">LIST OF PATIENTS</label>
-                </div>
-                <div class="panel-body">
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
-                            <thead>
-                                <tr>
-
-                                    <th>#</th>
-                                    <th>Last name</th>
-                                    <th>First name</th>
-                                    <th>M.I.</th>
-                                    <th>Suffix</th>
-                                    <th>Sex</th>
-                                    <th>Age</th>
-                                    <th>Contact no.</th>
-                                    <th>Interviewed by</th>
-                                    <th>Date & Time Interviewed</th>
-                                    <th class="text-right" data-sort-ignore="true">Action</th>
-
-                                </tr>
-                            </thead>
-                        </table>
+            <div class="col-lg-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label text-left">Rectal Examination Date:</label>
+                        <div class="col-sm-2">
+                            <input type="date" id="xrayFilterDate" ng-change="filterResult(xrayFilterDate)" name="xrayFilterDate" style="text-transform:uppercase" ng-model="xrayFilterDate" class="text-center form-control">
+                        </div>
                     </div>
+                </form>
+            </div>
+            <div class="col-lg-12">
+                <div class="panel panel-success">
+                    <div class="panel-heading text-center">
+                        <label class="text-center">LIST OF PATIENTS</label>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
+                                <thead>
+                                    <tr>
 
+                                        <th>#</th>
+                                        <th>Last name</th>
+                                        <th>First name</th>
+                                        <th>M.I.</th>
+                                        <th>Suffix</th>
+                                        <th>Sex</th>
+                                        <th>Age</th>
+                                        <th>Contact no.</th>
+                                        <th>Interviewed by</th>
+                                        <th>Date & Time Interviewed</th>
+                                        <th class="text-right" data-sort-ignore="true">Action</th>
+
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

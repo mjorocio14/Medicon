@@ -1,0 +1,413 @@
+﻿
+@{
+    ViewBag.Title = "Form2A";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        /*height: 250px !important;*/
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+
+    th {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0px;
+        z-index: 2;
+    }
+</style>
+
+<div ng-controller="XrayScutumCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-6">
+            <h2>Form2A: Laboratory Request</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li>
+                    <a href="">X-ray</a>
+                </li>
+                <li class="active">
+                    <strong>Laboratory Request</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="!isRequesting" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+        <div class="row">
+
+            <!-- QR CODE INFO FORM -->
+            <div class="animated fadeInRight ecommerce" ng-show="!showClientList">
+                <div class="col-sm-12">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title text-center">
+                            <label class="text-center">QR CODE INFORMATION</label>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div ng-show="!isRequesting" class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                    <div class="profile_img">
+                                        <!-- Current avatar -->
+                                        <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
+                                    </div>
+                                    <form name="qrSearchForm">
+                                        <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                            <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                    <br />
+                                </div>
+                                <div ng-class="isRequesting ? 'col-lg-12 col-md-12' : 'col-lg-9 col-md-9'" class="col-sm-12 col-xs-12">
+                                    <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are getting your data...</i></text>
+                                    </div>
+                                    <div ng-show="!loader">
+                                        <form id="QR_FORM" name="QR_FORM">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_lastName">Last name</label>
+                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_firstName">First name</label>
+                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_mi">Middle name</label>
+                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_suffix">Suffix</label>
+                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <label class="control-label">Sex</label>
+                                                    <div class="form-group text-center">
+                                                        <div class="radio radio-primary radio-inline">
+                                                            <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <label for="radio_sex_male"> Male </label>
+                                                        </div>
+                                                        <div class="radio radio-danger radio-inline">
+                                                            <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <label for="radio_sex_female"> Female </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="qr_address">Address</label>
+                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <hr />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <form name="tagStatus_form">
+                                    <div ng-show="!isRequesting" class="col-lg-3 col-md-3 col-sm-12 col-xs-12"></div>
+                                    <div ng-class="isRequesting ? 'col-lg-6 col-md-6' : 'col-lg-4 col-md-4'" class="col-sm-12 col-xs-12">
+                                        <div class="input-group m-b" style="width: 100%">
+                                            <span class="input-group-addon"><b>X-ray</b></span>
+                                            <input type="text" id="isXray" name="isXray" ng-model="status.isXray" class="form-control text-center" readonly />
+                                        </div>
+                                    </div>
+                                    <div ng-class="isRequesting ? 'col-lg-6 col-md-6' : 'col-lg-5 col-md-5'" class="col-sm-12 col-xs-12">
+                                        <div class="input-group m-b" style="width: 100%">
+                                            <span class="input-group-addon"><b>Scutum Request</b></span>
+                                            <input type="text" id="isNeedScutum" name="isNeedScutum" ng-model="status.isNeedScutum" class="form-control text-center" readonly />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" ng-show="!isRequesting">
+                                        <button type="submit" class="btn btn-primary pull-right" ng-disabled="qrData.qrCode == null || qrData.qrCode == undefined || isAlreadyRequested" ng-click="!tagStatus_form.$invalid ? proceed(qrData, status):''"><i class="fa fa-angle-double-right"></i> Proceed </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /QR CODE INFO FORM -->
+
+            <!-- LABORATORY REQUEST INFORMATION -->
+            <div class="animated fadeInRight col-sm-12" ng-show="!showClientList && isRequesting">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title text-center lazur-bg">
+                        <label class="text-center">FORM2A: LABORATORY REQUEST FORM (ACF)</label>
+                    </div>
+                    <div class="ibox-content">
+                        <form name="scutumReq_form">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Requesting Facility:</label>
+                                        <div class="form-group">
+                                            <input type="text" id="requestingFacility" name="requestingFacility" ng-model="request.requestingFacility" placeholder="Requesting Facility" class="form-control text-center" required />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Date of Request:</label>
+                                        <div class="form-group">
+                                            <input type="date" id="dateOfRequest" name="dateOfRequest" ng-model="request.dateOfRequest" class="form-control text-center" required />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Patient`s Fullname:</label>
+                                        <div class="form-group">
+                                            <input type="text" id="fullName" name="fullName" ng-model="request.fullName" class="form-control text-center" required readonly/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Age:</label>
+                                        <div class="form-group">
+                                            <input type="text" id="age" name="age" ng-model="request.age" class="form-control text-center" @*required*@ readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Sex:</label>
+                                        <div class="form-group">
+                                            <input type="text" id="sex" name="sex" ng-model="request.sex" class="form-control text-center" @*required*@ readonly />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Complete Address:</label>
+                                        <div class="form-group">
+                                            <input type="text" id="fullAddress" name="fullAddress" ng-model="request.fullAddress" class="form-control text-center" required readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Contact No.:</label>
+                                        <div class="form-group">
+                                            <input type="text" id="contactNo" name="contactNo" ng-model="request.contactNo" class="form-control text-center" @*required*@ readonly />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">History of Treatment:</label>
+                                        <div class="form-group text-center">
+                                            <div class="radio radio-primary radio-inline">
+                                                <input type="radio" id="radio_treatmentHistory_new" value="true" name="radio_treatmentHistory" ng-model="request.treatmentHistory" required />
+                                                <label for="radio_treatmentHistory_new"> New </label>
+                                            </div>
+                                            <div class="radio radio-danger radio-inline">
+                                                <input type="radio" id="radio_treatmentHistory_retreatment" value="false" name="radio_treatmentHistory" ng-model="request.treatmentHistory" />
+                                                <label for="radio_treatmentHistory_retreatment"> Retreatment </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Date of Treatment:</label>
+                                        <div class="form-group">
+                                            <input type="date" id="dateOfTreatment" name="dateOfTreatment" ng-model="request.dateOfTreatment" class="form-control text-center" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Test Requested:</label>
+                                        <div class="form-group text-center">
+                                            <div class="radio radio-primary radio-inline">
+                                                <input type="radio" id="radio_testRequested_xpert" value="true" name="radio_testRequested" ng-model="request.testRequested" required />
+                                                <label for="radio_testRequested_xpert"> Xpert </label>
+                                            </div>
+                                            <div class="radio radio-danger radio-inline">
+                                                <input type="radio" id="radio_testRequested_smear" value="false" name="radio_testRequested" ng-model="request.testRequested" />
+                                                <label for="radio_testRequested_smear"> Smear Microscopy </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Collection:</label>
+                                        <div class="form-group text-center">
+                                            <div class="radio radio-primary radio-inline">
+                                                <input type="radio" id="radio_collection_1st" value="true" name="radio_collection" ng-model="request.collection" required />
+                                                <label for="radio_collection_1st"> 1st </label>
+                                            </div>
+                                            <div class="radio radio-danger radio-inline">
+                                                <input type="radio" id="radio_collection_repeat" value="false" name="radio_collection" ng-model="request.collection" />
+                                                <label for="radio_collection_repeat"> Repeat </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Date Collected:</label>
+                                        <div class="form-group">
+                                            <input type="date" id="dateCollected" name="dateCollected" ng-model="request.dateCollected" class="form-control text-center" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Prepared By:</label>
+                                        <div class="form-group">
+                                            <text id="preparedBy_personnelFullName" name="preparedBy_personnelFullName" class="form-control text-center">@Session["firstName"]  @Session["middleName"] @Session["lastName"] @Session["extName"]</text>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Designation:</label>
+                                        <div class="form-group">
+                                            <text id="preparedBy_personnelDesignation" name="preparedBy_personnelDesignation" class="form-control text-center">@Session["position"]</text>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div ng-show="!isViewing && !isEditting">
+                                        <button class="btn btn-danger pull-right" type="button" ng-click="showLabRequestForm()">Cancel</button>
+                                        <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!scutumReq_form.$invalid ? saveLabReq(qrData.qrCode, request):''">Save Screening</button>
+                                    </div>
+                                    <div ng-show="isViewing">
+                                        <button class="btn btn-danger pull-right" type="button" ng-click="returnToList()">Cancel</button>
+                                        <button ng-show="!isEditting" class="btn btn-success pull-right" type="button" ng-click="isEditting = true; isViewing = true;" style="margin-right: 2px;">Edit Information</button>
+                                        <button ng-show="isEditting" class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!scutumReq_form.$invalid ? saveChanges(mrh):''">Save Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- /LABORATORY REQUEST INFORMATION -->
+
+            <!-- PATIENT LIST FOR CURRENT DAY -->
+            <div class="animated fadeInRight ecommerce" ng-show="showClientList">
+                <div class="col-lg-12">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label text-left">Laboratory Request Date:</label>
+                            <div class="col-sm-2">
+                                <input type="date" id="xrayFilterDate" ng-change="filterResult(xrayFilterDate)" name="xrayFilterDate" style="text-transform:uppercase" ng-model="xrayFilterDate" class="text-center form-control">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br />
+                <div class="col-sm-12 col-xs-12">
+                    <div class="panel panel-success">
+                        <div class="panel-heading text-center">
+                            <label class="text-center">LIST OF X-RAY PATIENTS</label>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="labReq_table" class="table table-stripped table-hover" style="width: 100%; height: 100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>#</th>
+                                            <th>Last name</th>
+                                            <th>First name</th>
+                                            <th>M.I.</th>
+                                            <th>Suffix</th>
+                                            <th>Sex</th>
+                                            <th>Age</th>
+                                            <th>Contact no.</th>
+                                            <th>Requesting Facility</th>
+                                            <th>Date of Request</th>
+                                            <th>Treatment</th>
+                                            <th>Test Requested</th>
+                                            <th>Collection</th>
+                                            <th>Prepared By</th>
+                                            <th>Date & Time Created</th>
+                                            @*<th data-sort-ignore="true">Action</th>*@
+                                            <th data-sort-ignore="true">Print</th>
+
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /PATIENT LIST FOR CURRENT DAY -->
+
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/Xray/XrayScutumLab.js"></script>
+}
+
