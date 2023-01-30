@@ -8,11 +8,13 @@ using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class XrayResultController : Controller
     {
         EQPEntities db = new EQPEntities();
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: XrayResult
         public ActionResult Index()
         {

@@ -63,22 +63,27 @@
                     return row.sex == 0 ? '<span class="label label-danger">Female</span></p>' : '<span class="label label-success">Male</span></p>';
                 }
             },
+             {
+                 "data": null, render: function (row) {
+                     return row.contactNum;
+                 }
+             },
                {
                    "data": null, render: function (row) {
                        return row.position;
                    }
                },
-
                {
                    "data": null, render: function (row) {
                        return row.userDesc;
                    }
                },
-                {
-                    "data": null, render: function (row) {
-                        return row.contactNum;
-                    }
-                },
+               {
+                   "data": null, render: function (row) {
+                       return row.service;
+                   }
+               },
+               
                 {
                     "data": null, render: function (row) {
                         return row.username;
@@ -145,6 +150,7 @@
 
 
     s.addUser = function () {
+        s.users = {};
         $('#addUserModal').modal('show');
     }
 
@@ -169,24 +175,38 @@
         })
     }
 
-    s.saveUserz = function (a) {
-        if (usern.test(a.username)) {
-            if (a.password != a.cpassword) {
+    s.saveUser = function (a) {
+
+        if (!usern.test(a.username)) {
+                swal({
+                    title: "Username Error!",
+                    text: "Must be minimum of 6 characters! ",
+                    type: "error"
+                });
+        }
+
+        else if (a.password != a.cpassword) {
                 swal({
                     title: "Password does not match!",
                     text: "",
                     type: "error"
                 });
-                return;
-            }
+        }
 
-            else {
-                if (pass.test(a.password)) {
+        else if (!pass.test(a.password)) {
+                swal({
+                    title: "Password Error!",
+                    text: "Must contain atleast one alphabetical, one numeric character and minimum of 6 characters! ",
+                    type: "error"
+                });
+        }
+
+        else {
                     h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
                         if (d.data == "Exist") {
                             swal({
                                 title: "Username already exist!",
-                                text: "Please use another username.",
+                                text: "Please use other username.",
                                 type: "error"
                             });
                             return;
@@ -194,23 +214,24 @@
                         else {
 
                             a.sex = a.sex == 'MALE' ? 1 : 0;
-                            a.serviceID = JSON.parse(a.serviceID).serviceID;
-                            a.userTypeID = JSON.parse(a.userTypeID).userTypeID;
-                         
-                            h.post('../SystemUser/saveUser', a).then(function (d) {
-                                if (d.data.errCode != 1 && d.data.errCode != 0) {
-                                    if (d.data.status == 00) {
-                                        swal({
-                                            title: "SUCCESS!",
-                                            text: d.data.msg,
-                                            type: "success"
-                                        });
-                                       
-                                        s.users = {};
-                                        loadTable();
-                                        $('#addUserModal').modal('hide');
-                                    }
+                            a.serviceID = a.serviceID;
+                            a.userTypeID = a.userTypeID;
+
+                            h.post('../SystemUser/saveUser', a).then(function (d)
+                            {
+                                if (d.data.responseCode == 200)
+                                {
+                                    swal({
+                                        title: "SUCCESS!",
+                                        text: d.data.msg,
+                                        type: "success"
+                                    });
+
+                                    s.users = {};
+                                    loadTable();
+                                    $('#addUserModal').modal('hide');
                                 }
+
                                 else {
                                     swal({
                                         title: "ERROR!",
@@ -222,94 +243,143 @@
                             });
                         }
                     });
-                }
-                else {
-                    swal({
-                        title: "ERROR!",
-                        text: d.data.msg,
-                        type: "error"
-                    });
-                    return;
-                }
-            }
         }
+        
+        //if (usern.test(a.username)) {
+            //if (a.password != a.cpassword) {
+            //    swal({
+            //        title: "Password does not match!",
+            //        text: "",
+            //        type: "error"
+            //    });
+            //    return;
+            //}
 
-        else {
-            if (usern.test(a.username)) {
-                if (a.password != a.cpassword) {
-                    swal({
-                        title: "Password does not match!",
-                        text: "",
-                        type: "error"
-                    });
-                    return;
-                }
-                else {
-                    if (pass.test(a.password)) {
-                        h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
-                            if (d.data == "Exist") {
-                                swal({
-                                    title: "Username already exist!",
-                                    text: "Please use another username.",
-                                    type: "error"
-                                });
-                                return;
-                            }
-                            else {
+            //else {
+            //    if (pass.test(a.password)) {
+            //        h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
+            //            if (d.data == "Exist") {
+            //                swal({
+            //                    title: "Username already exist!",
+            //                    text: "Please use another username.",
+            //                    type: "error"
+            //                });
+            //                return;
+            //            }
+            //            else {
 
-                                a.sex = a.sex == 'MALE' ? 1 : 0;
+            //                a.sex = a.sex == 'MALE' ? 1 : 0;
+            //                a.serviceID = JSON.parse(a.serviceID).serviceID;
+            //                a.userTypeID = JSON.parse(a.userTypeID).userTypeID;
+                         
+            //                h.post('../SystemUser/saveUser', a).then(function (d) {
+            //                    if (d.data.errCode != 1 && d.data.errCode != 0) {
+            //                        if (d.data.status == 00) {
+            //                            swal({
+            //                                title: "SUCCESS!",
+            //                                text: d.data.msg,
+            //                                type: "success"
+            //                            });
+                                       
+            //                            s.users = {};
+            //                            loadTable();
+            //                            $('#addUserModal').modal('hide');
+            //                        }
+            //                    }
+            //                    else {
+            //                        swal({
+            //                            title: "ERROR!",
+            //                            text: d.data.msg,
+            //                            type: "error"
+            //                        });
+            //                        return;
+            //                    }
+            //                });
+            //            }
+            //        });
+            //    }
+            //    else {
+            //        swal({
+            //            title: "ERROR!",
+            //            text: d.data.msg,
+            //            type: "error"
+            //        });
+            //        return;
+            //    }
+            //}
+        //}
 
-                                h.post('../SystemUser/saveUser', a).then(function (d) {
-                                    if (d.data.errCode != 1 && d.data.errCode != 0) {
-                                        if (d.data.status == 00) {
-                                            swal({
-                                                title: "SUCCESS!",
-                                                text: d.data.msg,
-                                                type: "success"
-                                            });
+        //else {
+            //if (usern.test(a.username)) {
+            //    if (a.password != a.cpassword) {
+            //        swal({
+            //            title: "Password does not match!",
+            //            text: "",
+            //            type: "error"
+            //        });
+            //        return;
+            //    }
+            //    else {
+            //        if (pass.test(a.password)) {
+            //            h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
+            //                if (d.data == "Exist") {
+            //                    swal({
+            //                        title: "Username already exist!",
+            //                        text: "Please use another username.",
+            //                        type: "error"
+            //                    });
+            //                    return;
+            //                }
+            //                else {
 
-                                            s.users = {};
-                                            loadTable();
-                                        }
-                                    }
-                                    else {
-                                        swal({
-                                            title: "ERROR!",
-                                            text: d.data.msg,
-                                            type: "error"
-                                        });
-                                        return;
-                                    }
-                                });
-                            }
-                        });
-                    }
-                    else {
-                        swal({
-                            title: "Password Error!",
-                            text: "Must contain atleast one alphabetical, one numeric character and minimum of 6 characters! ",
-                            type: "error"
-                        });
-                        return;
-                    }
-                }
-            }
-            else {
-                swal({
-                    title: "Username Error!",
-                    text: "Must be minimum of 6 characters! ",
-                    type: "error"
-                });
-                return;
-            }
-        }  
+            //                    a.sex = a.sex == 'MALE' ? 1 : 0;
+
+            //                    h.post('../SystemUser/saveUser', a).then(function (d) {
+            //                        if (d.data.errCode != 1 && d.data.errCode != 0) {
+            //                            if (d.data.status == 00) {
+            //                                swal({
+            //                                    title: "SUCCESS!",
+            //                                    text: d.data.msg,
+            //                                    type: "success"
+            //                                });
+
+            //                                s.users = {};
+            //                                loadTable();
+            //                            }
+            //                        }
+            //                        else {
+            //                            swal({
+            //                                title: "ERROR!",
+            //                                text: d.data.msg,
+            //                                type: "error"
+            //                            });
+            //                            return;
+            //                        }
+            //                    });
+            //                }
+            //            });
+            //        }
+            //        else {
+            //            swal({
+            //                title: "Password Error!",
+            //                text: "Must contain atleast one alphabetical, one numeric character and minimum of 6 characters! ",
+            //                type: "error"
+            //            });
+            //            return;
+            //        }
+            //    }
+            //}
+            //else {
+            //    swal({
+            //        title: "Username Error!",
+            //        text: "Must be minimum of 6 characters! ",
+            //        type: "error"
+            //    });
+            //    return;
+            //}
+        //}  
     }
    
-    //s.cancelBtn = function () {
-    //    s.info = {};
-    //    $('#unitSelect').val('').trigger('change');
-    //    return;
-    //}
 
     s.credentials = true;
 

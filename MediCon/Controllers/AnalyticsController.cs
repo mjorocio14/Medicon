@@ -7,16 +7,19 @@ using System.Web.Mvc;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class AnalyticsController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: Analytics
         public ActionResult Medical()
         {
             return View();
         }
 
+        [UserAccess]
         public ActionResult Physical()
         {
             return View();

@@ -288,6 +288,21 @@
     <Compile Include="Models\fn_vitalSignList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HRISDB.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRISDB.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HRISDB.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRISDB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HRISDB.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HRISDB.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LaboratoryExam.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
@@ -386,6 +401,9 @@
     <Compile Include="Models\UserType.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\vEmployeeHealthWell.cs">
+      <DependentUpon>HRISDB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\VitalSign.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -482,6 +500,16 @@
       <DependentUpon>DCIMS.edmx</DependentUpon>
       <LastGenOutput>DCIMS.cs</LastGenOutput>
     </Content>
+    <Content Include="Models\HRISDB.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HRISDB.edmx</DependentUpon>
+      <LastGenOutput>HRISDB.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\HRISDB.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>HRISDB.edmx</DependentUpon>
+      <LastGenOutput>HRISDB.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\Medicon.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Medicon.edmx</DependentUpon>
@@ -542,6 +570,13 @@
     </EntityDeploy>
     <Content Include="Models\DCIMS.edmx.diagram">
       <DependentUpon>DCIMS.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\HRISDB.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HRISDB.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\HRISDB.edmx.diagram">
+      <DependentUpon>HRISDB.edmx</DependentUpon>
     </Content>
     <None Include="Properties\PublishProfiles\Medicon.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

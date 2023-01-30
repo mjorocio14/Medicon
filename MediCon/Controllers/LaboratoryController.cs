@@ -10,16 +10,17 @@ using System.Data.Entity.Validation;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class LaboratoryController : Controller
     {
         MediconEntities db = new MediconEntities();
 
+        [UserAccess]
         // GET: Laboratory
         public ActionResult Lists()
         {
             return View();
         }
-        
 
         [HttpPost]
         public ActionResult getLab()

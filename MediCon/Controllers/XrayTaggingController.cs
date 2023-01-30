@@ -10,11 +10,13 @@ using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class XrayTaggingController : Controller
     {
         EQPEntities db = new EQPEntities();
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: XrayTagging
         public ActionResult Tag()
         {

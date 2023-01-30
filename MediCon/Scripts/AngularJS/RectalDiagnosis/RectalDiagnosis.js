@@ -683,7 +683,13 @@
 
         //   FECALYSIS RESULT
         else if (data.labTestID == "L0003") {
-            
+            s.fecalysis = {};
+
+            h.post("../LaboratoryResult/getFecalysisResult?labID=" + data.labID).then(function (d) {
+                s.fecalysis = d.data;
+            });
+
+            $('#modalFecalysis').modal('show');
         }
 
         //   CHEST X-RAY RESULT

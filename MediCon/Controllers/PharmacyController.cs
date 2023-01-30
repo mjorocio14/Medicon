@@ -10,13 +10,13 @@ using MediCon.ModelTemp;
 
 namespace MediCon.Controllers
 {
-    //[SessionTimeout]
+    [SessionTimeout]
     public class PharmacyController : Controller
     {
         MediconEntities db = new MediconEntities();
 
         // GET: Pharmacy
-        //[UserAccess]
+        [UserAccess]
         public ActionResult Dispensing()
         {
             return View();

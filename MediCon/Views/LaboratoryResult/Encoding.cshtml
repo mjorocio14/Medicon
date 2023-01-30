@@ -1269,7 +1269,7 @@
                                             <label for="radio_color_db"> Dark Brown </label>
                                         </div>
                                         <div class="radio radio-danger radio-inline">
-                                            <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" ng-disabled="isEditFecalysis" />
+                                            <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" ng-disabled="isEditFecalysis" ng-change="fecalysis.otherColorDesc = ''" />
                                             <label for="radio_color_ot"> Others </label>
                                         </div>
                                     </div>
@@ -1300,7 +1300,7 @@
                                             <label for="radio_consistency_w"> Watery </label>
                                         </div>
                                         <div class="radio radio-danger radio-inline">
-                                            <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="isEditFecalysis" />
+                                            <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="isEditFecalysis" ng-change="fecalysis.otherConDesc = ''" />
                                             <label for="radio_consistency_ot"> Others </label>
                                         </div>
                                     </div>
@@ -1346,11 +1346,11 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <label class="control-label" style="border:none" for="FatGlob">Fat Globules</label>
-                                    <input type="number" min="0" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" required ng-disabled="isEditFecalysis">
+                                    <input type="text" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" required ng-disabled="isEditFecalysis">
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="control-label" style="border:none" for="Bacteria">Bacteria</label>
-                                    <input type="number" min="0" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" required ng-disabled="isEditFecalysis">
+                                    <input type="text" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" required ng-disabled="isEditFecalysis">
                                 </div>
                             </div>
                             <br />
@@ -1362,9 +1362,9 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" ng-click="!FecalsysiForm.$invalid ? saveFecalysis(fecalysis, false):''" class="btn btn-primary" ng-if="isEdiFecalysis=='0'">Save</button>
+                            <button type="submit" ng-click="!FecalsysiForm.$invalid ? saveFecalysis(fecalysis, false):''" class="btn btn-primary" ng-if="isEditFecalysis=='0'">Save</button>
                             <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!FecalsysiForm.$invalid ? saveFecalysis(fecalysis, true):''" class="btn btn-primary" ng-if="isEdiFecalysis=='1' && isShowResult">Save Update</button>
+                            <button type="submit" ng-click="!FecalsysiForm.$invalid ? saveFecalysis(fecalysis, true):''" class="btn btn-primary" ng-if="isEditFecalysis=='1' && isShowResult">Save Update</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>

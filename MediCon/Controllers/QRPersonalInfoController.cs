@@ -8,11 +8,12 @@ using MediCon.Models;
 
 namespace MediCon.Controllers
 {
-    
+    [SessionTimeout]
     public class QRPersonalInfoController : Controller
     {
         EQPEntities db = new EQPEntities();
 
+        [UserAccess]
         // GET: QRPersonalInfo
         public ActionResult Index()
         {

@@ -12,22 +12,26 @@ using MediCon.ModelTemp;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class DentalController : Controller
     {
         MediconEntities db = new MediconEntities();
+        EQPEntities eqpDB = new EQPEntities();
+        HRISDBEntities hrisDB = new HRISDBEntities();
         Guid guid;
 
+        [UserAccess]
         // GET: Dental
         public ActionResult OralExam()
         {
             return View();
         }
 
+        [UserAccess]
         public ActionResult ToothExtraction()
         {
             return View();
         }   
-
 
 
         [HttpPost]
@@ -35,7 +39,7 @@ namespace MediCon.Controllers
         {
             try
             {
-                var personnel = db.Personnels.Where(a => a.position == "DENTIST").OrderByDescending(d => d.personnel_lastName).ThenBy(e => e.personnel_firstName).ToList();
+                var personnel = db.Personnels.Where(a => a.serviceID == "SERVICE002" && a.userTypeID == "6").OrderByDescending(d => d.personnel_lastName).ThenBy(e => e.personnel_firstName).ToList();
                 return Json(personnel, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -71,7 +75,7 @@ namespace MediCon.Controllers
                     detail.personnelID = personnelID != null ? personnelID : null;                    // SAVE DENTIST PERSONNEL ID ONLY TO DIAG049 - TOOTH EXTRACTION DIAGNOSIS
                     detail.outsideReferral = detail.outsideReferral != null ? detail.outsideReferral : null;
                     detail.dateTimeLog = DateTime.Now;
-                    detail.serviceID = "dental";
+                    detail.serviceID = "SERVICE002";
                     db.Consultations.Add(detail);
                     //......  /SAVE DATA IN CONSULATIONSURGERY TABLE
 
@@ -224,6 +228,62 @@ namespace MediCon.Controllers
             catch (Exception ex)
             {
                 return Json(new { status = "error", msg = "An error occured while saving your data.", ex = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        //.......       LIST OF DENTAL CLIENT
+        [HttpPost]
+        public ActionResult getClientList(string date)
+        {
+            try
+            {
+                DateTime dateStart = DateTime.Parse(date);
+                DateTime dateEnd = DateTime.Parse(date + " 23:59:59");
+
+                var result = db.VitalSigns.Join(db.Consultations, r1 => r1.vSignID, con => con.vSignID, (r1, con) => new { r1, con })
+                                               .Where(a => a.con.serviceID == "SERVICE002" && a.con.dateTimeLog >= dateStart && a.con.dateTimeLog <= dateEnd)
+                                               .ToList();
+
+                var joined = result.Join(hrisDB.vEmployeeHealthWells, r => r.r1.qrCode, pi => pi.qrCode, (r, pi) => new { r, pi })
+                                    .Select(a => new
+                                    {
+                                        a.pi.lastName,
+                                        a.pi.firstName,
+                                        a.pi.middleName,
+                                        a.pi.extName,
+                                        a.pi.sex,
+                                        a.pi.birthDate,
+                                        a.r.con.dateTimeLog
+                                    }).OrderByDescending(b => b.dateTimeLog).ToList();
+
+                //var joined = result.Join(eqpDB.PersonalInfoes, r => r.r1.qrCode, pi => pi.qrCode, (r, pi) => new { r, pi })
+                //                    .Select(a => new
+                //                    {
+                //                        a.pi.lastName,
+                //                        a.pi.firstName,
+                //                        a.pi.middleName,
+                //                        a.pi.extName,
+                //                        a.pi.sex,
+                //                        a.pi.birthdate,
+                //                        a.pi.contactNo,
+                //                        a.r.con.dateTimeLog
+                //                    }).OrderByDescending(b => b.dateTimeLog).AsEnumerable();
+
+                var serializer = new JavaScriptSerializer();
+                serializer.MaxJsonLength = Int32.MaxValue;
+
+                var content = new ContentResult
+                {
+                    Content = serializer.Serialize(joined),
+                    ContentType = "application/json"
+
+                };
+                return content;
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve list of clients.", exceptionMessage = ex.InnerException.Message }, JsonRequestBehavior.AllowGet);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest, ex.InnerException.Message);
             }
         }
 

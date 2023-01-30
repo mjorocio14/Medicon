@@ -6,9 +6,11 @@ using System.Web.Mvc;
 using MediCon.Models;
 using System.Data.Entity.Validation;
 using System.Data.Entity;
+using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class SystemUserController : Controller
     {
         MediconEntities db = new MediconEntities();
@@ -23,20 +25,21 @@ namespace MediCon.Controllers
         public ActionResult getUsers()
         {
             var userList = db.Personnels.Select(a => new {
-            a.personnel_firstName,
-            a.personnel_midInit,
-            a.personnel_lastName,
-            a.personnel_extName,
-            a.isActive,
-            a.password,
-            a.personnelID,
-            a.position,
-            a.userTypeID,
-            a.username,
-            a.sex,
-            a.contactNum,
-            userDesc = db.UserTypes.FirstOrDefault( b=> b.userTypeID == a.userTypeID).userTypeDesc
-            }).ToList();
+                            a.personnel_firstName,
+                            a.personnel_midInit,
+                            a.personnel_lastName,
+                            a.personnel_extName,
+                            a.isActive,
+                            a.password,
+                            a.personnelID,
+                            a.position,
+                            a.userTypeID,
+                            a.username,
+                            a.sex,
+                            a.contactNum,
+                            userDesc = db.UserTypes.FirstOrDefault( b=> b.userTypeID == a.userTypeID).userTypeDesc,
+                            service = db.Services.FirstOrDefault(e => e.serviceID == a.serviceID).serviceName
+                            }).ToList();
             return Json(userList, JsonRequestBehavior.AllowGet);
         }
 
@@ -62,20 +65,25 @@ namespace MediCon.Controllers
             {
                 a.personnelID = "PID" + (Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty)).Substring(0, 5).ToUpper() +
                         (DateTime.Now.ToString().Replace("/", "").Replace(" ", "").Replace(":", "").ToUpper());
-                a.personnelID = a.personnelID.Length > 8 ? a.personnelID.Substring(0, 8) : a.personnelID;
+
+                var personnelID = new IDgenerator(a.password);
+
+                a.personnelID = ("PID" + personnelID.generateID).Substring(0, 8); ;
                 a.dateTimeLog = DateTime.Now;
                 a.userEncoder = Session["personnelID"].ToString();
                 a.isActive = true;
                 db.Personnels.Add(a);
 
                 var affectedRow = db.SaveChanges();
+
                 if (affectedRow == 0)
-                    return Json(new { errCode = 0, msg = "Saving failed!" }, JsonRequestBehavior.AllowGet);
-                return Json(new { status = 00, msg = " Data successfully saved!" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { responseCode = 500, msg = "Saving failed!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { responseCode = 200, msg = "Account is successfully saved!" }, JsonRequestBehavior.AllowGet);
             }
             catch (DbEntityValidationException e)
             {
-                return Json(new { errCode = 1, msg = "Something went wrong. Failed to retrieve data.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { responseCode = 500, msg = "Something went wrong. Failed to retrieve data.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
             }
         }
 

@@ -11,10 +11,12 @@ using MediCon.Models;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class LaboratoryResultController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: LaboratoryResult
         public ActionResult Encoding()
         {
@@ -321,6 +323,44 @@ namespace MediCon.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
             }
         }
+
+        [HttpPost]
+        public ActionResult saveFecalysis(Fecalysi result)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var fecalysisID = new IDgenerator(result.labID);
+
+                    // SAVE LAB RESULT OF FECALYSIS
+                    result.fecalysisID = fecalysisID.generateID.Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    dbMed.Fecalysis.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
+                    dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
         
         public ActionResult getSpecialist()
         {
@@ -451,6 +491,12 @@ namespace MediCon.Controllers
         public ActionResult getECGResult(string labID)
         {
             var data = dbMed.ECGs.SingleOrDefault(e => e.labID == labID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult getFecalysisResult(string labID)
+        {
+            var data = dbMed.Fecalysis.SingleOrDefault(e => e.labID == labID);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
     }

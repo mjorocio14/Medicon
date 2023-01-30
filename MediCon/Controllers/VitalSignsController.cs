@@ -9,12 +9,12 @@ using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
-   
+    [SessionTimeout]  
     public class VitalSignsController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
-        //[UserAccess]
+        [UserAccess]
         // GET: VitalSigns
         public ActionResult VSview()
         {

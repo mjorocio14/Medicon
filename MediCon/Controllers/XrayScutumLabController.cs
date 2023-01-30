@@ -9,11 +9,13 @@ using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class XrayScutumLabController : Controller
     {
         EQPEntities db = new EQPEntities();
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: XrayScutumLab
         public ActionResult Form2A()
         {

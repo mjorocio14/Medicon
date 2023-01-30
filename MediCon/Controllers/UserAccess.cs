@@ -21,7 +21,7 @@ namespace MediCon.Controllers
                     ctx.Session["controllerName"] = controllerName;
                     ctx.Session["actionName"] = actionName;
                     var access = ctx.Session["userTypeID"].ToString();
-                    Console.WriteLine("test");
+                   
                     var accessusers = ctx.Session["MenuAccess"] as List<MenuAccess>;
                     var tb3 = accessusers.Where(y => y.controller == controllerName && y.action == actionName).FirstOrDefault();
                     if (tb3 == null)

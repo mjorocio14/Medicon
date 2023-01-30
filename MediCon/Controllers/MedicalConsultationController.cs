@@ -10,11 +10,12 @@ using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class MedicalConsultationController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
-       
 
+        [UserAccess]
         // GET: MedicalConsultation
         public ActionResult Index()
         {

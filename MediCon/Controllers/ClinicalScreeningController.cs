@@ -10,10 +10,12 @@ using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class ClinicalScreeningController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: ClinicalScreening
         public ActionResult Index()
         {

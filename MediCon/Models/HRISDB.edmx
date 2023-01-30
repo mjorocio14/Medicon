@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="HRISDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'HRISDB.dbo.vEmployeeHealthWell' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vEmployeeHealthWell">
+          <Key>
+            <PropertyRef Name="recNo" />
+            <PropertyRef Name="EIC" />
+          </Key>
+          <Property Name="recNo" Type="int" Nullable="false" />
+          <Property Name="EIC" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="idNo" Type="varchar" MaxLength="6" />
+          <Property Name="qrCode" Type="varchar" MaxLength="30" />
+          <Property Name="lastName" Type="varchar" MaxLength="30" />
+          <Property Name="firstName" Type="varchar" MaxLength="30" />
+          <Property Name="middleName" Type="varchar" MaxLength="30" />
+          <Property Name="extName" Type="varchar" MaxLength="4" />
+          <Property Name="fullNameLast" Type="varchar" MaxLength="150" />
+          <Property Name="fullNameFirst" Type="varchar" MaxLength="150" />
+          <Property Name="fullNameTitle" Type="varchar" MaxLength="150" />
+          <Property Name="birthDate" Type="date" />
+          <Property Name="sex" Type="varchar" MaxLength="6" />
+          <Property Name="civilStatCode" Type="varchar" MaxLength="20" />
+          <Property Name="positionTitle" Type="varchar" MaxLength="150" />
+          <Property Name="subPositionTitle" Type="varchar" MaxLength="1500" />
+          <Property Name="salaryGrade" Type="int" />
+          <Property Name="step" Type="int" />
+          <Property Name="employmentStatus" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityContainer Name="HRISDBModelStoreContainer">
+          <EntitySet Name="vEmployeeHealthWell" EntityType="Self.vEmployeeHealthWell" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vEmployeeHealthWell].[recNo] AS [recNo], 
+    [vEmployeeHealthWell].[EIC] AS [EIC], 
+    [vEmployeeHealthWell].[idNo] AS [idNo], 
+    [vEmployeeHealthWell].[qrCode] AS [qrCode], 
+    [vEmployeeHealthWell].[lastName] AS [lastName], 
+    [vEmployeeHealthWell].[firstName] AS [firstName], 
+    [vEmployeeHealthWell].[middleName] AS [middleName], 
+    [vEmployeeHealthWell].[extName] AS [extName], 
+    [vEmployeeHealthWell].[fullNameLast] AS [fullNameLast], 
+    [vEmployeeHealthWell].[fullNameFirst] AS [fullNameFirst], 
+    [vEmployeeHealthWell].[fullNameTitle] AS [fullNameTitle], 
+    [vEmployeeHealthWell].[birthDate] AS [birthDate], 
+    [vEmployeeHealthWell].[sex] AS [sex], 
+    [vEmployeeHealthWell].[civilStatCode] AS [civilStatCode], 
+    [vEmployeeHealthWell].[positionTitle] AS [positionTitle], 
+    [vEmployeeHealthWell].[subPositionTitle] AS [subPositionTitle], 
+    [vEmployeeHealthWell].[salaryGrade] AS [salaryGrade], 
+    [vEmployeeHealthWell].[step] AS [step], 
+    [vEmployeeHealthWell].[employmentStatus] AS [employmentStatus]
+    FROM [dbo].[vEmployeeHealthWell] AS [vEmployeeHealthWell]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="HRISDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="vEmployeeHealthWell">
+          <Key>
+            <PropertyRef Name="recNo" />
+            <PropertyRef Name="EIC" />
+          </Key>
+          <Property Name="recNo" Type="Int32" Nullable="false" />
+          <Property Name="EIC" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="idNo" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lastName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="firstName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="middleName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="extName" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="fullNameLast" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="fullNameFirst" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="fullNameTitle" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="birthDate" Type="DateTime" Precision="0" />
+          <Property Name="sex" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="civilStatCode" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="positionTitle" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="subPositionTitle" Type="String" MaxLength="1500" FixedLength="false" Unicode="false" />
+          <Property Name="salaryGrade" Type="Int32" />
+          <Property Name="step" Type="Int32" />
+          <Property Name="employmentStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="HRISDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="vEmployeeHealthWells" EntityType="Self.vEmployeeHealthWell" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="HRISDBModelStoreContainer" CdmEntityContainer="HRISDBEntities">
+          <EntitySetMapping Name="vEmployeeHealthWells">
+            <EntityTypeMapping TypeName="HRISDBModel.vEmployeeHealthWell">
+              <MappingFragment StoreEntitySet="vEmployeeHealthWell">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="EIC" ColumnName="EIC" />
+                <ScalarProperty Name="idNo" ColumnName="idNo" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+                <ScalarProperty Name="fullNameFirst" ColumnName="fullNameFirst" />
+                <ScalarProperty Name="fullNameTitle" ColumnName="fullNameTitle" />
+                <ScalarProperty Name="birthDate" ColumnName="birthDate" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="civilStatCode" ColumnName="civilStatCode" />
+                <ScalarProperty Name="positionTitle" ColumnName="positionTitle" />
+                <ScalarProperty Name="subPositionTitle" ColumnName="subPositionTitle" />
+                <ScalarProperty Name="salaryGrade" ColumnName="salaryGrade" />
+                <ScalarProperty Name="step" ColumnName="step" />
+                <ScalarProperty Name="employmentStatus" ColumnName="employmentStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

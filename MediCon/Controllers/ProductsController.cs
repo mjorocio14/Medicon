@@ -9,12 +9,13 @@ using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class ProductsController : Controller
     {
         MediconEntities db = new MediconEntities();
 
-        // GET: Products
         [UserAccess]
+        // GET: Products
         public ActionResult Medicines()
         {
             return View();

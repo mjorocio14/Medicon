@@ -8,10 +8,12 @@ using System.Web.Mvc;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class PapsmearBreastExamController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: PapsmearBreastExam
         public ActionResult Index()
         {

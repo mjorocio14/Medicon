@@ -33,7 +33,6 @@ namespace MediCon.Models
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
         public virtual DbSet<Measurement> Measurements { get; set; }
         public virtual DbSet<MedicalPrescription> MedicalPrescriptions { get; set; }
-        public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
         public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
         public virtual DbSet<PapsmearBreastExam> PapsmearBreastExams { get; set; }
         public virtual DbSet<Personnel> Personnels { get; set; }
@@ -69,6 +68,7 @@ namespace MediCon.Models
         public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<ECG> ECGs { get; set; }
         public virtual DbSet<Fecalysi> Fecalysis { get; set; }
+        public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
     
         [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
         public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID)

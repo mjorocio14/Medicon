@@ -9,10 +9,12 @@ using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class MaleReproController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: MaleRepro
         public ActionResult Index()
         {

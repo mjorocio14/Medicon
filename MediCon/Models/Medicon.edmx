@@ -140,6 +140,8 @@
           <Property Name="fatGlobules" Type="varchar" MaxLength="5" />
           <Property Name="bacteria" Type="varchar" MaxLength="5" />
           <Property Name="otherFindings" Type="varchar(max)" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="LaboratoryExam">
           <Key>
@@ -256,6 +258,7 @@
           <Property Name="controller" Type="varchar" MaxLength="50" />
           <Property Name="action" Type="varchar" MaxLength="50" />
           <Property Name="userTypeID" Type="varchar" MaxLength="5" />
+          <Property Name="serviceID" Type="varchar" MaxLength="10" />
           <Property Name="mainMenu" Type="varchar" MaxLength="50" />
           <Property Name="orderNo" Type="tinyint" />
         </EntityType>
@@ -1167,18 +1170,6 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeRx" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="MenuAccess">
-          <Key>
-            <PropertyRef Name="menuID" />
-          </Key>
-          <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="orderNo" Type="Byte" />
-        </EntityType>
         <EntityType Name="OutgoingItem">
           <Key>
             <PropertyRef Name="outID" />
@@ -1323,7 +1314,6 @@
           <EntitySet Name="DietCounselings" EntityType="Self.DietCounseling" />
           <EntitySet Name="Measurements" EntityType="Self.Measurement" />
           <EntitySet Name="MedicalPrescriptions" EntityType="Self.MedicalPrescription" />
-          <EntitySet Name="MenuAccesses" EntityType="Self.MenuAccess" />
           <EntitySet Name="OutgoingItems" EntityType="Self.OutgoingItem" />
           <EntitySet Name="PapsmearBreastExams" EntityType="Self.PapsmearBreastExam" />
           <EntitySet Name="Personnels" EntityType="Self.Personnel" />
@@ -1391,6 +1381,7 @@
           <EntitySet Name="Urinalysis" EntityType="MediconModel.Urinalysi" />
           <EntitySet Name="ECGs" EntityType="MediconModel.ECG" />
           <EntitySet Name="Fecalysis" EntityType="MediconModel.Fecalysi" />
+          <EntitySet Name="MenuAccesses" EntityType="MediconModel.MenuAccess" />
         </EntityContainer>
         <ComplexType Name="spOT_MedicineDispensing_Result">
           <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
@@ -2075,6 +2066,21 @@
           <Property Name="fatGlobules" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="bacteria" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="otherFindings" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MenuAccess">
+          <Key>
+            <PropertyRef Name="menuID" />
+          </Key>
+          <Property Name="menuID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="menuDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="controller" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="action" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="mainMenu" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="orderNo" Type="Byte" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2154,19 +2160,6 @@
                 <ScalarProperty Name="referralID" ColumnName="referralID" />
                 <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="dateTimeRx" ColumnName="dateTimeRx" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="MenuAccesses">
-            <EntityTypeMapping TypeName="MediconModel.MenuAccess">
-              <MappingFragment StoreEntitySet="MenuAccess">
-                <ScalarProperty Name="menuID" ColumnName="menuID" />
-                <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
-                <ScalarProperty Name="controller" ColumnName="controller" />
-                <ScalarProperty Name="action" ColumnName="action" />
-                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
-                <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
-                <ScalarProperty Name="orderNo" ColumnName="orderNo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3141,6 +3134,8 @@
           <EntitySetMapping Name="Fecalysis">
             <EntityTypeMapping TypeName="MediconModel.Fecalysi">
               <MappingFragment StoreEntitySet="Fecalysis">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="otherFindings" ColumnName="otherFindings" />
                 <ScalarProperty Name="bacteria" ColumnName="bacteria" />
                 <ScalarProperty Name="fatGlobules" ColumnName="fatGlobules" />
@@ -3155,6 +3150,20 @@
                 <ScalarProperty Name="labID" ColumnName="labID" />
                 <ScalarProperty Name="fecalysisID" ColumnName="fecalysisID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MenuAccesses">
+            <EntityTypeMapping TypeName="MediconModel.MenuAccess">
+              <MappingFragment StoreEntitySet="MenuAccess">
+                <ScalarProperty Name="orderNo" ColumnName="orderNo" />
+                <ScalarProperty Name="mainMenu" ColumnName="mainMenu" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+                <ScalarProperty Name="action" ColumnName="action" />
+                <ScalarProperty Name="controller" ColumnName="controller" />
+                <ScalarProperty Name="menuDesc" ColumnName="menuDesc" />
+                <ScalarProperty Name="menuID" ColumnName="menuID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

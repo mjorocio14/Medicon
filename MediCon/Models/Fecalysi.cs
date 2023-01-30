@@ -28,5 +28,7 @@ namespace MediCon.Models
         public string fatGlobules { get; set; }
         public string bacteria { get; set; }
         public string otherFindings { get; set; }
+        public string personnelID { get; set; }
+        public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
 }

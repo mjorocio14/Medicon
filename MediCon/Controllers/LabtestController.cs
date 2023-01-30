@@ -8,10 +8,12 @@ using System.Web.Mvc;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class LabtestController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
 
+        [UserAccess]
         // GET: Labtest
         public ActionResult Index()
         {

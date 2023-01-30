@@ -78,9 +78,12 @@ namespace MediCon.Controllers
                 Session["extName"] = granted.personnel_extName;
                 Session["position"] = granted.position;
                 Session["userTypeID"] = granted.userTypeID;
-                var accessmenu = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).OrderBy(e => e.orderNo).ToList();
-                Session["MenuAccess"] = accessmenu;
-              //  Session["MenuAccess"] = db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID).ToList();
+
+                var access = granted.userTypeID == "1" || granted.userTypeID == "4" ? 
+                             db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID ).OrderBy(e => e.orderNo).ToList() :
+                             db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID && x.serviceID == granted.serviceID ).OrderBy(e => e.orderNo).ToList();
+
+                Session["MenuAccess"] = access;
                 Session["userTypeDesc"] = db.UserTypes.Where(ut => ut.userTypeID == granted.userTypeID).FirstOrDefault().userTypeDesc;
 
 

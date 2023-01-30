@@ -13,163 +13,167 @@
     s.conslultID = '';
     //var vsIndexNo = 1;
     //getDiagnoseClientList();
-    //s.showRx = false;
+    s.showRx = false;
+    s.xrayFilterDate = new Date();
     
 
     //s.showRxQty = false;
-    //s.showClientList = false;
-    //s.showClientListBTN = true;
+    s.showClientList = false;
+    s.showClientListBTN = true;
+
+    s.filterResult = function (date) {
+        getDiagnoseClientList(date);
+    }
+
+    s.showDiagnoseList = function () {
+       
+        s.showClientList = !s.showClientList;
+
+        if (s.showClientList) {
+            getDiagnoseClientList(s.xrayFilterDate);
+        }
+    };
+
+    function getDiagnoseClientList(dateFilter) {
+        s.clientLoader = true;
+
+        //h.post('../Dental/getClientList').then(function (d) {
+        //    if (d.data.status == 'error') {
+        //        swal({
+        //            title: "ERROR",
+        //            text: d.data.msg,
+        //            type: "error"
+        //        });
+        //    }
+
+        //    else {
+        //        s.diagnoseClientList = {};
+        //        s.diagnoseClientList = d.data;
+
+        //        angular.forEach(s.diagnoseClientList, function (value) {
+        //            value.dateTimeLog = moment(value.dateTimeLog).format('lll');
+        //            value.age = moment().diff(moment(value.birthdate).format('L'), 'years');
+        //        });
+        //    }
+
+        //    s.clientLoader = false;
+        //});
 
 
-    //function getDiagnoseClientList() {
-    //    s.clientLoader = true;
 
-    //    //h.post('../Dental/getClientList').then(function (d) {
-    //    //    if (d.data.status == 'error') {
-    //    //        swal({
-    //    //            title: "ERROR",
-    //    //            text: d.data.msg,
-    //    //            type: "error"
-    //    //        });
-    //    //    }
+        var vsIndexNo = 1;
 
-    //    //    else {
-    //    //        s.diagnoseClientList = {};
-    //    //        s.diagnoseClientList = d.data;
+        if ($.fn.DataTable.isDataTable("#listOralClient_tbl")) {
+            $('#listOralClient_tbl').DataTable().clear();
+            $('#listOralClient_tbl').DataTable().ajax.url("../Dental/getClientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+        }
 
-    //    //        angular.forEach(s.diagnoseClientList, function (value) {
-    //    //            value.dateTimeLog = moment(value.dateTimeLog).format('lll');
-    //    //            value.age = moment().diff(moment(value.birthdate).format('L'), 'years');
-    //    //        });
-    //    //    }
+        else {
+            //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
+            var tableOralList = $('#listOralClient_tbl').DataTable({
+                "ajax": {
+                    "url": "../Dental/getClientList?date=" + moment(dateFilter).format('YYYY-MM-DD'),
+                    "type": 'POST',
+                    "dataSrc": "",
+                    "recordsTotal": 20,
+                    "recordsFiltered": 20,
+                    "deferRender": true
+                },
+                "pageLength": 25,
+                "searching": true,
+                "language":
+                 {
+                     "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
+                     "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
+                 },
+                "processing": false,
+                "columns": [{
+                    "data": "index", "render": function () { return vsIndexNo++; }
+                }, {
+                    "data": null,
+                    render: function (row) {
+                        return '<strong>' + row.lastName + '</strong>';
+                    }
+                }, {
+                    "data": null,
+                    render: function (row) {
+                        return '<strong>' + row.firstName + '</strong>';
+                    }
+                }
+                , {
+                    "data": null,
+                    render: function (row) {
+                        return row.middleName == null ? '' : '<strong>' + row.middleName + '</strong>';
+                    }
+                },
+               {
+                   "data": null,
+                   render: function (row) {
+                       return row.extName == null ? '' : '<strong>' + row.extName + '</strong>';
+                   }
+               },
+               {
+                   "data": null,
+                   render: function (row) {
+                       return row.sex ? "M" : "F";
+                   }
+               },
+               {
+                   "data": null,
+                   render: function (row) {
+                       var age = moment().diff(moment(row.birthDate).format('L'), 'years');
+                       return age <= 12 ? '<span class="label label-primary">' + age + '</span>' : '<span class="label label-success">' + age + '</span>';
+                   }
+               },
+               {
+                   "data": null, render: function (row) {
+                       return moment(row.dateTimeLog).format('lll');
+                   }
+               },
+               {
+                   "data": null, render: function () {
+                       return '<button class="btn-success btn btn-xs" id="btnShowOralDiagnosis"> Show <i class="fa fa-external-link"></i></button>'
+                   }
+               }
+                ],
+                "order": [[0, "asc"]],
+                'columnDefs': [
+                   {
+                       "targets": [0, 5, 6, 7, 8, 9],
+                       "className": "text-center"
+                   }]
+            });
 
-    //    //    s.clientLoader = false;
-    //    //});
+            $('#listOralClient_tbl tbody').off('click');
 
+            $('#listOralClient_tbl tbody').on('click', '#btnShowOralDiagnosis', function () {
+                var data = tableOralList.row($(this).parents('tr')).data();
 
+                s.diagnosisInfo = {};
+                s.diagnosisInfo.doctorName = data.DrLastName + ", " + data.DrFirstName + " " + (data.DrMiddleName != null ? data.DrMiddleName : '') + (data.DrExtName != null ? data.DrExtName : '');
+                s.diagnosisInfo.dateTimeLog = moment(data.dateTimeLog).format('lll');
+                s.diagnosisInfo.remarks = data.remarks;
 
-    //    vsIndexNo = 1;
+                h.post('../VitalSigns/getDiagnosis?ConsultID=' + data.consultID).then(function (d) {
+                    if (d.data.status == 'error') {
+                        swal({
+                            title: "ERROR",
+                            text: d.data.msg,
+                            type: "error"
+                        });
+                    }
 
-    //    if ($.fn.DataTable.isDataTable("#listOralClient_tbl")) {
-    //        $('#listOralClient_tbl').DataTable().clear();
-    //        $('#listOralClient_tbl').DataTable().ajax.url('../Dental/getClientList').load();
-    //    }
-
-    //    else {
-    //        //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
-    //        var tableOralList = $('#listOralClient_tbl').DataTable({
-    //            "ajax": {
-    //                "url": '../Dental/getClientList',
-    //                "type": 'POST',
-    //                "dataSrc": "",
-    //                "recordsTotal": 20,
-    //                "recordsFiltered": 20,
-    //                "deferRender": true
-    //            },
-    //            "pageLength": 25,
-    //            "searching": true,
-    //            "language":
-    //             {
-    //                 "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
-    //                 "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
-    //             },
-    //            "processing": false,
-    //            "columns": [{
-    //                "data": "index", "render": function () { return vsIndexNo++; }
-    //            }, {
-    //                "data": null,
-    //                render: function (row) {
-    //                    return '<strong>' + row.lastName + '</strong>';
-    //                }
-    //            }, {
-    //                "data": null,
-    //                render: function (row) {
-    //                    return '<strong>' + row.firstName + '</strong>';
-    //                }
-    //            }
-    //            , {
-    //                "data": null,
-    //                render: function (row) {
-    //                    return row.middleName == null ? '' : '<strong>' + row.middleName + '</strong>';
-    //                }
-    //            },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row.extName == null ? '' : '<strong>' + row.extName + '</strong>';
-    //               }
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row.sex ? "M" : "F";
-    //               }
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   var age = moment().diff(moment(row.birthdate).format('L'), 'years');
-    //                   return age <= 12 ? '<span class="label label-primary">' + age + '</span>' : '<span class="label label-success">' + age + '</span>';
-    //               }
-    //           },
-    //           {
-    //               "data": 'contactNo'
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row.brgyDesc + ', ' + row.citymunDesc + ', ' + row.provDesc
-    //               }
-    //           },
-    //           {
-    //               "data": null, render: function (row) {
-    //                   return moment(row.dateTimeLog).format('lll');
-    //               }
-    //           },
-    //           {
-    //               "data": null, render: function () {
-    //                   return '<button class="btn-success btn btn-xs" id="btnShowOralDiagnosis"> Show <i class="fa fa-external-link"></i></button>'
-    //               }
-    //           }
-    //            ],
-    //            "order": [[0, "asc"]],
-    //            'columnDefs': [
-    //               {
-    //                   "targets": [0, 5, 6, 7, 9, 10],
-    //                   "className": "text-center"
-    //               }]
-    //        });
-
-    //        $('#listOralClient_tbl tbody').off('click');
-
-    //        $('#listOralClient_tbl tbody').on('click', '#btnShowOralDiagnosis', function () {
-    //            var data = tableOralList.row($(this).parents('tr')).data();
-
-    //            s.diagnosisInfo = {};
-    //            s.diagnosisInfo.doctorName = data.DrLastName + ", " + data.DrFirstName + " " + (data.DrMiddleName != null ? data.DrMiddleName : '') + (data.DrExtName != null ? data.DrExtName : '');
-    //            s.diagnosisInfo.dateTimeLog = moment(data.dateTimeLog).format('lll');
-    //            s.diagnosisInfo.remarks = data.remarks;
-
-    //            h.post('../VitalSigns/getDiagnosis?ConsultID=' + data.consultID).then(function (d) {
-    //                if (d.data.status == 'error') {
-    //                    swal({
-    //                        title: "ERROR",
-    //                        text: d.data.msg,
-    //                        type: "error"
-    //                    });
-    //                }
-
-    //                else {
-    //                    s.diagnosisList = {};
-    //                    s.diagnosisList = d.data;
-    //                    $('#diagnosHistory_modal').modal('show');
-    //                }
-    //            });
-    //        });
-    //    }
+                    else {
+                        s.diagnosisList = {};
+                        s.diagnosisList = d.data;
+                        $('#diagnosHistory_modal').modal('show');
+                    }
+                });
+            });
+        }
 
 
-    //}
+    }
 
 
     s.scanner = new Instascan.Scanner(

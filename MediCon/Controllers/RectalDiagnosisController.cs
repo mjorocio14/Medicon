@@ -9,11 +9,13 @@ using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class RectalDiagnosisController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
         public static string currentMRDiagnosisID;
 
+        [UserAccess]
         // GET: RectalDiagnosis
         public ActionResult Index()
         {

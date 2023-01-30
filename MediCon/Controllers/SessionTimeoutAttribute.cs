@@ -16,7 +16,7 @@ namespace MediCon.Controllers
             HttpContext ctx = HttpContext.Current;
             try
             {
-                if (HttpContext.Current.Session["userID"] == null)
+                if (HttpContext.Current.Session["personnelID"] == null)
                 {
                     ctx.Session["controllerName"] = controllerName;
                     ctx.Session["actionName"] = actionName;

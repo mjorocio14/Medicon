@@ -7,10 +7,13 @@ using MediCon.Models;
 
 namespace MediCon.Controllers
 {
+    [SessionTimeout]
     public class PrintController : Controller
     {
 
         MediconEntities db = new MediconEntities();
+
+        [UserAccess]
         // GET: Print
         public ActionResult Index()
         {

@@ -11,7 +11,6 @@
         <EntityTypeShape EntityType="MediconModel.DietCounseling" Width="1.5" PointX="6.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Measurement" Width="1.5" PointX="0.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.MedicalPrescription" Width="1.5" PointX="10.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MediconModel.MenuAccess" Width="1.5" PointX="6.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.OutgoingItem" Width="1.5" PointX="10.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.PapsmearBreastExam" Width="1.5" PointX="2.75" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Personnel" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
@@ -47,6 +46,7 @@
         <EntityTypeShape EntityType="MediconModel.Urinalysi" Width="1.5" PointX="15.375" PointY="19.75" />
         <EntityTypeShape EntityType="MediconModel.ECG" Width="1.5" PointX="3.375" PointY="7.75" />
         <EntityTypeShape EntityType="MediconModel.Fecalysi" Width="1.5" PointX="13.375" PointY="13.75" />
+        <EntityTypeShape EntityType="MediconModel.MenuAccess" Width="1.5" PointX="5.375" PointY="10.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

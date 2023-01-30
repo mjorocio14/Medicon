@@ -293,10 +293,22 @@
       }
 
       else if (labTestID == "L0003") { 
+          h.post("../LaboratoryResult/getFecalysisResult?labID=" + labID).then(
+            function (d) 
+            { 
+                s.fecalysis = {}
+                s.fecalysis = d.data[0];
+                s.fecalysis = d.data;
+            }
+          );
+      }
+
+      else if (labTestID == "L0004") { 
           h.post("../LaboratoryResult/getECGResult?labID=" + labID).then(
             function (d) 
             { 
                 s.ecg = {}
+                s.ecg = d.data[0];
                 s.ecg = d.data;
             }
           );
@@ -386,7 +398,7 @@
       s.isShowResult = disable;
       s.tempLabID = data.labID;
       s.tempLabTestID = data.labTestID;
-      console.log(data.labTestID);
+      
       if (data.labTestID == "L0001") {
         s.uri = {};
         s.isEditUrinalysis = isEdit;
@@ -418,6 +430,7 @@
           $("#modalECG").modal("show");
       }
     };
+
 
     s.saveBloodChem = function (data, labPersonnel, isUpdating) 
     {
@@ -533,6 +546,48 @@
                   s.getLabtest(s.qrData.qrCode);
               }
           });
+    }
+
+    s.saveFecalysis = function(data, isEdit){
+        swal({
+            title: "SAVING",
+            text: "Please wait while we are saving your data.",
+            type: "info",
+            showConfirmButton: false,
+        });
+
+        if(isEdit) {
+
+        }
+
+        else {
+            data.labID = s.tempLabID;
+
+            h.post("../LaboratoryResult/saveFecalysis", data).then(function (d) 
+            {
+                if (d.data.status == "error") {
+                    swal({
+                        title: "ERROR",
+                        text: "<labal>" + d.data.msg + "</label>",
+                        type: "error",
+                        html: true,
+                    });
+                } 
+        
+                else {
+                    swal({
+                        title: "SUCCESSFUL",
+                        text: d.data.msg,
+                        type: "success",
+                        html: true,
+                    });
+
+                    s.fecalysis = {};
+                    $("#modalFecalysis").modal("hide");
+                    s.getLabtest(s.qrData.qrCode);
+                }
+            });
+        }
     }
 
     s.saveECG = function(data, isEdit) {

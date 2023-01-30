@@ -2113,7 +2113,7 @@
                     <div class="modal-body" style="height: 100%;">
                         <div class="form-group">
                             <label class="form-control" style="border:none" for="ecgFindings">Findings:</label>
-                            <textarea class="form-control form-control-sm" rows="8" id="ecgFindings" name="ecgFindings" ng-model="ecg.findings" ng-disabled="!isShowResult" required></textarea>
+                            <textarea class="form-control form-control-sm" rows="8" id="ecgFindings" name="ecgFindings" ng-model="ecg.findings" disabled required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -2124,6 +2124,134 @@
         </div>
     </div>
     @*MODAL ECG*@
+
+    @*MODAL FECALYSIS*@
+    <div class="modal fade" id="modalFecalysis">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#1ab394;color:white">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">FECALYSIS</h4>
+                </div>
+                <form role="form" name="FecalsysiForm" id="FecalsysiForm">
+                    <div class="modal-body" style="height: 100%;">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="control-label">Color</label>
+                                <div class="form-group text-center">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="radio_color_lb" value="LB" name="radio_color" ng-model="fecalysis.color" disabled />
+                                        <label for="radio_color_lb"> Light Brown </label>
+                                    </div>
+                                    <div class="radio radio-success radio-inline">
+                                        <input type="radio" id="radio_color_b" value="B" name="radio_color" ng-model="fecalysis.color" disabled />
+                                        <label for="radio_color_b"> Brown </label>
+                                    </div>
+                                    <div class="radio radio-warning radio-inline">
+                                        <input type="radio" id="radio_color_db" value="DB" name="radio_color" ng-model="fecalysis.color" disabled />
+                                        <label for="radio_color_db"> Dark Brown </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" disabled />
+                                        <label for="radio_color_ot"> Others </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="fecalysis.color == 'OT'">
+                                <div class="col-md-2">
+                                    <label class="form-control" style="border:none" for="otherColor">Others:</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input class="form-control form-control-sm" type="text" id="otherColor" name="otherColor" ng-model="fecalysis.otherColorDesc" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="control-label">Consistency</label>
+                                <div class="form-group text-center">
+                                    <div class="radio radio-primary radio-inline">
+                                        <input type="radio" id="radio_consistency_f" value="F" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
+                                        <label for="radio_consistency_f"> Formed </label>
+                                    </div>
+                                    <div class="radio radio-success radio-inline">
+                                        <input type="radio" id="radio_consistency_s" value="S" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
+                                        <label for="radio_consistency_s"> Soft </label>
+                                    </div>
+                                    <div class="radio radio-warning radio-inline">
+                                        <input type="radio" id="radio_consistency_w" value="W" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
+                                        <label for="radio_consistency_w"> Watery </label>
+                                    </div>
+                                    <div class="radio radio-danger radio-inline">
+                                        <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
+                                        <label for="radio_consistency_ot"> Others </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-show="fecalysis.consistency == 'OT'">
+                                <div class="col-md-2">
+                                    <label class="form-control" style="border:none" for="otherColorCons">Others:</label>
+                                </div>
+                                <div class="col-md-10">
+                                    <input class="form-control form-control-sm" type="text" id="otherColorCons" name="otherColorCons" ng-model="fecalysis.otherConDesc" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="text-center" style="background-color: #1ab394; color: white; width: 100%;">MICROSCOPIC EXAMINATION</label>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="control-label" style="border:none" for="PUS">PUS</label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="number" min="0" class="form-control form-control-sm" id="PUSfrom" name="PUSfrom" ng-model="fecalysis.pusFrom" placeholder="From" disabled>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="number" min="0" class="form-control form-control-sm" id="PUSto" name="PUSto" ng-model="fecalysis.pusTo" placeholder="To" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="control-label" style="border:none" for="RBC">RBC</label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <input type="number" min="0" class="form-control form-control-sm" id="RBCfrom" name="RBCfrom" ng-model="fecalysis.rbcFrom" placeholder="From" disabled>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="number" min="0" class="form-control form-control-sm" id="RBCto" name="RBCto" ng-model="fecalysis.rbcTo" placeholder="To" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label class="control-label" style="border:none" for="FatGlob">Fat Globules</label>
+                                <input type="text" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" disabled>
+                            </div>
+                            <div class="col-lg-6">
+                                <label class="control-label" style="border:none" for="Bacteria">Bacteria</label>
+                                <input type="text" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" disabled>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label class="control-label" style="border:none" for="otherFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="4" id="otherFindings" name="otherFindings" ng-model="fecalysis.otherFindings" disabled></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @*MODAL FECALYSIS*@
 
 </div>
 

@@ -323,10 +323,12 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                         text: d.data.msg,
                         type: "success"
                     });
+
                     s.BP = {};
                     getBPhistory(s.qrData.qrCode);
                     getVitalList();
                     s.isVSexist = false;
+                    s.searchQRcode = "";
                 }
             });
     }

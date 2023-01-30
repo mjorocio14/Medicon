@@ -27,22 +27,26 @@
 <div ng-controller="userCtrl">
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-4">
+        <div class="col-lg-6">
             <h2>User Management</h2>
             <ol class="breadcrumb">
                 <li>
-                    <a href="">System Users</a>
+                    <a href="">User Management</a>
                 </li>
                 <li class="active">
-                    <strong>User Managent</strong>
+                    <strong>Accounts</strong>
                 </li>
             </ol>
         </div>
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+            <button class="btn btn-success" ng-click="addUser()"><i class="fa fa-plus"></i> Add Personnel </button>
+        </div>
     </div>
+    <!-- /HEADER -->
 
     <!-- USER TABLE -->
     <div class="wrapper wrapper-content animated fadeInRight">
-        <button type="submit" class="btn btn-info btn-sm" style="margin-right: 2px;" ng-click="printBtn()"><i class="fa fa-save"></i> Print </button>
+       @* <button type="submit" class="btn btn-info btn-sm" style="margin-right: 2px;" ng-click="printBtn()"><i class="fa fa-save"></i> Print </button>*@
         <div class="row">
             <div class="col-xs-12">
                 <div class="animated fadeInRight ecommerce">
@@ -50,7 +54,6 @@
                         <div class="panel-heading text-center">
                             <i class="fa fa-users"></i>
                             <label class="text-center">LIST OF USERS</label>
-                            <button type="submit" class="btn btn-success btn-sm pull-right" style="margin-right: 2px; border-color: #ffffff" ng-click="addUser()"><i class="fa fa-plus"></i> <i class="fa fa-user"></i> Add Personnel </button>
                         </div>
                         <div class="panel-body">
                             <div class="row">
@@ -62,9 +65,10 @@
                                                     <th>#</th>
                                                     <th>Full Name</th>
                                                     <th>Sex</th>
+                                                    <th>Contact No.</th>
                                                     <th>Position</th>
                                                     <th>User Type</th>
-                                                    <th>Contact No.</th>
+                                                    <th>Service</th>
                                                     <th>Username</th>
                                                     <th>Active</th>
                                                     <th>Action</th>
@@ -90,7 +94,6 @@
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     <i class="fa fa-user modal-icon"></i>
                     <h5 class="modal-title" style="color:#66b2b2">ADD PERSONNEL</h5>
-                    @*<small class="font-bold">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>*@
                 </div>
                 <form id="USER_FORM" name="USER_FORM">
                     <div class="modal-body">
@@ -112,7 +115,7 @@
                                                                     <input type="text" required ng-model="users.personnel_firstName" placeholder="First Name" class="form-control" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-2">
+                                                            <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="middleName">Middle Initial</label>
                                                                     <input type="text" ng-model="users.personnel_midInit" maxlength="1" placeholder="Middle Initial" class="form-control" />
@@ -124,14 +127,14 @@
                                                                     <input type="text" required ng-model="users.personnel_lastName" placeholder="Last Name" class="form-control" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-2">
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="extName">Suffix</label>
                                                                     <input type="text" ng-model="users.personnel_extName" placeholder="Suffix" class="form-control" />
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
                                                             <div class="col-sm-4 col-xs-4 col-lg-4">
                                                                 <label class="control-label">Sex</label><span style="color:#ff0000"> *</span>
                                                                 <div class="form-group text-left">
@@ -154,25 +157,25 @@
                                                         </div>
                                                         <hr class="hr-line-dashed" />
                                                         <div class="row">
-                                                            <div class="col-sm-4 col-xs-4 col-lg-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label" for="userType">Select Service</label><span style="color:#ff0000"> *</span>
-                                                                    <select ng-model="users.serviceID" name="userType" id="service" required style="width: 100%;" text-transform uppercase" class="form-control">
-                                                                        <option value=""></option>
-                                                                        <option ng-repeat="item in services" value={{item}}>{{item.serviceName}}</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-4 col-xs-4 col-lg-4">
+                                                            <div ng-class="users.userTypeID == '4' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Select User Type</label><span style="color:#ff0000"> *</span>
-                                                                    <select ng-model="users.userTypeID" ng-change="sService(users.userTypeID)" name="userType" id="userType" required style="width: 100%;" text-transform uppercase" class="form-control">
+                                                                    <select ng-model="users.userTypeID" ng-change="sService(users.userTypeID)" name="userType" id="userType" required style="width: 100%;" class="form-control">
                                                                         <option value=""></option>
-                                                                        <option ng-repeat="item in userTypes" value={{item}}>{{item.userTypeDesc}}</option>
+                                                                        <option ng-repeat="item in userTypes" value={{item.userTypeID}}>{{item.userTypeDesc}}</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-sm-4 col-xs-4 col-lg-4">
+                                                            <div ng-show="users.userTypeID != '4'" class="col-sm-4 col-xs-4 col-lg-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label" for="userType">Select Service</label><span style="color:#ff0000"> *</span>
+                                                                    <select ng-model="users.serviceID" name="userType" id="service" style="width: 100%;" class="form-control" ng-required="users.userTypeID != '4'">
+                                                                        <option value=""></option>
+                                                                        <option ng-repeat="item in services" value={{item.serviceID}}>{{item.serviceName}}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div ng-class="users.userTypeID == '4' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Position</label><span style="color:#ff0000"> *</span>
                                                                     <input type="text" required ng-model="users.position" placeholder="Postion" class="form-control" />
@@ -219,9 +222,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger btn-sm" style="margin-right: 2px;" ng-click="cancelBtn()"><i class="fa fa-exclamation-circle"></i> Cancel </button>
-                        <button type="submit" class="btn btn-primary btn-sm" style="margin-right: 2px;" ng-click="!USER_FORM.$invalid ? saveUserz(users):''"><i class="fa fa-save"></i> Save </button>
-                        @*<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>*@
+                        <button type="submit" class="btn btn-primary" style="margin-right: 2px;" ng-click="!USER_FORM.$invalid ? saveUser(users):''"> Save </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel </button>
                     </div>
                 </form>
             </div>
