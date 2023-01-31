@@ -14,6 +14,7 @@ namespace MediCon.Controllers
     public class PharmacyController : Controller
     {
         MediconEntities db = new MediconEntities();
+        HRISDBEntities hrisDB = new HRISDBEntities();
 
         // GET: Pharmacy
         [UserAccess]
@@ -70,32 +71,58 @@ namespace MediCon.Controllers
             }
         }
 
-        //[HttpPost]
-        //public ActionResult listOfClients()
-        //{
-        //    try
-        //    {
-        //        var date = new CurrentDateTime();
+        [HttpPost]
+        public ActionResult listOfClients(string date)
+        {
+            try
+            {
+                DateTime dateStart = DateTime.Parse(date);
+                DateTime dateEnd = DateTime.Parse(date + " 23:59:59");
 
-        //        var list = db.fOT_ReleasedMedicines(date.CurrentStartDT, date.CurrentEndDT).Where(e => e.dateTimeRx >= date.CurrentStartDT && e.dateTimeRx <= date.CurrentEndDT).GroupBy(a => a.qrCode).ToList();
+                var result = db.VitalSigns.Join(db.Consultations, r1 => r1.vSignID, con => con.vSignID, (r1, con) => new { r1, con })
+                                               .Join(db.MedicalPrescriptions, r2 => r2.con.consultID, mp => mp.consultID, (r2, mp) => new { r2, mp })
+                                               .Join(db.OutgoingItems, r3 => r3.mp.rxID, oi => oi.rxID, (r3, oi) => new { r3, oi })
+                                               .Join(db.Personnels, r4 => r4.oi.userIDreleased, per => per.personnelID, (r4, per) => new { r4, per })
+                                               .Join(db.ProductLists, r5 => r5.r4.oi.productCode, pl => pl.productCode, (r5, pl) => new {r5, pl})
+                                               .Where(a => a.r5.r4.oi.isRelease == true && a.r5.r4.oi.dateTimeReleased >= dateStart && a.r5.r4.oi.dateTimeReleased <= dateEnd)
+                                               .ToList();
 
-        //        var serializer = new JavaScriptSerializer();
-        //        serializer.MaxJsonLength = Int32.MaxValue;
+                var joined = result.Join(hrisDB.vEmployeeHealthWells, r => r.r5.r4.r3.r2.r1.qrCode, pi => pi.qrCode, (r, pi) => new { r, pi })
+                                    .Select(a => new
+                                    {
+                                        a.pi.qrCode,
+                                        a.pi.lastName,
+                                        a.pi.firstName,
+                                        a.pi.middleName,
+                                        a.pi.extName,
+                                        a.pi.sex,
+                                        a.pi.birthDate,
+                                        a.r.r5.r4.oi.dateTimeReleased,
+                                        a.r.r5.per.personnel_lastName,
+                                        a.r.r5.per.personnel_firstName,
+                                        a.r.r5.per.personnel_extName,
+                                        a.r.r5.per.personnel_midInit,
+                                        a.r.pl.productDesc,
+                                        a.r.r5.r4.oi.qtyRx,
+                                        a.r.r5.r4.oi.qtyReleased
+                                    }).OrderByDescending(b => b.dateTimeReleased).GroupBy(c => c.qrCode).ToList();
 
-        //        var content = new ContentResult
-        //        {
-        //            Content = serializer.Serialize(list),
-        //            ContentType = "application/json"
+                var serializer = new JavaScriptSerializer();
+                serializer.MaxJsonLength = Int32.MaxValue;
 
-        //        };
-        //        return content;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve list of clients.", exceptionMessage = ex.InnerException.Message }, JsonRequestBehavior.AllowGet);
-        //        //return new HttpStatusCodeResult(HttpStatusCode.BadRequest, ex.InnerException.Message);
-        //    }
-        //}
+                var content = new ContentResult
+                {
+                    Content = serializer.Serialize(joined),
+                    ContentType = "application/json"
+
+                };
+                return content;
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve list of clients.", exceptionMessage = ex.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
 
         //public class listRx

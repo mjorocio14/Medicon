@@ -139,7 +139,7 @@
                 "order": [[0, "asc"]],
                 'columnDefs': [
                    {
-                       "targets": [0, 5, 6, 7, 8, 9],
+                       "targets": [0, 5, 6, 7, 8],
                        "className": "text-center"
                    }]
             });

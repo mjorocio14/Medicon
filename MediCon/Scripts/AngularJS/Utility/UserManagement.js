@@ -4,6 +4,7 @@
     s.users = {};
     var usern = new RegExp("^(?=.{6,})");
     var pass = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.{6,})");
+    s.isEditting = false;
     
     s.showPass1 = function () {
 
@@ -60,7 +61,7 @@
             {
                 "data": null, render: function (row) {
                     //return row.sex
-                    return row.sex == 0 ? '<span class="label label-danger">Female</span></p>' : '<span class="label label-success">Male</span></p>';
+                    return row.sex == 0 ? 'F' : 'M';
                 }
             },
              {
@@ -97,7 +98,8 @@
                 },
             {
                 "data": null, render: function () {
-                    return '<button id="viewInfo" class="btn btn-primary btn-xs" ><i class="fa fa-pencil" cursor:pointer;></i></button>';
+                    return '<button id="viewInfo" class="btn btn-primary btn-sm" style="margin-right: 3px;"><i class="fa fa-pencil" cursor:pointer;></i></button>' +
+                            '<button id="resetPassword" class="btn btn-warning btn-sm" ><i class="fa fa-refresh" cursor:pointer;></i></button>';
                 }
             }
             ],
@@ -105,7 +107,7 @@
             "responsive": true,
             'columnDefs': [
                {
-                   "targets": [0],
+                   "targets": [0, 2, 3, 4, 5, 6, 7, 8, 9],
                    "className": "text-center"
                }
             ],
@@ -116,14 +118,11 @@
         });
         $('#userTable tbody').off('click');
         $('#userTable tbody').on('click', '#active', function () {
-           // var a = userTable.row($(this).parents('tr')).data();
             var status = angular.copy(userTable.row($(this).parents('tr')).data());
-
             var st = status.isActive == 0 ? "activated" : "deactivated";
 
-
             swal({
-                title: "The account is being " +st,
+                title: "The account will be " +st,
                 text: "Are you sure you want to proceed ?",
                 type: "warning",
                 showCancelButton: true,
@@ -139,10 +138,53 @@
                                s.check(status);
                            });
                        } else {
-                           swal("Cancelled", "Data not saved! :)", "error")
+                           swal("Cancelled", "", "error")
                        }
                    });
            
+        });
+
+        $('#userTable tbody').on('click', '#viewInfo', function () {
+            var data = angular.copy(userTable.row($(this).parents('tr')).data());
+
+            s.users = {};
+            data.sex = data.sex == true ? 'MALE' : 'FEMALE';
+            s.users = data;
+            $('#addUserModal').modal('show');
+            s.isEditting = true;
+            s.$apply();
+        });
+
+        $('#userTable tbody').on('click', '#resetPassword', function () {
+            var data = angular.copy(userTable.row($(this).parents('tr')).data());
+
+            swal({
+                title: "Reseting...",
+                text: "Please wait while we are reset your password",
+                type: "info",
+                showConfirmButton: false
+            });
+
+            h.post('../SystemUser/resetPassword?personnelID=' + data.personnelID).then(function (d) {
+                if (d.data.responseCode == 200) {
+                    swal({
+                        title: "SUCCESS!",
+                        text: d.data.msg,
+                        type: "success"
+                    });
+
+                    loadTable();
+                }
+
+                else {
+                    swal({
+                        title: "ERROR!",
+                        text: d.data.msg,
+                        type: "error"
+                    });
+                    return;
+                }
+            });
         });
 
         $.fn.DataTable.FixedHeader;
@@ -151,6 +193,8 @@
 
     s.addUser = function () {
         s.users = {};
+        s.isEditting = false;
+        s.credentials = true;
         $('#addUserModal').modal('show');
     }
 
@@ -214,8 +258,6 @@
                         else {
 
                             a.sex = a.sex == 'MALE' ? 1 : 0;
-                            a.serviceID = a.serviceID;
-                            a.userTypeID = a.userTypeID;
 
                             h.post('../SystemUser/saveUser', a).then(function (d)
                             {
@@ -244,142 +286,41 @@
                         }
                     });
         }
-        
-        //if (usern.test(a.username)) {
-            //if (a.password != a.cpassword) {
-            //    swal({
-            //        title: "Password does not match!",
-            //        text: "",
-            //        type: "error"
-            //    });
-            //    return;
-            //}
-
-            //else {
-            //    if (pass.test(a.password)) {
-            //        h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
-            //            if (d.data == "Exist") {
-            //                swal({
-            //                    title: "Username already exist!",
-            //                    text: "Please use another username.",
-            //                    type: "error"
-            //                });
-            //                return;
-            //            }
-            //            else {
-
-            //                a.sex = a.sex == 'MALE' ? 1 : 0;
-            //                a.serviceID = JSON.parse(a.serviceID).serviceID;
-            //                a.userTypeID = JSON.parse(a.userTypeID).userTypeID;
-                         
-            //                h.post('../SystemUser/saveUser', a).then(function (d) {
-            //                    if (d.data.errCode != 1 && d.data.errCode != 0) {
-            //                        if (d.data.status == 00) {
-            //                            swal({
-            //                                title: "SUCCESS!",
-            //                                text: d.data.msg,
-            //                                type: "success"
-            //                            });
-                                       
-            //                            s.users = {};
-            //                            loadTable();
-            //                            $('#addUserModal').modal('hide');
-            //                        }
-            //                    }
-            //                    else {
-            //                        swal({
-            //                            title: "ERROR!",
-            //                            text: d.data.msg,
-            //                            type: "error"
-            //                        });
-            //                        return;
-            //                    }
-            //                });
-            //            }
-            //        });
-            //    }
-            //    else {
-            //        swal({
-            //            title: "ERROR!",
-            //            text: d.data.msg,
-            //            type: "error"
-            //        });
-            //        return;
-            //    }
-            //}
-        //}
-
-        //else {
-            //if (usern.test(a.username)) {
-            //    if (a.password != a.cpassword) {
-            //        swal({
-            //            title: "Password does not match!",
-            //            text: "",
-            //            type: "error"
-            //        });
-            //        return;
-            //    }
-            //    else {
-            //        if (pass.test(a.password)) {
-            //            h.post('../SystemUser/checkUname?uName=' + a.username).then(function (d) {
-            //                if (d.data == "Exist") {
-            //                    swal({
-            //                        title: "Username already exist!",
-            //                        text: "Please use another username.",
-            //                        type: "error"
-            //                    });
-            //                    return;
-            //                }
-            //                else {
-
-            //                    a.sex = a.sex == 'MALE' ? 1 : 0;
-
-            //                    h.post('../SystemUser/saveUser', a).then(function (d) {
-            //                        if (d.data.errCode != 1 && d.data.errCode != 0) {
-            //                            if (d.data.status == 00) {
-            //                                swal({
-            //                                    title: "SUCCESS!",
-            //                                    text: d.data.msg,
-            //                                    type: "success"
-            //                                });
-
-            //                                s.users = {};
-            //                                loadTable();
-            //                            }
-            //                        }
-            //                        else {
-            //                            swal({
-            //                                title: "ERROR!",
-            //                                text: d.data.msg,
-            //                                type: "error"
-            //                            });
-            //                            return;
-            //                        }
-            //                    });
-            //                }
-            //            });
-            //        }
-            //        else {
-            //            swal({
-            //                title: "Password Error!",
-            //                text: "Must contain atleast one alphabetical, one numeric character and minimum of 6 characters! ",
-            //                type: "error"
-            //            });
-            //            return;
-            //        }
-            //    }
-            //}
-            //else {
-            //    swal({
-            //        title: "Username Error!",
-            //        text: "Must be minimum of 6 characters! ",
-            //        type: "error"
-            //    });
-            //    return;
-            //}
-        //}  
     }
    
+    s.saveUpdates = function (info) {
+        swal({
+            title: "Updating...",
+            text: "Please wait while we are saving your updates",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        info.sex = info.sex == 'MALE' ? 1 : 0;
+
+        h.post('../SystemUser/updateAccount', info).then(function (d) {
+            if (d.data.responseCode == 200) {
+                swal({
+                    title: "SUCCESS!",
+                    text: d.data.msg,
+                    type: "success"
+                });
+
+                s.users = {};
+                loadTable();
+                $('#addUserModal').modal('hide');
+            }
+
+            else {
+                swal({
+                    title: "ERROR!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+                return;
+            }
+        });
+    }
 
     s.credentials = true;
 
@@ -387,6 +328,12 @@
         if (a == 3) {
             s.credentials = false;
         }
+
+        else if (a == 1 || a == 4 || a == 7 || a == 8)
+        {
+            s.users.serviceID = null;
+        }
+
         else 
         {
             s.credentials = true;

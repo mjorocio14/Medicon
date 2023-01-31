@@ -6,128 +6,125 @@
     s.qrData = {};
     s.isEditting = false;
     s.tableLoader = false;
+    s.pharmacyFilterDate = new Date();
+    s.showClientList = false;
+    s.showClientListBTN = true;
 
+    s.showDiagnoseList = function () {
+        s.showClientList = !s.showClientList;
 
+        if (s.showClientList) {
+            getDispensedList(s.xrayFilterDate);
+        }
+    };
+
+    s.filterResult = function (date) {
+        getDispensedList(date);
+    }
    
-    //function getDispensedList() {
-    //    vsIndexNo = 1;
+    function getDispensedList(dateFilter) {
+        vsIndexNo = 1;
 
-    //    if ($.fn.DataTable.isDataTable("#listMedReleased_tbl")) {
-    //        $('#listMedReleased_tbl').DataTable().clear();
-    //        $('#listMedReleased_tbl').DataTable().ajax.url('../Pharmacy/listOfClients').load();
-    //    }
+        if ($.fn.DataTable.isDataTable("#listMedReleased_tbl")) {
+            $('#listMedReleased_tbl').DataTable().clear();
+            $('#listMedReleased_tbl').DataTable().ajax.url("../Pharmacy/listOfClients?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+        }
+        
+        else {
+            //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
+            var tableMedsReleasedList = $('#listMedReleased_tbl').DataTable({
+                "ajax": {
+                    "url": "../Pharmacy/listOfClients?date=" + moment(dateFilter).format('YYYY-MM-DD'),
+                    "type": 'POST',
+                    "dataSrc": "",
+                    "recordsTotal": 20,
+                    "recordsFiltered": 20,
+                    "deferRender": true
+                },
+                "pageLength": 10,
+                "searching": true,
+                "language":
+                 {
+                     "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
+                     "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
+                 },
+                "processing": false,
+                "columns": [{
+                    "data": "index", "render": function () { return vsIndexNo++; }
+                }, {
+                    "data": null,
+                    render: function (row) {
+                        return '<strong>' + row[0].lastName + '</strong>';
+                    }
+                }, {
+                    "data": null,
+                    render: function (row) {
+                        return '<strong>' + row[0].firstName + '</strong>';
+                    }
+                }
+                , {
+                    "data": null,
+                    render: function (row) {
+                        return row[0].middleName == null ? '' : '<strong>' + row[0].middleName + '</strong>';
+                    }
+                },
+               {
+                   "data": null,
+                   render: function (row) {
+                       return row[0].extName == null ? '' : '<strong>' + row[0].extName + '</strong>';
+                   }
+               },
+               {
+                   "data": null,
+                   render: function (row) {
+                       return row[0].sex ? "M" : "F";
+                   }
+               },
+               {
+                   "data": null,
+                   render: function (row) {
+                       var age = moment().diff(moment(row[0].birthDate).format('L'), 'years');
+                       return age <= 12 ? '<span class="label label-primary">' + age + '</span>' : '<span class="label label-success">' + age + '</span>';
+                   }
+               },
+               {
+                   "data": null, render: function (row) {
+                       return row[0].personnel_firstName + ' ' + (row[0].personnel_midInit == null ? '' : row[0].personnel_midInit)
+                           + ' ' + row[0].personnel_lastName + (row[0].personnel_extName == null ? '' : ' ' + row[0].personnel_extName);
+                   }
+               },
+               {
+                   "data": null, render: function (row) {
+                       return moment(row[0].dateTimeReleased).format('lll');
+                   }
+               },
+               {
+                   "data": null, render: function () {
+                       return '<button class="btn-success btn btn-xs" id="btn_showMedsReleased"> Show <i class="fa fa-external-link"></i></button>'
+                   }
+               }
+                ],
+                "order": [[0, "asc"]],
+                'columnDefs': [
+                   {
+                       "targets": [0, 5, 6, 7, 8, 9],
+                       "className": "text-center"
+                   }]
+            });
 
-    //    else {
-    //        //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
-    //        var tableMedsReleasedList = $('#listMedReleased_tbl').DataTable({
-    //            "ajax": {
-    //                "url": '../Pharmacy/listOfClients',
-    //                "type": 'POST',
-    //                "dataSrc": "",
-    //                "recordsTotal": 20,
-    //                "recordsFiltered": 20,
-    //                "deferRender": true
-    //            },
-    //            "pageLength": 10,
-    //            "searching": true,
-    //            "language":
-    //             {
-    //                 "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
-    //                 "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
-    //             },
-    //            "processing": false,
-    //            "columns": [{
-    //                "data": "index", "render": function () { return vsIndexNo++; }
-    //            }, {
-    //                "data": null,
-    //                render: function (row) {
-    //                    return '<strong>' + row[0].lastName + '</strong>';
-    //                }
-    //            }, {
-    //                "data": null,
-    //                render: function (row) {
-    //                    return '<strong>' + row[0].firstName + '</strong>';
-    //                }
-    //            }
-    //            , {
-    //                "data": null,
-    //                render: function (row) {
-    //                    return row[0].middleName == null ? '' : '<strong>' + row[0].middleName + '</strong>';
-    //                }
-    //            },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row[0].extName == null ? '' : '<strong>' + row[0].extName + '</strong>';
-    //               }
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row[0].sex ? "M" : "F";
-    //               }
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   var age = moment().diff(moment(row[0].birthdate).format('L'), 'years');
-    //                   return age <= 12 ? '<span class="label label-primary">' + age + '</span>' : '<span class="label label-success">' + age + '</span>';
-    //               }
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row[0].contactNo;
-    //               }
-    //           },
-    //           {
-    //               "data": null,
-    //               render: function (row) {
-    //                   return row[0].brgyDesc + ', ' + row[0].citymunDesc + ', ' + row[0].provDesc
-    //               }
-    //           },
-    //           {
-    //               "data": null, render: function (row) {
-    //                   return moment(row[0].dateTimeRx).format('lll');
-    //               }
-    //           },
-    //           {
-    //               "data": null, render: function (row) {
-    //                   return moment(row[0].dateTimeReleased).format('lll');
-    //               }
-    //           },
-    //           {
-    //               "data": null, render: function () {
-    //                   return '<button class="btn-success btn btn-xs" id="btn_showMedsReleased"> Show <i class="fa fa-external-link"></i></button>'
-    //               }
-    //           }
-    //            ],
-    //            "order": [[0, "asc"]],
-    //            'columnDefs': [
-    //               {
-    //                   "targets": [0, 5, 6, 7, 9],
-    //                   "className": "text-center"
-    //               }]
-    //        });
+            $('#listMedReleased_tbl tbody').off('click');
 
-    //        $('#listMedReleased_tbl tbody').off('click');
-
-    //        $('#listMedReleased_tbl tbody').on('click', '#btn_showMedsReleased', function () {
-    //            var data = tableMedsReleasedList.row($(this).parents('tr')).data();
+            $('#listMedReleased_tbl tbody').on('click', '#btn_showMedsReleased', function () {
+                var data = tableMedsReleasedList.row($(this).parents('tr')).data();
               
-    //            $('#medDispensed_modal').modal('show');
-    //            s.diagnosisInfo = [];
-    //            s.diagnosisInfo = data;
+                $('#medDispensed_modal').modal('show');
+                s.diagnosisInfo = [];
+                s.diagnosisInfo = data;
+                s.$apply();
+            });
+        }
 
-    //            angular.forEach(s.diagnosisInfo, function (value) {
-    //                value.dateTimeReleased = moment(value.dateTimeReleased).format('lll');
-    //            });
-
-    //            s.$apply();
-    //        });
-    //    }
-
-    //}
+    }
 
         //$(document).ready(function () {
         //    $('.i-checks').iCheck({

@@ -256,19 +256,6 @@ namespace MediCon.Controllers
                                         a.r.con.dateTimeLog
                                     }).OrderByDescending(b => b.dateTimeLog).ToList();
 
-                //var joined = result.Join(eqpDB.PersonalInfoes, r => r.r1.qrCode, pi => pi.qrCode, (r, pi) => new { r, pi })
-                //                    .Select(a => new
-                //                    {
-                //                        a.pi.lastName,
-                //                        a.pi.firstName,
-                //                        a.pi.middleName,
-                //                        a.pi.extName,
-                //                        a.pi.sex,
-                //                        a.pi.birthdate,
-                //                        a.pi.contactNo,
-                //                        a.r.con.dateTimeLog
-                //                    }).OrderByDescending(b => b.dateTimeLog).AsEnumerable();
-
                 var serializer = new JavaScriptSerializer();
                 serializer.MaxJsonLength = Int32.MaxValue;
 

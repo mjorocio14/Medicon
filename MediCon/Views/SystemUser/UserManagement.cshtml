@@ -62,16 +62,16 @@
                                         <table id="userTable" class="table table-striped table-bordered table-hover" style="width:100%">
                                             <thead>
                                                 <tr>
-                                                    <th>#</th>
+                                                    <th class="text-center">#</th>
                                                     <th>Full Name</th>
-                                                    <th>Sex</th>
-                                                    <th>Contact No.</th>
-                                                    <th>Position</th>
-                                                    <th>User Type</th>
-                                                    <th>Service</th>
-                                                    <th>Username</th>
-                                                    <th>Active</th>
-                                                    <th>Action</th>
+                                                    <th class="text-center">Sex</th>
+                                                    <th class="text-center">Contact No.</th>
+                                                    <th class="text-center">Position</th>
+                                                    <th class="text-center">User Type</th>
+                                                    <th class="text-center">Service</th>
+                                                    <th class="text-center">Username</th>
+                                                    <th class="text-center">Active</th>
+                                                    <th class="text-center">Action</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -151,13 +151,13 @@
                                                             <div class="col-sm-4 col-xs-4 col-lg-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="contactNum">Contact No.</label>
-                                                                    <input type="number" ng-model="users.contactNum" maxlength="11"  placeholder="Contact Number" class="form-control" />
+                                                                    <input type="text" ng-model="users.contactNum" maxlength="11"  placeholder="Contact Number" class="form-control" />
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <hr class="hr-line-dashed" />
                                                         <div class="row">
-                                                            <div ng-class="users.userTypeID == '4' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
+                                                            <div ng-class="users.userTypeID == '1' || users.userTypeID == '4' || users.userTypeID == '7' || users.userTypeID == '8' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Select User Type</label><span style="color:#ff0000"> *</span>
                                                                     <select ng-model="users.userTypeID" ng-change="sService(users.userTypeID)" name="userType" id="userType" required style="width: 100%;" class="form-control">
@@ -166,16 +166,16 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div ng-show="users.userTypeID != '4'" class="col-sm-4 col-xs-4 col-lg-4">
+                                                            <div ng-show="users.userTypeID != '1' && users.userTypeID != '4' &&  users.userTypeID != '7' && users.userTypeID != '8'" class="col-sm-4 col-xs-4 col-lg-4">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Select Service</label><span style="color:#ff0000"> *</span>
-                                                                    <select ng-model="users.serviceID" name="userType" id="service" style="width: 100%;" class="form-control" ng-required="users.userTypeID != '4'">
+                                                                    <select ng-model="users.serviceID" name="userType" id="service" style="width: 100%;" class="form-control" ng-required="users.userTypeID != '1' && users.userTypeID != '4' && users.userTypeID != '7' && users.userTypeID != '8'">
                                                                         <option value=""></option>
                                                                         <option ng-repeat="item in services" value={{item.serviceID}}>{{item.serviceName}}</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                            <div ng-class="users.userTypeID == '4' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
+                                                            <div ng-class="users.userTypeID == '1' || users.userTypeID == '4' || users.userTypeID == '7' || users.userTypeID == '8' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Position</label><span style="color:#ff0000"> *</span>
                                                                     <input type="text" required ng-model="users.position" placeholder="Postion" class="form-control" />
@@ -183,36 +183,35 @@
                                                             </div>
                                                         </div>
                                                         <hr class="hr-line-dashed" />
-                                                        <div class="row" ng-show="credentials">
-                                                            <div class="col-sm-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label" for="username">Username</label><span style="color:#ff0000"> *</span>
-                                                                    <input type="text" id="username" name="username" ng-model="users.username" placeholder="Username" class="form-control" />
-                                                                </div>
+                                                    <div class="row" ng-show="credentials && !isEditting">
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="username">Username</label><span style="color:#ff0000"> *</span>
+                                                                <input type="text" id="username" name="username" ng-model="users.username" placeholder="Username" class="form-control" />
                                                             </div>
-                                                            <div class="col-sm-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label" for="password">Password</label><span style="color:#ff0000"> *</span>
-                                                                    <input id="password1" name="password1" type="password" ng-model="users.password" class="form-control" placeholder="Password">
-                                                                    @*<input type="checkbox" ng-click="showPass1()"> Show Password*@
-                                                                    <div class="checkbox checkbox-danger">
-                                                                        <input id="pass1" name="pass1" type="checkbox" ng-click="showPass1()" />
-                                                                        <label for="pass1">Show Password</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-sm-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label" for="cpassword">Confirm Password</label><span style="color:#ff0000"> *</span>
-                                                                    <input id="password2" type="password" name="password2" data-validate-linked="password" ng-model="users.cpassword" class="form-control" placeholder="Confirm Password">
-
-                                                                    <div class="checkbox checkbox-danger">
-                                                                        <input id="pass2" name="pass2" type="checkbox" ng-click="showPass2()" />
-                                                                        <label for="pass2">Show Password</label>
-                                                                    </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="password">Password</label><span style="color:#ff0000"> *</span>
+                                                                <input id="password1" name="password1" type="password" ng-model="users.password" class="form-control" placeholder="Password">
+                                                                <div class="checkbox checkbox-danger">
+                                                                    <input id="pass1" name="pass1" type="checkbox" ng-click="showPass1()" />
+                                                                    <label for="pass1">Show Password</label>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        <div class="col-sm-4">
+                                                            <div class="form-group">
+                                                                <label class="control-label" for="cpassword">Confirm Password</label><span style="color:#ff0000"> *</span>
+                                                                <input id="password2" type="password" name="password2" data-validate-linked="password" ng-model="users.cpassword" class="form-control" placeholder="Confirm Password">
+
+                                                                <div class="checkbox checkbox-danger">
+                                                                    <input id="pass2" name="pass2" type="checkbox" ng-click="showPass2()" />
+                                                                    <label for="pass2">Show Password</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -222,7 +221,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" style="margin-right: 2px;" ng-click="!USER_FORM.$invalid ? saveUser(users):''"> Save </button>
+                        <button ng-show="!isEditting"  type="submit" class="btn btn-primary" style="margin-right: 2px;" ng-click="!USER_FORM.$invalid ? saveUser(users):''"> Save </button>
+                        <button ng-show="isEditting" type="submit" class="btn btn-success" style="margin-right: 2px;" ng-click="!USER_FORM.$invalid ? saveUpdates(users):''"> Save Updates </button>
                         <button type="button" class="btn btn-default" data-dismiss="modal"> Cancel </button>
                     </div>
                 </form>
