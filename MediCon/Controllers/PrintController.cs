@@ -20,10 +20,10 @@ namespace MediCon.Controllers
             return View();
         }
 
-        public ActionResult printAccomp(string qrCode)
+        public ActionResult printAccomp(string labRequestID)
         {
 
-            Session["qrCode"] = qrCode;
+            Session["labRequestID"] = labRequestID;
        
             return Content("YES");
         }

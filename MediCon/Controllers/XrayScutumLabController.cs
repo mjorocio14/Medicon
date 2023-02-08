@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MediCon.ModelTemp;
 using MediCon.Models;
 using MediCon.Classes;
+using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
@@ -113,8 +114,45 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
+
+         [HttpPost]
+        public ActionResult saveUpdatesLabReq(Xray_ScutumLabRequest labReq)
+        {
+            try
+            {
+                var find = dbMed.Xray_ScutumLabRequest.SingleOrDefault(a => a.labRequestID == labReq.labRequestID);
+
+                    if (find != null)
+                    {
+                        find.requestingFacility = labReq.requestingFacility;
+                        find.dateOfRequest = labReq.dateOfRequest;
+                        find.treatmentHistory = labReq.treatmentHistory;
+                        find.dateOfTreatment = labReq.dateOfTreatment;
+                        find.testRequested = labReq.testRequested;
+                        find.collection = labReq.collection;
+                        find.dateCollected = labReq.dateCollected;
+                        find.preparedBy_personnelID = Session["personnelID"].ToString();
+                        find.personnelID = Session["personnelID"].ToString();
+                        find.dateTimeLog = DateTime.Now;
+                        dbMed.Entry(find).State = EntityState.Modified;
+                    }
+
+                    var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Updating lab request failed!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Updating lab request is successful!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+        
     }
 }

@@ -64,7 +64,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -165,7 +165,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -180,7 +180,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -316,17 +316,17 @@ namespace MediCon.Controllers
 
         }
 
-        public ActionResult getRectalClientList()
+        public ActionResult getRectalClientList(DateTime date)
         {
             try
             {
-                var client = dbMed.fn_getRectalClients().OrderByDescending(x => x.diagnoseDT).ToList();
+                var client = dbMed.fn_getRectalClients(date).OrderByDescending(x => x.diagnoseDT).ToList();
 
                 return Json(client, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
     }

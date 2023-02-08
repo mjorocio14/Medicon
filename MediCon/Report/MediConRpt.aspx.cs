@@ -14,15 +14,15 @@ namespace MediCon.Report
         InstanceReportSource rpt = new InstanceReportSource();
         protected void Page_Load(object sender, EventArgs e)
         {
-            var qrCode = "";
+            var labRequestID = "";
 
             switch (Request["type"])
 
             {
                 case "lrrf":
-                    qrCode = Session["qrCode"].ToString();
+                    labRequestID = Session["labRequestID"].ToString();
                     rpt.ReportDocument = new LRRF.LRRFRpt();
-                    rpt.Parameters.Add("qrCode", qrCode);
+                    rpt.Parameters.Add("labRequestID", labRequestID);
                     break;
             }
 

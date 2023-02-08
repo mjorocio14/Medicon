@@ -4,7 +4,8 @@
     s.showClientList = false;
     s.isRequesting = false;
     s.isAlreadyRequested = false;
-    s.xrayFilterDate = new Date();
+    s.isEditting = false;
+    
 
     s.filterResult = function (date) {
         getLabReqClients(date);
@@ -43,71 +44,73 @@
         s.qrData = {};
         s.status = {};
 
-        h.post("../XrayScutumLab/getQrWithScutumReq?qrCode=" + qrCode).then(function (d) {
-            if (d.data.status == "error") {
-                swal({
-                    title: "QR code failed!",
-                    text: d.data.msg,
-                    type: "error",
-                });
-            }
-
-            else {
-                if (d.data.tag.length == 0) {
+            h.post("../XrayScutumLab/getQrWithScutumReq?qrCode=" + qrCode).then(function (d) {
+                if (d.data.status == "error") {
                     swal({
-                        title: "NO SCUTUM REQUEST!",
-                        text: "Client is not yet x-ray and no scutum request is created.",
-                        type: "error"
+                        title: "QR code failed!",
+                        text: d.data.msg,
+                        type: "error",
                     });
                 }
 
                 else {
-                    if (d.data.qr.length == 0) {
+                    if (d.data.tag.length == 0 && !s.isEditting) {
                         swal({
-                            title: "QR code is not yet register!",
-                            text: "Please refer to QR code help desk near the area.",
+                            title: "NO SCUTUM REQUEST!",
+                            text: "Client is not yet x-ray and no scutum request is created.",
                             type: "error"
                         });
                     }
 
                     else {
-                                d.data.qr[0].birthdate = d.data.qr[0].birthdate != null ? new Date(moment(d.data.qr[0].birthdate).format()) : null;
-                                d.data.qr[0].sex = d.data.qr[0].sex != null ? (d.data.qr[0].sex ? 'true' : 'false') : null;
+                        if (d.data.qr.length == 0 && !s.isEditting) {
+                            swal({
+                                title: "QR code is not yet register!",
+                                text: "Please refer to QR code help desk near the area.",
+                                type: "error"
+                            });
+                        }
 
-                                s.qrData = d.data.qr[0];
-                                s.qrData.fullAddress = d.data.qr[0].address + ', ' + d.data.qr[0].brgyDesc + ' ' + d.data.qr[0].citymunDesc + ' ' + d.data.qr[0].provDesc;
+                        else {
+                            d.data.qr[0].birthdate = d.data.qr[0].birthdate != null ? new Date(moment(d.data.qr[0].birthdate).format()) : null;
+                            d.data.qr[0].sex = d.data.qr[0].sex != null ? (d.data.qr[0].sex ? 'true' : 'false') : null;
 
-                                // DISPLAY XRAY AND SCUTUM TAG
-                                s.status.isXray = d.data.tag[0].isXray == true ? 'Yes' : d.data.tag[0].isXray == false ? 'No' : '';
-                                s.status.isNeedScutum = d.data.tag[0].isNeedScutum == true ? 'Yes' : d.data.tag[0].isNeedScutum == false ? 'No' : '';
-                                s.status.personStatusID = d.data.tag[0].personStatusID;
+                            s.qrData = d.data.qr[0];
+                            s.qrData.fullAddress = d.data.qr[0].address + ', ' + d.data.qr[0].brgyDesc + ' ' + d.data.qr[0].citymunDesc + ' ' + d.data.qr[0].provDesc;
 
-                                if (s.status.isNeedScutum == 'No') {
-                                    swal({
-                                        title: "NO SCUTUM REQUEST!",
-                                        text: "Client was x-ray but has no scutum request is created.",
-                                        type: "error"
-                                    });
-                                }
+                            // DISPLAY XRAY AND SCUTUM TAG
+                            s.status.isXray = d.data.tag[0].isXray == true ? 'Yes' : d.data.tag[0].isXray == false ? 'No' : '';
+                            s.status.isNeedScutum = d.data.tag[0].isNeedScutum == true ? 'Yes' : d.data.tag[0].isNeedScutum == false ? 'No' : '';
+                            s.status.personStatusID = d.data.tag[0].personStatusID;
 
-                                if (d.data.labReqCount > 0) {
-                                    s.isAlreadyRequested = true;
+                            if (s.status.isNeedScutum == 'No' && !s.isEditting) {
+                                swal({
+                                    title: "NO SCUTUM REQUEST!",
+                                    text: "Client was x-ray but has no scutum request is created.",
+                                    type: "error"
+                                });
+                            }
 
-                                    swal({
-                                        title: "ALREADY REQUESTED!",
-                                        text: "Laboratory request is already created for this client today.",
-                                        type: "error"
-                                    });
-                                }
+                            if (d.data.labReqCount > 0 && !s.isEditting) {
+                                s.isAlreadyRequested = true;
+
+                                swal({
+                                    title: "ALREADY REQUESTED!",
+                                    text: "Laboratory request is already created for this client today.",
+                                    type: "error"
+                                });
+                            }
+                        }
                     }
                 }
+            })
 
-                s.loader = false;
-            }
-        })
+        s.loader = false;
     }
 
     s.proceed = function (qrInfo, status) {
+        s.isEditting = false;
+
         if (s.isAlreadyRequested) {
             swal({
                 title: "ALREADY REQUESTED!",
@@ -131,13 +134,7 @@
 
                 var qrData = {};
                 qrData = angular.copy(qrInfo);
-
-                qrData.fullName = qrData.lastName + ', ' + qrData.firstName +
-                                  (qrData.middleName != null ? ' ' + qrData.middleName : '') +
-                                  (qrData.extName != null ? ' ' + qrData.extName : '');
-
                 qrData.sex = qrData.sex == 'true' ? 'Male' : 'Female';
-                qrData.age = moment().diff(moment(qrData.birthdate).format('L'), 'years');
 
                 s.request = qrData;
                 s.request.dateOfRequest = new Date();
@@ -159,17 +156,16 @@
             showScanner();
     }
 
-    function resetForms() {
-        s.qrData = {};
-        s.status = {};
-        s.searchQRcode = '';
-    }
-
     s.showDiagnoseList = function () {
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
+            s.xrayFilterDate = new Date();
             getLabReqClients(s.xrayFilterDate);
+        }
+
+        else {
+            s.searchQRcode = '';
         }
     };
 
@@ -256,9 +252,6 @@
                       },
                   },
                   {
-                      data: "contactNo",
-                  },
-                  {
                       data: "requestingFacility",
                   },
                   {
@@ -303,16 +296,11 @@
                           return moment(row.labReqDT).format("lll");
                       },
                   },
-                  //{
-                  //    data: null,
-                  //    render: function () {
-                  //        return '<button class="btn-success btn btn-xs" id="btnShowMRH"> Show <i class="fa fa-external-link"></i></button>';
-                  //    },
-                  //},
                    {
                        data: null,
                        render: function () {
-                           return '<button class="btn-success btn btn-xs" id="btnPrint"> Print <i class="fa fa-external-link"></i></button>';
+                           return '<button class="btn-success btn btn-xs" id="btnEdit" style="margin-bottom: 2px;"> Edit <i class="fa fa-pencil"></i></button>' + 
+                                  '<button class="btn-primary btn btn-xs" id="btnPrint"> Print <i class="fa fa-external-link"></i></button>';
                        },
                    }
                 ],
@@ -321,18 +309,41 @@
 
             $("#labReq_table tbody").off("click");
 
-            //$("#labReq_table tbody").on("click", "#btnShowMRH", function () {
-            //    var data = tblLabReq.row($(this).parents("tr")).data();
-            //});
+            $("#labReq_table tbody").on("click", "#btnEdit", function () {
+                var data = angular.copy(tblLabReq.row($(this).parents("tr")).data());
+                
+                s.isEditting = true;
+                s.mainSearch(data.qrCode); 
+                s.isRequesting = !s.isRequesting;
+                s.showClientList = !s.showClientList;
+                s.request = {};
+             
+                data.dateOfRequest = new Date(moment(data.dateOfRequest).format());
+                data.dateOfTreatment = new Date(moment(data.dateOfTreatment).format());
+                data.dateCollected = new Date(moment(data.dateCollected).format());
+                data.treatmentHistory = data.treatmentHistory == true ? 'true' : 'false';
+                data.testRequested = data.testRequested == true ? 'true' : 'false';
+                data.collection = data.collection == true ? 'true' : 'false';
+                
+                s.request = data;
+                s.$apply();
+            });
 
             $("#labReq_table tbody").on("click", "#btnPrint", function () {
                 var data = tblLabReq.row($(this).parents("tr")).data();
 
-                h.post('../Print/printAccomp?qrCode=' + data.labRequestID).then(function (d) {
+                h.post('../Print/printAccomp?labRequestID=' + data.labRequestID).then(function (d) {
                     window.open("../Report/MediConRpt.aspx?type=lrrf");
                 });
             });
         }
+    }
+
+    s.returnToList = function () {
+        s.isRequesting = !s.isRequesting;
+        s.showDiagnoseList();
+        s.request = {};
+        s.qrData = {};
     }
 
     s.saveLabReq = function (qrCode, labReq) {
@@ -344,6 +355,37 @@
         });
 
         h.post('../XrayScutumLab/saveLabReq', { qrCode: qrCode, labReq: labReq }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "<label>" + d.data.msg + "</label>",
+                    type: "error",
+                    html: true
+                });
+            }
+
+            else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: "<label>" + d.data.msg + "</label>",
+                    type: "success",
+                    html: true
+                });
+
+                resetForms();
+            }
+        });
+    }
+
+    s.saveLabReqChanges = function (labReq) {
+        swal({
+            title: "UPDATING",
+            text: "Please wait while we are saving your updates.",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        h.post('../XrayScutumLab/saveUpdatesLabReq', labReq ).then(function (d) {
             if (d.data.status == "error") {
                 swal({
                     title: "ERROR",

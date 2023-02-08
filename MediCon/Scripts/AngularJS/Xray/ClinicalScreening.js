@@ -7,7 +7,7 @@
     s.showClientList = false;
     s.isViewingRecord = false;
     s.isEditting = false;
-    s.xrayFilterDate = new Date();
+    
 
     s.filterResult = function (date) {
         getScreenedClients(date);
@@ -250,6 +250,7 @@
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
+            s.xrayFilterDate = new Date();
             getScreenedClients(s.xrayFilterDate);
         }
     };

@@ -220,7 +220,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -236,7 +236,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -250,7 +250,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -264,7 +264,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
     }

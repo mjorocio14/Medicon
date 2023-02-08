@@ -21,6 +21,10 @@
     s.isEditting = false;
     getSpecialist();
 
+    s.filterResult = function (date) {
+        getDiagnoseClients(date);
+    }
+
     s.scanner = new Instascan.Scanner(
             {
                 video: document.getElementById('preview')
@@ -543,19 +547,19 @@
         });
     }
 
-    function getDiagnoseClients() {
+    function getDiagnoseClients(dateFilter) {
         vsIndexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#diagnoseList_tbl")) {
             $('#diagnoseList_tbl').DataTable().clear();
-            $('#diagnoseList_tbl').DataTable().ajax.url('../MedicalConsultation/getDiagnoseClients').load();
+            $('#diagnoseList_tbl').DataTable().ajax.url("../MedicalConsultation/getDiagnoseClients?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
         }
 
         else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableVSlist = $('#diagnoseList_tbl').DataTable({
                 "ajax": {
-                    "url": '../MedicalConsultation/getDiagnoseClients',
+                    "url": "../MedicalConsultation/getDiagnoseClients?date=" + moment(dateFilter).format('YYYY-MM-DD'),
                     "type": 'POST',
                     "dataSrc": "",
                     "recordsTotal": 20,
@@ -826,7 +830,6 @@
                                     break;
                             }
                         });
-
                         s.resultDiag.laboratory = laboratory;
                     }
                 });
@@ -841,7 +844,8 @@
         s.showClientList = !s.showClientList;
         
         if (s.showClientList) {
-            getDiagnoseClients();
+            s.FilterDate = new Date();
+            getDiagnoseClients(s.FilterDate);
         }
     }
 

@@ -33,7 +33,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching the medicines." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching the medicines.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -83,7 +83,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching laboratory history." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching laboratory history.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -185,7 +185,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching diagnosis history." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching diagnosis history.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -357,17 +357,17 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult getDiagnoseClients()
+        public ActionResult getDiagnoseClients(DateTime date)
         {
             try
             {
-                var medHist = dbMed.fn_getDiagnoseClients("SERVICE001").OrderByDescending(a => a.dateTimeLog).ToList();
+                var medHist = dbMed.fn_getDiagnoseClients("SERVICE001", date).OrderByDescending(a => a.dateTimeLog).ToList();
 
                 return Json(medHist, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching the client list." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching the client list.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -400,7 +400,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching client`s vital signs." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching client`s vital signs.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -422,7 +422,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching the laboratory referrals." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching the laboratory referrals.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -436,7 +436,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while fetching prescripted medicines." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while fetching prescripted medicines.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 

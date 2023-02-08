@@ -8,6 +8,11 @@
     s.isShowResult = false;
     s.isEditBloodChem = 0;
 
+    s.filterResult = function (date) {
+        getLabClients(date);
+    }
+
+
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner({
       video: document.getElementById("preview"),
@@ -122,23 +127,24 @@
       s.showClientList = !s.showClientList;
 
       if (s.showClientList) {
-        getLabClients();
+            s.FilterDate = new Date();
+            getLabClients(s.FilterDate);
       }
     };
 
-    function getLabClients() {
+    function getLabClients(dateFilter) {
       indexNo = 1;
 
       if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
         $("#clientList_tbl").DataTable().clear();
-        $("#clientList_tbl").DataTable().ajax.url("../LaboratoryResult/getPatientList").load();
+        $("#clientList_tbl").DataTable().ajax.url("../LaboratoryResult/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
       } 
       
       else {
         //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
         var tableLabList = $("#clientList_tbl").DataTable({
           "ajax": {
-            "url": "../LaboratoryResult/getPatientList",
+              "url": "../LaboratoryResult/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD'),
             "type": "POST",
             "dataSrc": "",
             "recordsTotal": 20,

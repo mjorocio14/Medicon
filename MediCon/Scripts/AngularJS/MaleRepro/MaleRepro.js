@@ -11,7 +11,7 @@
       s.medicalRecord_loader = false;
       s.labLoader = false;
       s.requestLoader = false;
-      s.xrayFilterDate = new Date();
+      
 
       s.filterResult = function (date) {
           getMRHclients(date);
@@ -83,7 +83,8 @@
           s.showClientList = !s.showClientList;
 
           if (s.showClientList) {
-              getMRHclients(s.xrayFilterDate);
+              s.FilterDate = new Date();
+              getMRHclients(s.FilterDate);
           }
       };
 
@@ -462,9 +463,7 @@
                         data: null,
                         render: function (row) {
                             return (
-                              row.personnel_firstName +
-                              " " +
-                              row.personnel_midInit +
+                              row.personnel_firstName.charAt(0) +
                               " " +
                               row.personnel_lastName
                             );
@@ -484,6 +483,10 @@
                     },
                   ],
                   order: [[0, "asc"]],
+                  'columnDefs': [{
+                       "targets": [0, 5, 6, 7, 8, 9, 10],
+                       "className": "text-center"
+                   }]
               });
 
               $("#clientList_tbl tbody").off("click");

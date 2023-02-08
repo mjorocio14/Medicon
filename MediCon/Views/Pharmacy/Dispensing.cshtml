@@ -4,8 +4,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <div ng-app="OT22app" ng-controller="pharmacyDispensingCtrl">
 
     <!-- HEADER -->
@@ -62,7 +60,7 @@
                                     <div class="sk-double-bounce1"></div>
                                     <div class="sk-double-bounce2"></div>
                                 </div>
-                                <text><i>Please wait, we are getting your data...</i></text>
+                                <p><i>Please wait, we are getting your data...</i></p>
                             </div>
                             <div ng-show="!loader">
                                 <form id="QR_FORM" name="QR_FORM">
@@ -156,16 +154,16 @@
                             <div class="sk-double-bounce1"></div>
                             <div class="sk-double-bounce2"></div>
                         </div>
-                        <text><i>Please wait, we are getting your data...</i></text>
+                        <p><i>Please wait, we are getting your data...</i></p>
                     </div>
                     <div class="table-wrapper-scroll-y my-custom-scrollbar" ng-show="!tableLoader">
                         <table id="listMeds_tbl" class="table table-stripped" style="width: 100%;">
                             <tbody>
                                 <tr ng-repeat="item in prescripted">
-                                    <th class="text-danger vertical-align">{{item[0].serviceID}}</th>
+                                    <th class="text-danger vertical-align">{{item[0].serviceName}}</th>
                                     <td>
                                         <table class="table table-stripped">
-                                            <tr ng-repeat="med in item" ng-style="med.checkboxVal == true ? {'background-color': '#ed5565', 'color': 'white'}:''">
+                                            <tr ng-repeat="med in item" ng-style="med.checkboxVal == true && !isEditting ? {'background-color': '#ed5565', 'color': 'white'}:''">
                                                 <td class="text-center ">{{$index + 1}}</td>
                                                 <td class="text-left"><b>{{med.productDesc}}</b></td>
                                                 <td class="text-left">
@@ -173,14 +171,18 @@
                                                     {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'ML':med.unitDesc == 'Tablet' || med.unitDesc == 'Softgel' ? 'Tablet/s':med.unitDesc == 'Capsule' ? 'Capsule/s':med.unitDesc == 'Nebule'? med.unitDesc:med.unitDesc == 'Cream' ? 'Apply':med.unitDesc == 'Respule' ? med.unitDesc:med.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
                                                     {{med.perDay}} x a Day
                                                 </td>
-                                                <td class="text-right">{{med.noDay == 'maintenance' ? 'as Maintenance':med.noDay == 'needed' ? 'as Needed':med.noDay == 'single' ? 'Single Dose':med.noDay + ' Day/s'}}</td>
-                                                <td class="text-right"><b>{{med.qtyRx}} {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'Bottle/s':med.unitDesc == 'Cream' ? 'Tube':med.unitDesc + '/s'}}</b></td>
-                                                <td class="text-right" style="width:10%;">
-                                                    <input placeholder="{{med.qtyRx}}" ng-disabled="med.checkboxVal == true" class="form-control text-center" type="number" id="quantity" name="quantity" ng-model="med.qtyReleased" />
+                                                <td class="text-center">{{med.noDay == 'maintenance' ? 'as Maintenance':med.noDay == 'needed' ? 'as Needed':med.noDay == 'single' ? 'Single Dose':med.noDay + ' Day/s'}}</td>
+                                                <td class="text-center">
+                                                    <b>{{med.qtyRx}} {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'Bottle/s':med.unitDesc == 'Cream' ? 'Tube':med.unitDesc + '/s'}}</b>
                                                 </td>
-                                                <td class="text-right"><input type="checkbox" ng-disabled="med.checkboxVal == true" class="i-checks icheckbox_square-green" name="isRelease" ng-model="med.isRelease"></td>
+                                                <td class="text-center" style="width:10%;">
+                                                    <input placeholder="{{med.qtyRx}}" ng-disabled="med.checkboxVal == true && !isEditting" class="form-control text-center" type="number" id="quantity" name="quantity" ng-model="med.qtyReleased" style="width: 80% !important" ng-style="med.checkboxVal == true && !isEditting ? {'background-color': '#ed5565', border: 'none', 'color': 'white'}:''" />
+                                                </td>
                                                 <td class="text-right">
-                                                    <label ng-class="med.checkboxVal ? '':'text-success'">{{med.checkboxVal ? 'RELEASED':'TO DISPENSE'}}</label>
+                                                    <input type="checkbox" ng-disabled="med.checkboxVal == true && !isEditting" class="i-checks icheckbox_square-green" name="isRelease" ng-model="med.isRelease">
+                                                </td>
+                                                <td class="text-right">
+                                                    <label ng-class="isEditting ? 'text-danger' : med.checkboxVal ? '':'text-success'">{{isEditting ? 'UPDATING' : med.checkboxVal ? 'RELEASED':'TO DISPENSE'}}</label>
                                                 </td>
                                             </tr>
                                         </table>
@@ -192,12 +194,8 @@
                     <hr class="hr-line-dashed" />
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="row pull-right">
-                            @*<div class="checkbox checkbox-danger checkbox-inline" style="margin-right: 20px;">
-                                <input type="checkbox" id="select-all" ng-change="checkAll(prescripted)">
-                                <label for="select-all"> <b>Check All</b> </label>
-                            </div>*@
                             <div class="btn-group">
-                                <button class="btn btn-primary" ng-disabled="checkboxCounter == 0" ng-click="releaseMeds()"><i class="fa fa-send"></i> Release </button>
+                                <button class="btn btn-primary" ng-disabled="checkboxCounter == 0 && !isEditting" ng-click="releaseMeds()"><i class="fa fa-send"></i> Release </button>
                             </div>
                         </div>
                     </div>
@@ -211,7 +209,7 @@
             <div class="col-lg-12">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-2 control-label text-left">Dispensed Date:</label>
+                        <label class="col-sm-2 control-label" style="text-align:center !important">Dispensed Date:</label>
                         <div class="col-sm-2">
                             <input type="date" id="pharmacyFilterDate" ng-change="filterResult(pharmacyFilterDate)" name="pharmacyFilterDate" style="text-transform:uppercase" ng-model="pharmacyFilterDate" class="text-center form-control">
                         </div>
@@ -275,7 +273,7 @@
                             <tbody>
                                 <tr class="text-center" ng-show="diagnosisInfo.length == 0">
                                     <td colspan="4">
-                                        <text class="text-danger"><label><i>No record found</i></label></text>
+                                        <p class="text-danger"><label><i>No record found</i></label></p>
                                     </td>
                                 </tr>
                                 <tr ng-repeat="rx in diagnosisInfo">
@@ -287,6 +285,10 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" ng-click="editDispensed(diagnosisInfo)">Edit</button>
+                    <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

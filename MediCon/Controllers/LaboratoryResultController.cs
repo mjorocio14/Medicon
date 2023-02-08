@@ -386,17 +386,17 @@ namespace MediCon.Controllers
             return Json(userList, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult getPatientList()
+        public ActionResult getPatientList(DateTime date)
         {
             try
             {
-                var lab = dbMed.fn_getLabResult().OrderByDescending(x => x.encodeDT).ToList();
+                var lab = dbMed.fn_getLabResult(date).OrderByDescending(x => x.encodeDT).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 

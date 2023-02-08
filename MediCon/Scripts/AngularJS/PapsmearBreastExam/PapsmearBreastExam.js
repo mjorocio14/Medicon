@@ -5,6 +5,10 @@
     s.showClientList = false;
     s.showPerformPanel = false;
 
+    s.filterResult = function (date) {
+        getPBEclients(date);
+    }
+
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner(
         {
@@ -148,23 +152,24 @@
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
-            getPBEclients();
+            s.FilterDate = new Date();
+            getPBEclients(s.FilterDate);
         }
     }
 
-    function getPBEclients() {
+    function getPBEclients(dateFilter) {
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
             $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url('../PapsmearBreastExam/getPatientList').load();
+            $('#clientList_tbl').DataTable().ajax.url("../PapsmearBreastExam/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
         }
 
         else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableLabList = $('#clientList_tbl').DataTable({
                 "ajax": {
-                    "url": '../PapsmearBreastExam/getPatientList',
+                    "url": "../PapsmearBreastExam/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD'),
                     "type": 'POST',
                     "dataSrc": "",
                     "recordsTotal": 20,

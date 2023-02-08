@@ -98,6 +98,8 @@ namespace MediCon.Controllers
                                         a.pi.sex,
                                         a.pi.birthDate,
                                         a.r.r5.r4.oi.dateTimeReleased,
+                                        a.r.r5.r4.oi.rxID,
+                                        a.r.r5.r4.r3.mp.consultID,
                                         a.r.r5.per.personnel_lastName,
                                         a.r.r5.per.personnel_firstName,
                                         a.r.r5.per.personnel_extName,
@@ -124,6 +126,32 @@ namespace MediCon.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult getReleasedRx(string qrCode, DateTime date)
+        {
+            try
+            {
+                DateTime dateStart = DateTime.Parse(date.ToLongDateString() + " 00:00:00");
+                DateTime dateEnd = DateTime.Parse(date.ToLongDateString() + " 23:59:59");
+
+                var list = db.spOT_MedicineDispensing(qrCode).Where(e => e.isRelease == true && e.dateTimeReleased >= dateStart && e.dateTimeReleased <= dateEnd).GroupBy(a => a.serviceID).ToList();
+
+                var serializer = new JavaScriptSerializer();
+                serializer.MaxJsonLength = Int32.MaxValue;
+
+                var content = new ContentResult
+                {
+                    Content = serializer.Serialize(list),
+                    ContentType = "application/json"
+
+                };
+                return content;
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve list of clients.", exceptionMessage = ex.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         //public class listRx
         //{
@@ -155,12 +183,49 @@ namespace MediCon.Controllers
                          {
                              data.isRelease = item.isRelease;
                              data.qtyReleased = item.qtyReleased;
-                             //data.qtyReleased = item.qtyRx > item.AVAILABLE ? item.AVAILABLE : data.qtyRx;
                              data.dateTimeReleased = DateTime.Now;
                              data.userIDreleased = Session["personnelID"].ToString();
                              db.Entry(data).State = EntityState.Modified;
                          }
                      }
+                }
+
+                var affectedRow = db.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Prescription releasing is not saved!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Prescription releasing is successfully saved!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult saveReleasedUpdate(List<ListMeds> listRx)
+        {
+            try
+            {
+                foreach (var item in listRx)
+                {
+                    var find = db.OutgoingItems.SingleOrDefault(a => a.outID == item.outID);
+
+                    if (find != null)
+                    {
+                        find.isRelease = item.isRelease;
+
+                        if (item.isRelease) find.qtyReleased = item.qtyReleased;
+                        else find.qtyReleased = null;
+
+                        if (item.isRelease) find.dateTimeReleased = DateTime.Now;
+                        else find.dateTimeReleased = null;
+
+                        find.userIDreleased = item.isRelease == false ? null : Session["personnelID"].ToString();
+                        db.Entry(find).State = EntityState.Modified;
+                    }
                 }
 
                 var affectedRow = db.SaveChanges();

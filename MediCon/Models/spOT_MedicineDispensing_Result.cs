@@ -15,6 +15,7 @@ namespace MediCon.Models
     {
         public string qrCode { get; set; }
         public string serviceID { get; set; }
+        public string serviceName { get; set; }
         public string outID { get; set; }
         public string productCode { get; set; }
         public string productDesc { get; set; }

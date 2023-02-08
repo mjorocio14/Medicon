@@ -14,7 +14,6 @@
     //var vsIndexNo = 1;
     //getDiagnoseClientList();
     s.showRx = false;
-    s.xrayFilterDate = new Date();
     
 
     //s.showRxQty = false;
@@ -30,6 +29,7 @@
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
+            s.xrayFilterDate = new Date();
             getDiagnoseClientList(s.xrayFilterDate);
         }
     };

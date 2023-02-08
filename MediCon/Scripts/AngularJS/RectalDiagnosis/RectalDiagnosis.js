@@ -11,6 +11,10 @@
     s.showBtnClientList = true;
     getSpecialist();
 
+    s.filterResult = function (date) {
+        getRectalClients(date);
+    }
+
     // SELECT2 INITIALIZATION
     $("#productCode").on('select2:select', function (e) {
         var data = e.params.data;
@@ -509,7 +513,8 @@
             s.showClientList = true;
             s.showBtnClientList = false;
             s.diagnosePanel = false;
-            getRectalClients();
+            s.diagFilterDate = new Date();
+            getRectalClients(s.diagFilterDate);
         }
 
         else {
@@ -521,14 +526,14 @@
         }
     }
 
-    function getRectalClients() {
+    function getRectalClients(dateFilter) {
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
             $("#clientList_tbl").DataTable().clear();
             $("#clientList_tbl")
               .DataTable()
-              .ajax.url("../RectalDiagnosis/getRectalClientList")
+              .ajax.url("../RectalDiagnosis/getRectalClientList?date=" + moment(dateFilter).format('YYYY-MM-DD'))
               .load();
         }
 
@@ -536,7 +541,7 @@
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tblMRH = $("#clientList_tbl").DataTable({
                 ajax: {
-                    url: "../RectalDiagnosis/getRectalClientList",
+                    url: "../RectalDiagnosis/getRectalClientList?date=" + moment(dateFilter).format('YYYY-MM-DD'),
                     type: "POST",
                     dataSrc: "",
                     recordsTotal: 20,

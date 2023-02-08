@@ -47,7 +47,7 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -124,19 +124,17 @@ namespace MediCon.Controllers
 
         }
 
-        public ActionResult getMRHclients(string date)
+        public ActionResult getMRHclients(DateTime date)
         {
             try
             {
-                DateTime dateParam = DateTime.Parse(date);
-
-                var lab = dbMed.fn_getMRHclients(dateParam).OrderByDescending(x => x.interviewDT).ToList();
+                var lab = dbMed.fn_getMRHclients(date).OrderByDescending(x => x.interviewDT).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 

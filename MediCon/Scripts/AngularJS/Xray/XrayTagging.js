@@ -5,7 +5,7 @@
     s.isAlreadyTagged = false;
     s.isViewingRecord = false;
     s.isEditting = false;
-    s.xrayFilterDate = new Date();
+    
    
     s.filterResult = function (date) {
         getXrayClients(date);
@@ -174,6 +174,7 @@
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
+            s.xrayFilterDate = new Date();
             getXrayClients(s.xrayFilterDate);
         }
     };

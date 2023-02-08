@@ -386,6 +386,12 @@
     <Compile Include="Models\sp_getXrayClientScreened_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sp_helpdiagrams_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\sysdiagram.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -557,19 +563,19 @@
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regulard41d.eot" />
-    <EntityDeploy Include="Models\Medicon.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Medicon.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\Medicon.edmx.diagram">
-      <DependentUpon>Medicon.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\DCIMS.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DCIMS.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\DCIMS.edmx.diagram">
       <DependentUpon>DCIMS.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\Medicon.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Medicon.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\Medicon.edmx.diagram">
+      <DependentUpon>Medicon.edmx</DependentUpon>
     </Content>
     <EntityDeploy Include="Models\HRISDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>

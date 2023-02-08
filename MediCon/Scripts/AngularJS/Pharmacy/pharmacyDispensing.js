@@ -1,12 +1,9 @@
 ﻿app.controller('pharmacyDispensingCtrl', ['$scope', '$http', '$filter', function (s, h, f) {
     s.loader = false;
     s.showQRpanel = true;
-    //var vsIndexNo = 1;
-    //getDispensedList();
     s.qrData = {};
     s.isEditting = false;
     s.tableLoader = false;
-    s.pharmacyFilterDate = new Date();
     s.showClientList = false;
     s.showClientListBTN = true;
 
@@ -14,6 +11,7 @@
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
+            s.pharmacyFilterDate = new Date();
             getDispensedList(s.xrayFilterDate);
         }
     };
@@ -126,14 +124,6 @@
 
     }
 
-        //$(document).ready(function () {
-        //    $('.i-checks').iCheck({
-        //        checkboxClass: 'icheckbox_square-green',
-        //        radioClass: 'iradio_square-green',
-        //    });
-        //});
-
-
     s.scanner = new Instascan.Scanner(
            {
                video: document.getElementById('preview')
@@ -202,6 +192,7 @@
         h.post('../Pharmacy/getPrescription?qrCode=' + qrCode).then(function (d) {
             s.prescripted = {};
             s.prescripted = d.data;
+
             angular.forEach(s.prescripted, function (value) {
                 angular.forEach(value, function (meds) {
                     meds.isRelease != true ? s.checkboxCounter++ : '';
@@ -223,41 +214,26 @@
 
         var listToReleased = [];
 
-        for (var a = 0; a < s.prescripted.length; a++)
+        if (s.isEditting)
         {
-            for (var b = 0; b < s.prescripted[a].length; b++)
-            {
-                s.prescripted[a][b].isRelease == true ? checkedCounter++ : '';
-                s.prescripted[a][b].checkboxVal == true ? checkboxCount++ : '';
-                s.prescripted[a][b].qtyReleased = s.prescripted[a][b].qtyReleased == null ? s.prescripted[a][b].qtyRx : s.prescripted[a][b].qtyReleased;
-                if (s.prescripted[a][b].isRelease == true && s.prescripted[a][b].dateTimeReleased == null || s.prescripted[a][b].dateTimeReleased == '')
-                    listToReleased.push(s.prescripted[a][b]);
+            for (var a = 0; a < s.prescripted.length; a++) {
+                for (var b = 0; b < s.prescripted[a].length; b++) {
+                    listToReleased.push({
+                        outID: s.prescripted[a][b].outID,
+                        isRelease: s.prescripted[a][b].isRelease,
+                        qtyReleased: s.prescripted[a][b].qtyReleased,
+                    });
+                }
             }
-        }
 
-        console.log(listToReleased);
-
-        if (checkedCounter == 0 || (checkedCounter <= checkboxCount))
-        {
             swal({
-                title: "Releasing failed!",
-                text: "You <label class='text-danger'>DON`T</label> have any checked medicine",
-                type: "error",
-                html: true
-            });
-
-        }
-
-        else
-        {
-            swal({
-                title: "Please wait while we are saving the update/s!",
-                text: "QR code Information",
+                title: "UPDATING",
+                text: "Please wait while we are saving the update/s!",
                 type: "info",
                 showConfirmButton: false
             });
-           
-            h.post('../Pharmacy/saveReleasing', { listRx: listToReleased }).then(function (d) {
+
+            h.post('../Pharmacy/saveReleasedUpdate', { listRx: listToReleased }).then(function (d) {
                 if (d.data.status == "success") {
                     swal({
                         title: "SUCCESS!",
@@ -267,7 +243,6 @@
 
                     s.isEditting = false;
                     s.qrData = {};
-                    //getDispensedList();
                     s.prescripted = {};
                     s.searchQRcode = '';
 
@@ -281,8 +256,88 @@
                 }
             });
         }
+
+        else {
+            for (var a = 0; a < s.prescripted.length; a++) {
+                for (var b = 0; b < s.prescripted[a].length; b++) {
+                    s.prescripted[a][b].isRelease == true ? checkedCounter++ : '';
+                    s.prescripted[a][b].checkboxVal == true ? checkboxCount++ : '';
+                    s.prescripted[a][b].qtyReleased = s.prescripted[a][b].qtyReleased == null ? s.prescripted[a][b].qtyRx : s.prescripted[a][b].qtyReleased;
+                    if (s.prescripted[a][b].isRelease == true && s.prescripted[a][b].dateTimeReleased == null || s.prescripted[a][b].dateTimeReleased == '')
+                        listToReleased.push(s.prescripted[a][b]);
+                }
+            }
+
+            if (checkedCounter == 0 || (checkedCounter <= checkboxCount)) {
+                swal({
+                    title: "Releasing failed!",
+                    text: "You <label class='text-danger'>DON`T</label> have any checked medicine",
+                    type: "error",
+                    html: true
+                });
+            }
+
+            else {
+                swal({
+                    title: "SAVING",
+                    text: "Please wait while we are saving your data!",
+                    type: "info",
+                    showConfirmButton: false
+                });
+
+                h.post('../Pharmacy/saveReleasing', { listRx: listToReleased }).then(function (d) {
+                    if (d.data.status == "success") {
+                        swal({
+                            title: "SUCCESS!",
+                            text: d.data.msg,
+                            type: "success"
+                        });
+
+                        s.isEditting = false;
+                        s.qrData = {};
+                      
+                        s.prescripted = {};
+                        s.searchQRcode = '';
+
+                    }
+                    else {
+                        swal({
+                            title: "ERROR!",
+                            text: d.data.msg,
+                            type: "error"
+                        });
+                    }
+                });
+            }
+        }
     }
     
+    s.editDispensed = function (data) {
+        s.tableLoader = true;
+        s.checkboxCounter = 0;
 
+        s.mainSearch(data[0].qrCode);
+
+        h.post('../Pharmacy/getReleasedRx', { qrCode: data[0].qrCode, date: s.pharmacyFilterDate }).then(function (d) {
+            s.prescripted = {};
+            s.prescripted = d.data;
+       
+            angular.forEach(s.prescripted, function (value) {
+                angular.forEach(value, function (meds) {  
+                    meds.isRelease != true ? s.checkboxCounter++ : '';
+                    meds.checkboxVal = angular.copy(meds.isRelease);
+                });
+                value.sort(function (a, b) {
+                    return b.isRelease - a.isRelease;
+                });
+            });
+
+            s.tableLoader = false;
+            s.isEditting = true;
+            s.showClientList = !s.showClientList;
+            s.searchQRcode = '';
+            $('#medDispensed_modal').modal('hide');
+         });
+    }
 
 }]);

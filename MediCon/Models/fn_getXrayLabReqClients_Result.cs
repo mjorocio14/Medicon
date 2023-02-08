@@ -13,6 +13,7 @@ namespace MediCon.Models
     
     public partial class fn_getXrayLabReqClients_Result
     {
+        public string qrCode { get; set; }
         public string labRequestID { get; set; }
         public string requestingFacility { get; set; }
         public Nullable<System.DateTime> dateOfRequest { get; set; }

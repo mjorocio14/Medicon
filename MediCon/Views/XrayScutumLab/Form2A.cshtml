@@ -89,25 +89,25 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_lastName">Last name</label>
-                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_firstName">First name</label>
-                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_mi">Middle name</label>
-                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_suffix">Suffix</label>
-                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                             </div>
@@ -115,18 +115,18 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_birthdate">Birthday</label>
-                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-4">
                                                     <label class="control-label">Sex</label>
                                                     <div class="form-group text-center">
                                                         <div class="radio radio-primary radio-inline">
-                                                            <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" readonly />
                                                             <label for="radio_sex_male"> Male </label>
                                                         </div>
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                            <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" readonly />
                                                             <label for="radio_sex_female"> Female </label>
                                                         </div>
                                                     </div>
@@ -134,7 +134,7 @@
                                                 <div class="col-sm-4">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_contactNo">Contact no.</label>
-                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                             </div>
@@ -142,7 +142,7 @@
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
                                                         <label class="control-label" for="qr_address">Address</label>
-                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly />
                                                     </div>
                                                 </div>
                                             </div>
@@ -199,49 +199,6 @@
                                         <label class="control-label">Date of Request:</label>
                                         <div class="form-group">
                                             <input type="date" id="dateOfRequest" name="dateOfRequest" ng-model="request.dateOfRequest" class="form-control text-center" required />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Patient`s Fullname:</label>
-                                        <div class="form-group">
-                                            <input type="text" id="fullName" name="fullName" ng-model="request.fullName" class="form-control text-center" required readonly/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Age:</label>
-                                        <div class="form-group">
-                                            <input type="text" id="age" name="age" ng-model="request.age" class="form-control text-center" @*required*@ readonly />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
-                                    <div class="form-group">
-                                        <label class="control-label">Sex:</label>
-                                        <div class="form-group">
-                                            <input type="text" id="sex" name="sex" ng-model="request.sex" class="form-control text-center" @*required*@ readonly />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Complete Address:</label>
-                                        <div class="form-group">
-                                            <input type="text" id="fullAddress" name="fullAddress" ng-model="request.fullAddress" class="form-control text-center" required readonly />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                    <div class="form-group">
-                                        <label class="control-label">Contact No.:</label>
-                                        <div class="form-group">
-                                            <input type="text" id="contactNo" name="contactNo" ng-model="request.contactNo" class="form-control text-center" @*required*@ readonly />
                                         </div>
                                     </div>
                                 </div>
@@ -332,14 +289,13 @@
                             <hr />
                             <div class="row">
                                 <div class="col-xs-12">
-                                    <div ng-show="!isViewing && !isEditting">
+                                    <div ng-show="!isEditting">
                                         <button class="btn btn-danger pull-right" type="button" ng-click="showLabRequestForm()">Cancel</button>
                                         <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!scutumReq_form.$invalid ? saveLabReq(qrData.qrCode, request):''">Save Screening</button>
                                     </div>
-                                    <div ng-show="isViewing">
+                                    <div ng-show="isEditting">
                                         <button class="btn btn-danger pull-right" type="button" ng-click="returnToList()">Cancel</button>
-                                        <button ng-show="!isEditting" class="btn btn-success pull-right" type="button" ng-click="isEditting = true; isViewing = true;" style="margin-right: 2px;">Edit Information</button>
-                                        <button ng-show="isEditting" class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!scutumReq_form.$invalid ? saveChanges(mrh):''">Save Changes</button>
+                                        <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!scutumReq_form.$invalid ? saveLabReqChanges(request):''">Save Changes</button>
                                     </div>
                                 </div>
                             </div>
@@ -380,7 +336,6 @@
                                             <th>Suffix</th>
                                             <th>Sex</th>
                                             <th>Age</th>
-                                            <th>Contact no.</th>
                                             <th>Requesting Facility</th>
                                             <th>Date of Request</th>
                                             <th>Treatment</th>
@@ -389,7 +344,7 @@
                                             <th>Prepared By</th>
                                             <th>Date & Time Created</th>
                                             @*<th data-sort-ignore="true">Action</th>*@
-                                            <th data-sort-ignore="true">Print</th>
+                                            <th data-sort-ignore="true">Action</th>
 
                                         </tr>
                                     </thead>

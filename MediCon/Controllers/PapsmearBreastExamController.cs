@@ -76,21 +76,21 @@ namespace MediCon.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult getPatientList()
+        public ActionResult getPatientList(DateTime date)
         {
             try
             {
-                var lab = dbMed.fn_getPapsmearBreastExamClients().OrderBy(x => x.lastName).ThenBy(y => y.firstName).ToList();
+                var lab = dbMed.fn_getPapsmearBreastExamClients(date).OrderBy(x => x.lastName).ThenBy(y => y.firstName).ToList();
 
                 return Json(lab, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                return Json(new { status = "error", msg = "An error occured while saving your data." }, JsonRequestBehavior.AllowGet);
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
 

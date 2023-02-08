@@ -161,7 +161,7 @@ namespace MediCon.Controllers
                 MedicalPrescription MP = new MedicalPrescription();
                 MP.rxID = "RX" + guid.ToString().Substring(9, 4) + (DateTime.Now.GetHashCode() < 0 ? (DateTime.Now.GetHashCode() * -1) : DateTime.Now.GetHashCode());
                 MP.rxID = MP.rxID.Length > 15 ? MP.rxID.Substring(0, 15) : MP.rxID;
-                MP.serviceID = "DENTAL";
+                MP.serviceID = "SERVICE002";
                 MP.consultID = consultID;
                 MP.dateTimeRx = DateTime.Now;
                 MP.personnelID = Session["personnelID"].ToString();

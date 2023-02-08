@@ -262,13 +262,23 @@
 
         <!-- LIST OF PATIENTS -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
-
-            <div class="panel panel-success">
-                <div class="panel-heading text-center">
+            <div class="col-lg-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="text-align:center !important">Laboratory Date:</label>
+                        <div class="col-sm-2">
+                            <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
                     <label class="text-center">LIST OF PATIENTS</label>
                 </div>
-                <div class="panel-body">
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: auto !important;">
+                <div class="ibox-content">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
@@ -290,9 +300,9 @@
                             </thead>
                         </table>
                     </div>
-
                 </div>
             </div>
+
         </div>
         <!-- /LIST OF PATIENTS -->
 
