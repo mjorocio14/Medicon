@@ -18,6 +18,8 @@ namespace MediCon.Report.Prescription
             // Required for telerik Reporting designer support
             //
             InitializeComponent();
+            //var row = this.ReportParameters[13].Value;  
+            //this.sample.Height = Unit.Inch(5);
 
             //
             // TODO: Add any constructor code after InitializeComponent call

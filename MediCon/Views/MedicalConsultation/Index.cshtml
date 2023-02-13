@@ -271,7 +271,7 @@
                                                         <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
                                                         <td>{{rx[0].dateTimeRx}}</td>
                                                         <td>{{rx[0].serviceName}}</td>
-                                                        <td class="text-center"><button class="btn btn-primary btn-xs" ng-click="printRx(rx[0].rxID)"> Print <i class="fa fa-print"></i></button></td>
+                                                        <td class="text-center"><button class="btn btn-primary btn-xs" ng-click="printRx(rx[0], rx.length)"> Print <i class="fa fa-print"></i></button></td>
                                                         <td>
                                                             <table class="table table-stripped" style="width: 100%;">
                                                                 <thead>
@@ -367,6 +367,9 @@
                                         </div>
                                         <div class="col-xs-6">
                                             <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Weight</span> <input type="text" class="form-control text-center" ng-model="vitalSigns.weight" readonly style="font-weight: 700;"></div>
+                                        </div>
+                                        <div class="col-xs-12">
+                                            <div class="input-group m-b"><span class="input-group-addon" style="font-weight: 700;">Age</span> <input type="text" class="form-control text-center" ng-model="qrData.age" readonly style="font-weight: 700;"></div>
                                         </div>
                                         <div class="col-xs-12">
                                             <div class="input-group m-b">
@@ -804,7 +807,7 @@
                                                 <td>{{$index + 1}}</td>
                                                 <td><b>{{item.productDesc}}</b></td>
                                                 <td>
-                                                    {{item.dosage}}
+                                                    {{item.dosa}}
                                                     {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' ? 'ML':item.unitDesc == 'Tablet' || item.unitDesc == 'Softgel' ? 'Tablet/s':item.unitDesc == 'Capsule' ? 'Capsule/s':item.unitDesc == 'Nebule'? item.unitDesc:item.unitDesc == 'Cream' ? 'Apply':item.unitDesc == 'Respule' ? item.unitDesc:item.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
                                                     {{item.perDay}} x a Day
                                                 </td>

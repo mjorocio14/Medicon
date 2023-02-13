@@ -134,7 +134,15 @@ namespace MediCon.Controllers
                                                 b.s.serviceName,
                                                 b.r6.r5.r4.r3.r2.mp.personnelID,
                                                 b.r6.r5.r4.r3.r2.mp.dateTimeRx,
-                                                physician = dbMed.Personnels.Where(c => c.personnelID == b.r6.r5.r4.r3.r2.mp.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName }),
+                                                physician = dbMed.Personnels.Where(c => c.personnelID == b.r6.r5.r4.r3.r2.mp.personnelID).Select(d => 
+                                                    new { 
+                                                        d.personnel_firstName, 
+                                                        d.personnel_midInit, 
+                                                        d.personnel_lastName, 
+                                                        d.personnel_extName,
+                                                        d.title,
+                                                        d.licenseNo
+                                                    }),
                                                 b.r6.r5.r4.r3.oi.outID,
                                                 b.r6.r5.r4.r3.oi.productCode,
                                                 b.r6.r5.r4.r3.oi.qtyRx,
@@ -170,7 +178,16 @@ namespace MediCon.Controllers
                                                  b.s.serviceName,
                                                  b.r6.r5.r4.r3.r2.mp.personnelID,
                                                  b.r6.r5.r4.r3.r2.mp.dateTimeRx,
-                                                 physician = dbMed.Personnels.Where(c => c.personnelID == b.r6.r5.r4.r3.r2.mp.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName }),
+                                                 physician = dbMed.Personnels.Where(c => c.personnelID == b.r6.r5.r4.r3.r2.mp.personnelID).Select(d =>
+                                                     new
+                                                     {
+                                                         d.personnel_firstName,
+                                                         d.personnel_midInit,
+                                                         d.personnel_lastName,
+                                                         d.personnel_extName,
+                                                         d.title,
+                                                         d.licenseNo
+                                                     }),
                                                  b.r6.r5.r4.r3.oi.outID,
                                                  b.r6.r5.r4.r3.oi.productCode,
                                                  b.r6.r5.r4.r3.oi.qtyRx,

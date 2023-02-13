@@ -86,7 +86,9 @@
                     d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
 
                     s.qrData = d.data[0];
+                    s.qrData.age = moment().diff(moment(d.data[0].birthdate).format('L'), 'years');
                     s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].fullAddress;
+
 
                     s.showMLR(info);
                     getLabHistory(info);
@@ -845,7 +847,6 @@
                             }
                         });
                         s.resultDiag.laboratory = laboratory;
-                        console.log(s.resultDiag.laboratory)
                     }
                 });
                 
@@ -979,8 +980,8 @@
         }
     }
 
-    s.printRx = function (data) {
-        h.post('../Print/printRX?rxID=' + data).then(function (d) {
+    s.printRx = function (data, length) {
+        h.post('../Print/printRX', { rxID: data.rxID, info: s.qrData, physician: data.physician[0], length: length }).then(function (d) {
             window.open("../Report/MediConRpt.aspx?type=prescription");
         });
     }

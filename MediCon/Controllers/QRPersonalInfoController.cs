@@ -43,7 +43,8 @@ namespace MediCon.Controllers
                                  a.res2.res1.pi.sex,
                                  a.res2.res1.br.brgyDesc,
                                  a.res2.cm.citymunDesc,
-                                 a.pr.provDesc
+                                 a.pr.provDesc,
+                                 fullAddress = a.res2.res1.br.brgyDesc + " " + a.res2.cm.citymunDesc + " " + a.pr.provDesc
                              }).ToList();
 
                 return Json(result, JsonRequestBehavior.AllowGet);
