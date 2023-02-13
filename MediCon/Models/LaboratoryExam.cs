@@ -19,6 +19,9 @@ namespace MediCon.Models
         public string referralID { get; set; }
         public string labTestID { get; set; }
         public string otherLabDesc { get; set; }
+        public string xrayDesc { get; set; }
+        public string ultrasoundDesc { get; set; }
+        public string ecgDesc { get; set; }
         public Nullable<bool> isTested { get; set; }
         public Nullable<bool> isEncoded { get; set; }
         public Nullable<System.DateTime> dateEncoded { get; set; }

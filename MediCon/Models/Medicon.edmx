@@ -152,6 +152,9 @@
           <Property Name="referralID" Type="varchar" MaxLength="15" />
           <Property Name="labTestID" Type="varchar" MaxLength="5" />
           <Property Name="otherLabDesc" Type="varchar" MaxLength="50" />
+          <Property Name="xrayDesc" Type="varchar" MaxLength="50" />
+          <Property Name="ultrasoundDesc" Type="varchar" MaxLength="50" />
+          <Property Name="ecgDesc" Type="varchar" MaxLength="50" />
           <Property Name="isTested" Type="bit" />
           <Property Name="isEncoded" Type="bit" />
           <Property Name="dateEncoded" Type="datetime" />
@@ -1357,23 +1360,6 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="LaboratoryExam">
-          <Key>
-            <PropertyRef Name="labID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="isTested" Type="Boolean" />
-          <Property Name="isEncoded" Type="Boolean" />
-          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
-          <Property Name="pathologist" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="medtech" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="LaboratoryGroupTest">
           <Key>
             <PropertyRef Name="LabTestGroupID" />
@@ -1816,7 +1802,6 @@
           <EntitySet Name="ECGs" EntityType="Self.ECG" />
           <EntitySet Name="EditRemarks" EntityType="Self.EditRemark" />
           <EntitySet Name="Fecalysis" EntityType="Self.Fecalysi" />
-          <EntitySet Name="LaboratoryExams" EntityType="Self.LaboratoryExam" />
           <EntitySet Name="LaboratoryGroupTests" EntityType="Self.LaboratoryGroupTest" />
           <EntitySet Name="LaboratoryTests" EntityType="Self.LaboratoryTest" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" />
@@ -1919,6 +1904,7 @@
             <Parameter Name="serviceID" Mode="In" Type="String" />
             <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
+          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
         </EntityContainer>
         <ComplexType Name="sp_getXrayClientRecord_Result">
           <Property Type="String" Name="labRequestID" Nullable="false" MaxLength="15" />
@@ -2171,6 +2157,26 @@
           <Property Type="DateTime" Name="birthdate" Nullable="true" Precision="10" />
           <Property Type="String" Name="contactNo" Nullable="true" MaxLength="50" />
         </ComplexType>
+        <EntityType Name="LaboratoryExam">
+          <Key>
+            <PropertyRef Name="labID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="xrayDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ultrasoundDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ecgDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="isEncoded" Type="Boolean" />
+          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
+          <Property Name="pathologist" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="medtech" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2320,24 +2326,6 @@
                 <ScalarProperty Name="fatGlobules" ColumnName="fatGlobules" />
                 <ScalarProperty Name="bacteria" ColumnName="bacteria" />
                 <ScalarProperty Name="otherFindings" ColumnName="otherFindings" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LaboratoryExams">
-            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
-              <MappingFragment StoreEntitySet="LaboratoryExam">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
-                <ScalarProperty Name="isTested" ColumnName="isTested" />
-                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
-                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
-                <ScalarProperty Name="pathologist" ColumnName="pathologist" />
-                <ScalarProperty Name="medtech" ColumnName="medtech" />
                 <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
@@ -3282,6 +3270,27 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="LaboratoryExams">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
+              <MappingFragment StoreEntitySet="LaboratoryExam">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="medtech" ColumnName="medtech" />
+                <ScalarProperty Name="pathologist" ColumnName="pathologist" />
+                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="ecgDesc" ColumnName="ecgDesc" />
+                <ScalarProperty Name="ultrasoundDesc" ColumnName="ultrasoundDesc" />
+                <ScalarProperty Name="xrayDesc" ColumnName="xrayDesc" />
+                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

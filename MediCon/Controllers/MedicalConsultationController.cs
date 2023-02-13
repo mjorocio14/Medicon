@@ -56,6 +56,9 @@ namespace MediCon.Controllers
                                                        b.res3.res2.res1.le.isTested,
                                                        b.res3.res2.res1.le.isEncoded,
                                                        b.res3.res2.res1.le.otherLabDesc,
+                                                       b.res3.res2.res1.le.xrayDesc,
+                                                       b.res3.res2.res1.le.ecgDesc,
+                                                       b.res3.res2.res1.le.ultrasoundDesc,
                                                        b.res3.res2.res1.le.pathologist,
                                                        b.res3.res2.res1.le.medtech,
                                                        labPersonID = b.res3.res2.res1.le.personnelID,
@@ -191,7 +194,7 @@ namespace MediCon.Controllers
 
 
         [HttpPost]
-        public ActionResult saveDiagnosis(string qrCode, string[] checkedDiagnosis, ResultDiagnosi detail, string[] referral, Consultation consultation, string[] lab, string otherLab)
+        public ActionResult saveDiagnosis(string qrCode, string[] checkedDiagnosis, ResultDiagnosi detail, string[] referral, Consultation consultation, string[] lab, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
             {
@@ -229,6 +232,9 @@ namespace MediCon.Controllers
                                 labEx.referralID = Ref.referralID;
                                 labEx.labTestID = labtest;
                                 labEx.otherLabDesc = labtest == "L0022" ? otherLab : null;
+                                labEx.xrayDesc = labtest == "L0006" ? xrayDesc : null;
+                                labEx.ecgDesc = labtest == "L0004" ? ecgDesc : null;
+                                labEx.ultrasoundDesc = labtest == "L0023" ? ultrasoundDesc : null;
                                 dbMed.LaboratoryExams.Add(labEx);
                             }
                         }
@@ -414,7 +420,10 @@ namespace MediCon.Controllers
                                                .Select(b => new
                                                {
                                                    b.le.labTestID,
-                                                   b.le.otherLabDesc
+                                                   b.le.otherLabDesc,
+                                                   b.le.xrayDesc,
+                                                   b.le.ecgDesc,
+                                                   b.le.ultrasoundDesc
                                                }).ToList();
                 
 

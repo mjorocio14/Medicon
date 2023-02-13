@@ -22,9 +22,13 @@ namespace MediCon.Controllers
 
         public ActionResult printAccomp(string labRequestID)
         {
-
             Session["labRequestID"] = labRequestID;
-       
+            return Content("YES");
+        }
+
+        public ActionResult printRX(string rxID)
+        {
+            Session["rxID"] = rxID;
             return Content("YES");
         }
     }

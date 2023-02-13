@@ -275,7 +275,7 @@
 
         }
 
-        //   ECG-12L RESULT
+        //   ECG RESULT
         else if (data.labTestID == "L0004") {
             s.ecg = {};
 
@@ -294,7 +294,7 @@
         }
     }
 
-    s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, otherLabDesc) {
+    s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, otherLabDesc, xrayDesc, ecgDesc, ultrasoundDesc) {
         
         if (s.qrData.qrCode == '' || s.qrData.qrCode == null) {
             swal({
@@ -367,7 +367,10 @@
                 remarks: remarks
             };
            
-            h.post('../MedicalConsultation/saveDiagnosis', { qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList, otherLab: otherLabDesc }).then(function (d) {
+            h.post('../MedicalConsultation/saveDiagnosis', {
+                qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList,
+                otherLab: otherLabDesc, xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
+            }).then(function (d) {
                     if (d.data.status == "error") {
                         swal({
                             title: "ERROR",
@@ -761,7 +764,11 @@
                     else {
                         var ref = {};
                         var laboratory = {};
-
+                        s.otherLabDesc = '';
+                        s.xrayDesc = '';
+                        s.ecgDesc = '';
+                        s.ultrasoundDesc = '';
+                        
                         // Push all checked referral to referral
                         angular.forEach(d.data.referral, function (item) {
 
@@ -785,9 +792,6 @@
                         
                         // Push all checked laboratory to laboratory
                         angular.forEach(d.data.laboratory, function (item) {
-
-                            if (item.labTestID == 'L0022') {  s.resultDiag.otherLabDesc = item.otherLabDesc }
-
                             switch (item.labTestID) {
                                 case 'L0001':
                                     laboratory.L0001 = true;
@@ -800,12 +804,14 @@
                                     break;
                                 case 'L0004':
                                     laboratory.L0004 = true;
+                                    s.resultDiag.ecgDesc = item.ecgDesc;
                                     break;
                                 case 'L0005':
                                     laboratory.L0005 = true;
                                     break;
                                 case 'L0006':
                                     laboratory.L0006 = true;
+                                    s.resultDiag.xrayDesc = item.xrayDesc;
                                     break;
                                 case 'L0007':
                                     laboratory.L0007 = true;
@@ -827,10 +833,19 @@
                                     break;
                                 case 'L0022':
                                     laboratory.L0022 = true;
+                                    s.resultDiag.otherLabDesc = item.otherLabDesc;
+                                    break;
+                                case 'L0023':
+                                    laboratory.L0023 = true;
+                                    s.resultDiag.ultrasoundDesc = item.ultrasoundDesc;
+                                    break;
+                                case 'L0024':
+                                    laboratory.L0024 = true;
                                     break;
                             }
                         });
                         s.resultDiag.laboratory = laboratory;
+                        console.log(s.resultDiag.laboratory)
                     }
                 });
                 
@@ -964,6 +979,10 @@
         }
     }
 
-      
+    s.printRx = function (data) {
+        h.post('../Print/printRX?rxID=' + data).then(function (d) {
+            window.open("../Report/MediConRpt.aspx?type=prescription");
+        });
+    }
 
 }]);

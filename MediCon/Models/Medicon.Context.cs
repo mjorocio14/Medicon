@@ -37,7 +37,6 @@ namespace MediCon.Models
         public virtual DbSet<ECG> ECGs { get; set; }
         public virtual DbSet<EditRemark> EditRemarks { get; set; }
         public virtual DbSet<Fecalysi> Fecalysis { get; set; }
-        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
         public virtual DbSet<LaboratoryGroupTest> LaboratoryGroupTests { get; set; }
         public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
@@ -69,6 +68,7 @@ namespace MediCon.Models
         public virtual DbSet<Xray_PersonStatus> Xray_PersonStatus { get; set; }
         public virtual DbSet<Xray_Screening> Xray_Screening { get; set; }
         public virtual DbSet<Xray_ScutumLabRequest> Xray_ScutumLabRequest { get; set; }
+        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
     
         [DbFunction("MediconEntities", "fn_getMRHclients")]
         public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients(Nullable<System.DateTime> paramDate)

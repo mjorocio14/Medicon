@@ -24,6 +24,10 @@ namespace MediCon.Report
                     rpt.ReportDocument = new LRRF.LRRFRpt();
                     rpt.Parameters.Add("labRequestID", labRequestID);
                     break;
+                case "prescription":
+                    rpt.ReportDocument = new Prescription.Prescription();
+                    rpt.Parameters.Add("rxID", Session["rxID"].ToString());
+                    break;
             }
 
             MediconReportViewer.ReportSource = rpt;

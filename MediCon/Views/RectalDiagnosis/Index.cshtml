@@ -421,7 +421,11 @@
                                                     </tr>
                                                     <tr ng-repeat="dh in labHistoryList | orderBy: '-dateTested'">
                                                         <td class="text-center">{{$index + 1}}</td>
-                                                        <td>{{dh.labTestName}}</td>
+                                                        <td>
+                                                            {{dh.labTestID == 'L0004' ? dh.labTestName + ' (' + dh.ecgDesc + ')' :
+                                                            dh.labTestID == 'L0006' ? dh.labTestName + ' (' + dh.xrayDesc + ')' :
+                                                            dh.labTestID == 'L0023' ? dh.labTestName + ' (' + dh.ultrasoundDesc + ')' : dh.labTestName}}
+                                                        </td>
                                                         <td class="text-center">{{dh.MRDiagnosisID == null ? dh.ConsultServiceName : dh.refServiceName}}</td>
                                                         <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
                                                         <td class="text-center">{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
