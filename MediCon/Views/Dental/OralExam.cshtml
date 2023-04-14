@@ -494,48 +494,96 @@
             <div class="modal-content">
                 <div class="modal-header blue-bg">
                     <button type="button" class="close" data-dismiss="modal">×</button>
-                    <h2 class="modal-title text-center">DENTAL DIAGNOSIS</h2>
+                    <h2 class="modal-title text-center">PATIENT RECORD</h2>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <text>Doctor: <label>{{diagnosisInfo.doctorName}}</label></text>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <text>Date & Time Diagnosed: <label>{{diagnosisInfo.dateTimeLog}}</label></text>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <text>Remarks: <label>{{diagnosisInfo.remarks}}</label></text>
-                        </div>
+                     <div class="tabs-container">
+                         <ul class="nav nav-tabs">
+                             <li class="active"><a data-toggle="tab" href="#tab-diag"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
+                             <li class=""><a data-toggle="tab" href="#tab-rx"><i class="fa fa-medkit"></i> Prescription</a></li>
+                         </ul>
+                         <div class="tab-content ">
+                             <div id="tab-diag" class="tab-pane active">
+                                 <div class="panel-body" style="height: 300px;">    
+                                     <div class="row">
+                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 m-b-xxs">
+                                             Dentist: <label>{{diagnosisInfo.doctorName}}</label>
+                                         </div>
+                                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 m-b-xxs">
+                                             Date & Time: <label>{{diagnosisInfo.dateTimeLog}}</label>
+                                         </div>
+                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 m-b-sm">
+                                             Referral: <label>{{diagnosisInfo.outsideReferral}}</label>
+                                         </div>
+                                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                             Remarks: <label>{{diagnosisInfo.remarks}}</label>
+                                         </div>
+                                     </div>
+                                     <br />
+                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                         <table class="table table-stripped table-hover" style="width: 100%;">
+                                             <thead style="background-color:aliceblue;">
+                                                 <tr>
+                                                     <th class="">#</th>
+                                                     <th>Diagnosis</th>
+                                                     <th>Tooth no.</th>
+                                                     <th>Others Specify</th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>
+                                                 <tr class="text-center" ng-show="diagnosisList.length == 0">
+                                                     <td colspan="4">
+                                                         <text class="text-danger"><label><i>No record found</i></label></text>
+                                                     </td>
+                                                 </tr>
+                                                 <tr ng-repeat="diag in diagnosisList">
+                                                     <td>{{$index + 1}}</td>
+                                                     <td><label>{{diag.diagnoseName}}</label></td>
+                                                     <td>{{diag.diagnoseID == 'DIAG049' ? diagnosisInfo.toothNum : ''}}</td>
+                                                     <td>{{diag.otherDiagnosis}}</td>
+                                                 </tr>
+                                             </tbody>
+                                         </table>
+                                     </div>
+                                     <hr style="margin-top: -5px; margin-bottom: 10px;"/>
+                                     <button class="btn btn-sm btn-success pull-right" ng-click="editDiagnosis()"><i class="fa fa-pencil"></i> Edit </button>
+                                 </div>
+                             </div>
+                             <div id="tab-rx" class="tab-pane">
+                                 <div class="panel-body" style="height: 300px;">
+                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                         <table class="table table-stripped table-hover" style="width: 100%; height: 205px;">
+                                             <thead style="background-color:aliceblue;">
+                                                 <tr style="font-weight: bold;">
+                                                     <td>Medicine Name</td>
+                                                     <td>Dosage</td>
+                                                     <td># Days</td>
+                                                     <td>Qty</td>
+                                                 </tr>
+                                             </thead>
+                                             <tbody>
+                                                 <tr class="text-center" ng-show="rxHistoryList.length == 0">
+                                                     <td colspan="4">
+                                                         <span class="text-danger"><label><i>No record found</i></label></span>
+                                                     </td>
+                                                 </tr>
+                                                 <tr ng-repeat="rx in rxHistoryList[0].rx">
+                                                     <td>{{rx.productDesc}} {{rx.measurementDesc}}</td>
+                                                     <td>{{rx.dosage}} {{rx.unitDesc}} x {{rx.perDay}} a Day</td>
+                                                     <td>{{rx.noDay == 'maintenance' ? 'as Maintenance':rx.noDay == 'needed' ? 'as Needed':rx.noDay == 'single' ? 'Single Dose':rx.noDay + ' Day/s'}}</td>
+                                                     <td>{{rx.qtyRx}} {{rx.unitDesc == 'Suspension' || rx.unitDesc == 'Syrup' || rx.unitDesc == 'Drops' || rx.unitDesc == 'Bottle' ? 'Bottle/s':rx.unitDesc == 'Cream' ? 'Tube':''}}</td>
+                                                 </tr>
+                                             </tbody>
+                                         </table>
+                                     </div>
+                                     <hr style="margin-top: -5px; margin-bottom: 10px;" />
+                                     <button class="btn btn-sm btn-success pull-right" ng-click="editDiagnosis()"><i class="fa fa-pencil"></i> Edit </button>
+                                 </div>
+                             </div>
+                         </div>
                     </div>
-                    <br />
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                        <table class="table table-stripped table-hover" style="width: 100%;">
-                            <thead style="background-color:aliceblue;">
-                                <tr>
-                                    <td class="">#</td>
-                                    <td>Diagnosis</td>
-                                    <td>Tooth no.</td>
-                                    <td>Others Specify</td>
-                                    <td>Referral Specify</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="text-center" ng-show="diagnosisList.length == 0">
-                                    <td colspan="5">
-                                        <text class="text-danger"><label><i>No record found</i></label></text>
-                                    </td>
-                                </tr>
-                                <tr ng-repeat="diag in diagnosisList">
-                                    <td>{{$index + 1}}</td>
-                                    <td><label>{{diag.diagnoseName}}</label></td>
-                                    <td>{{diag.toothNum}}</td>
-                                    <td>{{diag.otherDiagnose}}</td>
-                                    <td>{{diag.referDesc}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+
+                    
                 </div>
             </div>
         </div>
@@ -547,5 +595,5 @@
 
 @section scripts
 {
-    <script src="~/Scripts/AngularJS/Dental/OralExam.js?v=1.0"></script>
+    <script src="~/Scripts/AngularJS/Dental/OralExam.js?v=1.1"></script>
 }

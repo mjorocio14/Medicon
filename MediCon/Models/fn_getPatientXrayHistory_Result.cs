@@ -19,7 +19,7 @@ namespace MediCon.Models
         public string Screen_midInit { get; set; }
         public string Screen_lastName { get; set; }
         public string Screen_extName { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public Nullable<System.DateTime> xrayDT { get; set; }
         public Nullable<bool> isXray { get; set; }
         public Nullable<bool> isNeedScutum { get; set; }
         public string rad_firstName { get; set; }

@@ -20,6 +20,7 @@ namespace MediCon.Models
         public string serviceID { get; set; }
         public string outsideReferral { get; set; }
         public string toothNum { get; set; }
+        public string dentistID { get; set; }
         public string remarks { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }

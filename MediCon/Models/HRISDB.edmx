@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="HRISDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="HRISDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <!--Errors Found During Generation:
 warning 6002: The table/view 'HRISDB.dbo.vEmployeeHealthWell' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vEmployeeHealthWell">
@@ -31,6 +31,13 @@ warning 6002: The table/view 'HRISDB.dbo.vEmployeeHealthWell' does not have a pr
           <Property Name="salaryGrade" Type="int" />
           <Property Name="step" Type="int" />
           <Property Name="employmentStatus" Type="varchar" MaxLength="50" />
+          <Property Name="shortDepartmentName" Type="varchar" MaxLength="10" />
+          <Property Name="departmentName" Type="varchar" MaxLength="150" />
+          <Property Name="brgyPermAddress" Type="varchar" MaxLength="50" />
+          <Property Name="cityMunPermAddress" Type="varchar" MaxLength="50" />
+          <Property Name="provincePermAddress" Type="varchar" MaxLength="50" />
+          <Property Name="ZIPPermAddress" Type="varchar" MaxLength="4" />
+          <Property Name="contactNo" Type="varchar" MaxLength="13" />
         </EntityType>
         <EntityContainer Name="HRISDBModelStoreContainer">
           <EntitySet Name="vEmployeeHealthWell" EntityType="Self.vEmployeeHealthWell" store:Type="Views" store:Schema="dbo">
@@ -53,22 +60,31 @@ warning 6002: The table/view 'HRISDB.dbo.vEmployeeHealthWell' does not have a pr
     [vEmployeeHealthWell].[subPositionTitle] AS [subPositionTitle], 
     [vEmployeeHealthWell].[salaryGrade] AS [salaryGrade], 
     [vEmployeeHealthWell].[step] AS [step], 
-    [vEmployeeHealthWell].[employmentStatus] AS [employmentStatus]
+    [vEmployeeHealthWell].[employmentStatus] AS [employmentStatus], 
+    [vEmployeeHealthWell].[shortDepartmentName] AS [shortDepartmentName], 
+    [vEmployeeHealthWell].[departmentName] AS [departmentName], 
+    [vEmployeeHealthWell].[brgyPermAddress] AS [brgyPermAddress], 
+    [vEmployeeHealthWell].[cityMunPermAddress] AS [cityMunPermAddress], 
+    [vEmployeeHealthWell].[provincePermAddress] AS [provincePermAddress], 
+    [vEmployeeHealthWell].[ZIPPermAddress] AS [ZIPPermAddress], 
+    [vEmployeeHealthWell].[contactNo] AS [contactNo]
     FROM [dbo].[vEmployeeHealthWell] AS [vEmployeeHealthWell]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="HRISDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="HRISDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="vEmployeeHealthWells" EntityType="HRISDBModel.vEmployeeHealthWell" />
+        </EntityContainer>
         <EntityType Name="vEmployeeHealthWell">
           <Key>
             <PropertyRef Name="recNo" />
             <PropertyRef Name="EIC" />
           </Key>
           <Property Name="recNo" Type="Int32" Nullable="false" />
-          <Property Name="EIC" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EIC" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="idNo" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="lastName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
@@ -86,10 +102,14 @@ warning 6002: The table/view 'HRISDB.dbo.vEmployeeHealthWell' does not have a pr
           <Property Name="salaryGrade" Type="Int32" />
           <Property Name="step" Type="Int32" />
           <Property Name="employmentStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="shortDepartmentName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="departmentName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="brgyPermAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="cityMunPermAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="provincePermAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ZIPPermAddress" Type="String" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="contactNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityContainer Name="HRISDBEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="vEmployeeHealthWells" EntityType="Self.vEmployeeHealthWell" />
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -99,25 +119,32 @@ warning 6002: The table/view 'HRISDB.dbo.vEmployeeHealthWell' does not have a pr
           <EntitySetMapping Name="vEmployeeHealthWells">
             <EntityTypeMapping TypeName="HRISDBModel.vEmployeeHealthWell">
               <MappingFragment StoreEntitySet="vEmployeeHealthWell">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="EIC" ColumnName="EIC" />
-                <ScalarProperty Name="idNo" ColumnName="idNo" />
-                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
-                <ScalarProperty Name="lastName" ColumnName="lastName" />
-                <ScalarProperty Name="firstName" ColumnName="firstName" />
-                <ScalarProperty Name="middleName" ColumnName="middleName" />
-                <ScalarProperty Name="extName" ColumnName="extName" />
-                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
-                <ScalarProperty Name="fullNameFirst" ColumnName="fullNameFirst" />
-                <ScalarProperty Name="fullNameTitle" ColumnName="fullNameTitle" />
-                <ScalarProperty Name="birthDate" ColumnName="birthDate" />
-                <ScalarProperty Name="sex" ColumnName="sex" />
-                <ScalarProperty Name="civilStatCode" ColumnName="civilStatCode" />
-                <ScalarProperty Name="positionTitle" ColumnName="positionTitle" />
-                <ScalarProperty Name="subPositionTitle" ColumnName="subPositionTitle" />
-                <ScalarProperty Name="salaryGrade" ColumnName="salaryGrade" />
-                <ScalarProperty Name="step" ColumnName="step" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+                <ScalarProperty Name="ZIPPermAddress" ColumnName="ZIPPermAddress" />
+                <ScalarProperty Name="provincePermAddress" ColumnName="provincePermAddress" />
+                <ScalarProperty Name="cityMunPermAddress" ColumnName="cityMunPermAddress" />
+                <ScalarProperty Name="brgyPermAddress" ColumnName="brgyPermAddress" />
+                <ScalarProperty Name="departmentName" ColumnName="departmentName" />
+                <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
                 <ScalarProperty Name="employmentStatus" ColumnName="employmentStatus" />
+                <ScalarProperty Name="step" ColumnName="step" />
+                <ScalarProperty Name="salaryGrade" ColumnName="salaryGrade" />
+                <ScalarProperty Name="subPositionTitle" ColumnName="subPositionTitle" />
+                <ScalarProperty Name="positionTitle" ColumnName="positionTitle" />
+                <ScalarProperty Name="civilStatCode" ColumnName="civilStatCode" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="birthDate" ColumnName="birthDate" />
+                <ScalarProperty Name="fullNameTitle" ColumnName="fullNameTitle" />
+                <ScalarProperty Name="fullNameFirst" ColumnName="fullNameFirst" />
+                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="idNo" ColumnName="idNo" />
+                <ScalarProperty Name="EIC" ColumnName="EIC" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -58,9 +58,9 @@ namespace MediCon.Report.Prescription
             this.textBox14 = new Telerik.Reporting.TextBox();
             this.textBox15 = new Telerik.Reporting.TextBox();
             this.PhysicianName = new Telerik.Reporting.TextBox();
-            this.pageFooter = new Telerik.Reporting.PageFooterSection();
             this.spacing = new Telerik.Reporting.TextBox();
             this.pictureBox2 = new Telerik.Reporting.PictureBox();
+            this.pageFooter = new Telerik.Reporting.PageFooterSection();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // labelsGroupFooterSection
@@ -281,7 +281,9 @@ namespace MediCon.Report.Prescription
             this.textBox7.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
             this.textBox7.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
             this.textBox7.StyleName = "";
-            this.textBox7.Value = "= Fields.noDay + \" Day/s\"";
+            this.textBox7.Value = "= IIf(Fields.noDay = \"maintenance\", \"Maintenance\", IIf(Fields.noDay = \"needed\", \"" +
+    "As Needed\", IIf(Fields.noDay = \"single\", \"Single Dose\", Fields.noDay + \" Day/s\")" +
+    "))  ";
             // 
             // textBox9
             // 
@@ -336,14 +338,6 @@ namespace MediCon.Report.Prescription
             this.PhysicianName.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
             this.PhysicianName.Value = resources.GetString("PhysicianName.Value");
             // 
-            // pageFooter
-            // 
-            this.pageFooter.Height = Telerik.Reporting.Drawing.Unit.Inch(0.041666712611913681D);
-            this.pageFooter.Name = "pageFooter";
-            this.pageFooter.Style.BorderStyle.Bottom = Telerik.Reporting.Drawing.BorderType.None;
-            this.pageFooter.Style.BorderStyle.Left = Telerik.Reporting.Drawing.BorderType.None;
-            this.pageFooter.Style.BorderStyle.Right = Telerik.Reporting.Drawing.BorderType.None;
-            // 
             // spacing
             // 
             this.spacing.Bindings.Add(new Telerik.Reporting.Binding("Height", "= (12 - CInt(Parameters.rxLength.Value)) * 0.27 + \"in\""));
@@ -362,6 +356,14 @@ namespace MediCon.Report.Prescription
             this.pictureBox2.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(3.9338195323944092D), Telerik.Reporting.Drawing.Unit.Inch(0.50007867813110352D));
             this.pictureBox2.Sizing = Telerik.Reporting.Drawing.ImageSizeMode.Stretch;
             this.pictureBox2.Value = ((object)(resources.GetObject("pictureBox2.Value")));
+            // 
+            // pageFooter
+            // 
+            this.pageFooter.Height = Telerik.Reporting.Drawing.Unit.Inch(0.041666712611913681D);
+            this.pageFooter.Name = "pageFooter";
+            this.pageFooter.Style.BorderStyle.Bottom = Telerik.Reporting.Drawing.BorderType.None;
+            this.pageFooter.Style.BorderStyle.Left = Telerik.Reporting.Drawing.BorderType.None;
+            this.pageFooter.Style.BorderStyle.Right = Telerik.Reporting.Drawing.BorderType.None;
             // 
             // Prescription
             // 

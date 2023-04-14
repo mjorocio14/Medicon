@@ -50,7 +50,7 @@ namespace MediCon.Controllers
 
 
         [HttpPost]
-        public ActionResult saveDentalDiagnosis(string[] checkedDiagnosis, Consultation detail, string personnelID, string otherDiag)
+        public ActionResult saveDentalDiagnosis(string[] checkedDiagnosis, Consultation detail, string dentistID, string otherDiag)
         {
             try
             {
@@ -72,8 +72,9 @@ namespace MediCon.Controllers
                     detail.consultID = detail.consultID.Length > 15 ? detail.consultID.Substring(0, 15) : detail.consultID;
                     detail.toothNum = detail.toothNum != null ? detail.toothNum : null;
                     detail.remarks = detail.remarks != null ? detail.remarks : null;
-                    detail.personnelID = personnelID != null ? personnelID : null;                    // SAVE DENTIST PERSONNEL ID ONLY TO DIAG049 - TOOTH EXTRACTION DIAGNOSIS
+                    detail.dentistID = dentistID != null ? dentistID : null;                    // SAVE DENTIST PERSONNEL ID ONLY TO DIAG049 - TOOTH EXTRACTION DIAGNOSIS
                     detail.outsideReferral = detail.outsideReferral != null ? detail.outsideReferral : null;
+                    detail.personnelID = Session["personnelID"].ToString();         // ENCODER OF DATA
                     detail.dateTimeLog = DateTime.Now;
                     detail.serviceID = "SERVICE002";
                     db.Consultations.Add(detail);
@@ -198,39 +199,6 @@ namespace MediCon.Controllers
 
         }
 
-
-        public ActionResult getDiagnosis(string vitalSignID)
-        {
-            try
-            {
-                var diagList = db.Consultations.Join(db.ResultDiagnosis, con => con.consultID, res => res.consultID, (con, res) => new { con, res })
-                                           .Join(db.Diagnosis, conres => conres.res.diagnoseID, diag => diag.diagnoseID, (conres, diag) => new { conres, diag })
-                                           .Join(db.Personnels, p => p.conres.con.personnelID, pp => pp.personnelID, (p, pp) => new { p, pp })
-                                           .Where(w => w.p.conres.con.vSignID == vitalSignID)
-                                           .Select(s => new
-                                           {
-                                               s.p.conres.con.vSignID,
-                                               s.p.conres.con.consultID,
-                                               s.p.conres.con.outsideReferral,
-                                               s.p.conres.con.remarks,
-                                               s.p.conres.con.toothNum,
-                                               s.p.conres.con.personnelID,
-                                               s.pp.personnel_firstName,
-                                               s.pp.personnel_midInit,
-                                               s.pp.personnel_lastName,
-                                               s.pp.personnel_extName,
-                                               s.p.conres.con.dateTimeLog,
-                                               s.p.diag.diagnoseName
-                                           }).ToList();
-
-                return Json(diagList, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = "error", msg = "An error occured while saving your data.", ex = ex }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
         //.......       LIST OF DENTAL CLIENT
         [HttpPost]
         public ActionResult getClientList(string date)
@@ -241,19 +209,54 @@ namespace MediCon.Controllers
                 DateTime dateEnd = DateTime.Parse(date + " 23:59:59");
 
                 var result = db.VitalSigns.Join(db.Consultations, r1 => r1.vSignID, con => con.vSignID, (r1, con) => new { r1, con })
-                                               .Where(a => a.con.serviceID == "SERVICE002" && a.con.dateTimeLog >= dateStart && a.con.dateTimeLog <= dateEnd)
-                                               .ToList();
+                                               .Join(db.Personnels, r2 => r2.con.dentistID, p => p.personnelID, (r2, p) => new { r2, p })
+                                               .Where(a => a.r2.con.serviceID == "SERVICE002" && a.r2.con.dateTimeLog >= dateStart && a.r2.con.dateTimeLog <= dateEnd)
+                                               .Select(b => new
+                                               {
+                                                   b.r2.r1.qrCode,
+                                                   b.r2.con.consultID,
+                                                   b.r2.con.outsideReferral,
+                                                   b.r2.con.remarks,
+                                                   b.r2.con.serviceID,
+                                                   b.r2.con.toothNum,
+                                                   b.r2.con.dateTimeLog,
+                                                   b.r2.con.dentistID,
+                                                   DrLastName = b.p.personnel_lastName,
+                                                   DrFirstName = b.p.personnel_firstName,
+                                                   DrMiddleName = b.p.personnel_midInit,
+                                                   DrExtName = b.p.personnel_extName,
+                                                   diagnosis = db.ResultDiagnosis.Join(db.Diagnosis, rd => rd.diagnoseID, dg => dg.diagnoseID, (rd, dg) => new { rd, dg })
+                                                   .Where(c => c.rd.consultID == b.r2.con.consultID).Select(d => new
+                                                   {
+                                                       d.rd.diagnoseID,
+                                                       d.dg.diagnoseName,
+                                                       d.rd.otherDiagnosis,
+                                                       d.rd.resultID
+                                                   }).ToList()
+                                               }).ToList();
 
-                var joined = result.Join(hrisDB.vEmployeeHealthWells, r => r.r1.qrCode, pi => pi.qrCode, (r, pi) => new { r, pi })
+                var joined = result.Join(hrisDB.vEmployeeHealthWells, r => r.qrCode, pi => pi.qrCode, (r, pi) => new { r, pi })
                                     .Select(a => new
                                     {
+                                        a.r.qrCode,
+                                        a.r.consultID,
+                                        a.r.outsideReferral,
+                                        a.r.remarks,
+                                        a.r.serviceID,
+                                        a.r.toothNum,
+                                        a.r.dentistID,
+                                        a.r.DrFirstName,
+                                        a.r.DrMiddleName,
+                                        a.r.DrLastName,
+                                        a.r.DrExtName,
                                         a.pi.lastName,
                                         a.pi.firstName,
                                         a.pi.middleName,
                                         a.pi.extName,
                                         a.pi.sex,
                                         a.pi.birthDate,
-                                        a.r.con.dateTimeLog
+                                        a.r.dateTimeLog,
+                                        a.r.diagnosis
                                     }).OrderByDescending(b => b.dateTimeLog).ToList();
 
                 var serializer = new JavaScriptSerializer();
@@ -274,6 +277,48 @@ namespace MediCon.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult getClientRx(string consultID)
+        {
+            try
+            {
+                var rxList = db.MedicalPrescriptions.Join(db.Personnels, mp => mp.personnelID, p => p.personnelID, (mp, p) => new { mp, p })
+                                                    .Where(a => a.mp.consultID == consultID)
+                                                    .Select(b => new
+                                                    {
+                                                        b.mp.rxID,
+                                                        b.mp.personnelID,
+                                                        b.mp.dateTimeRx,
+                                                        b.p.personnel_extName,
+                                                        b.p.personnel_firstName,
+                                                        b.p.personnel_lastName,
+                                                        b.p.personnel_midInit,
+                                                        rx = db.OutgoingItems.Join(db.ProductLists, oi => oi.productCode, pl => pl.productCode, (oi, pl) => new { oi, pl })
+                                                                             .Join(db.Measurements, r1 => r1.pl.measurementID, m => m.measurementID, (r1, m) => new { r1, m })
+                                                                             .Join(db.ProductUnits, r2 => r2.r1.pl.unitID, pu => pu.unitID, (r2, pu) => new { r2, pu })
+                                                                             .Where(rx => rx.r2.r1.oi.rxID == b.mp.rxID)
+                                                                             .Select(item => new
+                                                                             {
+                                                                                 item.r2.r1.oi.outID,
+                                                                                 item.r2.r1.oi.productCode,
+                                                                                 item.r2.r1.oi.qtyRx,
+                                                                                 item.r2.r1.oi.dosage,
+                                                                                 item.r2.r1.oi.perDay,
+                                                                                 item.r2.r1.oi.noDay,
+                                                                                 item.r2.r1.pl.productDesc,
+                                                                                 item.r2.r1.pl.measurementID,
+                                                                                 item.r2.r1.pl.unitID,
+                                                                                 item.r2.m.measurementDesc,
+                                                                                 item.pu.unitDesc
+                                                                             }).ToList()
+                                                    }).ToList();
+                return Json(rxList, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", ex = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
     }
 }

@@ -8,7 +8,7 @@
 
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
-        <div class="col-lg-10">
+        <div class="col-lg-6">
             <h2>Vital Signs</h2>
             <ol class="breadcrumb">
                 <li>
@@ -19,255 +19,274 @@
                 </li>
             </ol>
         </div>
-        <div class="col-sm-2">
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+            <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showQRpanel" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
         </div>
     </div>
     <!-- /HEADER -->
 
     <div class="wrapper wrapper-content ">
 
-        <!-- QR CODE INFO FORM -->
-        <div class="animated fadeInRight ecommerce" ng-show="showQRpanel">
-            <div class="ibox float-e-margins">
-                <div class="ibox-title text-center">
-                    <label class="text-center">QR CODE INFORMATION</label>
-                </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                            <div class="profile_img">
-                                <!-- Current avatar -->
-                                <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
-                            </div>
-                            <form name="qrSearchForm">
-                                <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
-                                    <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
-                                    </span>
+        <div ng-show="!showClientList">
+            
+            <!-- QR CODE INFO FORM -->
+            <div class="animated fadeInRight ecommerce" ng-show="showQRpanel">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title text-center">
+                        <label class="text-center">QR CODE INFORMATION</label>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                <div class="profile_img">
+                                    <!-- Current avatar -->
+                                    <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
                                 </div>
-                            </form>
-                            <br />
+                                <form name="qrSearchForm">
+                                    <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                        <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                        </span>
+                                    </div>
+                                </form>
+                                <br />
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                        <div class="sk-double-bounce1"></div>
+                                        <div class="sk-double-bounce2"></div>
+                                    </div>
+                                    <text><i>Please wait, we are getting your data...</i></text>
+                                </div>
+                                <div ng-show="!loader">
+                                    <form id="QR_FORM" name="QR_FORM">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_lastName">Last name</label>
+                                                    <input type="text" id="qr_lastName" name="qr_lastName" ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_firstName">First name</label>
+                                                    <input type="text" id="qr_firstName" name="qr_firstName" ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_mi">Middle name</label>
+                                                    <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_suffix">Suffix</label>
+                                                    <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                    <input type="date" id="qr_birthdate" name="qr_birthdate" ng-model="qrData.birthdate" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_birthdate">Age</label>
+                                                    <input type="text" id="qr_age" name="qr_age" ng-model="qrData.age" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="control-label">Sex</label>
+                                                <div class="form-group text-center">
+                                                    <div class="radio radio-primary radio-inline">
+                                                        <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                        <label for="radio_sex_male"> Male </label>
+                                                    </div>
+                                                    <div class="radio radio-danger radio-inline">
+                                                        <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                        <label for="radio_sex_female"> Female </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                    <input type="text" id="qr_contactNo" name="qr_contactNo" ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_address">Address</label>
+                                                    <input type="text" id="qr_address" name="qr_address" ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_height">Height</label>
+                                                    <div class="input-group m-b" style="width: 100%">
+                                                        <input type="number" min="1" step="0.01" id="qr_height" name="qr_height" required ng-model="qrData.height" class="form-control text-center" /><span class="input-group-addon"><b> m</b></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_weight">Weight</label>
+                                                    <div class="input-group m-b" style="width: 100%">
+                                                        <input type="number" min="1" step="0.01" id="qr_weight" name="qr_weight" required ng-model="qrData.weight" class="form-control text-center" /><span class="input-group-addon"><b> kg</b></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <button type="submit" class="btn btn-primary pull-right" ng-click="!QR_FORM.$invalid ? btnProceed(qrData):''"><i class="fa" ng-class="!isVSexist ? 'fa-save':'fa-angle-double-right'"></i> {{isVSexist == false ? 'Save Vital Sign':'Proceed'}}</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                            <div class="text-center" ng-show="loader" style="margin-top: 10%;">
-                                <div class="sk-spinner sk-spinner-double-bounce">
-                                    <div class="sk-double-bounce1"></div>
-                                    <div class="sk-double-bounce2"></div>
-                                </div>
-                                <text><i>Please wait, we are getting your data...</i></text>
+                    </div>
+                </div>
+            </div>
+            <!-- /QR CODE INFO FORM -->
+
+            <!-- VITAL SIGNS FORM -->
+            <div class="animated fadeInRight ecommerce" ng-show="!showQRpanel">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="panel panel-success">
+                            <div class="panel-heading text-center">
+                                New Vital Sign
                             </div>
-                            <div ng-show="!loader">
-                                <form id="QR_FORM" name="QR_FORM">
+                            <div class="panel-body">
+                                <form id="VS_form" name="VS_form" novalidate>
                                     <div class="row">
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label class="control-label" for="qr_lastName">Last name</label>
-                                                <input type="text" id="qr_lastName" name="qr_lastName" ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_firstName">First name</label>
-                                                <input type="text" id="qr_firstName" name="qr_firstName" ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_mi">Middle name</label>
-                                                <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_suffix">Suffix</label>
-                                                <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_birthdate">Birthday</label>
-                                                <input type="date" id="qr_birthdate" name="qr_birthdate" ng-model="qrData.birthdate" class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label class="control-label">Sex</label>
-                                            <div class="form-group text-center">
-                                                <div class="radio radio-primary radio-inline">
-                                                    <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
-                                                    <label for="radio_sex_male"> Male </label>
-                                                </div>
-                                                <div class="radio radio-danger radio-inline">
-                                                    <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
-                                                    <label for="radio_sex_female"> Female </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_contactNo">Contact no.</label>
-                                                <input type="text" id="qr_contactNo" name="qr_contactNo" ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_address">Address</label>
-                                                <input type="text" id="qr_address" name="qr_address" ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly style="background-color: white;" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-                                            <div class="form-group">
-                                                <label class="control-label" for="qr_height">Height</label>
+                                                <label class="control-label" for="vs_temperature">Temperature</label>
                                                 <div class="input-group m-b" style="width: 100%">
-                                                    <input type="number" min="1" step="0.01" id="qr_height" name="qr_height" required ng-model="qrData.height" class="form-control text-center" /><span class="input-group-addon"><b> m</b></span>
+                                                    <input type="number" min="20" id="vs_temperature" name="vs_temperature" required ng-model="BP.temperature" class="form-control text-center" /> <span class="input-group-addon"><b> °C</b></span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                                        <div class="col-sm-6">
                                             <div class="form-group">
-                                                <label class="control-label" for="qr_weight">Weight</label>
+                                                <label class="control-label" for="vs_pulseRate">Pulse Rate</label>
                                                 <div class="input-group m-b" style="width: 100%">
-                                                    <input type="number" min="1" step="0.01" id="qr_weight" name="qr_weight" required ng-model="qrData.weight" class="form-control text-center" /><span class="input-group-addon"><b> kg</b></span>
+                                                    <input type="number" min="1" id="vs_pulseRate" name="vs_pulseRate" required ng-model="BP.pulseRate" class="form-control text-center" /> <span class="input-group-addon"><b> b/min</b></span>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <hr />
-                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="vs_systolic">Systolic</label>
+                                                <input type="number" min="1" id="vs_systolic" name="vs_systolic" ng-model="BP.systolic" class="form-control text-center" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label class="control-label" for="vs_diastolic">Diastolic</label>
+                                                <input type="number" min="1" id="vs_diastolic" name="vs_diastolic" ng-model="BP.diastolic" class="form-control text-center" required />
+                                            </div>
+                                        </div>
                                         <div class="col-sm-12">
-                                            <button type="submit" class="btn btn-primary pull-right" ng-click="!QR_FORM.$invalid ? btnProceed(qrData):''"><i class="fa" ng-class="!isVSexist ? 'fa-save':'fa-angle-double-right'"></i> {{isVSexist == false ? 'Save Vital Sign':'Proceed'}}</button>
+                                            <hr class="hr-line-dashed" style="margin-top: 5px;" />
+                                            <button class="btn btn-success pull-right" type="submit" ng-disabled="VS_form.$invalid" ng-click="saveBP(BP)"><i class="fa fa-save"></i> Save </button>
+                                            <button class="btn btn-danger pull-left" style="margin-right: 2px;" ng-click="btnReturn()"><i class="fa fa-angle-double-left"></i> Return </button>
                                         </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <!-- /QR CODE INFO FORM -->
 
-        <!-- VITAL SIGNS FORM -->
-        <div class="animated fadeInRight ecommerce" ng-show="!showQRpanel">
+                    <!-- ADDED VITAL SIGNS -->
+                    <div class="col-sm-8">
+                        <div class="panel panel-success" style="height: 277px;">
+                            <div class="panel-heading text-center">
+                                Vital Sign History
+                            </div>
+                            <div class="panel-body">
+                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                    <table class="table table-stripped">
+                                        <thead>
+                                            <tr>
 
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="panel panel-success">
-                        <div class="panel-heading text-center">
-                            New Vital Sign
-                        </div>
-                        <div class="panel-body">
-                            <form id="VS_form" name="VS_form" novalidate>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="control-label" for="vs_temperature">Temperature</label>
-                                            <div class="input-group m-b" style="width: 100%">
-                                                <input type="number" min="20" id="vs_temperature" name="vs_temperature" required ng-model="BP.temperature" class="form-control text-center" /> <span class="input-group-addon"><b> °C</b></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="control-label" for="vs_pulseRate">Pulse Rate</label>
-                                            <div class="input-group m-b" style="width: 100%">
-                                                <input type="number" min="1" id="vs_pulseRate" name="vs_pulseRate" required ng-model="BP.pulseRate" class="form-control text-center" /> <span class="input-group-addon"><b> b/min</b></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="control-label" for="vs_systolic">Systolic</label>
-                                            <input type="number" min="1" id="vs_systolic" name="vs_systolic" ng-model="BP.systolic" class="form-control text-center" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="form-group">
-                                            <label class="control-label" for="vs_diastolic">Diastolic</label>
-                                            <input type="number" min="1" id="vs_diastolic" name="vs_diastolic" ng-model="BP.diastolic" class="form-control text-center" required />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <hr class="hr-line-dashed" style="margin-top: 5px;" />
-                                        <button class="btn btn-success pull-right" type="submit" ng-disabled="VS_form.$invalid" ng-click="saveBP(BP)"><i class="fa fa-save"></i> Save </button>
-                                        <button class="btn btn-danger pull-left" style="margin-right: 2px;" ng-click="btnReturn()"><i class="fa fa-angle-double-left"></i> Return </button>
-                                    </div>
+                                                <th class="">#</th>
+                                                <th>Temperature</th>
+                                                <th>Pulse Rate</th>
+                                                <th>Systolic</th>
+                                                <th>Diastolic</th>
+                                                <th>Date & Time</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center" ng-show="bpLoader">
+                                                <td colspan="6">
+                                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                                        <div class="sk-double-bounce1"></div>
+                                                        <div class="sk-double-bounce2"></div>
+                                                    </div>
+                                                    <text><i>Please wait, we are loading your data...</i></text>
+                                                </td>
+                                            </tr>
+                                            <tr class="text-center" ng-show="bpHistory == 0 && bpLoader == false">
+                                                <td colspan="6">
+                                                    <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="vs in bpHistory" ng-show="!bpLoader">
+                                                <td>{{$index + 1}}</td>
+                                                <td>{{vs.temperature}} °C</td>
+                                                <td>{{vs.pulseRate}} b/min</td>
+                                                <td>{{vs.systolic}}</td>
+                                                <td>{{vs.diastolic}}</td>
+                                                <td>{{vs.BPdateTime}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ADDED VITAL SIGNS -->
-                <div class="col-sm-8">
-                    <div class="panel panel-success" style="height: 277px;">
-                        <div class="panel-heading text-center">
-                            Vital Sign History
-                        </div>
-                        <div class="panel-body">
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table class="table table-stripped">
-                                    <thead>
-                                        <tr>
-
-                                            <th class="">#</th>
-                                            <th>Temperature</th>
-                                            <th>Pulse Rate</th>
-                                            <th>Systolic</th>
-                                            <th>Diastolic</th>
-                                            <th>Date & Time</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr class="text-center" ng-show="bpLoader">
-                                            <td colspan="6">
-                                                <div class="sk-spinner sk-spinner-double-bounce">
-                                                    <div class="sk-double-bounce1"></div>
-                                                    <div class="sk-double-bounce2"></div>
-                                                </div>
-                                                <text><i>Please wait, we are loading your data...</i></text>
-                                            </td>
-                                        </tr>
-                                        <tr class="text-center" ng-show="bpHistory == 0 && bpLoader == false">
-                                            <td colspan="6">
-                                                <label class="text-danger">NO INFORMATION FOUND!</label>
-                                            </td>
-                                        </tr>
-                                        <tr ng-repeat="vs in bpHistory" ng-show="!bpLoader">
-                                            <td>{{$index + 1}}</td>
-                                            <td>{{vs.temperature}} °C</td>
-                                            <td>{{vs.pulseRate}} b/min</td>
-                                            <td>{{vs.systolic}}</td>
-                                            <td>{{vs.diastolic}}</td>
-                                            <td>{{vs.BPdateTime}}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- /VITAL SIGNS FORM -->
 
         </div>
-        <!-- /VITAL SIGNS FORM -->
 
         <!-- LIST OF PATIENTS -->
-        <div class="animated fadeInRight ecommerce" ng-show="showQRpanel">
-
-            <div class="panel panel-success">
-                <div class="panel-heading text-center">
+        <div class="animated fadeInRight ecommerce" ng-show="showClientList">
+            <div class="col-lg-12">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" style="text-align:center !important">Consultation Date:</label>
+                        <div class="col-sm-2">
+                            <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
                     <label class="text-center">LIST OF PATIENTS</label>
                 </div>
-                <div class="panel-body">
+                <div class="ibox-content">
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                         <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
                             <thead>
@@ -291,7 +310,6 @@
                             </thead>
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -347,5 +365,5 @@
 
 @section scripts
 {
-    <script src="~/Scripts/AngularJS/VitalSigns/VitalSigns.js"></script>
+    <script src="~/Scripts/AngularJS/VitalSigns/VitalSigns.js?v=1.1"></script>
 }

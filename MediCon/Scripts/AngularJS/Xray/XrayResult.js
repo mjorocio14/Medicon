@@ -69,8 +69,17 @@
             type: "info",
             showConfirmButton: false
         });
+       
+        resultData = {
+            personStatusID: data.personStatusID,
+            screeningID: data.screeningID,
+            isXray: data.isXray,
+            isNeedScutum: data.isNeedScutum,
+            xrayResult: data.xrayResult,
+            xrayResultDate: data.xrayResultDate,
+        };
 
-        h.post('../XrayResult/SaveResult', { statusID: data.personStatusID, record: data }).then(function (d) {
+        h.post('../XrayResult/SaveResult', { statusID: data.personStatusID, record: resultData }).then(function (d) {
             if (d.data.status == "error") {
                 swal({
                     title: "ERROR",

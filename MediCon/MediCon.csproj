@@ -250,6 +250,18 @@
     <Compile Include="Models\Fecalysi.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\fn_DashboardAnalytics_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_DashboardDental_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_DashboardMorbidity_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_DashboardMRH_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\fn_getDiagnoseClients_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>

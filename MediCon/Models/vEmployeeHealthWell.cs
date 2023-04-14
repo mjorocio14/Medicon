@@ -33,5 +33,12 @@ namespace MediCon.Models
         public Nullable<int> salaryGrade { get; set; }
         public Nullable<int> step { get; set; }
         public string employmentStatus { get; set; }
+        public string shortDepartmentName { get; set; }
+        public string departmentName { get; set; }
+        public string brgyPermAddress { get; set; }
+        public string cityMunPermAddress { get; set; }
+        public string provincePermAddress { get; set; }
+        public string ZIPPermAddress { get; set; }
+        public string contactNo { get; set; }
     }
 }

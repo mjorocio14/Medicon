@@ -13,22 +13,25 @@ namespace MediCon.Models
     
     public partial class fn_vitalSignList_Result
     {
-        public long recNo { get; set; }
-        public string vSignID { get; set; }
-        public string qrCode { get; set; }
-        public Nullable<decimal> weight { get; set; }
+        public Nullable<System.DateTime> dateTimeLog { get; set; }
         public Nullable<decimal> height { get; set; }
         public string personnelID { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string vSignID { get; set; }
+        public Nullable<decimal> weight { get; set; }
+        public string EIC { get; set; }
+        public string idNO { get; set; }
+        public string qrCode { get; set; }
         public string lastName { get; set; }
         public string firstName { get; set; }
         public string middleName { get; set; }
         public string extName { get; set; }
-        public Nullable<bool> sex { get; set; }
-        public Nullable<System.DateTime> birthdate { get; set; }
+        public string fullNameLast { get; set; }
+        public string shortDepartmentName { get; set; }
+        public string brgyPermAddress { get; set; }
+        public string citymunPermAddress { get; set; }
+        public string provincePermAddress { get; set; }
         public string contactNo { get; set; }
-        public string brgyDesc { get; set; }
-        public string citymunDesc { get; set; }
-        public string provDesc { get; set; }
+        public Nullable<System.DateTime> birthDate { get; set; }
+        public string sex { get; set; }
     }
 }

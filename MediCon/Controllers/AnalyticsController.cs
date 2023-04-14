@@ -11,6 +11,7 @@ namespace MediCon.Controllers
     public class AnalyticsController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
+        EQPEntities dbEQP = new EQPEntities();
 
         [UserAccess]
         // GET: Analytics
@@ -29,19 +30,14 @@ namespace MediCon.Controllers
         {
             try
             {
-                var result = dbMed.Temp_Morbidity.Join(dbMed.Diagnosis, tm => tm.diagnoseID, d => d.diagnoseID, (tm, d) => new { tm, d })
-                                            .Select(e => new
-                                            {
-                                                //e.tm.morbidityID,
-                                                //e.tm.diagnoseID,
-                                                e.tm.female,
-                                                e.tm.male,
-                                                //e.tm.type,
-                                                e.d.diagnoseName
-                                            }).ToList();
-                                            //.OrderBy(a => a.type).ThenBy(b => b.diagnoseName).ToList();
+                var MRHstats = dbMed.fn_DashboardMRH();
+                var result = dbMed.fn_DashboardMorbidity();
+                var morbiditylist = dbMed.Diagnosis.Where(a => a.diagnoseType == "MC").OrderBy(b => b.diagnoseName).ToList();
+                var Papsmear = dbMed.PapsmearBreastExams.Where(a => a.isPapsmear == true).Count();
+                var BreastExam = dbMed.PapsmearBreastExams.Where(a => a.isBreastExam == true).Count();
+                var Dental = dbMed.fn_DashboardDental();
 
-                return Json(result, JsonRequestBehavior.AllowGet);
+                return Json(new {stats = result, morbiditylist = morbiditylist, mrhCount = MRHstats, papsCount = Papsmear, breastCount = BreastExam, dentalCount = Dental}, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -64,5 +60,13 @@ namespace MediCon.Controllers
                         }).ToList();
             return Json(datas, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult getSexAnalytics()
+        {
+            var data = dbMed.fn_DashboardAnalytics();
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }

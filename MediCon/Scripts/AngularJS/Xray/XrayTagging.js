@@ -53,15 +53,6 @@
             }
 
             else {
-                if (d.data.qr.length == 0) {
-                    swal({
-                        title: "QR code is not yet register!",
-                        text: "Please refer to QR code help desk near the area.",
-                        type: "error"
-                    });
-                }
-
-                else {
                     if (d.data.result == "No Record") {
                         swal({
                             title: "No Screening Info Found!",
@@ -71,11 +62,13 @@
                     }
 
                     else {
-                        d.data.qr[0].birthdate = d.data.qr[0].birthdate != null ? new Date(moment(d.data.qr[0].birthdate).format()) : null;
-                        d.data.qr[0].sex = d.data.qr[0].sex != null ? (d.data.qr[0].sex ? 'true' : 'false') : null;
-
-                        s.qrData = d.data.qr[0];
-                        s.qrData.fullAddress = d.data.qr[0].address + ', ' + d.data.qr[0].brgyDesc + ' ' + d.data.qr[0].citymunDesc + ' ' + d.data.qr[0].provDesc;
+                        d.data.qr.birthdate = d.data.qr.birthDate != null ? new Date(moment(d.data.qr.birthDate).format()) : null;
+                        d.data.qr.sex = d.data.qr.sex != null ? (d.data.qr.sex == "MALE" ? 'true' : 'false') : null;
+                        s.qrData = d.data.qr;
+                        s.qrData.age = moment().diff(moment(d.data.qr.birthdate).format('L'), 'years');
+                        s.qrData.fullAddress = (d.data.qr.brgyPermAddress == null ? "" : d.data.qr.brgyPermAddress) + ' '
+                                                + (d.data.qr.cityMunPermAddress == null ? "" : d.data.qr.cityMunPermAddress) + ' '
+                                                + (d.data.qr.provincePermAddress == null ? "" : d.data.qr.provincePermAddress);
 
                         if (d.data.tag.length > 0) {
                             s.status.isXray = d.data.tag[0].isXray == true ? 'true' : d.data.tag[0].isXray == false ? 'false' : '';
@@ -91,10 +84,9 @@
                             }
                         }
                     }
-                }
-
-                s.loader = false;
             }
+
+            s.loader = false;
         })
     }
 
@@ -248,14 +240,14 @@
                   {
                       data: null,
                       render: function (row) {
-                          return row.sex ? "M" : "F";
+                          return row.sex == "MALE" ? "M" : "F";
                       },
                   },
                   {
                       data: null,
                       render: function (row) {
                           var age = moment().diff(
-                            moment(row.birthdate).format("L"),
+                            moment(row.birthDate).format("L"),
                             "years"
                           );
                           return '<span class="label label-success">' + age + "</span>";

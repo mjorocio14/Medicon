@@ -207,14 +207,11 @@ namespace MediCon.Controllers
             }
         }
 
-        public ActionResult getScreenedClients(string date)
+        public ActionResult getScreenedClients(DateTime date)
         {
             try
             {
-                DateTime dateStart = DateTime.Parse(date);
-                DateTime dateEnd = DateTime.Parse(date + " 23:59:59");
-
-                var client = dbMed.fn_getXrayScreenedClients().Where(a => a.dateTimeLog >= dateStart && a.dateTimeLog <= dateEnd).OrderByDescending(x => x.dateTimeLog).ToList();
+                var client = dbMed.fn_getXrayScreenedClients(date).OrderByDescending(x => x.dateTimeLog).ToList();
 
                 return Json(client, JsonRequestBehavior.AllowGet);
             }
@@ -244,7 +241,7 @@ namespace MediCon.Controllers
         {
             try
             {
-                var history = dbMed.fn_getPatientXrayHistory(qrCode).OrderByDescending(a => a.dateTimeLog);
+                var history = dbMed.fn_getPatientXrayHistory(qrCode).OrderByDescending(a => a.screenDT);
 
                 return Json(history, JsonRequestBehavior.AllowGet);
             }

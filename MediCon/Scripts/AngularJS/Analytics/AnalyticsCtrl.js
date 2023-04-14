@@ -1,4 +1,5 @@
 ﻿app.controller('AnalyticsCtrl', ['$scope', '$http', function (s, h) {
+    getSexCounts();
  
     am5.ready(function() {
 
@@ -54,8 +55,133 @@
             }
 
             else {
+                var data = [];
+                
+                // COMMUNICABLE SUMMARY (Upper Respiratory Tract Infection, Lower Respiratory Tract Infection, Systemic Viral Illness, Tuberculosis)
+                s.comDiseaseList = ['DIAG001', 'DIAG025', 'DIAG026', 'DIAG027'];
+                var MorbidityComMaleTotal = 0;
+                var MorbidityComFemaleTotal = 0;
+                s.comListSummary = {
+                    list: [],
+                    total: {}
+                };
 
-                var data = d.data;
+                angular.forEach(s.comDiseaseList, function(data) {
+                    var disease = d.data.stats.filter(f => f.diagnoseID == data);
+                    var diseaseObj = {};
+                    diseaseObj.diagnoseID = disease[0].diagnoseID;
+                    diseaseObj.diagnoseName = disease[0].diagnoseName;
+
+                    // Assign data of disease per sex
+                    angular.forEach(disease, function(data) {
+                        if(data.sex)
+                        {
+                            diseaseObj.male = data.MorbidityCount;
+                            MorbidityComMaleTotal += data.MorbidityCount;
+                        }
+                        else {
+                            diseaseObj.female = data.MorbidityCount;
+                            MorbidityComFemaleTotal += data.MorbidityCount;
+                        }
+                    });
+
+                    s.comListSummary.list.push(diseaseObj);
+                    s.comListSummary.total = {male: MorbidityComMaleTotal, female: MorbidityComFemaleTotal, ComTotal: MorbidityComMaleTotal + MorbidityComFemaleTotal};
+                });
+
+                // NON-COMMUNICABLE SUMMARY (Hypertension, Diabetes, Arthritis, UTI, Gastritis, Bronchial Asthma)
+                s.noncomDiseaseList = ['DIAG013', 'DIAG014', 'DIAG021', 'DIAG009', 'DIAG028', 'DIAG004'];
+                var MorbidityNonComMaleTotal = 0;
+                var MorbidityNonComFemaleTotal = 0;
+                s.nonComListSummary = {
+                    list: [],
+                    total: {}
+                };
+
+                angular.forEach(s.noncomDiseaseList, function(data) {
+                    var disease = d.data.stats.filter(f => f.diagnoseID == data);
+                    var diseaseObj = {};
+                    diseaseObj.diagnoseID = disease[0].diagnoseID;
+                    diseaseObj.diagnoseName = disease[0].diagnoseName;
+
+                    // Assign data of disease per sex
+                    angular.forEach(disease, function(data) {
+                        if(data.sex)
+                        {
+                            diseaseObj.male = data.MorbidityCount;
+                            MorbidityNonComMaleTotal += data.MorbidityCount;
+                        }
+                        else {
+                            diseaseObj.female = data.MorbidityCount;
+                            MorbidityNonComFemaleTotal += data.MorbidityCount;
+                        }
+                    });
+
+                    s.nonComListSummary.list.push(diseaseObj);
+                    s.nonComListSummary.total = {male: MorbidityNonComMaleTotal, female: MorbidityNonComFemaleTotal, NonComTotal: MorbidityNonComMaleTotal + MorbidityNonComFemaleTotal};
+                });
+
+                // OTHER MEDICAL SERVICES (Diet Counseling, Male Reproductive Health, Papsmear, Breast Exam, Dental)
+                s.medServiceTotal = 0;
+                s.medServiceMaleTotal = 0;
+                s.medServiceFemaleTotal = 0;
+                s.MRHcount = {};
+                s.DentalCount = {};
+
+                // Male Reproductive Health
+                angular.forEach(d.data.mrhCount, function(data){
+                    if(data.sex)
+                    {
+                        s.MRHcount.male = data.MRHcount;
+                        s.medServiceMaleTotal += data.MRHcount;
+                    }
+                    else {
+                        s.MRHcount.female = data.MRHcount;
+                        s.medServiceFemaleTotal += data.MRHcount;
+                    }
+
+                    s.medServiceTotal += data.MRHcount;
+                });
+
+                // Dental
+                angular.forEach(d.data.dentalCount, function(data){
+                    if(data.sex)
+                    {
+                        s.DentalCount.male = data.DentalCount;
+                        s.medServiceMaleTotal += data.DentalCount;
+                    }
+                    else {
+                        s.DentalCount.female = data.DentalCount;
+                        s.medServiceFemaleTotal += data.DentalCount;
+                    }
+
+                    s.medServiceTotal += data.DentalCount;
+                });
+
+                s.medServicePapsmear = 0;
+                s.medServiceBreast = 0;
+                s.medServicePapsmear = d.data.papsCount;
+                s.medServiceBreast = d.data.breastCount;
+                s.medServiceFemaleTotal += d.data.papsCount;
+                s.medServiceFemaleTotal += d.data.breastCount;
+                s.medServiceTotal += d.data.papsCount;
+                s.medServiceTotal += d.data.breastCount;
+                
+                // Sets number of male & female per diagnosis
+                for (var i = 0; i < d.data.morbiditylist.length; i++)
+                {
+                    var dataFiltered = d.data.stats.filter(f => f.diagnoseID == d.data.morbiditylist[i].diagnoseID);
+
+                    var obj = {};
+                    obj.diagnoseID = d.data.morbiditylist[i].diagnoseID;
+                    obj.diagnoseName = d.data.morbiditylist[i].diagnoseName;
+
+                    dataFiltered.forEach(element => {
+                        element.sex == 0 ? obj.female = element.MorbidityCount : element.sex == 1 ? obj.male = element.MorbidityCount : '';
+                    });
+
+                    data.push(obj);
+                }
 
                 // Create axes
                 // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
@@ -72,7 +198,8 @@
                 xAxis.get("renderer").labels.template.setAll({
                     oversizedBehavior: "wrap",
                     maxWidth: 100,
-                    textAlign: "center"
+                    textAlign: "center",
+                    rotation: -45
                 });
 
                 var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
@@ -133,7 +260,7 @@
             h.post('../Analytics/getLabPrice').then(function (d) {
                 var data = d.data;
                 s.tempLabPricesData = d.data;
-                console.log(data);
+                
                 var rootMale = am5.Root.new("chartDivMale");
                 var rootFemale = am5.Root.new("chartDivFemale");
 
@@ -189,14 +316,7 @@
 
 
     });
-
-
-
-
-
-
  
-
     s.statsLoad = function () {
         var today = new Date();
         s.getStatus(today, today);
@@ -236,6 +356,24 @@
         if (!date) return "N/A";
         return (moment(date).tz("Asia/Manila").format(dformat));
     };
+
+    function getSexCounts() {
+        s.countSex = {}
+
+        h.post('../Analytics/getSexAnalytics').then(function (d) {
+            s.countSex.male = d.data.filter(function (data) {
+                return data.sex == true;
+            });
+            
+            s.countSex.female = d.data.filter(function (data) {
+                return data.sex == false;
+            });
+
+            s.countSex.total = s.countSex.male[0].CountPerSex + s.countSex.female[0].CountPerSex;
+        });
+    }
+
+
 
 }]);
 

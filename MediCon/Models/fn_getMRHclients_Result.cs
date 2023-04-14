@@ -37,12 +37,21 @@ namespace MediCon.Models
         public string interviewerID { get; set; }
         public string consultID { get; set; }
         public string vSignID { get; set; }
+        public string EIC { get; set; }
+        public string idNO { get; set; }
+        public string qrCode { get; set; }
         public string lastName { get; set; }
         public string firstName { get; set; }
         public string middleName { get; set; }
         public string extName { get; set; }
-        public Nullable<System.DateTime> birthdate { get; set; }
+        public string fullNameLast { get; set; }
+        public string shortDepartmentName { get; set; }
+        public string brgyPermAddress { get; set; }
+        public string citymunPermAddress { get; set; }
+        public string provincePermAddress { get; set; }
         public string contactNo { get; set; }
+        public Nullable<System.DateTime> birthDate { get; set; }
+        public string sex { get; set; }
         public string personnel_lastName { get; set; }
         public string personnel_firstName { get; set; }
         public string personnel_midInit { get; set; }

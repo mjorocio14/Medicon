@@ -5,7 +5,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
     s.bpLoader = false;
     var vsIndexNo = 1;
     s.isVSexist = false;
-    getVitalList();
+    s.showClientList = false;
 
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner(
@@ -33,14 +33,14 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
     });
     // /QR Scanner Initialization
 
-    function getVitalList()
+    function getVitalList(dateFilter)
     {
         vsIndexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl"))
         {
             $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url('../VitalSigns/getVitalSignList').load();
+            $('#clientList_tbl').DataTable().ajax.url("../VitalSigns/getVitalSignList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
         }
 
         else
@@ -48,7 +48,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableVSlist = $('#clientList_tbl').DataTable({
                 "ajax": {
-                    "url": '../VitalSigns/getVitalSignList',
+                    "url": "../VitalSigns/getVitalSignList?date=" + moment(dateFilter).format('YYYY-MM-DD'),
                     "type": 'POST',
                     "dataSrc": "",
                     "recordsTotal": 20,
@@ -91,13 +91,13 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                {
                    "data": null,
                    render: function (row) {
-                       return row.sex ? "M" : "F";
+                       return row.sex == "MALE" ? "M" : "F";
                    }
                },
                {
                    "data": null,
                    render: function (row) {
-                       var age = moment().diff(moment(row.birthdate).format('L'), 'years');
+                       var age = moment().diff(moment(row.birthDate).format('L'), 'years');
                        return '<span class="label label-success">' + age + '</span>';
                    }
                },
@@ -107,7 +107,9 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                {
                    "data": null,
                    render: function (row) {
-                       return row.brgyDesc + ', ' + row.citymunDesc + ', ' + row.provDesc
+                       return (row.brgyPermAddress == null ? '' : row.brgyPermAddress) + ', '
+                           + (row.citymunPermAddress == null ? '' : row.citymunPermAddress) + ', '
+                           + (row.provincePermAddress == null ? '' : row.provincePermAddress)
                    }
                },
                {
@@ -176,26 +178,26 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
         s.loader = true;
 
         h.post('../QRPersonalInfo/getQRInfo?qrCode=' + qrCode).then(function (d) {
+            s.qrData = {};
+
             if (d.data.status == 'error')
             {
                 swal({
-                    title: "QR code failed!",
-                    text: d.data.msg,
+                    title: d.data.msg,
+                    text: "QR code failed!",
                     type: "error"
                 });
             }
 
             else
             {
-                if (d.data != null && d.data != "")
-                {
-                    s.qrData = {};
-                  
-                    d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
-                    d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
-                    s.qrData = d.data[0];
-                    s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].brgyDesc + ' ' + d.data[0].citymunDesc + ' ' + d.data[0].provDesc;
-                    s.qrData.weight = d.data[0].weight == null ? '' : d.data[0].weight;
+                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
+                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE"? 'true' : 'false') : null;
+                    s.qrData = d.data;
+                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
+                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
+                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
+                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
                     
                     // Check and Get Vital Signs Data for the current day
                     h.get('../VitalSigns/getVitalSigns?qrCode=' + qrCode).then(function (d) {
@@ -210,18 +212,9 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                             s.isVSexist = false;
                         }
                     });
-                }
-
-                else {
-                    swal({
-                        title: "QR code is not yet register!",
-                        text: "Please refer to QR code help desk near the area.",
-                        type: "error"
-                    });
-                }
-
-                s.loader = false;
             }
+
+            s.loader = false;
         })
     }
 
@@ -244,7 +237,13 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
             }
 
             else {
-                h.post('../VitalSigns/saveVitalSigns', { qrCode: qrData.qrCode, vs: qrData }).then(function (d) {
+                var VSdata = {
+                    height: qrData.height,
+                    qrCode: qrData.qrCode,
+                    weight: qrData.weight,
+                };
+
+                h.post('../VitalSigns/saveVitalSigns', { qrCode: qrData.qrCode, vs: VSdata }).then(function (d) {
                     if (d.data.status == "success") {
                         s.showQRpanel = !s.showQRpanel;
                         getBPhistory(s.qrData.qrCode);
@@ -326,11 +325,24 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
                     s.BP = {};
                     getBPhistory(s.qrData.qrCode);
-                    getVitalList();
                     s.isVSexist = false;
                     s.searchQRcode = "";
                 }
             });
+    }
+
+    s.filterResult = function (date) {
+        getVitalList(date);
+    }
+
+    s.showDiagnoseList = function () {
+
+        s.showClientList = !s.showClientList;
+
+        if (s.showClientList) {
+            s.FilterDate = new Date();
+            getVitalList(s.FilterDate);
+        }
     }
 
 }]);

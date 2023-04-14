@@ -71,6 +71,11 @@
         s.loader = true;
 
         h.post('../QRPersonalInfo/getQRInfo?qrCode=' + info).then(function (d) {
+            s.qrData = {};
+            s.diagnoseHistoryList = [];
+            s.rxHistoryList = [];
+            s.labHistoryList = [];
+
             if (d.data.status == 'error') {
                 swal({
                     title: "QR code failed!",
@@ -80,30 +85,19 @@
             }
 
             else {
-                if (d.data != null && d.data != "") {
-                    s.qrData = {};
-                    d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
-                    d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
-
-                    s.qrData = d.data[0];
-                    s.qrData.age = moment().diff(moment(d.data[0].birthdate).format('L'), 'years');
-                    s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].fullAddress;
-
-
+                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
+                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
+                    s.qrData = d.data;
+                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
+                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
+                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
+                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
+                    
                     s.showMLR(info);
                     getLabHistory(info);
-                }
-
-                else {
-                    swal({
-                        title: "QR code is not yet register!",
-                        text: "Please refer to QR code help desk near the area.",
-                        type: "error"
-                    });
-                }
-               
-                s.loader = false;
             }
+
+            s.loader = false;
         })
     }
 
@@ -336,28 +330,6 @@
                 if (key)
                     labtestList.push(value);
             });
-            //angular.forEach(labtest, function (key, value) {
-            //    if(value == 'LTG002') {
-            //        labtestList.push('L0007');
-            //        labtestList.push('L0008');
-            //        labtestList.push('L0013');
-            //        labtestList.push('L0014');
-            //        labtestList.push('L0015');
-            //    }
-
-            //    else if (value == 'LTG003') {
-            //        labtestList.push('L0016');
-            //        labtestList.push('L0017');
-            //        labtestList.push('L0018');
-            //        labtestList.push('L0019');
-            //    }
-                
-            //    else {
-            //        if (key) {
-            //            labtestList.push(value);
-            //        }
-            //    }
-            //});
 
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
             if (labtestList.length > 0) referralList.push('SERVICE006')
@@ -607,13 +579,13 @@
                {
                    "data": null,
                    render: function (row) {
-                       return row.sex ? "M" : "F";
+                       return row.sex == "MALE" ? "M" : "F";
                    }
                },
                {
                    "data": null,
                    render: function (row) {
-                       var age = moment().diff(moment(row.birthdate).format('L'), 'years');
+                       var age = moment().diff(moment(row.birthDate).format('L'), 'years');
                        return '<span class="label label-success">' + age + '</span>';
                    }
                },
@@ -741,6 +713,18 @@
                                     break;
                                 case 'DIAG024':
                                     diag.DIAG024 = true;
+                                    break;
+                                case 'DIAG028':
+                                    diag.DIAG028 = true;
+                                    break;
+                                case 'DIAG026':
+                                    diag.DIAG026 = true;
+                                    break;
+                                case 'DIAG027':
+                                    diag.DIAG027 = true;
+                                    break;
+                                case 'DIAG025':
+                                    diag.DIAG025 = true;
                                     break;
                             }
                         });
@@ -981,7 +965,17 @@
     }
 
     s.printRx = function (data, length) {
-        h.post('../Print/printRX', { rxID: data.rxID, info: s.qrData, physician: data.physician[0], length: length }).then(function (d) {
+        var patient = {
+            lastName: s.qrData.lastName,
+            firstName: s.qrData.firstName,
+            middleName: s.qrData.middleName,
+            extName: s.qrData.extName,
+            brgyDesc: s.qrData.brgyPermAddress,
+            citymunDesc: s.qrData.cityMunPermAddress,
+            age: s.qrData.age
+        };
+
+        h.post('../Print/printRX', { rxID: data.rxID, info: patient, physician: data.physician[0], length: length }).then(function (d) {
             window.open("../Report/MediConRpt.aspx?type=prescription");
         });
     }

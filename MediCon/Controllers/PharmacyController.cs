@@ -153,10 +153,6 @@ namespace MediCon.Controllers
             }
         }
 
-        //public class listRx
-        //{
-        //    public ListMeds [] list { get; set; }
-        //}
 
         public class ListMeds
         {
@@ -167,7 +163,6 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        //public ActionResult saveReleasing(ListMeds [][] listRx)
         public ActionResult saveReleasing(List<ListMeds> listRx)
         {
             try

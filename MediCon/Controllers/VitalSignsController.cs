@@ -43,11 +43,11 @@ namespace MediCon.Controllers
             }
         }
 
-        public ActionResult getVitalSignList()
+        public ActionResult getVitalSignList(DateTime date)
         {
             try
             {
-                var vs = dbMed.fn_vitalSignList().ToList();
+                var vs = dbMed.fn_vitalSignList(date).ToList();
 
                 return Json(vs, JsonRequestBehavior.AllowGet);
 

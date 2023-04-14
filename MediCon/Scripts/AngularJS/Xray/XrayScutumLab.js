@@ -63,20 +63,14 @@
                     }
 
                     else {
-                        if (d.data.qr.length == 0 && !s.isEditting) {
-                            swal({
-                                title: "QR code is not yet register!",
-                                text: "Please refer to QR code help desk near the area.",
-                                type: "error"
-                            });
-                        }
+                            d.data.qr.birthdate = d.data.qr.birthDate != null ? new Date(moment(d.data.qr.birthDate).format()) : null;
+                            d.data.qr.sex = d.data.qr.sex != null ? (d.data.qr.sex == "MALE" ? 'true' : 'false') : null;
 
-                        else {
-                            d.data.qr[0].birthdate = d.data.qr[0].birthdate != null ? new Date(moment(d.data.qr[0].birthdate).format()) : null;
-                            d.data.qr[0].sex = d.data.qr[0].sex != null ? (d.data.qr[0].sex ? 'true' : 'false') : null;
+                            s.qrData = d.data.qr;
+                            s.qrData.fullAddress = (d.data.qr.brgyPermAddress == null ? "" : d.data.qr.brgyPermAddress) + ' '
+                                        + (d.data.qr.cityMunPermAddress == null ? "" : d.data.qr.cityMunPermAddress) + ' '
+                                        + (d.data.qr.provincePermAddress == null ? "" : d.data.qr.provincePermAddress);
 
-                            s.qrData = d.data.qr[0];
-                            s.qrData.fullAddress = d.data.qr[0].address + ', ' + d.data.qr[0].brgyDesc + ' ' + d.data.qr[0].citymunDesc + ' ' + d.data.qr[0].provDesc;
 
                             // DISPLAY XRAY AND SCUTUM TAG
                             s.status.isXray = d.data.tag[0].isXray == true ? 'Yes' : d.data.tag[0].isXray == false ? 'No' : '';
@@ -100,7 +94,6 @@
                                     type: "error"
                                 });
                             }
-                        }
                     }
                 }
             })
@@ -354,7 +347,18 @@
             showConfirmButton: false
         });
 
-        h.post('../XrayScutumLab/saveLabReq', { qrCode: qrCode, labReq: labReq }).then(function (d) {
+        labReqData = {
+            personStatusID: labReq.personStatusID,
+            requestingFacility: labReq.requestingFacility,
+            dateOfRequest: labReq.dateOfRequest,
+            treatmentHistory: labReq.treatmentHistory,
+            dateOfTreatment: labReq.dateOfTreatment,
+            testRequested: labReq.testRequested,
+            collection: labReq.collection,
+            dateCollected: labReq.dateCollected
+        };
+
+        h.post('../XrayScutumLab/saveLabReq', { qrCode: qrCode, labReq: labReqData }).then(function (d) {
             if (d.data.status == "error") {
                 swal({
                     title: "ERROR",

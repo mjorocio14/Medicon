@@ -44,38 +44,40 @@
           s.loader = true;
 
           h.post("../QRPersonalInfo/getQRInfo?qrCode=" + qrCode).then(function (d) {
-              
+              s.qrData = {};
+              s.mhrReq = [];
+              s.bpHistoryList = [];
+              s.vitalSigns = {};
+              s.BMI = {};
+              s.diagnoseHistoryList = [];
+              s.rxHistoryList = [];
+              s.labHistoryList = [];
+
               if (d.data.status == "error") {
                   swal({
                       title: "QR code failed!",
                       text: d.data.msg,
                       type: "error",
                   });
-              } else {
-                  if (d.data != null && d.data != "") {
-                      s.qrData = {};
-                      d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
-                      d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
+              }
 
-                      s.qrData = d.data[0];
-                      s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].brgyDesc + ' ' + d.data[0].citymunDesc + ' ' + d.data[0].provDesc;
+              else {
+                  d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
+                  d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
+                  s.qrData = d.data;
+                  s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
+                  s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
+                                          + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
+                                          + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
 
                       getMRHrequest(qrCode);
                       getBPhistory(qrCode);
                       getMedicalHistory(qrCode);
                       getLabHistory(qrCode);
-                  }
-
-                  else {
-                      swal({
-                          title: "QR code is not yet register!",
-                          text: "Please refer to QR code help desk near the area.",
-                          type: "error"
-                      });
-                  }
-
-                  s.loader = false;
+                  
               }
+
+              s.loader = false;
           })
       }
 
@@ -118,6 +120,28 @@
                   });
 
                   s.vitalSigns = d.data.vs;
+                  s.BMI.value =
+                     Math.round(
+                       (s.vitalSigns.weight /
+                         (s.vitalSigns.height * s.vitalSigns.height)) *
+                         100
+                     ) / 100;
+
+                  s.BMI.desc =
+                      s.BMI.value < 18.5
+                        ? "UNDERWEIGHT"
+                        : s.BMI.value >= 18.5 && s.BMI.value <= 22.9
+                        ? "NORMAL"
+                        : s.BMI.value >= 23 && s.BMI.value <= 24.9
+                        ? "OVERWEIGHT"
+                        : s.BMI.value >= 25 && s.BMI.value <= 29.9
+                        ? "PRE-OBESE"
+                        : s.BMI.value >= 30 && s.BMI.value <= 40
+                        ? "OBESE TYPE 1"
+                        : s.BMI.value >= 40.1 && s.BMI.value <= 50
+                        ? "OBESE TYPE 2"
+                        : "OBESE TYPE 3";
+                  s.BMI.data = s.BMI.value + " - " + s.BMI.desc;
               }
           });
 
@@ -144,15 +168,16 @@
                   var tempDiag = {};
 
                   if (d.data.diagnosis.length > 0) {
+                      
                       angular.forEach(d.data.diagnosis, function (value) {
-
+                      
                           tempDiag = {
                               consultID: value[0].consultID,
                               serviceName: value[0].serviceName,
                               outsideReferral: value[0].outsideReferral,
                               remarks: value[0].remarks,
-                              personnelFullname: value[0].physician[0].personnel_firstName + ' ' + (value[0].physician[0].personnel_midInit == null ? '' : value[0].physician[0].personnel_midInit)
-                                                 + ' ' + value[0].physician[0].personnel_lastName + ' ' + (value[0].physician[0].personnel_extName == null ? '' : value[0].physician[0].personnel_extName),
+                              personnelFullname: value[0].physician.length > 0 ? (value[0].physician[0].personnel_firstName + ' ' + (value[0].physician[0].personnel_midInit == null ? '' : value[0].physician[0].personnel_midInit)
+                                                 + ' ' + value[0].physician[0].personnel_lastName + ' ' + (value[0].physician[0].personnel_extName == null ? '' : value[0].physician[0].personnel_extName)) : '',
                               dateTimeLog: moment(value[0].dateTimeLog).format('lll'),
                               dateForSort: moment(value[0].dateTimeLog).format()
                           };
@@ -427,30 +452,26 @@
                     {
                         data: null,
                         render: function (row) {
-                            return row.middleName == null
-                              ? ""
-                              : "<strong>" + row.middleName + "</strong>";
+                            return row.middleName == null ? '' : '<strong>' + row.middleName + '</strong>';
                         },
                     },
                     {
                         data: null,
                         render: function (row) {
-                            return row.extName == null
-                              ? ""
-                              : "<strong>" + row.extName + "</strong>";
+                            return row.extName == null ? '' : '<strong>' + row.extName + '</strong>';
                         },
                     },
                     {
                         data: null,
                         render: function (row) {
-                            return row.sex ? "M" : "F";
+                            return row.sex == "MALE" ? "M" : "F";
                         },
                     },
                     {
                         data: null,
                         render: function (row) {
                             var age = moment().diff(
-                              moment(row.birthdate).format("L"),
+                              moment(row.birthDate).format("L"),
                               "years"
                             );
                             return '<span class="label label-success">' + age + "</span>";

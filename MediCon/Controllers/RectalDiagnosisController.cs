@@ -57,6 +57,7 @@ namespace MediCon.Controllers
                                                        b.r3.r2.r1.mri.requestID,
                                                        b.r3.r2.r1.mri.sintomasNgIhi,
                                                        b.r3.r2.r1.req.referralID,
+                                                       b.r3.con.consultID,
                                                        b.vs.qrCode
                                                    }).OrderByDescending(x => x.interviewDT).ToList();
 
@@ -275,7 +276,7 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult savePrescription(string referralID, List<OutgoingItem> listRx)
+        public ActionResult savePrescription(string referralID, List<OutgoingItem> listRx, string consultID)
         {
             try
             {
@@ -285,7 +286,7 @@ namespace MediCon.Controllers
                 MedicalPrescription mp = new MedicalPrescription();
                 mp.rxID = rxID.generateID.Substring(0, 15);
                 mp.serviceID = "SERVICE004";
-                mp.consultID = null;
+                mp.consultID = consultID;
                 mp.referralID = referralID;
                 mp.personnelID = Session["personnelID"].ToString();
                 mp.dateTimeRx = DateTime.Now;

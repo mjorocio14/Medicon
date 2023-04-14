@@ -42,7 +42,6 @@ namespace MediCon.Controllers
         {
             try
             {
-                //var labHist = dbMed.fn_getPatientLabHistory(qrCode).OrderByDescending(b => b.dateTested).GroupBy(c => c.labTestID).ToList();
                 var labHist = dbMed.LaboratoryExams.Join(dbMed.LaboratoryTests, le => le.labTestID, lt => lt.labTestID, (le, lt) => new { le, lt })
                                                    .Join(dbMed.Referrals, res1 => res1.le.referralID, r => r.referralID, (res1, r) => new { res1, r })
                                                    .Join(dbMed.Consultations, res2 => res2.r.consultID, c => c.consultID, (res2, c) => new { res2, c })

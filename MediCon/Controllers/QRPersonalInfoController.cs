@@ -12,6 +12,7 @@ namespace MediCon.Controllers
     public class QRPersonalInfoController : Controller
     {
         EQPEntities db = new EQPEntities();
+        HRISDBEntities hrdb = new HRISDBEntities();
 
         [UserAccess]
         // GET: QRPersonalInfo
@@ -25,29 +26,14 @@ namespace MediCon.Controllers
         {
             try
             {
-                var result = db.PersonalInfoes.Join(db.Brgies, pi => pi.brgyCode, br => br.brgyCode, (pi, br) => new { pi, br })
-                             .Join(db.CityMuns, res1 => res1.br.citymunCode, cm => cm.citymunCode, (res1, cm) => new { res1, cm })
-                             .Join(db.Provinces, res2 => res2.res1.br.provCode, pr => pr.provCode, (res2, pr) => new { res2, pr })
-                             .Where(b => b.res2.res1.pi.qrCode == qrCode)
-                             .Select(a => new { 
-                                 a.res2.res1.pi.address,
-                                 a.res2.res1.pi.birthdate,
-                                 a.res2.res1.pi.brgyCode,
-                                 a.res2.res1.pi.contactNo,
-                                 a.res2.res1.pi.extName,
-                                 a.res2.res1.pi.firstName,
-                                 a.res2.res1.pi.lastName,
-                                 a.res2.res1.pi.middleName,
-                                 a.res2.res1.pi.occupation,
-                                 a.res2.res1.pi.qrCode,
-                                 a.res2.res1.pi.sex,
-                                 a.res2.res1.br.brgyDesc,
-                                 a.res2.cm.citymunDesc,
-                                 a.pr.provDesc,
-                                 fullAddress = a.res2.res1.br.brgyDesc + " " + a.res2.cm.citymunDesc + " " + a.pr.provDesc
-                             }).ToList();
+                // CHECK HRIS DB IF QR CODE EXIST
+                var hrisQR = hrdb.vEmployeeHealthWells.SingleOrDefault(a => a.qrCode == qrCode);
 
-                return Json(result, JsonRequestBehavior.AllowGet);
+                if (hrisQR == null)
+                    return Json(new { status = "error", msg = "QR code does not exist in HRIS" });
+
+                else
+                    return Json(hrisQR, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {

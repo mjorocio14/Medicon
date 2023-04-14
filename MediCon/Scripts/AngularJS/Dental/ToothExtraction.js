@@ -282,8 +282,14 @@
     s.mainSearch = function (info) {
         s.loader = true;
         s.bpHistoryList = {};
+        s.vitalSigns = {};
 
         h.post('../QRPersonalInfo/getQRInfo?qrCode=' + info).then(function (d) {
+            s.qrData = {};
+            s.diagnose = {};
+            s.diagnoseInfo = {};
+            s.diagnosisList = {};
+
             if (d.data.status == 'error') {
                 swal({
                     title: "QR code failed!",
@@ -293,32 +299,22 @@
             }
 
             else {
-                if (d.data != null && d.data != "") {
-                    s.qrData = {};
-                    d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
-                    d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
-                    s.qrData = d.data[0];
-                    s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].brgyDesc + ', ' + d.data[0].citymunDesc + ', ' + d.data[0].provDesc;
+                d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
+                d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
+                s.qrData = d.data;
+                s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
+                s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
+                                        + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
+                                        + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
 
-                    s.diagnose = {};
-                    s.diagnoseInfo = {}
                     s.diagnoseRemarks = '';
                     s.isEditting = false;
-                    getBPhistory(info, d.data[0].birthdate);
+                    getBPhistory(info, d.data.birthdate);
                     s.diagLoader = true;
-                }
-
-                else {
-                    swal({
-                        title: "QR code is not yet register!",
-                        text: "Please refer to QR code help desk near the area.",
-                        type: "error"
-                    });
-                }
-
-                s.diagLoader = false;
-                s.loader = false;
             }
+
+            s.diagLoader = false;
+            s.loader = false;
         })
     }
 

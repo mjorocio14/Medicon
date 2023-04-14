@@ -37,30 +37,6 @@
     function getDiagnoseClientList(dateFilter) {
         s.clientLoader = true;
 
-        //h.post('../Dental/getClientList').then(function (d) {
-        //    if (d.data.status == 'error') {
-        //        swal({
-        //            title: "ERROR",
-        //            text: d.data.msg,
-        //            type: "error"
-        //        });
-        //    }
-
-        //    else {
-        //        s.diagnoseClientList = {};
-        //        s.diagnoseClientList = d.data;
-
-        //        angular.forEach(s.diagnoseClientList, function (value) {
-        //            value.dateTimeLog = moment(value.dateTimeLog).format('lll');
-        //            value.age = moment().diff(moment(value.birthdate).format('L'), 'years');
-        //        });
-        //    }
-
-        //    s.clientLoader = false;
-        //});
-
-
-
         var vsIndexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#listOralClient_tbl")) {
@@ -115,7 +91,7 @@
                {
                    "data": null,
                    render: function (row) {
-                       return row.sex ? "M" : "F";
+                       return row.sex == "MALE" ? "M" : "F";
                    }
                },
                {
@@ -148,27 +124,28 @@
 
             $('#listOralClient_tbl tbody').on('click', '#btnShowOralDiagnosis', function () {
                 var data = tableOralList.row($(this).parents('tr')).data();
-
+                
                 s.diagnosisInfo = {};
                 s.diagnosisInfo.doctorName = data.DrLastName + ", " + data.DrFirstName + " " + (data.DrMiddleName != null ? data.DrMiddleName : '') + (data.DrExtName != null ? data.DrExtName : '');
                 s.diagnosisInfo.dateTimeLog = moment(data.dateTimeLog).format('lll');
                 s.diagnosisInfo.remarks = data.remarks;
+                s.diagnosisInfo.outsideReferral = data.outsideReferral;
+                s.diagnosisInfo.toothNum = data.toothNum;
 
-                h.post('../VitalSigns/getDiagnosis?ConsultID=' + data.consultID).then(function (d) {
-                    if (d.data.status == 'error') {
-                        swal({
-                            title: "ERROR",
-                            text: d.data.msg,
-                            type: "error"
-                        });
-                    }
+                s.diagnosisList = {};
+                s.diagnosisList = data.diagnosis;
+                s.$apply();
 
-                    else {
-                        s.diagnosisList = {};
-                        s.diagnosisList = d.data;
-                        $('#diagnosHistory_modal').modal('show');
-                    }
-                });
+                h.post('../Dental/getClientRx?consultID=' + data.consultID).then(function (d) {
+                    s.rxHistoryList = {};
+
+                    s.rxHistoryList = d.data;
+                    s.rxHistoryList.dateTimeRx = moment(s.rxHistoryList.dateTimeRx).format('lll');
+                    console.log(s.rxHistoryList);
+                })
+
+                $('#diagnosHistory_modal').modal('show');
+                
             });
         }
 
@@ -205,6 +182,11 @@
         s.bpHistoryList = {};
 
         h.post('../QRPersonalInfo/getQRInfo?qrCode=' + info).then(function (d) {
+            s.qrData = {};
+            s.diagnose = {};
+            s.diagnoseInfo = {}
+            s.vitalSigns = {};
+
             if (d.data.status == 'error') {
                 swal({
                     title: "QR code failed!",
@@ -214,30 +196,20 @@
             }
 
             else {
-                if (d.data != null && d.data != "") {
-                    s.qrData = {};
-                    d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
-                    d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
-                    s.qrData = d.data[0];
-                    s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].brgyDesc + ', ' + d.data[0].citymunDesc + ', ' + d.data[0].provDesc;
+                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
+                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
+                    s.qrData = d.data;
+                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
+                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
+                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
+                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
 
-                    s.diagnose = {};
-                    s.diagnoseInfo = {}
                     s.diagnoseRemarks = '';
                     s.isEditting = false;
-                    getBPhistory(info, d.data[0].birthdate);
-                }
+                    getBPhistory(info, d.data.birthdate);
 
-                else {
-                    swal({
-                        title: "QR code is not yet register!",
-                        text: "Please refer to QR code help desk near the area.",
-                        type: "error"
-                    });
-                }
-
-                s.loader = false;
             }
+            s.loader = false;
         })
     }
 
@@ -326,7 +298,7 @@
                         listChecked.push(value);
                 });
 
-                h.post('../Dental/saveDentalDiagnosis', {checkedDiagnosis: listChecked, detail: detail, personnelID: personnelID, otherDiag: detail.otherDiagnose }).then(function (d) {
+                h.post('../Dental/saveDentalDiagnosis', { checkedDiagnosis: listChecked, detail: detail, dentistID: personnelID, otherDiag: detail.otherDiagnose }).then(function (d) {
                     if (d.data.status == "error") {
                         swal({
                             title: "ERROR",
@@ -485,6 +457,7 @@
         s.diagnoseRemarks = '';
         s.searchQRcode = '';
         s.conslultID = '';
+        s.vitalSigns = {};
         s.showClientListBTN = true;
     }
 

@@ -43,6 +43,9 @@
         s.loader = true;
 
         h.post("../QRPersonalInfo/getQRInfo?qrCode=" + qrCode).then(function (d) {
+            s.qrData = {};
+            s.xrayHistoryList = [];
+
             if (d.data.status == "error") {
                 swal({
                     title: "QR code failed!",
@@ -52,26 +55,19 @@
             }
 
             else {
-                if (d.data != null && d.data != "") {
-                    s.qrData = {};
-                    d.data[0].birthdate = d.data[0].birthdate != null ? new Date(moment(d.data[0].birthdate).format()) : null;
-                    d.data[0].sex = d.data[0].sex != null ? (d.data[0].sex ? 'true' : 'false') : null;
+                d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
+                d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
+                s.qrData = d.data;
+                s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
+                s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
+                                        + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
+                                        + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
 
-                    s.qrData = d.data[0];
-                    s.qrData.fullAddress = d.data[0].address + ', ' + d.data[0].brgyDesc + ' ' + d.data[0].citymunDesc + ' ' + d.data[0].provDesc;
-                    getXrayHistory(s.qrData.qrCode);
-                }
-
-                else {
-                    swal({
-                        title: "QR code is not yet register!",
-                        text: "Please refer to QR code help desk near the area.",
-                        type: "error"
-                    });
-                }
-
-                s.loader = false;
+                getXrayHistory(s.qrData.qrCode);
+                
             }
+
+            s.loader = false;
         })
     }
 
@@ -324,13 +320,13 @@
                   {
                       data: null,
                       render: function (row) {
-                          return row.sex ? "M" : "F";
+                          return row.sex == "MALE" ? "M" : "F";
                       },
                   },
                   {
                       data: null,
                       render: function (row) {
-                          return '<span class="label label-success">' + getAge(row.birthdate) + "</span>";
+                          return '<span class="label label-success">' + getAge(row.birthDate) + "</span>";
                       },
                   },
                   {
