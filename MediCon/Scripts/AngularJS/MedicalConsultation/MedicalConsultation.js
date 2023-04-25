@@ -15,7 +15,6 @@
     s.showClientListBTN = true;
     s.medHistLoader_modal = false;
     s.newlyAddedConsultID = null;
-    s.isEditDiagnosis = true;
     s.medicalRecord_loader = false;
     s.showMedicalRecord = false;
     s.isEditting = false;
@@ -617,7 +616,7 @@
                 var data = tableVSlist.row($(this).parents('tr')).data();
                 data.birthdate = moment(data.birthdate).format('ll');
                 data.sex = data.sex ? 'Male' : 'Female';
-               
+                
                 $('#personDiagnosis_modal').modal('show');
                 s.resultDiag = {};
                 s.resultDiag.info = data;
@@ -634,7 +633,7 @@
 
                     else {
                         var diag = {};
-                        
+                       
                         // Push all checked diagnosis to diagnosisList
                         angular.forEach(d.data.resultDiag, function (item) {
 
@@ -728,6 +727,7 @@
                                     break;
                             }
                         });
+                        
                         s.resultDiag.diag = diag;
                         s.resultDiag.vitalSign = d.data.vitalSign;
                         
@@ -749,7 +749,10 @@
 
                     else {
                         var ref = {};
+                        var refIsEncoded = {};
                         var laboratory = {};
+                        var labIsEncoded = {};
+                        s.rxHistory = [];
                         s.otherLabDesc = '';
                         s.xrayDesc = '';
                         s.ecgDesc = '';
@@ -758,15 +761,18 @@
                         // Push all checked referral to referral
                         angular.forEach(d.data.referral, function (item) {
 
-                            switch (item) {
+                            switch (item.serviceID) {
                                 case 'SERVICE003':
                                     ref.SERVICE003 = true;
+                                    refIsEncoded.SERVICE003isEncoded = item.isEncoded;
                                     break;
                                 case 'SERVICE004':
                                     ref.SERVICE004 = true;
+                                    refIsEncoded.SERVICE004isEncoded = item.isEncoded;
                                     break;
                                 case 'SERVICE005':
                                     ref.SERVICE005 = true;
+                                    refIsEncoded.SERVICE005isEncoded = item.isEncoded;
                                     break;
                                 case 'SERVICE006':
                                     ref.SERVICE006 = true;
@@ -775,47 +781,61 @@
                         });
 
                         s.resultDiag.ref = ref;
+                        s.resultDiag.refIsEncoded = refIsEncoded;
                         
                         // Push all checked laboratory to laboratory
+                     
                         angular.forEach(d.data.laboratory, function (item) {
                             switch (item.labTestID) {
                                 case 'L0001':
                                     laboratory.L0001 = true;
+                                    labIsEncoded.L0001isEncoded = item.isTested;
                                     break;
                                 case 'L0002':
                                     laboratory.L0002 = true;
+                                    labIsEncoded.L0002isEncoded = item.isTested;
                                     break;
                                 case 'L0003':
                                     laboratory.L0003 = true;
+                                    labIsEncoded.L0003isEncoded = item.isTested;
                                     break;
                                 case 'L0004':
                                     laboratory.L0004 = true;
                                     s.resultDiag.ecgDesc = item.ecgDesc;
+                                    labIsEncoded.L0004isEncoded = item.isTested;
                                     break;
                                 case 'L0005':
                                     laboratory.L0005 = true;
+                                    labIsEncoded.L0005isEncoded = item.isTested;
                                     break;
                                 case 'L0006':
                                     laboratory.L0006 = true;
                                     s.resultDiag.xrayDesc = item.xrayDesc;
+                                    labIsEncoded.L0006isEncoded = item.isTested;
                                     break;
                                 case 'L0007':
                                     laboratory.L0007 = true;
+                                    labIsEncoded.L0007isEncoded = item.isTested;
                                     break;
                                 case 'L0008':
                                     laboratory.L0008 = true;
+                                    labIsEncoded.L0008isEncoded = item.isTested;
                                     break;
                                 case 'L0009':
                                     laboratory.L0009 = true;
+                                    labIsEncoded.L0009isEncoded = item.isTested;
                                     break;
                                 case 'L0010':
                                     laboratory.L0010 = true;
+                                    labIsEncoded.L0010isEncoded = item.isTested;
                                     break;
                                 case 'L0011':
                                     laboratory.L0011 = true;
+                                    labIsEncoded.L0011isEncoded = item.isTested;
                                     break;
                                 case 'L0012':
                                     laboratory.L0012 = true;
+                                    labIsEncoded.L0012isEncoded = item.isTested;
                                     break;
                                 case 'L0022':
                                     laboratory.L0022 = true;
@@ -824,13 +844,18 @@
                                 case 'L0023':
                                     laboratory.L0023 = true;
                                     s.resultDiag.ultrasoundDesc = item.ultrasoundDesc;
+                                    labIsEncoded.L0023isEncoded = item.isTested;
                                     break;
                                 case 'L0024':
                                     laboratory.L0024 = true;
+                                    labIsEncoded.L0024isEncoded = item.isTested;
                                     break;
                             }
                         });
                         s.resultDiag.laboratory = laboratory;
+                        s.resultDiag.labIsEncoded = labIsEncoded;
+
+                        s.rxHistory = d.data.rxList;
                     }
                 });
                 
@@ -881,6 +906,7 @@
     }
 
     s.saveUpdate = function (result) {
+   
         if (s.isEditting == false) {
             s.isEditting = true;
         }
@@ -894,7 +920,7 @@
             });
 
             // Push all checked diagnosis to diagnosisList
-            var diagnosisList = [];
+            let diagnosisList = [];
             angular.forEach(result.diag, function (key, value) {
                 if (key)
                    diagnosisList.push(value);
@@ -905,7 +931,7 @@
             angular.forEach(result.ref, function (key, value) {
                 if (key && value != 'SERVICE006')
                     referralList.push(value);
-            });
+                });
             
             // Push all checked laboratory to labList
             var labList = [];
@@ -934,10 +960,22 @@
 
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
             if (labList.length > 0) referralList.push('SERVICE006');
-
+           
+            let consultInfo = {};
+            consultInfo = {
+                consultID: result.info.consultID,
+                vSignID: result.info.vSignID,
+                serviceID: result.info.serviceID,
+                outsideReferral: result.info.outsideReferral,
+                toothNum: null,
+                dentistID: null,
+                remarks: result.info.remarks,
+            }
+          
             h.post('../MedicalConsultation/updateDiagnosis', {
-                qrCode: result.info.qrCode, consult: result.info, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
-                referral: referralList, otherReferral: result.info.outsideReferral, labReq: labList, otherLab: result.otherLabDesc
+                qrCode: result.info.qrCode, consult: consultInfo, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
+                referral: referralList, outsideReferral: result.info.outsideReferral, labReq: labList, otherLab: result.otherLabDesc,
+                xrayDesc: result.xrayDesc, ecgDesc: result.ecgDesc, ultrasoundDesc: result.ultrasoundDesc
             }).then(function (d) {
                 if (d.data.status == "error") {
                     swal({
@@ -957,11 +995,17 @@
 
                     $('#personDiagnosis_modal').modal('hide');
                     getDiagnoseClients();
-                    s.$apply();
                 }
             });
-
         }
+    }
+
+    s.editPrescription = function () {
+        s.showClientList = false;
+        //s.showMedicalRecord = false;
+        //s.showRx = true;
+        s.showClientListBTN = false;
+        //!showClientList && (!showMedicalRecord || showRx)"
     }
 
     s.printRx = function (data, length) {

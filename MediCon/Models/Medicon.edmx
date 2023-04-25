@@ -1278,22 +1278,6 @@
           <Property Name="diagnoseName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="diagnoseType" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="DietCounseling">
-          <Key>
-            <PropertyRef Name="dietID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="dietID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="isHPN" Type="Boolean" />
-          <Property Name="isDM" Type="Boolean" />
-          <Property Name="isChole" Type="Boolean" />
-          <Property Name="isUricAcid" Type="Boolean" />
-          <Property Name="isOthers" Type="Boolean" />
-          <Property Name="otherDesc" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="ECG">
           <Key>
             <PropertyRef Name="ECGID" />
@@ -1774,7 +1758,6 @@
           <EntitySet Name="BrandLists" EntityType="Self.BrandList" />
           <EntitySet Name="CBCs" EntityType="Self.CBC" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosi" />
-          <EntitySet Name="DietCounselings" EntityType="Self.DietCounseling" />
           <EntitySet Name="ECGs" EntityType="Self.ECG" />
           <EntitySet Name="EditRemarks" EntityType="Self.EditRemark" />
           <EntitySet Name="Fecalysis" EntityType="Self.Fecalysi" />
@@ -1892,6 +1875,7 @@
           <FunctionImport Name="fn_DashboardMRH" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardMRH_Result)" />
           <FunctionImport Name="fn_DashboardDental" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardDental_Result)" />
           <EntitySet Name="Consultations" EntityType="MediconModel.Consultation" />
+          <EntitySet Name="DietCounselings" EntityType="MediconModel.DietCounseling" />
         </EntityContainer>
         <ComplexType Name="sp_getXrayClientRecord_Result">
           <Property Type="String" Name="labRequestID" Nullable="false" MaxLength="15" />
@@ -2389,6 +2373,22 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="DietCounseling">
+          <Key>
+            <PropertyRef Name="dietID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="dietID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="isHPN" Type="Boolean" />
+          <Property Name="isDM" Type="Boolean" />
+          <Property Name="isChole" Type="Boolean" />
+          <Property Name="isUricAcid" Type="Boolean" />
+          <Property Name="isOthers" Type="Boolean" />
+          <Property Name="otherDesc" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2462,23 +2462,6 @@
                 <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
                 <ScalarProperty Name="diagnoseName" ColumnName="diagnoseName" />
                 <ScalarProperty Name="diagnoseType" ColumnName="diagnoseType" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="DietCounselings">
-            <EntityTypeMapping TypeName="MediconModel.DietCounseling">
-              <MappingFragment StoreEntitySet="DietCounseling">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="dietID" ColumnName="dietID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="isHPN" ColumnName="isHPN" />
-                <ScalarProperty Name="isDM" ColumnName="isDM" />
-                <ScalarProperty Name="isChole" ColumnName="isChole" />
-                <ScalarProperty Name="isUricAcid" ColumnName="isUricAcid" />
-                <ScalarProperty Name="isOthers" ColumnName="isOthers" />
-                <ScalarProperty Name="otherDesc" ColumnName="otherDesc" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3606,6 +3589,23 @@
                 <ScalarProperty Name="serviceID" ColumnName="serviceID" />
                 <ScalarProperty Name="vSignID" ColumnName="vSignID" />
                 <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DietCounselings">
+            <EntityTypeMapping TypeName="MediconModel.DietCounseling">
+              <MappingFragment StoreEntitySet="DietCounseling">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="otherDesc" ColumnName="otherDesc" />
+                <ScalarProperty Name="isOthers" ColumnName="isOthers" />
+                <ScalarProperty Name="isUricAcid" ColumnName="isUricAcid" />
+                <ScalarProperty Name="isChole" ColumnName="isChole" />
+                <ScalarProperty Name="isDM" ColumnName="isDM" />
+                <ScalarProperty Name="isHPN" ColumnName="isHPN" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="dietID" ColumnName="dietID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>

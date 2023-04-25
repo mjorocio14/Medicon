@@ -32,7 +32,6 @@ namespace MediCon.Models
         public virtual DbSet<BrandList> BrandLists { get; set; }
         public virtual DbSet<CBC> CBCs { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
-        public virtual DbSet<DietCounseling> DietCounselings { get; set; }
         public virtual DbSet<ECG> ECGs { get; set; }
         public virtual DbSet<EditRemark> EditRemarks { get; set; }
         public virtual DbSet<Fecalysi> Fecalysis { get; set; }
@@ -69,6 +68,7 @@ namespace MediCon.Models
         public virtual DbSet<Xray_ScutumLabRequest> Xray_ScutumLabRequest { get; set; }
         public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
         public virtual DbSet<Consultation> Consultations { get; set; }
+        public virtual DbSet<DietCounseling> DietCounselings { get; set; }
     
         [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
         public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)

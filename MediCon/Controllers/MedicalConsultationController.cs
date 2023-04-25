@@ -229,56 +229,7 @@ namespace MediCon.Controllers
                 {
                     foreach (var item in referral)
                     {
-                        var referralID = new IDgenerator(consultation.consultID);
-
-                        Referral Ref = new Referral();
-                        Ref.referralID = referralID.generateID.Substring(0, 15);
-                        Ref.referredServiceID = item;
-                        Ref.consultID = consultation.consultID;
-                        dbMed.Referrals.Add(Ref);
-
-                        if (item == "SERVICE006")
-                        {
-                            foreach(var labtest in lab)
-                            {
-                                var labID = new IDgenerator(Ref.referralID);
-
-                                LaboratoryExam labEx = new LaboratoryExam();
-                                labEx.labID = labID.generateID.Substring(0, 15);
-                                labEx.referralID = Ref.referralID;
-                                labEx.labTestID = labtest;
-                                labEx.otherLabDesc = labtest == "L0022" ? otherLab : null;
-                                labEx.xrayDesc = labtest == "L0006" ? xrayDesc : null;
-                                labEx.ecgDesc = labtest == "L0004" ? ecgDesc : null;
-                                labEx.ultrasoundDesc = labtest == "L0023" ? ultrasoundDesc : null;
-                                dbMed.LaboratoryExams.Add(labEx);
-                            }
-                        }
-
-                        else if(item == "SERVICE005")
-                        {
-                            var PBEID = new IDgenerator(Ref.referralID);
-
-                            PapsmearBreastExam pbe = new PapsmearBreastExam();
-                            pbe.PBEID = PBEID.generateID.Substring(0, 15);
-                            pbe.referralID = Ref.referralID;
-                            dbMed.PapsmearBreastExams.Add(pbe);
-                        }
-
-                        else if (item == "SERVICE004")
-                        {
-                            var requestID = new IDgenerator(Ref.referralID);
-
-                            MRHrequest mrhq = new MRHrequest();
-                            mrhq.requestID = requestID.generateID.Substring(0, 15);
-                            mrhq.referralID = Ref.referralID;
-                            mrhq.requestDT = DateTime.Now;
-                            mrhq.requestPersonID = Session["personnelID"].ToString();
-                            mrhq.isInterviewDone = false;
-                            mrhq.isDiagnoseDone = false;
-                            
-                            dbMed.MRHrequests.Add(mrhq);
-                        }
+                        CreateReferralRecord(consultation.consultID, item, lab, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
                     }
                 }
                 //......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
@@ -288,14 +239,7 @@ namespace MediCon.Controllers
                 {
                     foreach (var item in checkedDiagnosis)
                     {
-                        var resultID = new IDgenerator(consultation.consultID);
-
-                        ResultDiagnosi RS = new ResultDiagnosi();
-                        RS.resultID = resultID.generateID.Substring(0, 15);
-                        RS.consultID = consultation.consultID;
-                        RS.diagnoseID = item;
-                        RS.otherDiagnosis = item == "DIAG023" ? detail.otherDiagnosis : null;
-                        dbMed.ResultDiagnosis.Add(RS);
+                        CreateResultDiagnosisRecord(consultation.consultID, item, detail.otherDiagnosis);
                     }
                     //......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
                 }
@@ -312,6 +256,86 @@ namespace MediCon.Controllers
                 return Json(new { status = "error", msg = "An error occured while saving the diagnosis.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        private void CreateLabExamRecord(string labtestID, string referralID, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        {
+                var labID = new IDgenerator(referralID);
+
+                LaboratoryExam labEx = new LaboratoryExam();
+                labEx.labID = labID.generateID.Substring(0, 15);
+                labEx.referralID = referralID;
+                labEx.labTestID = labtestID;
+                labEx.otherLabDesc = labtestID == "L0022" ? otherLab : null;
+                labEx.xrayDesc = labtestID == "L0006" ? xrayDesc : null;
+                labEx.ecgDesc = labtestID == "L0004" ? ecgDesc : null;
+                labEx.ultrasoundDesc = labtestID == "L0023" ? ultrasoundDesc : null;
+                dbMed.LaboratoryExams.Add(labEx);
+        }
+
+        private void CreatePapsmearBreastExamRecord(string referralID)
+        {
+            var PBEID = new IDgenerator(referralID);
+
+            PapsmearBreastExam pbe = new PapsmearBreastExam();
+            pbe.PBEID = PBEID.generateID.Substring(0, 15);
+            pbe.referralID = referralID;
+            dbMed.PapsmearBreastExams.Add(pbe);
+        }
+
+        private void CreateMRHRecord(string referralID)
+        {
+            var requestID = new IDgenerator(referralID);
+
+            MRHrequest mrhq = new MRHrequest();
+            mrhq.requestID = requestID.generateID.Substring(0, 15);
+            mrhq.referralID = referralID;
+            mrhq.requestDT = DateTime.Now;
+            mrhq.requestPersonID = Session["personnelID"].ToString();
+            mrhq.isInterviewDone = false;
+            mrhq.isDiagnoseDone = false;
+            dbMed.MRHrequests.Add(mrhq);
+        }
+
+        private void CreateResultDiagnosisRecord(string consultID, string item, string otherDiagnosis)
+        {
+            var resultID = new IDgenerator(consultID);
+
+            ResultDiagnosi RS = new ResultDiagnosi();
+            RS.resultID = resultID.generateID.Substring(0, 15);
+            RS.consultID = consultID;
+            RS.diagnoseID = item;
+            RS.otherDiagnosis = item == "DIAG023" ? otherDiagnosis : null;
+            dbMed.ResultDiagnosis.Add(RS);
+        }
+
+        private void CreateReferralRecord(string consultID, string item, string[] lab, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        {
+            var referralID = new IDgenerator(consultID);
+
+            Referral Ref = new Referral();
+            Ref.referralID = referralID.generateID.Substring(0, 15);
+            Ref.referredServiceID = item;
+            Ref.consultID = consultID;
+            dbMed.Referrals.Add(Ref);
+
+            if (item == "SERVICE006")
+            {
+                foreach (var labtestID in lab)
+                {
+                    CreateLabExamRecord(labtestID, Ref.referralID, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                }
+            }
+
+            else if (item == "SERVICE005")
+            {
+                CreatePapsmearBreastExamRecord(Ref.referralID);
+            }
+
+            else if (item == "SERVICE004")
+            {
+                CreateMRHRecord(Ref.referralID);
+            }
         }
 
         [HttpPost]
@@ -337,7 +361,7 @@ namespace MediCon.Controllers
                    consultation.toothNum = null;
                    consultation.vSignID = vSignID;
                    dbMed.Consultations.Add(consultation);
-                   //......  /SAVE DATA TO CONSULATIONSURGERY TABLE
+                   //......  /SAVE DATA TO CONSULATION TABLE
                    
                }
 
@@ -393,6 +417,7 @@ namespace MediCon.Controllers
             }
         }
 
+        [HttpPost]
         public ActionResult getPersonVSignDiagnoseResult(string consultID, string vSignID)
         {
            try
@@ -430,7 +455,21 @@ namespace MediCon.Controllers
         {
             try
             {
-                var referral = dbMed.Referrals.Where(a => a.consultID == consultID).Select(b => b.referredServiceID).ToList();
+                var referral = dbMed.Referrals.Where(a => a.consultID == consultID)
+                                              .Select(b => 
+                                                  new
+                                                  {
+                                                      b.referredServiceID,
+                                                      b.referralID
+                                                  }
+                                              ).ToList();
+
+                var refList = new List<ReferralList>();
+                foreach (var element in referral)
+                {
+                    refList.Add(new ReferralList() { serviceID = element.referredServiceID, referralID = element.referralID, isEncoded = isDataEncoded(element.referralID, element.referredServiceID) });
+                }
+
                 var lab = dbMed.LaboratoryExams.Join(dbMed.Referrals, le => le.referralID, r => r.referralID, (le, r) => new { le, r })
                                                .Where(a => a.r.consultID == consultID && a.r.MRDiagnosisID == null)
                                                .Select(b => new
@@ -439,16 +478,64 @@ namespace MediCon.Controllers
                                                    b.le.otherLabDesc,
                                                    b.le.xrayDesc,
                                                    b.le.ecgDesc,
-                                                   b.le.ultrasoundDesc
+                                                   b.le.ultrasoundDesc,
+                                                   b.le.isTested
                                                }).ToList();
-                
 
-                return Json(new { referral = referral, laboratory = lab}, JsonRequestBehavior.AllowGet);
+                var rx = dbMed.MedicalPrescriptions.Join(dbMed.OutgoingItems, mp => mp.rxID, oi => oi.rxID, (mp, oi) => new { mp, oi })
+                                                       .Join(dbMed.ProductLists, r1 => r1.oi.productCode, pl => pl.productCode, (r1, pl) => new { r1, pl })
+                                                       .Join(dbMed.Measurements, r2 => r2.pl.measurementID, m => m.measurementID, (r2, m) => new { r2, m })
+                                                       .Join(dbMed.ProductUnits, r3 => r3.r2.pl.unitID, pu => pu.unitID, (r3, pu) => new { r3, pu })
+                                                       .Where(a => a.r3.r2.r1.mp.consultID == consultID)
+                                                       .Select(b => new
+                                                       {
+                                                           b.r3.r2.r1.mp.rxID,
+                                                           b.r3.r2.r1.mp.consultID,
+                                                           b.r3.r2.r1.mp.dateTimeRx,
+                                                           b.r3.r2.r1.oi.productCode,
+                                                           b.r3.r2.r1.oi.qtyRx,
+                                                           b.r3.r2.r1.oi.dosage,
+                                                           b.r3.r2.r1.oi.perDay,
+                                                           b.r3.r2.r1.oi.noDay,
+                                                           b.r3.r2.pl.productDesc,
+                                                           b.r3.r2.pl.measurementID,
+                                                           b.r3.r2.pl.unitID,
+                                                           b.r3.m.measurementDesc,
+                                                           b.pu.unitDesc
+                                                       }).ToList();
+
+                return Json(new { referral = refList, laboratory = lab, rxList = rx }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 return Json(new { status = "error", msg = "An error occured while fetching the laboratory referrals.", error = ex }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        private class ReferralList
+        {
+            public string serviceID { get; set; }
+            public string referralID { get; set; }
+            public bool isEncoded { get; set; }
+        }
+
+        private bool isDataEncoded(string referralID, string serviceID)
+        {
+            switch (serviceID)
+            {
+                case "SERVICE005":
+                    var pbresult = dbMed.PapsmearBreastExams.SingleOrDefault(c => c.referralID == referralID);
+                    return pbresult == null ? false : pbresult.personnelID == null ? false : true;
+                case "SERVICE004":
+                    var mrhresult = dbMed.MRHrequests.SingleOrDefault(c => c.referralID == referralID);
+                    return mrhresult == null ? false : mrhresult.interviewerID == null ? false : true;
+                case "SERVICE003":
+                    var dcresult = dbMed.DietCounselings.SingleOrDefault(c => c.referralID == referralID);
+                    return dcresult == null ? false : dcresult.personnelID == null ? false : true;
+                default:
+                    return false;
+            }
+
         }
 
         public ActionResult getPersonMedicine(string consultID)
@@ -465,7 +552,8 @@ namespace MediCon.Controllers
             }
         }
 
-        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string otherReferral, string[] labReq, string otherLab)
+        [HttpPost]
+        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
             {
@@ -480,152 +568,122 @@ namespace MediCon.Controllers
 
                 //......  UPDATE DATA TO RESULT DIAGNOSIS TABLE
                 var diag = dbMed.ResultDiagnosis.Where(a => a.consultID == consult.consultID);
-                if(diag != null) { dbMed.ResultDiagnosis.RemoveRange(diag); }
+                if (diag != null) { dbMed.ResultDiagnosis.RemoveRange(diag); }
 
                 if (diagnosis != null)
                 {
                     foreach (var item in diagnosis)
                     {
-                        ResultDiagnosi RS = new ResultDiagnosi();
-                        var resultID = new IDgenerator(consult.consultID);
-
-                        RS.resultID = resultID.generateID.Substring(0, 15);
-                        RS.consultID = consult.consultID;
-                        RS.diagnoseID = item;
-                        RS.otherDiagnosis = item == "DIAG023" ? otherDiagnose : null;
-                        dbMed.ResultDiagnosis.Add(RS);
+                        CreateResultDiagnosisRecord(consult.consultID, item, otherDiagnose);
                     }
                 }
                 //......  /UPDATE DATA TO RESULT DIAGNOSIS TABLE
 
                 //......  UPDATE DATA TO REFERRAL AND LABORATORY EXAM TABLE
-                var existingRefID = string.Empty;
-                var existingRef = dbMed.Referrals.Where(a => a.consultID == consult.consultID);
+                var existingRef = dbMed.Referrals.Where(a => a.consultID == consult.consultID).ToArray();
                 
-                if (existingRef != null) {
-                    //existingRefID = existingRef.FirstOrDefault().referralID;
-                    //dbMed.Referrals.RemoveRange(existingRef);
+                if (existingRef.Length > 0) {
+                    foreach (var refrecord in existingRef)
+                    {
+                        bool isExist = false;
 
-                    //foreach ( var refRecord in existingRef)
-                    //{
-                    //    switch (refRecord.referredServiceID)
-                    //    {
-                    //        case "SERVICE006":
-                    //            var newReferLab = referral.SingleOrDefault(a => a == "SERVICE006");
+                        // Check if old referredServiceID exist in the new referral list
+                        if(referral != null)
+                            isExist = Array.Exists(referral, element => element == refrecord.referredServiceID);
 
-                    //            if (newReferLab != null)
-                    //            {
+                        // If old referredServiceID does not exist anymore in the new referral list
+                        // then remove this referredServiceID and its related data
+                        if (!isExist)
+                        {
+                            dbMed.Referrals.Remove(refrecord);
 
-                    //            }
-
-                    //            var existingLab = dbMed.LaboratoryExams.Where(a => a.referralID == refRecord.referralID);
-
-                    //            if (existingLab != null)
-                    //            {
-                    //                if (existingLab.Count(a => a.isTested == true) > 0)
-                    //                    return Json(new { status = "error", msg = "You can`t uncheck/remove LABORATORY EXAM/s that already have tested!" }, JsonRequestBehavior.AllowGet);
-
-                    //                else
-                    //                {
-                    //                    dbMed.LaboratoryExams.RemoveRange(existingLab);
-
-                    //                    Referral Ref = new Referral();
-                    //                    Ref.referralID = refRecord.referralID;
-                    //                    Ref.referredServiceID = "SERVICE006";
-                    //                    Ref.consultID = consult.consultID;
-                    //                    dbMed.Referrals.Add(Ref);
-                    //                }
-
-                    //            }
-                    //    }
-                    //}
-
-
-                    //var existingLab = dbMed.LaboratoryExams.Where(a => a.referralID == existingRefID);
-                    //if (existingLab != null) {
-                    //    if (existingLab.Count(a => a.isTested == true) > 0)
-                    //        return Json(new { status = "error", msg = "You can`t uncheck/remove LABORATORY EXAM/s that already have tested!" }, JsonRequestBehavior.AllowGet);
-
-                    //    else
-                    //    {
-                    //        dbMed.LaboratoryExams.RemoveRange(existingLab);
-
-                    //        var referLab = referral.SingleOrDefault(a => a == "SERVICE006");
-                    //        Referral Ref = new Referral();
-                    //        Ref.referralID = existingRefID;
-                    //        Ref.referredServiceID = "SERVICE006";
-                    //        Ref.consultID = consult.consultID;
-                    //        dbMed.Referrals.Add(Ref);
-                    //    }
-                            
-                    //}
-
-                    var existingPBE = dbMed.PapsmearBreastExams.SingleOrDefault(a => a.referralID == existingRefID && !string.IsNullOrEmpty(a.personnelID));
-                    if (existingPBE != null) { 
-                        //dbMed.PapsmearBreastExams.Remove(existingPBE); 
-                        return Json(new { status = "error", msg = "You can`t uncheck/remove PAPSMEAR & BREAST EXAM that already have tested!" }, JsonRequestBehavior.AllowGet);
-                    }
-
-                    var existingMRH = dbMed.MRHrequests.SingleOrDefault(a => a.referralID == existingRefID);
-                    if (existingMRH != null) { 
-                        //dbMed.PapsmearBreastExams.Remove(existingMRH); 
-                        return Json(new { status = "error", msg = "You can`t uncheck/remove PAPSMEAR & BREAST EXAM that already have tested!" }, JsonRequestBehavior.AllowGet);
+                            switch (refrecord.referredServiceID)
+                            {
+                                case "SERVICE006":
+                                    var labToRemoveList = dbMed.LaboratoryExams.Where(a => a.referralID == refrecord.referralID).ToList();
+                                    dbMed.LaboratoryExams.RemoveRange(labToRemoveList);
+                                    break;
+                                case "SERVICE005":
+                                    var papsToRemove = dbMed.PapsmearBreastExams.SingleOrDefault(a => a.referralID == refrecord.referralID);
+                                    dbMed.PapsmearBreastExams.Remove(papsToRemove);
+                                    break;
+                                case "SERVICE004":
+                                    var mrhToRemove = dbMed.MRHrequests.SingleOrDefault(a => a.referralID == refrecord.referralID);
+                                    dbMed.MRHrequests.Remove(mrhToRemove);
+                                    break;
+                                // Just uncomment this if DietCounseling module is already functional
+                                //case "SERVICE003":
+                                //    var dietToRemove = dbMed.DietCounselings.SingleOrDefault(a => a.referralID == refrecord.referralID);
+                                //    dbMed.DietCounselings.Remove(dietToRemove);
+                                //    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        
                     }
                 }
 
                 if (referral != null)
                 {
-                    foreach (var item in referral)
+                    foreach (var newServiceID in referral)
                     {
-                        Referral Ref = new Referral();
-                        Ref.referralID = existingRefID;
-                        Ref.referredServiceID = item;
-                        Ref.consultID = consult.consultID;
-                        dbMed.Referrals.Add(Ref);
+                        bool isExistInNew = false;
 
-                        if (item == "SERVICE006")
+                        // Check if NEW referral list exist in the OLD referral list
+                        if(existingRef != null)
+                            isExistInNew = Array.Exists(existingRef, element => element.referredServiceID == newServiceID);
+
+                        // If new referral serviceID does not exist in the old referral list
+                        // then Add this new referredServiceID
+                        if (!isExistInNew)
                         {
-                            foreach (var labtest in labReq)
-                            {
-                                var labID = new IDgenerator(Ref.referralID);
-
-                                LaboratoryExam labEx = new LaboratoryExam();
-                                labEx.labID = labID.generateID.Substring(0, 15);
-                                labEx.referralID = existingRefID;
-                                labEx.labTestID = labtest;
-                                labEx.otherLabDesc = labtest == "L0022" ? otherLab : null;
-                                dbMed.LaboratoryExams.Add(labEx);
-                            }
-                        }
-
-                        else if (item == "SERVICE005")
-                        {
-                            var PBEID = new IDgenerator(Ref.referralID);
-
-                            PapsmearBreastExam pbe = new PapsmearBreastExam();
-                            pbe.PBEID = PBEID.generateID.Substring(0, 15);
-                            pbe.referralID = Ref.referralID;
-                            dbMed.PapsmearBreastExams.Add(pbe);
-                        }
-
-                        else if (item == "SERVICE004")
-                        {
-                            var requestID = new IDgenerator(Ref.referralID);
-
-                            MRHrequest mrhq = new MRHrequest();
-                            mrhq.requestID = requestID.generateID.Substring(0, 15);
-                            mrhq.referralID = Ref.referralID;
-                            mrhq.requestDT = DateTime.Now;
-                            mrhq.requestPersonID = Session["personnelID"].ToString();
-                            mrhq.isInterviewDone = false;
-                            mrhq.isDiagnoseDone = false;
-                            dbMed.MRHrequests.Add(mrhq);
+                            CreateReferralRecord(consult.consultID, newServiceID, labReq, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
                         }
                     }
                 }
                 //......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
 
-                
+                //......  UPDATE DATA IN LABORATORY
+                var refID = dbMed.Referrals.SingleOrDefault(a => a.consultID == consult.consultID && a.referredServiceID == "SERVICE006");
+                var labReferralID = refID == null ? null : refID.referralID;
+                var existingLabs = dbMed.LaboratoryExams.Where(a => a.referralID == labReferralID).ToArray();
+
+                if(existingLabs.Length > 0 && labReferralID != null)
+                {
+                    foreach (var rec in existingLabs)
+                    {
+                        bool isExistLab = false;
+
+                        // Check if old labtest exist in the new labReq list
+                        if(labReq != null)
+                            isExistLab = Array.Exists(labReq, element => element == rec.labTestID);
+
+                        // If old labtest does not exist anymore in the new labReq list
+                        // then remove this labtest and its related data
+                        if (!isExistLab)
+                            dbMed.LaboratoryExams.Remove(rec);
+                    }
+                }
+
+                if(labReq != null)
+                {
+                    foreach (var newLab in labReq)
+                    {
+                        bool isExistNewLab = false;
+
+                        // Check if NEW referral list exist in the OLD referral list
+                        if(existingLabs != null)
+                            isExistNewLab = Array.Exists(existingLabs, element => element.labTestID == newLab);
+
+                        // If new referral serviceID does not exist in the old referral list
+                        // then Add this new referredServiceID
+                        if (!isExistNewLab)
+                        {
+                            CreateLabExamRecord(newLab, labReferralID, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                        }
+                    }
+                }
 
                 var affectedRow = dbMed.SaveChanges();
 
