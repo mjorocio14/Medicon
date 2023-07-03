@@ -221,7 +221,121 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult saveLaboratory(string[] labtest, string referralID, string otherLab, string service)
+        public ActionResult updateDiagnosis(MaleRepro_Diagnosis mrd)
+        {
+            try
+            {
+                var diagRecord = dbMed.MaleRepro_Diagnosis.SingleOrDefault(a => a.MRDiagnosisID == mrd.MRDiagnosisID);
+                diagRecord.PEfindings = mrd.PEfindings;
+                diagRecord.abdomen = mrd.abdomen;
+                diagRecord.extGenita = mrd.extGenita;
+                diagRecord.DREsize = mrd.DREsize;
+                diagRecord.consistency = mrd.consistency;
+                diagRecord.texture = mrd.texture;
+                diagRecord.mobility = mrd.mobility;
+                diagRecord.lowbackPain = mrd.lowbackPain;
+                diagRecord.arthriticPain = mrd.arthriticPain;
+                diagRecord.rectalFinding = mrd.rectalFinding;
+                diagRecord.TRUS = mrd.TRUS;
+                diagRecord.PSA = mrd.PSA;
+                diagRecord.transperrinealBiopsy = mrd.transperrinealBiopsy;
+                diagRecord.transrectalBiopsy = mrd.transrectalBiopsy;
+                diagRecord.TRUSBiopsy = mrd.TRUSBiopsy;
+                diagRecord.Remarks = mrd.Remarks;
+                dbMed.Entry(diagRecord).State = EntityState.Modified;
+
+                var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Rectal diagnosis was not updated!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Rectal diagnosis is successfully updated!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult updateLaboratory(string[] labtest, string referralID, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        {
+            try
+            {
+                var originalLab = dbMed.LaboratoryExams.Where(a => a.referralID == referralID).ToArray();
+
+                if (labtest == null)
+                {
+                    if (originalLab.Count() > 0) dbMed.LaboratoryExams.RemoveRange(originalLab);
+                }
+                
+                else
+                {
+                    foreach (var rec in originalLab)
+                    {
+                        bool isExistLab = false;
+
+                        // Check if old labtest exist in the new labtest list
+                        if (labtest != null)
+                            isExistLab = Array.Exists(labtest, element => element == rec.labTestID);
+
+                        // If old labtest does not exist anymore in the new labReq list
+                        // then remove this labtest and its related data
+                        if (!isExistLab)
+                            dbMed.LaboratoryExams.Remove(rec);
+                    }
+
+                    // Saving new labtest that does not exist in the original labtest list
+                    if (labtest != null)
+                    {
+                        foreach (var newLab in labtest)
+                        {
+                            bool isExistNewLab = false;
+
+                            // Check if NEW referral list exist in the OLD referral list
+                            if (originalLab != null)
+                                isExistNewLab = Array.Exists(originalLab, element => element.labTestID == newLab);
+
+                            // If new referral serviceID does not exist in the old referral list
+                            // then Add this new referredServiceID
+                            if (!isExistNewLab)
+                                CreateLabExamRecord(newLab, referralID, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                        }
+                    }
+                }
+
+                var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Laboratory was not updated!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Laboratory is successfully updated!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        private void CreateLabExamRecord(string labtestID, string referralID, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        {
+            var labID = new IDgenerator(referralID);
+
+            LaboratoryExam labEx = new LaboratoryExam();
+            labEx.labID = labID.generateID.Substring(0, 15);
+            labEx.referralID = referralID;
+            labEx.labTestID = labtestID;
+            labEx.otherLabDesc = labtestID == "L0022" ? otherLab : null;
+            labEx.xrayDesc = labtestID == "L0006" ? xrayDesc : null;
+            labEx.ecgDesc = labtestID == "L0004" ? ecgDesc : null;
+            labEx.ultrasoundDesc = labtestID == "L0023" ? ultrasoundDesc : null;
+            dbMed.LaboratoryExams.Add(labEx);
+        }
+
+        [HttpPost]
+        public ActionResult saveLaboratory(string[] labtest, string referralID, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
                 {
@@ -232,30 +346,10 @@ namespace MediCon.Controllers
 
                     else {
                         //......  UPDATE DATA IN REFERRAL AND SAVE DATA IN LABORATORY EXAM TABLE   ---
-                        //......  GET RECORD FROM REFERRAL TABLE USING THE REFERRAL ID USED TO CREATE MRHREQUEST
-                    
-                            //var refID = new IDgenerator(referralID);
-
-                            //Referral Ref = new Referral();
-                            //Ref.referralID = refID.generateID.Substring(0, 15);
-                            //Ref.referredServiceID = service;
-                            //Ref.consultID = null;
-                            //Ref.MRDiagnosisID = currentMRDiagnosisID;
-                            //dbMed.Referrals.Add(Ref);
-
                             foreach (var lab in labtest)
                             {
-                                var labID = new IDgenerator(referralID);
-
-                                LaboratoryExam labEx = new LaboratoryExam();
-                                labEx.labID = labID.generateID.Substring(0, 15);
-                                labEx.referralID = referralID;
-                                labEx.labTestID = lab;
-                                labEx.otherLabDesc = lab == "L0022" ? otherLab : null;
-                                dbMed.LaboratoryExams.Add(labEx);
+                                CreateLabExamRecord(lab, referralID, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
                             }
-
-
                         //......  /UPDATE DATA IN REFERRAL AND SAVE DATA IN LABORATORY EXAM TABLE   ---
 
                         var affectedRow = dbMed.SaveChanges();
@@ -317,13 +411,275 @@ namespace MediCon.Controllers
 
         }
 
+        [HttpPost]
+        public ActionResult updatePrescription(string referralID, List<OutgoingItem> newListRx, string consultID)
+        {
+            try
+            {
+                var medRx = dbMed.MedicalPrescriptions.SingleOrDefault(a => a.referralID == referralID);
+                var existingRx = medRx == null ? null : dbMed.OutgoingItems.Where(a => a.rxID == medRx.rxID).ToArray();
+
+                // If the new list of RX are empty, remove existing/old MedicalPrescription and OutgoingItems
+                if (newListRx == null)
+                {
+                    dbMed.MedicalPrescriptions.Remove(medRx);
+                    dbMed.OutgoingItems.RemoveRange(existingRx);
+                }
+
+                else
+                {
+                    var rxID = new IDgenerator(consultID);
+
+                    //........  UPDATE MEDICAL PRESCRIPTION
+                    if (medRx != null)
+                    {
+                        medRx.personnelID = Session["personnelID"].ToString();
+                        medRx.dateTimeRx = DateTime.Now;
+                        dbMed.Entry(medRx).State = EntityState.Modified;
+                    }
+
+                    else
+                    {
+                        MedicalPrescription mp = new MedicalPrescription();
+                        mp.rxID = rxID.generateID.Substring(0, 15);
+                        mp.serviceID = "SERVICE004";
+                        mp.consultID = consultID;
+                        mp.referralID = referralID;
+                        mp.personnelID = Session["personnelID"].ToString();
+                        mp.dateTimeRx = DateTime.Now;
+                        dbMed.MedicalPrescriptions.Add(mp);
+                    }
+                    //........  /UPDATE MEDICAL PRESCRIPTION
+
+                    //........  UPDATE OUTGOING
+                    if (existingRx != null && existingRx.Length > 0)
+                    {
+                        foreach (var existRec in existingRx)
+                        {
+                            var existCounter = new OutgoingItem();
+
+                            // Check if old medicine exist in the new medicine rx list
+                            if (newListRx != null)
+                                existCounter = Array.Find(newListRx.ToArray(), element => element.productCode == existRec.productCode);
+
+                            // If old medicine does not exist anymore in the new medicine rx list
+                            // then remove this medicine and its related data
+                            if (existCounter == null)
+                                dbMed.OutgoingItems.Remove(existRec);
+
+                            else
+                            {
+                                // only update the record that is not yet released
+                                if (existCounter.isRelease == false || existCounter.isRelease == null)
+                                {
+                                    existRec.qtyRx = existCounter.qtyRx;
+                                    existRec.dosage = existCounter.dosage;
+                                    existRec.perDay = existCounter.perDay;
+                                    existRec.noDay = existCounter.noDay;
+                                    dbMed.Entry(existRec).State = EntityState.Modified;
+                                }
+                            }
+                        }
+                    }
+
+                    if (newListRx != null)
+                    {
+                        foreach (var newRx in newListRx)
+                        {
+                            bool isExistNewRx = false;
+
+                            // Check if NEW medicine rx exist in the OLD medicine rx list
+                            if (existingRx != null)
+                                isExistNewRx = Array.Exists(existingRx, element => element.productCode == newRx.productCode);
+
+                            // If new medicine rx does not exist in the old medicine rx list
+                            // then Add this new medicine rx
+                            if (!isExistNewRx)
+                            {
+                                var outID = new IDgenerator(medRx == null ? rxID.generateID.Substring(0, 15) : medRx.rxID);
+                                newRx.outID = outID.generateID.Substring(0, 15);
+                                newRx.rxID = medRx == null ? rxID.generateID.Substring(0, 15) : medRx.rxID;
+                                dbMed.OutgoingItems.Add(newRx);
+                            }
+                        }
+                    }
+                    //........  /UPDATE OUTGOING
+                }
+
+                var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Medical Prescription is not updated!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Medical Prescription is successfully updated!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
         public ActionResult getRectalClientList(DateTime date)
         {
             try
             {
-                var client = dbMed.fn_getRectalClients(date).OrderByDescending(x => x.diagnoseDT).ToList();
+                var client = dbMed.fn_getRectalClients(date).OrderByDescending(x => x.diagnoseDT)
+                            .Select(a => new {
+                                mrhInfo = new {
+                                    a.requestID,
+                                    a.isDiagnoseDone,
+                                    a.diagnoseDT,
+                                    a.referralID,
+                                    a.referredServiceID,
+                                    a.consultID
+                                },
+                                personInfo = new
+                                {
+                                    a.birthDate,
+                                    a.brgyPermAddress,
+                                    a.citymunPermAddress,
+                                    a.contactNo,
+                                    a.EIC,
+                                    a.extName,
+                                    a.firstName,
+                                    a.fullNameLast,
+                                    a.idNO,
+                                    a.lastName,
+                                    a.middleName,
+                                    a.provincePermAddress,
+                                    a.qrCode,
+                                    a.sex,
+                                    a.shortDepartmentName
+                                },
+                                rectalInterview = new
+                                {
+                                    a.MRID,
+                                    a.requestID,
+                                    a.is1stDRE,
+                                    a.DREfrequency,
+                                    a.isProstateCancer,
+                                    a.isAnyCancer,
+                                    a.cancerName,
+                                    a.isMedication,
+                                    a.medicineName,
+                                    a.diNauubos,
+                                    a.kadalasUmihi,
+                                    a.patigiltiglNaIhi,
+                                    a.pagpigilNgIhi,
+                                    a.mahinangDaloy,
+                                    a.magpwersaNgIhi,
+                                    a.besesGumising,
+                                    a.sintomasNgIhi,
+                                    a.nadarama
+                                },
+                                rectalDiagnosis = new
+                                {
+                                    a.MRDiagnosisID,
+                                    a.PEfindings,
+                                    a.abdomen,
+                                    a.extGenita,
+                                    a.DREsize,
+                                    a.consistency,
+                                    a.texture,
+                                    a.mobility,
+                                    a.lowbackPain,
+                                    a.arthriticPain,
+                                    a.rectalFinding,
+                                    a.TRUS,
+                                    a.PSA,
+                                    a.transperrinealBiopsy,
+                                    a.transrectalBiopsy,
+                                    a.TRUSBiopsy,
+                                    a.Remarks
+                                },
+                                physician = new
+                                {
+                                    a.personnel_firstName,
+                                    a.personnel_midInit,
+                                    a.personnel_lastName,
+                                    a.personnel_extName,
+                                    a.diagPersonID
+                                }
+                            }).ToList();
 
                 return Json(client, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult getLabByReferralID(string ReferralID)
+        {
+             try
+            {
+                var labs = dbMed.Referrals.Join(dbMed.LaboratoryExams, r => r.referralID, le => le.referralID, (r, le) => new { r, le })
+                                         .Where(a => a.r.referralID == ReferralID)
+                                         .Select(b => new
+                                         {
+                                             b.r.referralID,
+                                             b.r.referredServiceID,
+                                             b.r.consultID,
+                                             b.le.labID,
+                                             b.le.labTestID,
+                                             b.le.otherLabDesc,
+                                             b.le.isTested,
+                                             b.le.isEncoded,
+                                             b.le.dateEncoded,
+                                             b.le.pathologist,
+                                             b.le.medtech,
+                                             b.le.personnelID,
+                                             b.le.dateTimeLog,
+                                             b.le.xrayDesc,
+                                             b.le.ultrasoundDesc,
+                                             b.le.ecgDesc
+                                         }).ToList();
+
+                return Json(labs, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult getRxByReferralID(string ReferralID)
+        {
+            try
+            {
+                var rx = dbMed.MedicalPrescriptions.Join(dbMed.OutgoingItems, mp => mp.rxID, oi => oi.rxID, (mp, oi) => new { mp, oi })
+                                                     .Join(dbMed.ProductLists, r1 => r1.oi.productCode, pl => pl.productCode, (r1, pl) => new { r1, pl })
+                                                     .Join(dbMed.Measurements, r2 => r2.pl.measurementID, m => m.measurementID, (r2, m) => new { r2, m })
+                                                     .Join(dbMed.ProductUnits, r3 => r3.r2.pl.unitID, pu => pu.unitID, (r3, pu) => new { r3, pu })
+                                                     .Where(a => a.r3.r2.r1.mp.referralID == ReferralID)
+                                                     .Select(b => new
+                                                     {
+                                                         b.r3.r2.r1.mp.rxID,
+                                                         b.r3.r2.r1.mp.serviceID,
+                                                         b.r3.r2.r1.mp.consultID,
+                                                         b.r3.r2.r1.mp.referralID,
+                                                         b.r3.r2.r1.mp.personnelID,
+                                                         b.r3.r2.r1.mp.dateTimeRx,
+                                                         b.r3.r2.r1.oi.outID,
+                                                         b.r3.r2.r1.oi.productCode,
+                                                         b.r3.r2.r1.oi.qtyRx,
+                                                         b.r3.r2.r1.oi.dosage,
+                                                         b.r3.r2.r1.oi.perDay,
+                                                         b.r3.r2.r1.oi.noDay,
+                                                         b.r3.r2.r1.oi.isRelease,
+                                                         b.r3.r2.r1.oi.qtyReleased,
+                                                         b.r3.r2.r1.oi.dateTimeReleased,
+                                                         b.r3.r2.r1.oi.userIDreleased,
+                                                         b.r3.r2.pl.productDesc,
+                                                         b.r3.r2.pl.measurementID,
+                                                         b.r3.r2.pl.unitID,
+                                                         b.r3.m.measurementDesc,
+                                                         b.pu.unitDesc
+                                                     }).ToList();
+
+                return Json(rx, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

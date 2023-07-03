@@ -30,7 +30,16 @@
         border: none;
         width: 100%;
     }
+
+    input#pusCells {
+        width: 55px;
+    }
+
+    .swal2-popup {
+        font-size: 1.3em !important;
+    }
 </style>
+
 <div ng-controller="LabResultCtrl">
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
@@ -59,21 +68,31 @@
                 <div class="col-lg-5 col-md-5">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title text-center">
-                            <label class="text-center">QR CODE INFORMATION</label>
+                            <label style="margin-right: 20px;">SEARCH BY: </label>
+                            <div class="radio radio-primary radio-inline">
+                                <input type="radio" id="radio_byQR" name="radio_byQR" value="byQR" ng-model="searchBy" ng-change="selectSearchBy(searchBy)" />
+                                <label for="radio_byQR"> <b>QR CODE</b> </label>
+                            </div>
+                            <div class="radio radio-danger radio-inline">
+                                <input type="radio" id="radio_byName" name="radio_byName" value="byName" ng-model="searchBy" ng-change="selectSearchBy(searchBy)" />
+                                <label for="radio_byName"> <b>NAME</b> </label>
+                            </div>
                         </div>
                         <div class="ibox-content">
-                            <div class="profile_img">
-                                <!-- Current avatar -->
-                                <video id="preview" class="img-responsive avatar-view" style="width: 100%; height: 100%;" />
-                            </div>
-                            <form name="qrSearchForm">
-                                <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
-                                    <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
-                                    </span>
+                            <div ng-show="searchBy == 'byQR'">
+                                <div class="profile_img">
+                                    <!-- Current avatar -->
+                                    <video id="preview" class="img-responsive avatar-view" style="width: 100%; height: 100%;" />
                                 </div>
-                            </form>
+                                <form name="qrSearchForm">
+                                    <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                        <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
                             <br />
 
                             <div class="text-center" ng-show="loader" style="margin-top: 10%;">
@@ -84,7 +103,8 @@
                                 <text><i>Please wait, we are getting your data...</i></text>
                             </div>
                             <div ng-show="!loader">
-                                <form id="QR_FORM" name="QR_FORM">
+                                <button class="btn btn-primary full-width" ng-show="showBackBtn" ng-click="showInfoForm = !showInfoForm; showBackBtn = !showBackBtn"><i class="fa fa-search"></i> Back to Search </button>
+                                <form id="QR_FORM" name="QR_FORM" ng-show="showInfoForm">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
@@ -147,6 +167,67 @@
                                         </div>
                                     </div>
                                 </form>
+
+                                <div ng-show="!showInfoForm">
+                                    <form id="INFO_FORM" name="INFO_FORM">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <button class="btn btn-primary full-width" ng-disabled="INFO_FORM.$invalid" ng-click="mainSearchByName(infoFormData)"><i class="fa fa-search"></i> Search Record </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <hr />
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 300px !important;">
+                                        <table class="table table-stripped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Last name</th>
+                                                    <th>First name</th>
+                                                    <th>Middle name</th>
+                                                    <th>Sex</th>
+                                                    <th>Birthday</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="tableLoader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="searchResultList.length == 0 && tableLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="person in searchResultList | orderBy: 'firstName'">
+                                                    <td>{{person.lastName}}</td>
+                                                    <td>{{person.firstName}}</td>
+                                                    <td>{{person.middleName}}</td>
+                                                    <td>{{person.sex == 'MALE' ? 'M' : person.sex == 'FEMALE' ? 'F' : ''}}</td>
+                                                    <td>{{person.birthDate}}</td>
+                                                    <td class="text-center">
+                                                        <button class="btn btn-sm btn-primary" ng-click="selectPerson(person)">Select</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -283,7 +364,7 @@
                                         <td>
                                             <div class="form-group " style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" class="form-control form-control-sm" id="fbs" name="fbs" placeholder="Enter result" ng-model="blood.fbs" ng-required="tempLabTestID == 'L0005'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" class="form-control form-control-sm" id="fbs" name="fbs" placeholder="Enter result" ng-model="blood.fbs" ng-required="tempLabTestID == 'L0005'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
                                             </div>
@@ -329,7 +410,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="3.6" max="5.7" class="form-control form-control-sm" id="cholesterol" name="cholesterol" placeholder="Enter result" ng-model="blood.cholesterol" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="3.6" max="5.7" class="form-control form-control-sm" id="cholesterol" name="cholesterol" placeholder="Enter result" ng-model="blood.cholesterol" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
                                             </div>
@@ -343,7 +424,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="0.7" max="2.26" class="form-control form-control-sm" id="triglycerides" name="triglycerides" placeholder="Enter result" ng-model="blood.triglycerides" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="0.7" max="2.26" class="form-control form-control-sm" id="triglycerides" name="triglycerides" placeholder="Enter result" ng-model="blood.triglycerides" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
                                             </div>
@@ -357,7 +438,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="0.79" max="1.94" class="form-control form-control-sm" id="hdl" name="hdl" placeholder="Enter result" ng-model="blood.hdl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="0.79" max="2" class="form-control form-control-sm" id="hdl" name="hdl" placeholder="Enter result" ng-model="blood.hdl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
                                             </div>
@@ -371,7 +452,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="0.78" max="2.9" class="form-control form-control-sm" id="ldl" name="ldl" placeholder="Enter result" ng-model="blood.ldl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="0.78" max="3" class="form-control form-control-sm" id="ldl" name="ldl" placeholder="Enter result" ng-model="blood.ldl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
                                             </div>
@@ -385,7 +466,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="0.10" max="1.70" class="form-control form-control-sm" id="vldl" name="vldl" placeholder="Enter result" ng-model="blood.vldl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="0.10" max="2" class="form-control form-control-sm" id="vldl" name="vldl" placeholder="Enter result" ng-model="blood.vldl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
                                             </div>
@@ -446,7 +527,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="3.50" max="5.30" class="form-control form-control-sm" id="potassium" name="potassium" placeholder="Enter result" ng-model="blood.potassium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="3.50" max="5.30" class="form-control form-control-sm" id="potassium" name="potassium" placeholder="Enter result" ng-model="blood.potassium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
 
@@ -461,7 +542,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="135.0" max="148.0" class="form-control form-control-sm" id="sodium" name="sodium" placeholder="Enter result" ng-model="blood.sodium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="135.0" max="148.0" class="form-control form-control-sm" id="sodium" name="sodium" placeholder="Enter result" ng-model="blood.sodium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
 
@@ -476,7 +557,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="98.0" max="107.0" class="form-control form-control-sm" id="chloride" name="chloride" placeholder="Enter result" ng-model="blood.chloride" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="98.0" max="107.0" class="form-control form-control-sm" id="chloride" name="chloride" placeholder="Enter result" ng-model="blood.chloride" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
 
@@ -491,7 +572,7 @@
                                         <td>
                                             <div class="form-group" style="margin:0px">
                                                 <div class="input-group">
-                                                    <input type="number" min="1.10" max="1.30" class="form-control form-control-sm" id="calcium" name="calcium" placeholder="Enter result" ng-model="blood.calcium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
+                                                    <input type="number" step="0.01" min="1.10" max="1.30" class="form-control form-control-sm" id="calcium" name="calcium" placeholder="Enter result" ng-model="blood.calcium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
                                                     <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
                                                 </div>
 
@@ -543,6 +624,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row" ng-if="isEditBloodChem=='1' && isShowResult">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-control" style="border:none" for="bloodChemRemarks">REMARKS</label>
+                                        <input type="text" class="form-control form-control-sm" id="bloodChemRemarks" name="bloodChemRemarks" ng-model="bloodChemRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
                         </div>
                         <div class="modal-footer">
                             <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
@@ -666,7 +756,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="input-group">
                                                                                 <input type="text" id="pusCells" name="pusCells" ng-model="uri.pusCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -677,7 +767,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="input-group">
                                                                                 <input type="text" id="rbcCells" name="rbcCells" ng-model="uri.rbcCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -688,7 +778,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="input-group">
                                                                                 <input type="text" id="epithelialCells" name="epithelialCells" ng-model="uri.epithelialCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -699,7 +789,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="input-group">
                                                                                 <input type="text" id="renalCells" name="renalCells" ng-model="uri.renalCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -710,7 +800,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="input-group">
                                                                                 <input type="text" id="mucusThread" name="mucusThread" ng-model="uri.mucusThread" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -721,7 +811,7 @@
                                                                         <div class="form-group ">
                                                                             <div class="input-group">
                                                                                 <input type="text" id="bacteria" name="bacteria" ng-model="uri.bacteria" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
+                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
                                                                             </div>
                                                                         </div>
                                                                     </td>
@@ -927,14 +1017,14 @@
                                     </div>
                                 </div>
                             </div>
-                                <br />
-                            </div>
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" ng-if="isEditUrinalysis=='0'">Save</button>
-                                    <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                                    <button type="submit" class="btn btn-primary" ng-if="isEditUrinalysis=='1' && isShowResult"> Save Update </button>
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
+                            <br />
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-if="isEditUrinalysis=='0'">Save</button>
+                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
+                            <button type="submit" class="btn btn-primary" ng-if="isEditUrinalysis=='1' && isShowResult"> Save Update </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -1238,9 +1328,17 @@
                                 <label class="form-control" style="border:none" for="ecgFindings">Findings:</label>
                                 <textarea class="form-control form-control-sm" rows="8" id="ecgFindings" name="ecgFindings" ng-model="ecg.findings" ng-disabled="!isShowResult" required></textarea>
                             </div>
+                            <div class="row" ng-if="isEditECG=='1' && isShowResult">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="control-label" style="border:none" for="editECG">REMARKS</label>
+                                        <input type="text" class="form-control form-control-sm" id="editECG" name="editECG" ng-model="ecgEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" ng-click="!ECGForm.$invalid ? saveECG(ecg, false):''" class="btn btn-primary" ng-if="isEditECG=='0'">Save</button>
+                            <button type="submit" class="btn btn-primary" ng-if="isEditECG=='0'">Save</button>
                             <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
                             <button type="submit" ng-click="!ECGForm.$invalid ? saveECG(ecg, true):''" class="btn btn-primary" ng-if="isEditECG=='1' && isShowResult">Save Update</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -1259,26 +1357,26 @@
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title text-center">FECALYSIS</h4>
                     </div>
-                    <form role="form" name="FecalsysiForm" id="FecalsysiForm">
+                    <form role="form" name="FecalsysisForm" id="FecalsysisForm">
                         <div class="modal-body" style="height: 100%;">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <label class="control-label">Color</label>
                                     <div class="form-group text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="radio_color_lb" value="LB" name="radio_color" ng-model="fecalysis.color" ng-disabled="isEditFecalysis" required />
+                                            <input type="radio" id="radio_color_lb" value="LB" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" required />
                                             <label for="radio_color_lb"> Light Brown </label>
                                         </div>
                                         <div class="radio radio-success radio-inline">
-                                            <input type="radio" id="radio_color_b" value="B" name="radio_color" ng-model="fecalysis.color" ng-disabled="isEditFecalysis" />
+                                            <input type="radio" id="radio_color_b" value="B" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" />
                                             <label for="radio_color_b"> Brown </label>
                                         </div>
                                         <div class="radio radio-warning radio-inline">
-                                            <input type="radio" id="radio_color_db" value="DB" name="radio_color" ng-model="fecalysis.color" ng-disabled="isEditFecalysis" />
+                                            <input type="radio" id="radio_color_db" value="DB" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" />
                                             <label for="radio_color_db"> Dark Brown </label>
                                         </div>
                                         <div class="radio radio-danger radio-inline">
-                                            <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" ng-disabled="isEditFecalysis" ng-change="fecalysis.otherColorDesc = ''" />
+                                            <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" ng-change="fecalysis.otherColorDesc = ''" />
                                             <label for="radio_color_ot"> Others </label>
                                         </div>
                                     </div>
@@ -1288,7 +1386,7 @@
                                         <label class="form-control" style="border:none" for="otherColor">Others:</label>
                                     </div>
                                     <div class="col-md-10">
-                                        <input class="form-control form-control-sm" id="otherColor" name="otherColor" ng-model="fecalysis.otherColorDesc" ng-disabled="isEditFecalysis" ng-required="fecalysis.color == 'OT'" />
+                                        <input class="form-control form-control-sm" id="otherColor" name="otherColor" ng-model="fecalysis.otherColorDesc" ng-disabled="!isShowResult" ng-required="fecalysis.color == 'OT'" />
                                     </div>
                                 </div>
                             </div>
@@ -1297,19 +1395,19 @@
                                     <label class="control-label">Consistency</label>
                                     <div class="form-group text-center">
                                         <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="radio_consistency_f" value="F" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="isEditFecalysis" required />
+                                            <input type="radio" id="radio_consistency_f" value="F" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" required />
                                             <label for="radio_consistency_f"> Formed </label>
                                         </div>
                                         <div class="radio radio-success radio-inline">
-                                            <input type="radio" id="radio_consistency_s" value="S" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="isEditFecalysis" />
+                                            <input type="radio" id="radio_consistency_s" value="S" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" />
                                             <label for="radio_consistency_s"> Soft </label>
                                         </div>
                                         <div class="radio radio-warning radio-inline">
-                                            <input type="radio" id="radio_consistency_w" value="W" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="isEditFecalysis" />
+                                            <input type="radio" id="radio_consistency_w" value="W" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" />
                                             <label for="radio_consistency_w"> Watery </label>
                                         </div>
                                         <div class="radio radio-danger radio-inline">
-                                            <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="isEditFecalysis" ng-change="fecalysis.otherConDesc = ''" />
+                                            <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" ng-change="fecalysis.otherConDesc = ''" />
                                             <label for="radio_consistency_ot"> Others </label>
                                         </div>
                                     </div>
@@ -1319,7 +1417,7 @@
                                         <label class="form-control" style="border:none" for="otherColorCons">Others:</label>
                                     </div>
                                     <div class="col-md-10">
-                                        <input class="form-control form-control-sm" id="otherColorCons" name="otherColorCons" ng-model="fecalysis.otherConDesc" ng-disabled="isEditFecalysis" ng-required="fecalysis.consistency == 'OT'" />
+                                        <input class="form-control form-control-sm" id="otherColorCons" name="otherColorCons" ng-model="fecalysis.otherConDesc" ng-disabled="!isShowResult" ng-required="fecalysis.consistency == 'OT'" />
                                     </div>
                                 </div>
                             </div>
@@ -1332,10 +1430,10 @@
                                     <label class="control-label" style="border:none" for="PUS">PUS</label>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="PUSfrom" name="PUSfrom" ng-model="fecalysis.pusFrom" placeholder="From" required ng-disabled="isEditFecalysis">
+                                            <input type="number" min="0" class="form-control form-control-sm" id="PUSfrom" name="PUSfrom" ng-model="fecalysis.pusFrom" placeholder="From" required ng-disabled="!isShowResult">
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="PUSto" name="PUSto" ng-model="fecalysis.pusTo" placeholder="To" required ng-disabled="isEditFecalysis">
+                                            <input type="number" min="0" class="form-control form-control-sm" id="PUSto" name="PUSto" ng-model="fecalysis.pusTo" placeholder="To" required ng-disabled="!isShowResult">
                                         </div>
                                     </div>
                                 </div>
@@ -1343,10 +1441,10 @@
                                     <label class="control-label" style="border:none" for="RBC">RBC</label>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="RBCfrom" name="RBCfrom" ng-model="fecalysis.rbcFrom" placeholder="From" required ng-disabled="isEditFecalysis">
+                                            <input type="number" min="0" class="form-control form-control-sm" id="RBCfrom" name="RBCfrom" ng-model="fecalysis.rbcFrom" placeholder="From" required ng-disabled="!isShowResult">
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="RBCto" name="RBCto" ng-model="fecalysis.rbcTo" placeholder="To" required ng-disabled="isEditFecalysis">
+                                            <input type="number" min="0" class="form-control form-control-sm" id="RBCto" name="RBCto" ng-model="fecalysis.rbcTo" placeholder="To" required ng-disabled="!isShowResult">
                                         </div>
                                     </div>
                                 </div>
@@ -1355,25 +1453,34 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <label class="control-label" style="border:none" for="FatGlob">Fat Globules</label>
-                                    <input type="text" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" required ng-disabled="isEditFecalysis">
+                                    <input type="text" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" required ng-disabled="!isShowResult">
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="control-label" style="border:none" for="Bacteria">Bacteria</label>
-                                    <input type="text" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" required ng-disabled="isEditFecalysis">
+                                    <input type="text" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" required ng-disabled="!isShowResult">
                                 </div>
                             </div>
                             <br />
                             <div class="row">
                                 <div class="col-sm-12">
                                     <label class="control-label" style="border:none" for="otherFindings">Findings:</label>
-                                    <textarea class="form-control form-control-sm" rows="4" id="otherFindings" name="otherFindings" ng-model="fecalysis.otherFindings" ng-disabled="isEditFecalysis" required></textarea>
+                                    <textarea class="form-control form-control-sm" rows="4" id="otherFindings" name="otherFindings" ng-model="fecalysis.otherFindings" ng-disabled="!isShowResult" required></textarea>
                                 </div>
                             </div>
+                            <div class="row" ng-if="isEditFecalysis=='1' && isShowResult">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="form-control" style="border:none" for="fecaEditRemarks">REMARKS</label>
+                                        <input type="text" class="form-control form-control-sm" id="fecaEditRemarks" name="fecaEditRemarks" ng-model="fecaEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" ng-click="!FecalsysiForm.$invalid ? saveFecalysis(fecalysis, false):''" class="btn btn-primary" ng-if="isEditFecalysis=='0'">Save</button>
+                            <button type="submit" class="btn btn-primary" ng-if="isEditFecalysis=='0'">Save</button>
                             <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!FecalsysiForm.$invalid ? saveFecalysis(fecalysis, true):''" class="btn btn-primary" ng-if="isEditFecalysis=='1' && isShowResult">Save Update</button>
+                            <button type="submit"  class="btn btn-primary" ng-if="isEditFecalysis=='1' && isShowResult">Save Update</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </form>

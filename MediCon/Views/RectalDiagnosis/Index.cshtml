@@ -65,6 +65,7 @@
     <!-- /HEADER -->
 
     <div class="wrapper wrapper-content ">
+        <!-- MAIN INFORMATION PANEL -->
         <div class="animated fadeInRight ecommerce" ng-show="!showClientList && !diagnosePanel">
             <div class="row">
                 <!-- QR CODE INFO FORM -->
@@ -166,6 +167,7 @@
                 </div>
                 <!-- /QR CODE INFO FORM -->
 
+                <!-- MAIN INFORMATION PANEL (DIGITAL RECTAL EXAM, VITAL SIGNS INFO, RECTAL DIAGNOSIS HISTORY, RX HISTORY, LAB HISTORY) -->
                 <div class="col-lg-7 col-md-7">
                     <div class="row">
                         <div class="col-lg-6 col-md-6">
@@ -441,11 +443,13 @@
 
                         </div>
                     </div>
-
                 </div>
+                <!-- MAIN INFORMATION PANEL (DIGITAL RECTAL EXAM, VITAL SIGNS INFO, RECTAL DIAGNOSIS HISTORY, RX HISTORY, LAB HISTORY) -->
             </div>
         </div>
+        <!-- /MAIN INFORMATION PANEL -->
 
+        <!-- RECTAL DIAGNOSIS PANEL -->
         <div class="animated fadeInRight ecommerce" ng-show="diagnosePanel && !showClientList">
             <div class="ibox float-e-margins">
                 <div class="ibox-title text-center">
@@ -466,7 +470,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -481,6 +484,7 @@
                         <div id="tab-diag" class="tab-pane active">
                             <div class="panel-body">
                                 <div class="row">
+                                    <!-- INTERVIEW QUESTIONS -->
                                     <div class="col-lg-6 col-md-6">
                                         <div class="ibox-content" style="background-color: #f4f4f4 !important; border-radius: 5px;">
                                             <div class="form-group">
@@ -590,6 +594,9 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- /INTERVIEW QUESTIONS -->
+
+                                    <!-- DIAGNOSIS FORM -->
                                     <div class="col-lg-6 col-md-6">
                                         <div class="ibox-content" style="background-color: #f4f4f4 !important; border-radius: 5px;">
                                             <label>Pertinent P.E. findings:</label>
@@ -597,34 +604,34 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Abdomen:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="abdomen" name="abdomen" ng-model="rectalDiagnosis.abdomen" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="abdomen" name="abdomen" ng-model="rectalDiagnosis.abdomen" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">External Genitalia:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="extGenita" name="extGenita" ng-model="rectalDiagnosis.extGenita" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="extGenita" name="extGenita" ng-model="rectalDiagnosis.extGenita" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">DRE Size:</label>
                                                     <div class="col-sm-8">
-                                                        <div class="input-group m-b"><input type="number" id="DREsize" name="DREsize" ng-model="rectalDiagnosis.DREsize" placeholder="00.00" class="form-control text-center" /> <span class="input-group-addon">gms.</span></div>
+                                                        <div class="input-group m-b"><input type="number" id="DREsize" name="DREsize" ng-model="rectalDiagnosis.DREsize" placeholder="00.00" class="form-control text-center" ng-disabled="isViewing" /> <span class="input-group-addon">gms.</span></div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Consistency:</label>
                                                     <div class="col-sm-8 text-center">
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Firm" value=0 name="radio_consistency" ng-model="rectalDiagnosis.consistency" required />
+                                                            <input type="radio" id="Firm" value=0 name="radio_consistency" ng-model="rectalDiagnosis.consistency" required ng-disabled="isViewing" />
                                                             <label for="Firm"> Firm </label>
                                                         </div>
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Soft" value=1 name="radio_consistency" ng-model="rectalDiagnosis.consistency" />
+                                                            <input type="radio" id="Soft" value=1 name="radio_consistency" ng-model="rectalDiagnosis.consistency" ng-disabled="isViewing" />
                                                             <label for="Soft"> Soft </label>
                                                         </div>
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Hard" value=2 name="radio_consistency" ng-model="rectalDiagnosis.consistency" />
+                                                            <input type="radio" id="Hard" value=2 name="radio_consistency" ng-model="rectalDiagnosis.consistency" ng-disabled="isViewing" />
                                                             <label for="Hard"> Hard </label>
                                                         </div>
                                                     </div>
@@ -633,15 +640,15 @@
                                                     <label class="col-sm-4 control-label">Texture:</label>
                                                     <div class="col-sm-8 text-center">
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Modular" value=0 name="radio_texture" ng-model="rectalDiagnosis.texture" required />
+                                                            <input type="radio" id="Modular" value=0 name="radio_texture" ng-model="rectalDiagnosis.texture" required ng-disabled="isViewing" />
                                                             <label for="Modular"> Modular </label>
                                                         </div>
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Smooth" value=1 name="radio_texture" ng-model="rectalDiagnosis.texture" />
+                                                            <input type="radio" id="Smooth" value=1 name="radio_texture" ng-model="rectalDiagnosis.texture" ng-disabled="isViewing" />
                                                             <label for="Smooth"> Smooth </label>
                                                         </div>
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Indurated" value=2 name="radio_texture" ng-model="rectalDiagnosis.texture" />
+                                                            <input type="radio" id="Indurated" value=2 name="radio_texture" ng-model="rectalDiagnosis.texture" ng-disabled="isViewing" />
                                                             <label for="Indurated"> Indurated </label>
                                                         </div>
                                                     </div>
@@ -650,11 +657,11 @@
                                                     <label class="col-sm-4 control-label">Mobility:</label>
                                                     <div class="col-sm-8 text-center">
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Movable" value=0 name="radio_mobility" ng-model="rectalDiagnosis.mobility" required />
+                                                            <input type="radio" id="Movable" value=0 name="radio_mobility" ng-model="rectalDiagnosis.mobility" required ng-disabled="isViewing" />
                                                             <label for="Movable"> Movable </label>
                                                         </div>
                                                         <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="Non-movable" value=1 name="radio_mobility" ng-model="rectalDiagnosis.mobility" />
+                                                            <input type="radio" id="Non-movable" value=1 name="radio_mobility" ng-model="rectalDiagnosis.mobility" ng-disabled="isViewing" />
                                                             <label for="Non-movable"> Non-movable </label>
                                                         </div>
                                                     </div>
@@ -664,70 +671,82 @@
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Lowback Pain:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="lowbackPain" name="lowbackPain" ng-model="rectalDiagnosis.lowbackPain" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="lowbackPain" name="lowbackPain" ng-model="rectalDiagnosis.lowbackPain" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Arthritic Pain:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="arthriticPain" name="arthriticPain" ng-model="rectalDiagnosis.arthriticPain" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="arthriticPain" name="arthriticPain" ng-model="rectalDiagnosis.arthriticPain" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Rectal Findings:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="rectalFinding" name="rectalFinding" ng-model="rectalDiagnosis.rectalFinding" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="rectalFinding" name="rectalFinding" ng-model="rectalDiagnosis.rectalFinding" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">Transrectal Ultrasonography:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="TRUS" name="TRUS" ng-model="rectalDiagnosis.TRUS" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="TRUS" name="TRUS" ng-model="rectalDiagnosis.TRUS" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">PSA Biopsy:</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="PSA" name="PSA" ng-model="rectalDiagnosis.PSA" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="PSA" name="PSA" ng-model="rectalDiagnosis.PSA" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">a) Transperrineal needle biopsy of prostate</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="transperrinealBiopsy" name="transperrinealBiopsy" ng-model="rectalDiagnosis.transperrinealBiopsy" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="transperrinealBiopsy" name="transperrinealBiopsy" ng-model="rectalDiagnosis.transperrinealBiopsy" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">b) Transrectal digital guided biopsy of the prostate</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="transrectalBiopsy" name="transrectalBiopsy" ng-model="rectalDiagnosis.transrectalBiopsy" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="transrectalBiopsy" name="transrectalBiopsy" ng-model="rectalDiagnosis.transrectalBiopsy" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">c) TRUS guided needle biopsy of the prostate</label>
                                                     <div class="col-sm-8">
-                                                        <input type="text" id="TRUSBiopsy" name="TRUSBiopsy" ng-model="rectalDiagnosis.TRUSBiopsy" placeholder="Findings..." class="form-control text-center" />
+                                                        <input type="text" id="TRUSBiopsy" name="TRUSBiopsy" ng-model="rectalDiagnosis.TRUSBiopsy" placeholder="Findings..." class="form-control text-center" ng-disabled="isViewing" />
                                                     </div>
                                                 </div>
                                                 <hr />
                                                 <div class="form-group">
                                                     <label class="col-sm-4 control-label">REMARKS</label>
                                                     <div class="col-sm-8">
-                                                        <textarea id="Remarks" name="Remarks" ng-model="rectalDiagnosis.Remarks" placeholder="Remarks..." rows="3" cols="50" style="resize: none;" class="form-control text-center"></textarea>
+                                                        <textarea id="Remarks" name="Remarks" ng-model="rectalDiagnosis.Remarks" placeholder="Remarks..." rows="3" cols="50" style="resize: none;" class="form-control text-center" ng-disabled="isViewing"></textarea>
                                                     </div>
                                                 </div>
                                                 <hr />
                                                 <div class="form-group">
                                                     <div class="col-sm-12">
-                                                        <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!rectalDiagnosisForm.$invalid ? saveDiagnosis(rectalDiagnosis):''">Save Diagnosis</button>
+                                                        <div ng-show="!isEditting && !isViewing">
+                                                            <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!rectalDiagnosisForm.$invalid ? saveDiagnosis(rectalDiagnosis):''">Save Diagnosis</button>
+                                                        </div>
+                                                        <div ng-show="!isEditting && isViewing">
+                                                            <button class="btn btn-success pull-right" type="button" style="margin-right: 3px;" ng-click="isEditting = true; isViewing = false">Edit Diagnosis</button>
+                                                        </div>
+                                                        <div ng-show="isEditting && !isViewing">
+                                                            <button class="btn btn-danger pull-right" type="button" ng-click="isEditting = false; isViewing = true">Cancel</button>
+                                                            <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!rectalDiagnosisForm.$invalid ? updateDiagnosis(rectalDiagnosis):''">Update Diagnosis</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
+                                    <!-- /DIAGNOSIS FORM -->
                                 </div>
                             </div>
                         </div>
+
+                        <!-- LABORATORY FORM -->
                         <div id="tab-lab" class="tab-pane">
                             <div class="panel-body">
                                 <form name="rectalLaboratory">
@@ -735,88 +754,143 @@
                                         <div class="col-lg-12">
                                             <div class="col-lg-3 col-md-3">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0002" value="L0002" ng-model="labtest.L0002">
+                                                    <input type="checkbox" id="L0002" value="L0002" ng-model="labtest.L0002" ng-disabled="isViewingLab || labIsEncoded.L0002isEncoded">
                                                     <label for="L0002"> CBC </label>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0001" value="L0001" ng-model="labtest.L0001">
+                                                    <input type="checkbox" id="L0001" value="L0001" ng-model="labtest.L0001" ng-disabled="isViewingLab || labIsEncoded.L0001isEncoded">
                                                     <label for="L0001"> Urinalysis </label>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0003" value="L0003" ng-model="labtest.L0003">
+                                                    <input type="checkbox" id="L0003" value="L0003" ng-model="labtest.L0003" ng-disabled="isViewingLab || labIsEncoded.L0003isEncoded">
                                                     <label for="L0003"> Fecalysis </label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-3">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0005" value="L0005" ng-model="labtest.L0005">
+                                                    <input type="checkbox" id="L0005" value="L0005" ng-model="labtest.L0005" ng-disabled="isViewingLab || labIsEncoded.L0005isEncoded">
                                                     <label for="L0005"> FBS </label>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0009" value="L0009" ng-model="labtest.L0009">
+                                                    <input type="checkbox" id="L0009" value="L0009" ng-model="labtest.L0009" ng-disabled="isViewingLab || labIsEncoded.L0009isEncoded">
                                                     <label for="L0009"> Creatinine </label>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="LTG002" value="LTG002" ng-model="labtest.LTG002">
-                                                    <label for="LTG002"> Lipid Profile </label>
+                                                    <input type="checkbox" id="L0007" value="L0007" ng-model="labtest.L0007" ng-disabled="isViewingLab || labIsEncoded.L0007isEncoded">
+                                                    <label for="L0007"> Lipid Profile </label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-3">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0010" value="L0010" ng-model="labtest.L0010">
+                                                    <input type="checkbox" id="L0010" value="L0010" ng-model="labtest.L0010" ng-disabled="isViewingLab || labIsEncoded.L0010isEncoded">
                                                     <label for="L0010"> Uric Acid </label>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0011" value="L0011" ng-model="labtest.L0011">
+                                                    <input type="checkbox" id="L0011" value="L0011" ng-model="labtest.L0011" ng-disabled="isViewingLab || labIsEncoded.L0011isEncoded">
                                                     <label for="L0011"> SGPT </label>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0012" value="L0012" ng-model="labtest.L0012">
+                                                    <input type="checkbox" id="L0012" value="L0012" ng-model="labtest.L0012" ng-disabled="isViewingLab || labIsEncoded.L0012isEncoded">
                                                     <label for="L0012"> SGOT </label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-3 col-md-3">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="LTG003" value="LTG003" ng-model="labtest.LTG003">
-                                                    <label for="LTG003"> Serum Electrolytes </label>
+                                                    <input type="checkbox" id="L0008" value="L0008" ng-model="labtest.L0008" ng-disabled="isViewingLab || labIsEncoded.L0008isEncoded">
+                                                    <label for="L0008"> Serum Electrolytes </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12">
+                                                <hr style="margin: 7px 0px 15px 0px;" />
+                                            </div>
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4">
+                                                        <div class="checkbox checkbox-danger">
+                                                            <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006" ng-change="labtest.L0006 == false ? xrayDesc = '':''" ng-disabled="isViewingLab || labIsEncoded.L0006isEncoded">
+                                                            <label for="L0006"> X-ray </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8">
+                                                        <div class="form-group">
+                                                            <input type="text" id="xrayDesc" name="xrayDesc" ng-model="xrayDesc" ng-disabled="labtest.L0006 == false || labtest.L0006 == undefined || isViewingLab || labIsEncoded.L0006isEncoded" placeholder="Identify other x-ray here..." class="form-control" ng-required="labtest.L0006" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4">
+                                                        <div class="checkbox checkbox-danger">
+                                                            <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004" ng-change="labtest.L0004 == false ? ecgDesc = '':''" ng-disabled="isViewingLab || labIsEncoded.L0004isEncoded">
+                                                            <label for="L0004"> ECG </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8">
+                                                        <div class="form-group">
+                                                            <input type="text" id="ecgDesc" name="ecgDesc" ng-model="ecgDesc" ng-disabled="labtest.L0004 == false || labtest.L0004 == undefined || isViewingLab || labIsEncoded.L0004isEncoded" placeholder="Identify other ECG here..." class="form-control" ng-required="labtest.L0004" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6">
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-md-4">
+                                                        <div class="checkbox checkbox-danger">
+                                                            <input type="checkbox" id="L0023" value="L0023" ng-model="labtest.L0023" ng-change="labtest.L0023 == false ? ultrasoundDesc = '':''" ng-disabled="isViewingLab || labIsEncoded.L0023isEncoded">
+                                                            <label for="L0023"> Ultrasound </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8">
+                                                        <div class="form-group">
+                                                            <input type="text" id="ultrasoundDesc" name="ultrasoundDesc" ng-model="ultrasoundDesc" ng-disabled="labtest.L0023 == false || labtest.L0023 == undefined || isViewingLab || labIsEncoded.L0023isEncoded" placeholder="Identify other Ultrasound here..." class="form-control" ng-required="labtest.L0023" />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006">
-                                                    <label for="L0006"> Chest X-ray </label>
-                                                </div>
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004">
-                                                    <label for="L0004"> ECG-12L </label>
+                                                    <input type="checkbox" id="L0024" value="L0024" ng-model="labtest.L0024" ng-disabled="isViewingLab || labIsEncoded.L0024isEncoded">
+                                                    <label for="L0024"> 2D Echocardiography </label>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <hr />
+                                    <br />
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="col-lg-2 col-md-2">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="L0022" value="OtherLab" ng-model="labtest.L0022" ng-change="labtest.L0022 == false ? labtest.otherLabDesc = '':''">
+                                                    <input type="checkbox" id="L0022" value="OtherLab" ng-model="labtest.L0022" ng-change="labtest.L0022 == false ? otherLabDesc = '':''" ng-disabled="isViewingLab || labIsEncoded.L0024isEncoded">
                                                     <label for="L0022"> Other Laboratory </label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-10 col-md-10">
                                                 <div class="form-group">
-                                                    <input type="text" id="otherLabDesc" name="otherLabDesc" ng-model="otherLabDesc" ng-disabled="labtest.L0022 == false || labtest.L0022 == undefined" placeholder="Identify other laboratory here..." class="form-control" ng-required="labtest.L0022" />
+                                                    <input type="text" id="otherLabDesc" name="otherLabDesc" ng-model="otherLabDesc" ng-disabled="labtest.L0022 == false || labtest.L0022 == undefined || isViewingLab || labIsEncoded.L0024isEncoded" placeholder="Identify other laboratory here..." class="form-control" ng-required="labtest.L0022" />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">
-                                        <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!rectalLaboratory.$invalid ? saveLaboratory(labtest, otherLabDesc):''">Save Laboratory</button>
+                                        <div ng-show="!isEdittingLab && !isViewingLab">
+                                            <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!rectalLaboratory.$invalid ? saveLaboratory(labtest, otherLabDesc, xrayDesc, ecgDesc, ultrasoundDesc):''">Save Laboratory</button>
+                                        </div>
+                                    
+                                        <div ng-show="!isEdittingLab && isViewingLab">
+                                            <button class="btn btn-success pull-right" type="button" style="margin-right: 3px;" ng-click="isEdittingLab = true; isViewingLab = false">Edit Laboratory</button>
+                                        </div>
+                                        <div ng-show="isEdittingLab && !isViewingLab">
+                                            <button class="btn btn-danger pull-right" type="button" ng-click="isEdittingLab = false; isViewingLab = true">Cancel</button>
+                                            <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="!rectalLaboratory.$invalid ? updateLaboratory(labtest, otherLabDesc, xrayDesc, ecgDesc, ultrasoundDesc):''">Update Laboratory</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
                         </div>
+                        <!-- /LABORATORY FORM -->
+
+                        <!-- PRESCRIPTION FORM -->
                         <div id="tab-med" class="tab-pane">
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-lg-4 col-md-4">
+                                    <div class="col-lg-4 col-md-4" ng-show="!isViewingRx">
                                         <div class="ibox-content" style="background-color: #f4f4f4 !important; border-radius: 5px;">
                                             <div class="col-lg-12 text-center">
                                                 <label>DRUGS & MEDICINES</label>
@@ -878,7 +952,7 @@
                                             </form>
                                         </div>
                                     </div>
-                                    <div class="col-lg-8 col-md-8">
+                                    <div ng-class="!isViewingRx ? 'col-lg-8 col-md-8':'col-lg-12 col-md-12'">
                                         <div class="ibox-content" style="background-color: #f4f4f4 !important; border-radius: 5px;">
                                             <div class="row">
 
@@ -898,7 +972,7 @@
                                                                     <th>Dosage</th>
                                                                     <th># Days</th>
                                                                     <th>Qty</th>
-                                                                    <th class="text-right">Action</th>
+                                                                    <th class="text-right" ng-if="!isViewingRx">Action</th>
 
                                                                 </tr>
                                                             </thead>
@@ -913,16 +987,26 @@
                                                                     </td>
                                                                     <td>{{item.noDay == 'maintenance' ? 'as Maintenance':item.noDay == 'needed' ? 'as Needed':item.noDay == 'single' ? 'Single Dose':item.noDay + ' Day/s'}}</td>
                                                                     <td><b>{{item.qtyRx}} {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' || item.unitDesc == 'Bottle' ? 'Bottle/s':item.unitDesc == 'Cream' ? 'Tube':''}}</b></td>
-                                                                    <td class="text-right">
+                                                                    <td class="text-right" ng-if="!isViewingRx">
                                                                         <div class="btn-group">
-                                                                            <button class="btn-danger btn btn-xs" ng-click="removeMedicine($index)"> Remove <i class="fa fa-trash"></i></button>
+                                                                            <button class="btn-danger btn btn-xs" ng-disabled="item.isRelease" ng-click="removeMedicine($index)"> Remove <i class="fa fa-trash"></i></button>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                    <button class="btn btn-info pull-right" type="submit" ng-disabled="RxList.length == 0" ng-click="savePrescription()"><i class="fa fa-medkit"></i> Save Rx </button>
+                                                    <div ng-show="!isEdittingRx && !isViewingRx">
+                                                        <button class="btn btn-info pull-right" type="submit" ng-disabled="RxList.length == 0" ng-click="savePrescription()"><i class="fa fa-medkit"></i> Save Rx </button>
+                                                    </div>
+
+                                                    <div ng-show="!isEdittingRx && isViewingRx">
+                                                        <button class="btn btn-success pull-right" type="button" style="margin-right: 3px;" ng-click="isEdittingRx = true; isViewingRx = false">Edit Rx</button>
+                                                    </div>
+                                                    <div ng-show="isEdittingRx && !isViewingRx">
+                                                        <button class="btn btn-danger pull-right" type="button" ng-click="cancelEdittingRx()">Cancel</button>
+                                                        <button class="btn btn-primary pull-right" type="submit" style="margin-right: 3px;" ng-click="updatePrescription()">Update Rx</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -930,15 +1014,12 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- /PRESCRIPTION FORM -->
                     </div>
                 </div>
             </div>
-
-
-
-
-
         </div>
+        <!-- /RECTAL DIAGNOSIS PANEL -->
 
         <!-- LIST OF PATIENTS -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
@@ -984,6 +1065,7 @@
             <!-- /LIST OF PATIENTS -->
 
         </div>
+        <!-- /LIST OF PATIENTS -->
 
         <!-- MODAL RECTAL DETAIL HISTORY -->
         <div id="rectalHist_modal" class="modal fade">
@@ -1126,6 +1208,7 @@
             </div>
         </div>
         <!-- /MODAL RECTAL DETAIL HISTORY -->
+
         <!-- MODAL CBC RESULT -->
         <div class="modal fade" id="modalCbc">
             <div class="modal-dialog modal-lg">
@@ -1393,6 +1476,7 @@
             </div>
         </div>
         <!-- /MODAL CBC RESULT -->
+
         <!-- MODAL URINALYSIS RESULT -->
         <div class="modal fade" id="modalUrinalysis">
             <div class="modal-dialog modal-lg">
@@ -1769,6 +1853,7 @@
             </div>
         </div>
         <!-- /MODAL URINALYSIS RESULT -->
+
         <!-- MODAL BLOODCHEM RESULT -->
         <div class="modal fade" id="modalBLoodChem">
             <div class="modal-dialog modal-lg">
@@ -2061,6 +2146,7 @@
             </div>
         </div>
         <!-- /MODAL BLOODCHEM RESULT -->
+
         @*MODAL ECG*@
         <div class="modal fade" id="modalECG">
             <div class="modal-dialog modal-lg">

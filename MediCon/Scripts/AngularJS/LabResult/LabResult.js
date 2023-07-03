@@ -7,6 +7,11 @@
     getSpecialist();
     s.isShowResult = false;
     s.isEditBloodChem = 0;
+    s.searchBy = 'byQR';
+    s.showInfoForm = true;
+    s.tableLoader = false;
+    s.searchResultList = [];
+    s.showBackBtn = false;
 
     s.filterResult = function (date) {
         getLabClients(date);
@@ -18,23 +23,20 @@
       video: document.getElementById("preview"),
     });
 
-    Instascan.Camera.getCameras().then(function (cameras) {
-      if (cameras.length > 0) {
-        s.scanner.start(cameras[0]);
-      } else {
-        swal({
-          title: "CAMERA ERROR",
-          text: "Camera is not found, please refresh",
-          type: "error",
+    startCamera();
+    function startCamera() {
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                s.scanner.start(cameras[0]);
+            }
+            else {
+                swal({
+                    title: "CAMERA ERROR",
+                    text: "Camera is not found, please refresh",
+                    type: "error"
+                });
+            }
         });
-      }
-    });
-
-    function getSpecialist() {
-      h.post("../LaboratoryResult/getSpecialist").then(function (d) {
-        
-        s.specialistData = d.data;
-      });
     }
 
     s.scanner.addListener("scan", function (content) {
@@ -42,6 +44,80 @@
       s.mainSearch(content);
     });
     // /QR Scanner Initialization
+
+    s.selectSearchBy = function (option) {
+        if (option == 'byName')
+        {
+            s.showInfoForm = false;
+            s.scanner.stop();
+            s.infoFormData = {};
+            s.searchResultList = [];
+        }
+
+        else
+        {
+            s.showInfoForm = true;
+            startCamera();
+            s.qrData = {};
+            s.searchQRcode = "";
+        }
+
+        s.showBackBtn = false;
+        s.labReq = [];
+        s.testHistory = [];
+    }
+
+    function processPersonInfo(person) {
+        person.birthdate = person.birthDate != null ? new Date(moment(person.birthDate).format()) : null;
+        person.sex = person.sex != null ? (person.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = person;
+        s.qrData.age = moment().diff(moment(person.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (person.brgyPermAddress == null ? "" : person.brgyPermAddress) + ' '
+                                + (person.cityMunPermAddress == null ? "" : person.cityMunPermAddress) + ' '
+                                + (person.provincePermAddress == null ? "" : person.provincePermAddress);
+    }
+
+    s.mainSearchByName = function (data) {
+        s.tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.tableLoader = false;
+        })
+    }
+
+    s.selectPerson = function (person) {
+        processPersonInfo(person);
+        s.getLabtest(person.qrCode);
+        s.showBackBtn = true;
+        //console.log(person);
+        //s.qrData = person;
+        s.showInfoForm = true;
+    }
+
+    function getSpecialist() {
+        h.post("../LaboratoryResult/getSpecialist").then(function (d) {
+        
+            s.specialistData = d.data;
+        });
+    }
 
     s.mainSearch = function (qrCode) {
       s.loader = true;
@@ -121,11 +197,9 @@
       indexNo = 1;
 
       if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
-        $("#clientList_tbl").DataTable().clear();
-        $("#clientList_tbl").DataTable().ajax.url("../LaboratoryResult/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+          $("#clientList_tbl").DataTable().clear().destroy();
       } 
       
-      else {
         //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
         var tableLabList = $("#clientList_tbl").DataTable({
           "ajax": {
@@ -248,7 +322,6 @@
             s.viewLabResult(data.labTestID, data.labID);
             s.encodeResult(data, 1, false);
         });
-      }
     }
 
     s.viewLabResult = function (labTestID, labID) 
@@ -306,11 +379,14 @@
           function (d) {
               
               s.blood = {};
+              s.bloodChemCurrentResult = {};
               s.labPersonnel = {};
+              s.bloodChemRemarks = {};
+
               s.labPersonnel.pathologist = d.data[0].pathologist;
               s.labPersonnel.medtech = d.data[0].medtech;
-              s.blood = d.data;
-
+              s.bloodChemCurrentResult = d.data;
+              
               angular.forEach(d.data, function(d)
               {
                   if(d.labTestName)
@@ -361,11 +437,6 @@
 
                   else if(d.labTestID == "L0012")
                       s.blood.sgot = d.result;
-
-                  //s.blood.bloodChemID = d.bloodChemID;
-                  //s.blood.LabTestGroupID = d.LabTestGroupID;
-                  //s.blood.labTestName = d.labTestName;
-                  //s.blood.labTestID = d.labTestID;
               });
              
              
@@ -385,6 +456,7 @@
       s.isShowResult = disable;
       s.tempLabID = data.labID;
       s.tempLabTestID = data.labTestID;
+      s.labPersonnel = {};
       
       if (data.labTestID == "L0001") {
         s.uri = {};
@@ -418,97 +490,187 @@
       }
     };
 
+    function filterByLabTestID_BloodChem(id) {
+        return s.bloodChemCurrentResult.filter(function(currentLab) {
+            return currentLab.labTestID == id;
+        });
+    }
+
+    function filterByLabName_BloodChem(key) {
+        return s.bloodChemCurrentResult.filter(function(currentLab) {
+            return currentLab.labTestName.toLowerCase() == key.toLowerCase();
+        });
+    }
 
     s.saveBloodChem = function (data, labPersonnel, isUpdating) 
     {
-      swal({
-        title: "SAVING",
-        text: "Please wait while we are saving your data.",
-        type: "info",
-        showConfirmButton: false,
-      });
-  
+        swal({
+            title: isUpdating ? "UPDATING" : "SAVING",
+            text: "Please wait while we are " + (isUpdating ? "updating" : "saving") + " your data.",
+            type: "info",
+            showConfirmButton: false,
+        });
+    
       var bloodChemResult = [];
-
+        
       if (isUpdating) {
-          angular.forEach(data, function(d) {
+          console.log(data);    
+          console.log(s.bloodChemCurrentResult);
 
+          angular.forEach(data, function(value, key) {
+              switch(key)
+              {
+                  case 'fbs':
+                      var fbs = filterByLabTestID_BloodChem('L0005');
+                      fbs[0].result = value;
+                      fbs[0].labID = s.tempLabID;
+                      break;
+                  case 'cholesterol':
+                      var chol = filterByLabName_BloodChem(key);
+                      chol[0].result = value;
+                      chol[0].labID = s.tempLabID;
+                      break;
+                  case 'triglycerides':
+                      var tri = filterByLabName_BloodChem(key);
+                      tri[0].result = value;
+                      tri[0].labID = s.tempLabID;
+                      break;
+                  case 'hdl':
+                      var hdl = filterByLabName_BloodChem(key);
+                      hdl[0].result = value;
+                      hdl[0].labID = s.tempLabID;
+                      break;
+                  case 'ldl':
+                      var ldl = filterByLabName_BloodChem(key);
+                      ldl[0].result = value;
+                      ldl[0].labID = s.tempLabID;
+                      break;
+                  case 'vldl':
+                      var vldl = filterByLabName_BloodChem(key);
+                      vldl[0].result = value;
+                      vldl[0].labID = s.tempLabID;
+                      break;
+                  case 'potassium':
+                      var pot = filterByLabName_BloodChem(key);
+                      pot[0].result = value;
+                      pot[0].labID = s.tempLabID;
+                      break;
+                  case 'sodium':
+                      var pot = filterByLabName_BloodChem(key);
+                      pot[0].result = value;
+                      pot[0].labID = s.tempLabID;
+                      break;
+                  case 'chloride':
+                      var pot = filterByLabName_BloodChem(key);
+                      pot[0].result = value;
+                      pot[0].labID = s.tempLabID;
+                      break;
+                  case 'calcium':
+                      var pot = filterByLabName_BloodChem(key);
+                      pot[0].result = value;
+                      pot[0].labID = s.tempLabID;
+                      break;
+                  case 'creatinine':
+                      var crea = filterByLabTestID_BloodChem('L0009');
+                      crea[0].result = value;
+                      crea[0].labID = s.tempLabID;
+                      break;
+                  case 'serumUricAcid':
+                      var uric = filterByLabTestID_BloodChem('L0010');
+                      uric[0].result = value;
+                      uric[0].labID = s.tempLabID;
+                      break;
+                  case 'sgpt':
+                      var sgpt = filterByLabTestID_BloodChem('L0011');
+                      sgpt[0].result = value;
+                      sgpt[0].labID = s.tempLabID;
+                      break;
+                  case 'sgot':
+                      var sgot = filterByLabTestID_BloodChem('L0012');
+                      sgot[0].result = value;
+                      sgot[0].labID = s.tempLabID;
+                      break;
+              }
           });
       }
-      
-      if (s.tempLabTestID == "L0007")
-      {
-          bloodChemResult.push({
-                labID: s.tempLabID,
-                result: data.cholesterol,
-                LabTestGroupID: "LTG001"
-          });
 
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.triglycerides,
-              LabTestGroupID: "LTG002"
-          });
+      else {
+          // FORMATTING REQUIRED DATA FOR SAVING
+          if (s.tempLabTestID == "L0007")
+          {
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.cholesterol,
+                  LabTestGroupID: "LTG001"
+              });
 
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.hdl,
-              LabTestGroupID: "LTG003"
-          });
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.triglycerides,
+                  LabTestGroupID: "LTG002"
+              });
 
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.ldl,
-              LabTestGroupID: "LTG004"
-          });
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.hdl,
+                  LabTestGroupID: "LTG003"
+              });
 
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.vldl,
-              LabTestGroupID: "LTG005"
-          });
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.ldl,
+                  LabTestGroupID: "LTG004"
+              });
+
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.vldl,
+                  LabTestGroupID: "LTG005"
+              });
+          }
+
+          else if (s.tempLabTestID == "L0008")
+          {
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.potassium,
+                  LabTestGroupID: "LTG006"
+              });
+
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.sodium,
+                  LabTestGroupID: "LTG007"
+              });
+
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.chloride,
+                  LabTestGroupID: "LTG008"
+              });
+
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: data.calcium,
+                  LabTestGroupID: "LTG009"
+              });
+          }
+
+          else
+          {
+              bloodChemResult.push({
+                  labID: s.tempLabID,
+                  result: s.tempLabTestID == "L0005" ? data.fbs : s.tempLabTestID == "L0010" ? data.serumUricAcid : s.tempLabTestID == "L0009" ? data.creatinine : s.tempLabTestID == "L0011" ? data.sgpt : s.tempLabTestID == "L0012" ? data.sgot : null
+              });
+          } 
       }
-
-      else if (s.tempLabTestID == "L0008")
-      {
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.potassium,
-              LabTestGroupID: "LTG006"
-          });
-
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.sodium,
-              LabTestGroupID: "LTG007"
-          });
-
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.chloride,
-              LabTestGroupID: "LTG008"
-          });
-
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: data.calcium,
-              LabTestGroupID: "LTG009"
-          });
-      }
-
-      else
-      {
-          bloodChemResult.push({
-              labID: s.tempLabID,
-              result: s.tempLabTestID == "L0005" ? data.fbs : s.tempLabTestID == "L0010" ? data.serumUricAcid : s.tempLabTestID == "L0009" ? data.creatinine : s.tempLabTestID == "L0011" ? data.sgpt : s.tempLabTestID == "L0012" ? data.sgot : null
-          });
-      }  
-      
+     
           h.post("../LaboratoryResult/saveBloodChemResult", {
-              result: bloodChemResult, 
+              result: isUpdating ? s.bloodChemCurrentResult : bloodChemResult, 
               medTech: labPersonnel.medtech, 
               pathologist: labPersonnel.pathologist,
-              isUpdating: isUpdating
+              isUpdating: isUpdating,
+              EditRemarks: isUpdating ? s.bloodChemRemarks : null
           }).then(function (d) 
           {
               if (d.data.status == "error") {
@@ -530,99 +692,277 @@
 
                   s.blood = {};
                   $("#modalBLoodChem").modal("hide");
-                  s.getLabtest(s.qrData.qrCode);
+                  if(!isUpdating) s.getLabtest(s.qrData.qrCode);
               }
           });
-    }
-
-    s.saveFecalysis = function(data, isEdit){
-        swal({
-            title: "SAVING",
-            text: "Please wait while we are saving your data.",
-            type: "info",
-            showConfirmButton: false,
-        });
-
-        if(isEdit) {
-
-        }
-
-        else {
-            data.labID = s.tempLabID;
-
-            h.post("../LaboratoryResult/saveFecalysis", data).then(function (d) 
-            {
-                if (d.data.status == "error") {
-                    swal({
-                        title: "ERROR",
-                        text: "<labal>" + d.data.msg + "</label>",
-                        type: "error",
-                        html: true,
-                    });
-                } 
-        
-                else {
-                    swal({
-                        title: "SUCCESSFUL",
-                        text: d.data.msg,
-                        type: "success",
-                        html: true,
-                    });
-
-                    s.fecalysis = {};
-                    $("#modalFecalysis").modal("hide");
-                    s.getLabtest(s.qrData.qrCode);
-                }
-            });
-        }
-    }
-
-    s.saveECG = function(data, isEdit) {
-        swal({
-            title: "SAVING",
-            text: "Please wait while we are saving your data.",
-            type: "info",
-            showConfirmButton: false,
-        });
-
-        if(isEdit) {
-
-        }
-
-        else {
-            data.labID = s.tempLabID;
-
-            h.post("../LaboratoryResult/saveECG", data).then(function (d) 
-            {
-                if (d.data.status == "error") {
-                    swal({
-                        title: "ERROR",
-                        text: "<labal>" + d.data.msg + "</label>",
-                        type: "error",
-                        html: true,
-                    });
-                } 
-        
-                else {
-                    swal({
-                        title: "SUCCESSFUL",
-                        text: d.data.msg,
-                        type: "success",
-                        html: true,
-                    });
-
-                    s.ecg = {};
-                    $("#modalECG").modal("hide");
-                    s.getLabtest(s.qrData.qrCode);
-                }
-            });
-        }
     }
 
     s.editResult = function() {
         s.isShowResult = !s.isShowResult;
     }
+
+    // ECG SAVING AND UPDATING
+    s.ecgEditRemarks = {};
+    s.isEditECG = 0;
+    $("#ECGForm").validate({
+        rules: {},
+        submitHandler: function () {
+        
+            if (s.isEditECG == 0) {
+                Swal.fire({
+                    title: "Save Result?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Saved!",
+                    showLoaderOnConfirm: true,
+                    icon: "question",
+                    preConfirm: () => {
+                        s.ecg.labID = s.tempLabID;
+                
+                return h.post("../LaboratoryResult/saveECG", s.ecg).then((response) => {
+                      return response;
+                })
+                .catch((error) => {
+                    if (error.status == 500) {
+                        Swal.showValidationMessage(
+                        `Request failed: ${error.statusText}`
+                    );
+        } else if (error.status == 404) {
+            Swal.showValidationMessage(
+            `Request failed: Page Not Found`
+          );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+             Swal.showValidationMessage(
+             `Request failed: Unknown Error ${error.status}`
+           );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+                title: "Successfully saved!",
+                text: 'Laboratory Result',
+                type: "success",
+                html: true,
+            });
+
+    s.ecg = {};
+    $("#modalECG").modal("hide");
+    s.getLabtest(s.qrData.qrCode);
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    } else if (s.isEditECG == 1) {
+        Swal.fire({
+            title: "Update Result?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Saved!",
+            showLoaderOnConfirm: true,
+            icon: "question",
+            preConfirm: () => {
+                return h.post("../LaboratoryResult/editECG", {result: s.ecg, EditRemarks: s.ecgEditRemarks})
+                  .then((response) => {
+                      return response;
+    })
+    .catch((error) => {
+        if (error.status == 500) {
+            Swal.showValidationMessage(
+            `Request failed: ${error.statusText}`
+            );
+    } else if (error.status == 404) {
+        Swal.showValidationMessage(
+          `Request failed: Page Not Found`
+      );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+        Swal.showValidationMessage(
+          `Request failed: Unknown Error ${error.status}`
+    );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+      swal({
+        title: "Successfully updated",
+    text: 'Laboratory Result',
+    type: "success",
+    html: true,
+    });
+    s.ecg = {};
+    s.ecgEditRemarks = {};
+    $("#modalECG").modal("hide");
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    }
+    },
+    errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+    highlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-info")
+          .addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-error")
+          .addClass("has-info");
+    },
+    });
+
+    // FECALYSIS SAVING AND UPDATING
+    s.fecaEditRemarks = {};
+    s.isEditFecalysis = 0;
+    $("#FecalsysisForm").validate({
+        rules: {},
+        submitHandler: function () {
+        
+            if (s.isEditFecalysis == 0) {
+                Swal.fire({
+                    title: "Save Result?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Saved!",
+                    showLoaderOnConfirm: true,
+                    icon: "question",
+                    preConfirm: () => {
+                        s.fecalysis.labID = s.tempLabID;
+                
+                return h.post("../LaboratoryResult/saveFecalysis", s.fecalysis)
+                  .then((response) => {
+                      return response;
+            })
+            .catch((error) => {
+                if (error.status == 500) {
+                Swal.showValidationMessage(
+                  `Request failed: ${error.statusText}`
+                      );
+            } else if (error.status == 404) {
+                    Swal.showValidationMessage(
+                    `Request failed: Page Not Found`
+              );
+            } else if (error.status == -1) {
+                Swal.showValidationMessage(
+                  `Request failed: No Internet Connection`
+              );
+            } else {
+                    Swal.showValidationMessage(
+                      `Request failed: Unknown Error ${error.status}`
+                    );
+            }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+            title: "Successfully saved!",
+            text: 'Laboratory Result',
+            type: "success",
+            html: true,
+            });
+
+        s.fecalysis = {};
+        $("#modalFecalysis").modal("hide");
+        s.getLabtest(s.qrData.qrCode);
+        } else if (result.isDismissed) {
+            Swal.fire({ title: "Canceled", icon: "info" }).then(
+              (result) => {}
+            );
+        }
+        });
+        } else if (s.isEditFecalysis == 1) {
+            Swal.fire({
+                title: "Update Result?",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Saved!",
+                showLoaderOnConfirm: true,
+                icon: "question",
+                preConfirm: () => {
+                    return h.post("../LaboratoryResult/editFecalysis", {result: s.fecalysis, EditRemarks: s.fecaEditRemarks})
+                      .then((response) => {
+                          return response;
+            })
+    .catch((error) => {
+        if (error.status == 500) {
+            Swal.showValidationMessage(
+            `Request failed: ${error.statusText}`
+        );
+        } else if (error.status == 404) {
+            Swal.showValidationMessage(
+              `Request failed: Page Not Found`
+          );
+        } else if (error.status == -1) {
+            Swal.showValidationMessage(
+              `Request failed: No Internet Connection`
+          );
+        } else {
+            Swal.showValidationMessage(
+              `Request failed: Unknown Error ${error.status}`
+       );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+      swal({
+        title: "Successfully updated",
+    text: 'Laboratory Result',
+    type: "success",
+    html: true,
+    });
+    s.fecalysis = {};
+    s.fecaEditRemarks = {};
+    $("#modalFecalysis").modal("hide");
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    }
+    },
+    errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+    highlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-info")
+          .addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-error")
+          .addClass("has-info");
+    },
+    });
     
+    // URINALYSIS SAVING AND UPDATING
     s.uriEdit = {};
     s.isEditUrinalysis = 0;
     $("#urinalysisForm").validate({
@@ -758,9 +1098,9 @@
       },
     });
 
+    // CBC SAVING AND UPDATING FUNCTION
     s.cbcEdit = {};
     s.isEditCbc = 0;
-
     $("#cbcForm").validate({
       rules: {},
       submitHandler: function () {
@@ -860,12 +1200,6 @@
             allowOutsideClick: () => !Swal.isLoading(),
           }).then((result) => {
             if (result.isConfirmed) {
-              // Swal.fire({ title: "Successfully Save!", icon: "success" }).then(
-              //   (result) => {
-              //     "#modalCbc".modal("hide");
-              //     s.cbc = {};
-              //   }
-              // );
               swal({
                 title: "Successfully updated",
                 text: 'Laboratory Result',

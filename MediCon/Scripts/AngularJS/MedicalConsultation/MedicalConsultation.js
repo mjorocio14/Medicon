@@ -19,6 +19,7 @@
     s.showMedicalRecord = false;
     s.isEditting = false;
     getSpecialist();
+    s.isShowEditRxForm = true;
 
     s.filterResult = function (date) {
         getDiagnoseClients(date);
@@ -331,7 +332,7 @@
             });
 
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
-            if (labtestList.length > 0) referralList.push('SERVICE006')
+            if (labtestList.length > 0) referralList.push('SERVICE006');
 
             var consult = {
                 vSignID: s.vitalSigns.vSignID,
@@ -381,7 +382,7 @@
     $("#productCode").on('select2:select', function (e) {
         var data = e.params.data;
         s.unit = JSON.parse(data.id);
-
+      
         s.$apply();
     });
 
@@ -406,6 +407,7 @@
     // /SELECT2 INITIALIZATION
 
     s.addMedicine = function (med) {
+        
         if (selectnoDay.val() == '' || selectProduct.val() == '') {
             swal({
                 title: "ERROR",
@@ -467,6 +469,7 @@
         }
     }
 
+
     s.removeMedicine = function (removeMedIndex) {
         s.RxList.splice(removeMedIndex, 1);
     }
@@ -527,11 +530,9 @@
         vsIndexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#diagnoseList_tbl")) {
-            $('#diagnoseList_tbl').DataTable().clear();
-            $('#diagnoseList_tbl').DataTable().ajax.url("../MedicalConsultation/getDiagnoseClients?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+            $('#diagnoseList_tbl').DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableVSlist = $('#diagnoseList_tbl').DataTable({
                 "ajax": {
@@ -544,12 +545,12 @@
                 },
                 "pageLength": 10,
                 "searching": true,
+                //"processing": true,
                 "language":
                  {
                      "loadingRecords": '<div class="sk-spinner sk-spinner-double-bounce"><div class="sk-double-bounce1"></div><div class="sk-double-bounce2"></div></div><text><i>Please wait, we are loading your data...</i></text>',
                      "emptyTable": '<label class="text-danger">NO INFORMATION FOUND!</label>'
                  },
-                "processing": false,
                 "columns": [{
                     "data": "index", "render": function () { return vsIndexNo++; }
                 }, {
@@ -783,8 +784,7 @@
                         s.resultDiag.ref = ref;
                         s.resultDiag.refIsEncoded = refIsEncoded;
                         
-                        // Push all checked laboratory to laboratory
-                     
+                        // Push all checked laboratory to laboratory                    
                         angular.forEach(d.data.laboratory, function (item) {
                             switch (item.labTestID) {
                                 case 'L0001':
@@ -858,10 +858,7 @@
                         s.rxHistory = d.data.rxList;
                     }
                 });
-                
             });
-        }
-
     }
 
     s.showDiagnoseList = function () {
@@ -1000,14 +997,6 @@
         }
     }
 
-    s.editPrescription = function () {
-        s.showClientList = false;
-        //s.showMedicalRecord = false;
-        //s.showRx = true;
-        s.showClientListBTN = false;
-        //!showClientList && (!showMedicalRecord || showRx)"
-    }
-
     s.printRx = function (data, length) {
         var patient = {
             lastName: s.qrData.lastName,
@@ -1021,6 +1010,113 @@
 
         h.post('../Print/printRX', { rxID: data.rxID, info: patient, physician: data.physician[0], length: length }).then(function (d) {
             window.open("../Report/MediConRpt.aspx?type=prescription");
+        });
+    }
+
+    s.enableRxEditting = function () {
+        s.isShowEditRxForm = !s.isShowEditRxForm;
+        getMedicineList();
+        angular.copy(s.rxHistory, s.RxList);
+    }
+
+    s.onChangeMed = function (data) {
+        let product = data != undefined ? JSON.parse(data) : {};
+
+        s.unitEdit = {};
+        s.unitEdit = {
+            unitID: product ? product.unitID : null,
+            unitDesc: product ? product.unitDesc: null
+        };
+
+    }
+
+    s.onChangeNoDay = function (data) {
+        let noDayEdit = data != undefined ? data : null;
+        s.showRxQtyEdit = data == 'maintenance' || data == 'needed' || data == 'single' ? true : false;
+    }
+    
+    s.addMedToEditList = function (med) {
+        var data = {};
+        let productMed = {};
+        productMed = JSON.parse(med.product);
+
+        data.productDesc = productMed.productDesc;
+
+        data.productCode = productMed.productCode;
+        data.unitDesc = productMed.unitDesc;
+        data.noDay = med.noDay;
+        data.dosage = med.dosage;
+        data.perDay = med.perDay
+
+            //.... QTY CALCULATION
+            var result = 0;
+
+            if (data.noDay == "maintenance" || data.noDay == "needed" || data.noDay == "single") {
+                data.qtyRx = med.inputQTY;
+            }
+
+            else {
+                if (data.unitDesc == "Suspension" || data.unitDesc == "Syrup" || data.unitDesc == "Drops") {
+                    result = data.dosage * data.perDay * data.noDay;
+                    data.qtyRx = Math.ceil(result / 60);
+                }
+
+                else {
+                    result = data.dosage * data.perDay * data.noDay;
+                    data.qtyRx = result;
+                }
+            }
+            //.... /QTY CALCULATION
+        
+            if (data.qtyRx > productMed.AVAILABLE) {
+                swal({
+                    title: "AVAILABILITY ADVISORY",
+                    text: "<label>Please inform the patient that " + (productMed.AVAILABLE == 0 || productMed.AVAILABLE == null ? "this medicine is already <text class='text-danger'>OUT OF STOCK.</text></label>" : "the available stock of this medicine is <label class='text-danger'>insufficient</label>.")
+                            + "<br/>Prescripted: <label>" + data.qtyRx + "</label><br/>Available: <label>" + (productMed.AVAILABLE == null ? 0 : productMed.AVAILABLE) + "</label>",
+                    type: "info",
+                    html: true
+                });
+            }
+
+            s.RxList.push(data);
+           
+            s.medsEdit = {};
+            s.unitEdit = '';
+            result = 0;
+            s.showRxQtyEdit = false;
+    }
+
+    s.updatePrescription = function (RxList) {
+        let recConsultID = s.resultDiag.info.consultID;
+
+        swal({
+            title: "SAVING",
+            text: "Please wait while we are saving your data.",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        h.post('../MedicalConsultation/updatePrescription', { consultID: recConsultID, newListRx: RxList }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "Something went wrong, " + d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                });
+
+                s.isShowEditRxForm = !s.isShowEditRxForm;
+                s.rxHistory = [];
+                s.rxHistory = angular.copy(RxList);
+                s.RxList = [];
+            }
         });
     }
 

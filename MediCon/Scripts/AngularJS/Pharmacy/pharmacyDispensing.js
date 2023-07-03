@@ -24,11 +24,9 @@
         vsIndexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#listMedReleased_tbl")) {
-            $('#listMedReleased_tbl').DataTable().clear();
-            $('#listMedReleased_tbl').DataTable().ajax.url("../Pharmacy/listOfClients?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+            $('#listMedReleased_tbl').DataTable().clear().destroy();
         }
         
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableMedsReleasedList = $('#listMedReleased_tbl').DataTable({
                 "ajax": {
@@ -120,8 +118,6 @@
                 s.diagnosisInfo = data;
                 s.$apply();
             });
-        }
-
     }
 
     s.scanner = new Instascan.Scanner(

@@ -31,10 +31,13 @@ namespace MediCon.Models
         public virtual DbSet<BloodPressure> BloodPressures { get; set; }
         public virtual DbSet<BrandList> BrandLists { get; set; }
         public virtual DbSet<CBC> CBCs { get; set; }
+        public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
+        public virtual DbSet<DietCounseling> DietCounselings { get; set; }
         public virtual DbSet<ECG> ECGs { get; set; }
         public virtual DbSet<EditRemark> EditRemarks { get; set; }
         public virtual DbSet<Fecalysi> Fecalysis { get; set; }
+        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
         public virtual DbSet<LaboratoryGroupTest> LaboratoryGroupTests { get; set; }
         public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
@@ -66,9 +69,84 @@ namespace MediCon.Models
         public virtual DbSet<Xray_PersonStatus> Xray_PersonStatus { get; set; }
         public virtual DbSet<Xray_Screening> Xray_Screening { get; set; }
         public virtual DbSet<Xray_ScutumLabRequest> Xray_ScutumLabRequest { get; set; }
-        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
-        public virtual DbSet<Consultation> Consultations { get; set; }
-        public virtual DbSet<DietCounseling> DietCounselings { get; set; }
+    
+        [DbFunction("MediconEntities", "fn_DashboardAnalytics")]
+        public virtual IQueryable<fn_DashboardAnalytics_Result> fn_DashboardAnalytics()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardAnalytics_Result>("[MediconEntities].[fn_DashboardAnalytics]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_DashboardDental")]
+        public virtual IQueryable<fn_DashboardDental_Result> fn_DashboardDental()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardDental_Result>("[MediconEntities].[fn_DashboardDental]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_DashboardMorbidity")]
+        public virtual IQueryable<fn_DashboardMorbidity_Result> fn_DashboardMorbidity()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardMorbidity_Result>("[MediconEntities].[fn_DashboardMorbidity]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_DashboardMRH")]
+        public virtual IQueryable<fn_DashboardMRH_Result> fn_DashboardMRH()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardMRH_Result>("[MediconEntities].[fn_DashboardMRH]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
+        public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID, Nullable<System.DateTime> paramDate)
+        {
+            var serviceIDParameter = serviceID != null ?
+                new ObjectParameter("serviceID", serviceID) :
+                new ObjectParameter("serviceID", typeof(string));
+    
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getDiagnoseClients_Result>("[MediconEntities].[fn_getDiagnoseClients](@serviceID, @paramDate)", serviceIDParameter, paramDateParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getLabPatients")]
+        public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients(Nullable<System.DateTime> paramDate)
+        {
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients](@paramDate)", paramDateParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getLabResult")]
+        public virtual IQueryable<fn_getLabResult_Result> fn_getLabResult(Nullable<System.DateTime> paramDate)
+        {
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabResult_Result>("[MediconEntities].[fn_getLabResult](@paramDate)", paramDateParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getMRHclients")]
+        public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients(Nullable<System.DateTime> paramDate)
+        {
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getMRHclients_Result>("[MediconEntities].[fn_getMRHclients](@paramDate)", paramDateParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
+        public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients(Nullable<System.DateTime> paramDate)
+        {
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients](@paramDate)", paramDateParameter);
+        }
     
         [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
         public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)
@@ -80,10 +158,56 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientLabHistory_Result>("[MediconEntities].[fn_getPatientLabHistory](@qrCode)", qrCodeParameter);
         }
     
+        [DbFunction("MediconEntities", "fn_getPatientXrayHistory")]
+        public virtual IQueryable<fn_getPatientXrayHistory_Result> fn_getPatientXrayHistory(string qrCode)
+        {
+            var qrCodeParameter = qrCode != null ?
+                new ObjectParameter("qrCode", qrCode) :
+                new ObjectParameter("qrCode", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientXrayHistory_Result>("[MediconEntities].[fn_getPatientXrayHistory](@qrCode)", qrCodeParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getXrayLabReqClients")]
+        public virtual IQueryable<fn_getXrayLabReqClients_Result> fn_getXrayLabReqClients()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getXrayLabReqClients_Result>("[MediconEntities].[fn_getXrayLabReqClients]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_getXrayScreenedClients")]
+        public virtual IQueryable<fn_getXrayScreenedClients_Result> fn_getXrayScreenedClients(Nullable<System.DateTime> paramDate)
+        {
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getXrayScreenedClients_Result>("[MediconEntities].[fn_getXrayScreenedClients](@paramDate)", paramDateParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getXrayTagClients")]
+        public virtual IQueryable<fn_getXrayTagClients_Result> fn_getXrayTagClients(Nullable<System.DateTime> paramDate)
+        {
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getXrayTagClients_Result>("[MediconEntities].[fn_getXrayTagClients](@paramDate)", paramDateParameter);
+        }
+    
         [DbFunction("MediconEntities", "fn_MedicineList")]
         public virtual IQueryable<fn_MedicineList_Result> fn_MedicineList()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_MedicineList_Result>("[MediconEntities].[fn_MedicineList]()");
+        }
+    
+        [DbFunction("MediconEntities", "fn_vitalSignList")]
+        public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList(Nullable<System.DateTime> dateFilter)
+        {
+            var dateFilterParameter = dateFilter.HasValue ?
+                new ObjectParameter("dateFilter", dateFilter) :
+                new ObjectParameter("dateFilter", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList](@dateFilter)", dateFilterParameter);
         }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
@@ -211,106 +335,6 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<spOT_MedicineDispensing_Result>("spOT_MedicineDispensing", qrCodeParameter);
         }
     
-        [DbFunction("MediconEntities", "fn_getXrayLabReqClients")]
-        public virtual IQueryable<fn_getXrayLabReqClients_Result> fn_getXrayLabReqClients()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getXrayLabReqClients_Result>("[MediconEntities].[fn_getXrayLabReqClients]()");
-        }
-    
-        [DbFunction("MediconEntities", "fn_vitalSignList")]
-        public virtual IQueryable<fn_vitalSignList_Result> fn_vitalSignList(Nullable<System.DateTime> dateFilter)
-        {
-            var dateFilterParameter = dateFilter.HasValue ?
-                new ObjectParameter("dateFilter", dateFilter) :
-                new ObjectParameter("dateFilter", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_vitalSignList_Result>("[MediconEntities].[fn_vitalSignList](@dateFilter)", dateFilterParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
-        public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID, Nullable<System.DateTime> paramDate)
-        {
-            var serviceIDParameter = serviceID != null ?
-                new ObjectParameter("serviceID", serviceID) :
-                new ObjectParameter("serviceID", typeof(string));
-    
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getDiagnoseClients_Result>("[MediconEntities].[fn_getDiagnoseClients](@serviceID, @paramDate)", serviceIDParameter, paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getLabPatients")]
-        public virtual IQueryable<fn_getLabPatients_Result> fn_getLabPatients(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabPatients_Result>("[MediconEntities].[fn_getLabPatients](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getLabResult")]
-        public virtual IQueryable<fn_getLabResult_Result> fn_getLabResult(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getLabResult_Result>("[MediconEntities].[fn_getLabResult](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getPapsmearBreastExamClients")]
-        public virtual IQueryable<fn_getPapsmearBreastExamClients_Result> fn_getPapsmearBreastExamClients(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getMRHclients")]
-        public virtual IQueryable<fn_getMRHclients_Result> fn_getMRHclients(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getMRHclients_Result>("[MediconEntities].[fn_getMRHclients](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getRectalClients")]
-        public virtual IQueryable<fn_getRectalClients_Result> fn_getRectalClients(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getRectalClients_Result>("[MediconEntities].[fn_getRectalClients](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getXrayScreenedClients")]
-        public virtual IQueryable<fn_getXrayScreenedClients_Result> fn_getXrayScreenedClients(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getXrayScreenedClients_Result>("[MediconEntities].[fn_getXrayScreenedClients](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getXrayTagClients")]
-        public virtual IQueryable<fn_getXrayTagClients_Result> fn_getXrayTagClients(Nullable<System.DateTime> paramDate)
-        {
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getXrayTagClients_Result>("[MediconEntities].[fn_getXrayTagClients](@paramDate)", paramDateParameter);
-        }
-    
         public virtual ObjectResult<sp_getXrayClientScreened_Result> sp_getXrayClientScreened(string param, Nullable<bool> searchType)
         {
             var paramParameter = param != null ?
@@ -324,38 +348,14 @@ namespace MediCon.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_getXrayClientScreened_Result>("sp_getXrayClientScreened", paramParameter, searchTypeParameter);
         }
     
-        [DbFunction("MediconEntities", "fn_getPatientXrayHistory")]
-        public virtual IQueryable<fn_getPatientXrayHistory_Result> fn_getPatientXrayHistory(string qrCode)
+        [DbFunction("MediconEntities", "fn_getRectalClients")]
+        public virtual IQueryable<fn_getRectalClients_Result> fn_getRectalClients(Nullable<System.DateTime> paramDate)
         {
-            var qrCodeParameter = qrCode != null ?
-                new ObjectParameter("qrCode", qrCode) :
-                new ObjectParameter("qrCode", typeof(string));
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientXrayHistory_Result>("[MediconEntities].[fn_getPatientXrayHistory](@qrCode)", qrCodeParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_DashboardAnalytics")]
-        public virtual IQueryable<fn_DashboardAnalytics_Result> fn_DashboardAnalytics()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardAnalytics_Result>("[MediconEntities].[fn_DashboardAnalytics]()");
-        }
-    
-        [DbFunction("MediconEntities", "fn_DashboardMorbidity")]
-        public virtual IQueryable<fn_DashboardMorbidity_Result> fn_DashboardMorbidity()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardMorbidity_Result>("[MediconEntities].[fn_DashboardMorbidity]()");
-        }
-    
-        [DbFunction("MediconEntities", "fn_DashboardMRH")]
-        public virtual IQueryable<fn_DashboardMRH_Result> fn_DashboardMRH()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardMRH_Result>("[MediconEntities].[fn_DashboardMRH]()");
-        }
-    
-        [DbFunction("MediconEntities", "fn_DashboardDental")]
-        public virtual IQueryable<fn_DashboardDental_Result> fn_DashboardDental()
-        {
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardDental_Result>("[MediconEntities].[fn_DashboardDental]()");
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getRectalClients_Result>("[MediconEntities].[fn_getRectalClients](@paramDate)", paramDateParameter);
         }
     }
 }

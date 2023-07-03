@@ -23,7 +23,7 @@ namespace MediCon.Controllers
             return View();
         }
 
-        public ActionResult saveBloodChemResult(List<BloodChem> result, string medTech, string pathologist, bool isUpdating)
+        public ActionResult saveBloodChemResult(List<BloodChem> result, string medTech, string pathologist, bool isUpdating, EditRemarks EditRemarks)
         {
             try
             {
@@ -42,13 +42,8 @@ namespace MediCon.Controllers
                         if (isUpdating)
                         {
                             var findBC = dbMed.BloodChems.SingleOrDefault(a => a.bloodChemID == item.bloodChemID);
-                            findBC.LabTestGroupID = item.LabTestGroupID;
                             findBC.result = item.result;
                             dbMed.Entry(findBC).State = EntityState.Modified;
-
-                            var labRec = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == item.labID);
-                            labRec.medtech = medTech;
-                            labRec.pathologist = pathologist;
                         }
 
                         else
@@ -69,6 +64,27 @@ namespace MediCon.Controllers
                             findLab.dateEncoded = DateTime.Now;
                             dbMed.Entry(findLab).State = EntityState.Modified;
                         }
+                    }
+
+                    // UPDATING MEDICAL PERSONNEL AND RECORD UPDATE REMARKS
+                    if (isUpdating)
+                    {
+                        var labID = result[0].labID;
+                        var labRec = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == labID);
+                        labRec.medtech = medTech;
+                        labRec.pathologist = pathologist;
+                        dbMed.Entry(labRec).State = EntityState.Modified;
+
+                        var edited = new EditRemark();
+                        string temp = Convert.ToString(DateTime.Now);
+                        var editID = new IDgenerator(temp);
+
+                        edited.editID = editID.generateID.Substring(0, 15);
+                        edited.labID = labID;
+                        edited.remarks = EditRemarks.remarks;
+                        edited.dateEdited = DateTime.Now;
+                        edited.editedBy = Session["personnelID"].ToString();
+                        dbMed.EditRemarks.Add(edited);
                     }
 
                     dbMed.SaveChanges();
@@ -325,6 +341,48 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
+        public ActionResult editECG([Bind(Exclude = "dateTimeLog,dateEdited")] ECG result, EditRemarks EditRemarks)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var data = dbMed.ECGs.Where(e => e.labID == result.labID).FirstOrDefault();
+
+                    // EDIT LAB RESULT OF FECALYSIS
+                    data.findings = result.findings;
+                    dbMed.Entry(data).State = EntityState.Modified;
+
+                    // SAVE PERSON WHO EDIT THE RECORD
+                    var edited = new EditRemark();
+                    string temp = Convert.ToString(DateTime.Now);
+                    var editID = new IDgenerator(temp);
+
+                    edited.editID = editID.generateID.Substring(0, 15);
+                    edited.labID = data.labID;
+                    edited.remarks = EditRemarks.remarks;
+                    edited.dateEdited = DateTime.Now;
+                    edited.editedBy = Session["personnelID"].ToString();
+                    dbMed.EditRemarks.Add(edited);
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
         public ActionResult saveFecalysis(Fecalysi result)
         {
             try
@@ -351,6 +409,59 @@ namespace MediCon.Controllers
                     findLab.isEncoded = true;
                     findLab.dateEncoded = DateTime.Now;
                     dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult editFecalysis([Bind(Exclude = "dateTimeLog,dateEdited")] Fecalysi result, EditRemarks EditRemarks)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var data = dbMed.Fecalysis.Where(e => e.labID == result.labID).FirstOrDefault();
+
+                    // EDIT LAB RESULT OF FECALYSIS
+                    data.bacteria = result.bacteria;
+                    data.color = result.color;
+                    data.consistency = result.consistency;
+                    data.dateTimeLog = DateTime.Now;
+                    data.fatGlobules = result.fatGlobules;
+                    data.otherColorDesc = result.otherColorDesc;
+                    data.otherConDesc = result.otherConDesc;
+                    data.otherFindings = result.otherFindings;
+                    data.pusFrom = result.pusFrom;
+                    data.pusTo = result.pusTo;
+                    data.rbcFrom = result.rbcFrom;
+                    data.rbcTo = result.rbcTo;
+                    dbMed.Entry(data).State = EntityState.Modified;
+
+                    // SAVE PERSON WHO EDIT THE RECORD
+                    var edited = new EditRemark();
+                    string temp = Convert.ToString(DateTime.Now);
+                    var editID = new IDgenerator(temp);
+
+                    edited.editID = editID.generateID.Substring(0, 15);
+                    edited.labID = data.labID;
+                    edited.remarks = EditRemarks.remarks;
+                    edited.dateEdited = DateTime.Now;
+                    edited.editedBy = Session["personnelID"].ToString();
+                    dbMed.EditRemarks.Add(edited);
 
                     dbMed.SaveChanges();
                 }

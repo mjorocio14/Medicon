@@ -382,6 +382,8 @@
                 angular.forEach(s.diagnosisList, function (value) {
                     value.dateTimeLog = moment(value.dateTimeLog).format('lll');
                 });
+
+                console.log(d.data);
             }
         });
     }

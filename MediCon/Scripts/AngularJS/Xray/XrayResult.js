@@ -108,14 +108,9 @@
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#xray_table")) {
-            $("#xray_table").DataTable().clear();
-            $("#xray_table")
-              .DataTable()
-              .ajax.url("../XrayResult/GetClientRecord")
-              .load();
+            $("#xray_table").DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tblXray = $("#xray_table").DataTable({
                 ajax: {
@@ -224,7 +219,6 @@
                 s.mainSearch(data.qrCode);
                 s.$apply();
             });
-        }
     }
 
 }]);

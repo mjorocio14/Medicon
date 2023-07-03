@@ -40,11 +40,9 @@
         var vsIndexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#listOralClient_tbl")) {
-            $('#listOralClient_tbl').DataTable().clear();
-            $('#listOralClient_tbl').DataTable().ajax.url("../Dental/getClientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+            $('#listOralClient_tbl').DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableOralList = $('#listOralClient_tbl').DataTable({
                 "ajax": {
@@ -141,15 +139,11 @@
 
                     s.rxHistoryList = d.data;
                     s.rxHistoryList.dateTimeRx = moment(s.rxHistoryList.dateTimeRx).format('lll');
-                    console.log(s.rxHistoryList);
                 })
 
                 $('#diagnosHistory_modal').modal('show');
                 
             });
-        }
-
-
     }
 
 
@@ -237,7 +231,7 @@
                     var max = moment(d.data.maxVS).format('L');
                     var today = new Date();
                     today = moment(today).format('L');
-                    console.log(max, today);
+
                     var isBPtoday = max == today ? true : false;
                     if (isBPtoday == false) {
                         swal({

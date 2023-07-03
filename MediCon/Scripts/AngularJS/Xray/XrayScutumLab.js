@@ -166,14 +166,9 @@
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#labReq_table")) {
-            $("#labReq_table").DataTable().clear();
-            $("#labReq_table")
-              .DataTable()
-              .ajax.url("../XrayScutumLab/getLabReqClients?date=" + moment(dateFilter).format('YYYY-MM-DD'))
-              .load();
+            $("#labReq_table").DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tblLabReq = $("#labReq_table").DataTable({
                 ajax: {
@@ -329,7 +324,6 @@
                     window.open("../Report/MediConRpt.aspx?type=lrrf");
                 });
             });
-        }
     }
 
     s.returnToList = function () {

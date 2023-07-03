@@ -486,7 +486,7 @@ namespace MediCon.Controllers
                                                        .Join(dbMed.ProductLists, r1 => r1.oi.productCode, pl => pl.productCode, (r1, pl) => new { r1, pl })
                                                        .Join(dbMed.Measurements, r2 => r2.pl.measurementID, m => m.measurementID, (r2, m) => new { r2, m })
                                                        .Join(dbMed.ProductUnits, r3 => r3.r2.pl.unitID, pu => pu.unitID, (r3, pu) => new { r3, pu })
-                                                       .Where(a => a.r3.r2.r1.mp.consultID == consultID)
+                                                       .Where(a => a.r3.r2.r1.mp.consultID == consultID && a.r3.r2.r1.mp.referralID == null)
                                                        .Select(b => new
                                                        {
                                                            b.r3.r2.r1.mp.rxID,
@@ -497,6 +497,7 @@ namespace MediCon.Controllers
                                                            b.r3.r2.r1.oi.dosage,
                                                            b.r3.r2.r1.oi.perDay,
                                                            b.r3.r2.r1.oi.noDay,
+                                                           b.r3.r2.r1.oi.isRelease,
                                                            b.r3.r2.pl.productDesc,
                                                            b.r3.r2.pl.measurementID,
                                                            b.r3.r2.pl.unitID,
@@ -696,6 +697,115 @@ namespace MediCon.Controllers
             {
                 return Json(new { status = "error", msg = "An error occured while updating the diagnosis.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpPost]
+        public ActionResult updatePrescription(string consultID, List<OutgoingItem> newListRx)
+        {
+            try
+            {
+                var medRx = dbMed.MedicalPrescriptions.SingleOrDefault(a => a.consultID == consultID);
+                var existingRx = medRx == null ? null : dbMed.OutgoingItems.Where(a => a.rxID == medRx.rxID).ToArray();
+
+                // If the new list of RX are empty, remove existing/old MedicalPrescription and OutgoingItems
+                if(newListRx == null)
+                {
+                    dbMed.MedicalPrescriptions.Remove(medRx);
+                    dbMed.OutgoingItems.RemoveRange(existingRx);
+                }
+
+                else
+                {
+                    var rxID = new IDgenerator(consultID);
+
+                    //........  UPDATE MEDICAL PRESCRIPTION
+                    if(medRx != null)
+                    {
+                        medRx.personnelID = Session["personnelID"].ToString();
+                        medRx.dateTimeRx = DateTime.Now;
+                        dbMed.Entry(medRx).State = EntityState.Modified;
+                    }
+                   
+                    else
+                    {
+                        MedicalPrescription mp = new MedicalPrescription();
+                        mp.rxID = rxID.generateID.Substring(0, 15);
+                        mp.serviceID = "SERVICE001";
+                        mp.consultID = consultID;
+                        mp.referralID = null;
+                        mp.personnelID = Session["personnelID"].ToString();
+                        mp.dateTimeRx = DateTime.Now;
+                        dbMed.MedicalPrescriptions.Add(mp);
+                    }
+                    //........  /UPDATE MEDICAL PRESCRIPTION
+
+                    //........  UPDATE OUTGOING
+                    if (existingRx != null && existingRx.Length > 0)
+                    {
+                        foreach (var existRec in existingRx)
+                        {
+                            var existCounter = new OutgoingItem();
+
+                            // Check if old medicine exist in the new medicine rx list
+                            if (newListRx != null)
+                                existCounter = Array.Find(newListRx.ToArray(), element => element.productCode == existRec.productCode);
+
+                            // If old medicine does not exist anymore in the new medicine rx list
+                            // then remove this medicine and its related data
+                            if (existCounter == null)
+                                dbMed.OutgoingItems.Remove(existRec);
+
+                            else
+                            {
+                                // only update the record that is not yet released
+                                if (existCounter.isRelease == false || existCounter.isRelease == null)
+                                {
+                                    existRec.qtyRx = existCounter.qtyRx;
+                                    existRec.dosage = existCounter.dosage;
+                                    existRec.perDay = existCounter.perDay;
+                                    existRec.noDay = existCounter.noDay;
+                                    dbMed.Entry(existRec).State = EntityState.Modified;
+                                }
+                            }
+                        }
+                    }
+
+                    if (newListRx != null)
+                    {
+                        foreach (var newRx in newListRx)
+                        {
+                            bool isExistNewRx = false;
+
+                            // Check if NEW medicine rx exist in the OLD medicine rx list
+                            if (existingRx != null)
+                                isExistNewRx = Array.Exists(existingRx, element => element.productCode == newRx.productCode);
+
+                            // If new medicine rx does not exist in the old medicine rx list
+                            // then Add this new medicine rx
+                            if (!isExistNewRx)
+                            {
+                                var outID = new IDgenerator(medRx == null ? rxID.generateID.Substring(0, 15) : medRx.rxID);
+                                newRx.outID = outID.generateID.Substring(0, 15);
+                                newRx.rxID = medRx == null ? rxID.generateID.Substring(0, 15) : medRx.rxID;
+                                dbMed.OutgoingItems.Add(newRx);
+                            }
+                        }
+                    }
+                    //........  /UPDATE OUTGOING
+                }
+
+                var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Medical Prescription failed to update!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Medical Prescription is successfully updated!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving the prescription.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
         }
     }
 }

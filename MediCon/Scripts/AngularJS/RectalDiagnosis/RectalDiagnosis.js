@@ -10,6 +10,13 @@
     s.showClientList = false;
     s.showBtnClientList = true;
     getSpecialist();
+    s.isViewing = false;
+    s.isEditting = false;
+    s.isViewingLab = false;
+    s.isEdittingLab = false;
+    s.isViewingRx = false;
+    s.isEdittingRx = false;
+    var rxListData = {};
 
     s.filterResult = function (date) {
         getRectalClients(date);
@@ -263,28 +270,50 @@
     }
 
     s.proceedDiagnosis = function (viewingBool, data) {
+        s.isViewing = false;
+        s.isViewingLab = false;
+        s.isViewingRx = false;
+
+        s.isEditting = false;
+        s.isEdittingLab = false;
+        s.isEdittingRx = false;
+        
+        s.setActiveTab('tabDiag');
         s.diagnosePanel = true;
         s.showBtnClientList = false;
-      
+       
         s.mrh = {};
         s.mrh = data;
-        s.mrh.fullName = viewingBool ? data.firstName + ' ' + (data.middleName == null ? '' : data.middleName) + ' ' + data.lastName + ' ' + (data.extName == null ? '' : data.extName)
-                                        : s.qrData.firstName + ' ' + (s.qrData.middleName == null ? '' : s.qrData.middleName) + ' ' + s.qrData.lastName + ' ' + (s.qrData.extName == null ? '' : s.qrData.extName);
-        const startDate = new Date();
-        const endDate = viewingBool ? new Date(data.birthdate) : new Date(s.qrData.birthdate);
-        s.mrh.age = Math.abs(moment.duration(endDate - startDate).years());
-        
-        s.rectalDiagnosis = {};
-        s.rectalDiagnosis.MRID = s.mrh.MRID;
-        s.rectalDiagnosis.requestID = s.mrh.requestID;
 
-        s.labtest = {};
-        s.otherLabDesc = '';
+        s.rectalDiagnosis = {};
         getMedicineList();
 
         if (viewingBool) {
+            s.isViewing = true;
+            s.isViewingLab = true;
+            s.isViewingRx = true;
+            s.rectalDiagnosis = data.rectalDiagnosis;
+            s.rectalDiagnosis.consistency = '' + data.rectalDiagnosis.consistency;
+            s.rectalDiagnosis.texture = '' + data.rectalDiagnosis.texture;
+            s.rectalDiagnosis.mobility = '' + data.rectalDiagnosis.mobility;
 
+            s.mrh = {};
+            s.mrh = data.rectalInterview;
+            s.mrh.referralID = data.mrhInfo.referralID;
+            s.mrh.consultID = data.mrhInfo.consultID;
         }
+
+        else {
+            s.rectalDiagnosis = data;
+            resetLabForm();
+        }
+
+        s.mrh.fullName = viewingBool ? data.personInfo.firstName + ' ' + (data.personInfo.middleName == null ? '' : data.personInfo.middleName) + ' ' + data.personInfo.lastName + ' ' + (data.personInfo.extName == null ? '' : data.personInfo.extName)
+                                        : s.qrData.firstName + ' ' + (s.qrData.middleName == null ? '' : s.qrData.middleName) + ' ' + s.qrData.lastName + ' ' + (s.qrData.extName == null ? '' : s.qrData.extName);
+
+        if (viewingBool) birthdate = data.personInfo.birthDate != null ? new Date(moment(data.personInfo.birthDate).format()) : null;
+        s.mrh.age = viewingBool ? moment().diff(moment(birthdate).format('L'), 'years') : s.qrData.age;
+        
     }
 
     s.saveDiagnosis = function (diag) {
@@ -317,8 +346,8 @@
         });
     }
 
-    s.saveLaboratory = function (lab, otherLab) {
-        
+    s.saveLaboratory = function (lab, otherLab, xrayDesc, ecgDesc, ultrasoundDesc)
+    {
         if (lab == null) {
             swal({
                 title: "ERROR",
@@ -332,26 +361,8 @@
             // Push all checked laboratory to labtestList
             var labtestList = [];
             angular.forEach(lab, function (key, value) {
-                if (value == 'LTG002') {
-                    labtestList.push('L0007');
-                    labtestList.push('L0008');
-                    labtestList.push('L0013');
-                    labtestList.push('L0014');
-                    labtestList.push('L0015');
-                }
-
-                else if (value == 'LTG003') {
-                    labtestList.push('L0016');
-                    labtestList.push('L0017');
-                    labtestList.push('L0018');
-                    labtestList.push('L0019');
-                }
-
-                else {
-                    if (key) {
-                        labtestList.push(value);
-                    }
-                }
+                if (key)
+                    labtestList.push(value);
             });
 
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
@@ -365,7 +376,9 @@
                 showConfirmButton: false
             });
 
-            h.post('../RectalDiagnosis/saveLaboratory', { consultID: s.mrh.consultID, labtest: labtestList, otherLab: otherLab, referralID: s.mrh.referralID, service: referredService }).then(function (d) {
+            h.post('../RectalDiagnosis/saveLaboratory', {
+                labtest: labtestList, referralID: s.mrh.referralID, otherLab: otherLab, xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
+            }).then(function (d) {
                 if (d.data.status == "error") {
                     swal({
                         title: "ERROR",
@@ -387,6 +400,80 @@
                 }
             });
         }
+    }
+
+    s.updateDiagnosis = function (diag) {
+        swal({
+            title: "UPDATING",
+            text: "Please wait while we are updating your data.",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        h.post("../RectalDiagnosis/updateDiagnosis", { mrd: diag }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "<label>" + d.data.msg + "</label>",
+                    type: "error",
+                    html: true,
+                });
+            } else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                    html: true,
+                });
+
+                s.setActiveTab('tabLab');
+
+                s.isViewing = true;
+                s.isEditting = false;
+                //s.showClientList = true;
+            }
+        });
+    }
+
+    s.updateLaboratory = function (labtest, otherLabDesc, xrayDesc, ecgDesc, ultrasoundDesc)
+    {
+        // Push all checked laboratory to labtestList
+        var labtestList = [];
+        angular.forEach(labtest, function (key, value) {
+            if (key)
+                labtestList.push(value);
+        });
+
+        swal({
+            title: "UPDATING",
+            text: "Please wait while we are updating your data.",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        h.post("../RectalDiagnosis/updateLaboratory", { labtest: labtestList, referralID: s.mrh.referralID, otherLab: otherLabDesc, xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "<label>" + d.data.msg + "</label>",
+                    type: "error",
+                    html: true,
+                });
+            } else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                    html: true,
+                });
+
+                s.setActiveTab('tabMed');
+
+                s.isViewingLab = true;
+                s.isEdittingLab = false;
+                //s.showClientList = true;
+            }
+        });
     }
 
     s.addMedicine = function (med) {
@@ -487,6 +574,37 @@
         });
     }
 
+    s.updatePrescription = function () {
+        swal({
+            title: "UPDATING",
+            text: "Please wait while we are updating your data.",
+            type: "info",
+            showConfirmButton: false
+        });
+       
+        h.post('../RectalDiagnosis/updatePrescription', { referralID: s.mrh.referralID, newListRx: s.RxList, consultID: s.mrh.consultID }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "Something went wrong, " + d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                });
+
+                rxListData = {};
+                s.isViewingRx = true;
+                s.isEdittingRx = false;
+            }
+        });
+    }
+
     s.resetForm = function () {
         s.qrData = {};
         s.searchQRcode = "";
@@ -497,6 +615,15 @@
         s.BMI = {};
         s.labHistoryList = [];
         s.rectalExamList = [];
+    }
+
+    function resetLabForm() {
+        s.labtest = {};
+        s.labIsEncoded = [];
+        s.xrayDesc = '';
+        s.ecgDesc = '';
+        s.ultrasoundDesc = '';
+        s.otherLabDesc = '';
     }
 
     s.viewRecord = function (data) {
@@ -532,14 +659,9 @@
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
-            $("#clientList_tbl").DataTable().clear();
-            $("#clientList_tbl")
-              .DataTable()
-              .ajax.url("../RectalDiagnosis/getRectalClientList?date=" + moment(dateFilter).format('YYYY-MM-DD'))
-              .load();
+            $("#clientList_tbl").DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tblMRH = $("#clientList_tbl").DataTable({
                 ajax: {
@@ -569,13 +691,13 @@
                   {
                       data: null,
                       render: function (row) {
-                          return "<strong>" + row.lastName + "</strong>";
+                          return "<strong>" + row.personInfo.lastName + "</strong>";
                       },
                   },
                   {
                       data: null,
                       render: function (row) {
-                          return "<strong>" + row.firstName + "</strong>";
+                          return "<strong>" + row.personInfo.firstName + "</strong>";
                       },
                   },
                   {
@@ -583,7 +705,7 @@
                       render: function (row) {
                           return row.middleName == null
                             ? ""
-                            : "<strong>" + row.middleName + "</strong>";
+                            : "<strong>" + row.personInfo.middleName + "</strong>";
                       },
                   },
                   {
@@ -591,44 +713,49 @@
                       render: function (row) {
                           return row.extName == null
                             ? ""
-                            : "<strong>" + row.extName + "</strong>";
+                            : "<strong>" + row.personInfo.extName + "</strong>";
                       },
                   },
                   {
                       data: null,
                       render: function (row) {
-                          return row.sex == "MALE" ? "M" : "F";
+                          return row.personInfo.sex == "MALE" ? "M" : "F";
                       },
                   },
                   {
                       data: null,
                       render: function (row) {
                           var age = moment().diff(
-                            moment(row.birthDate).format("L"),
+                            moment(row.personInfo.birthDate).format("L"),
                             "years"
                           );
                           return '<span class="label label-success">' + age + "</span>";
                       },
                   },
                   {
-                      data: "contactNo",
+                      data: null,
+                      render: function (row) {
+                          return row.personInfo.contactNo;
+                      },
                   },
                   {
                       data: null,
                       render: function (row) {
                           return (
-                            row.personnel_firstName +
+                            row.physician.personnel_firstName +
                             " " +
-                            row.personnel_midInit +
+                            row.physician.personnel_midInit +
                             " " +
-                            row.personnel_lastName
+                            row.physician.personnel_lastName +
+                            " " +
+                            row.physician.personnel_extName
                           );
                       },
                   },
                   {
                       data: null,
                       render: function (row) {
-                          return moment(row.diagnoseDT).format("lll");
+                          return moment(row.mrhInfo.diagnoseDT).format("lll");
                       },
                   },
                   {
@@ -646,12 +773,113 @@
             $("#clientList_tbl tbody").on("click", "#btnShowMRH", function () {
                 var data = tblMRH.row($(this).parents("tr")).data();
 
+                resetLabForm();
+             
+                // Get Laboratories
+                h.get('../RectalDiagnosis/getLabByReferralID?ReferralID=' + data.mrhInfo.referralID).then(function (d) {
+                    if (d.data.status == 'error') {
+                        swal({
+                            title: "ERROR",
+                            text: d.data.msg,
+                            type: "error"
+                        });
+                    }
+
+                    else {
+                        angular.forEach(d.data, function (item) {
+                            switch (item.labTestID)
+                            {
+                                case 'L0001':
+                                    s.labtest.L0001 = true;
+                                    s.labIsEncoded.L0001isEncoded = item.isTested;
+                                    break;
+                                case 'L0002':
+                                    s.labtest.L0002 = true;
+                                    s.labIsEncoded.L0002isEncoded = item.isTested;
+                                    break;
+                                case 'L0003':
+                                    s.labtest.L0003 = true;
+                                    s.labIsEncoded.L0003isEncoded = item.isTested;
+                                    break;
+                                case 'L0004':
+                                    s.labtest.L0004 = true;
+                                    s.ecgDesc = item.ecgDesc;
+                                    s.labIsEncoded.L0004isEncoded = item.isTested;
+                                    break;
+                                case 'L0005':
+                                    s.labtest.L0005 = true;
+                                    s.labIsEncoded.L0005isEncoded = item.isTested;
+                                    break;
+                                case 'L0006':
+                                    s.labtest.L0006 = true;
+                                    s.xrayDesc = item.xrayDesc;
+                                    s.labIsEncoded.L0006isEncoded = item.isTested;
+                                    break;
+                                case 'L0007':
+                                    s.labtest.L0007 = true;
+                                    s.labIsEncoded.L0007isEncoded = item.isTested;
+                                    break;
+                                case 'L0008':
+                                    s.labtest.L0008 = true;
+                                    s.labIsEncoded.L0008isEncoded = item.isTested;
+                                    break;
+                                case 'L0009':
+                                    s.labtest.L0009 = true;
+                                    s.labIsEncoded.L0009isEncoded = item.isTested;
+                                    break;
+                                case 'L0010':
+                                    s.labtest.L0010 = true;
+                                    s.labIsEncoded.L0010isEncoded = item.isTested;
+                                    break;
+                                case 'L0011':
+                                    s.labtest.L0011 = true;
+                                    s.labIsEncoded.L0011isEncoded = item.isTested;
+                                    break;
+                                case 'L0012':
+                                    s.labtest.L0012 = true;
+                                    s.labIsEncoded.L0012isEncoded = item.isTested;
+                                    break;
+                                case 'L0022':
+                                    s.labtest.L0022 = true;
+                                    s.otherLabDesc = item.otherLabDesc;
+                                    break;
+                                case 'L0023':
+                                    s.labtest.L0023 = true;
+                                    s.ultrasoundDesc = item.ultrasoundDesc;
+                                    s.labIsEncoded.L0023isEncoded = item.isTested;
+                                    break;
+                                case 'L0024':
+                                    s.labtest.L0024 = true;
+                                    s.labIsEncoded.L0024isEncoded = item.isTested;
+                                    break;
+                            }
+                        })
+                    }
+                });
+
+                // Get Prescriptions
+                h.get('../RectalDiagnosis/getRxByReferralID?ReferralID=' + data.mrhInfo.referralID).then(function (d) {
+                    if (d.data.status == 'error') {
+                        swal({
+                            title: "ERROR",
+                            text: d.data.msg,
+                            type: "error"
+                        });
+                    }
+
+                    else {
+                        s.RxList = {};
+                        rxListData = [];
+                        angular.copy(d.data, rxListData);
+                        s.RxList = d.data;
+                    }
+                });
+                
                 s.proceedDiagnosis(true, data);
                 s.showClientList = false;
                 s.$apply();
 
             });
-        }
     }
 
     s.setActiveTab = function (tab) {
@@ -721,6 +949,12 @@
             s.BCResult = data;
             $('#modalBLoodChem').modal('show');
         }
+    }
+
+    s.cancelEdittingRx = function () {
+        s.isEdittingRx = false;
+        s.isViewingRx = true;
+        angular.copy(rxListData, s.RxList);
     }
 
 }]);

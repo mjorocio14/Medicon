@@ -8,6 +8,7 @@ using System.Data.Entity.Validation;
 
 namespace MediCon.Controllers
 {
+     [SessionTimeout]
     public class HomeController : Controller
     {
         MediconEntities db = new MediconEntities();

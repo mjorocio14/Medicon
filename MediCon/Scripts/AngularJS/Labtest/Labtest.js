@@ -3,6 +3,11 @@
     s.qrData = {};
     s.showClientListBTN = true;
     s.showClientList = false;
+    s.searchBy = 'byQR';
+    s.showInfoForm = true;
+    s.tableLoader = false;
+    s.searchResultList = [];
+    s.showBackBtn = false;
 
     s.filterResult = function (date) {
         getLabClients(date);
@@ -15,24 +20,49 @@
         }
     );
 
-    Instascan.Camera.getCameras().then(function (cameras) {
-        if (cameras.length > 0) {
-            s.scanner.start(cameras[0]);
-        }
-        else {
-            swal({
-                title: "CAMERA ERROR",
-                text: "Camera is not found, please refresh",
-                type: "error"
-            });
-        }
-    });
+    startCamera();
+    function startCamera() {
+        Instascan.Camera.getCameras().then(function (cameras) {
+            if (cameras.length > 0) {
+                s.scanner.start(cameras[0]);
+            }
+            else {
+                swal({
+                    title: "CAMERA ERROR",
+                    text: "Camera is not found, please refresh",
+                    type: "error"
+                });
+            }
+        });
+    }
 
     s.scanner.addListener('scan', function (content) {
         s.searchQRcode = "";
         s.mainSearch(content);
     });
     // /QR Scanner Initialization
+
+    s.selectSearchBy = function (option) {
+        if (option == 'byName')
+        {
+            s.showInfoForm = false;
+            s.scanner.stop();
+            s.infoFormData = {};
+            s.searchResultList = [];
+        }
+
+        else
+        {
+            s.showInfoForm = true;
+            startCamera();
+            s.qrData = {};
+            s.searchQRcode = "";
+        }
+
+        s.showBackBtn = false;
+        s.labReq = [];
+        s.testHistory = [];
+    }
 
     s.mainSearch = function (qrCode) {
         s.loader = true;
@@ -51,20 +81,57 @@
             }
 
             else {
-                    
-                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
-                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
-                    s.qrData = d.data;
-                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
-                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
-                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
-                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
-
-                    s.getLabtest(qrCode);
+                processPersonInfo(d.data);
+                s.getLabtest(qrCode);
             }
 
             s.loader = false;
         })
+    }
+
+    function processPersonInfo(person) {
+        person.birthdate = person.birthDate != null ? new Date(moment(person.birthDate).format()) : null;
+        person.sex = person.sex != null ? (person.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = person;
+        s.qrData.age = moment().diff(moment(person.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (person.brgyPermAddress == null ? "" : person.brgyPermAddress) + ' '
+                                + (person.cityMunPermAddress == null ? "" : person.cityMunPermAddress) + ' '
+                                + (person.provincePermAddress == null ? "" : person.provincePermAddress);
+    }
+
+    s.mainSearchByName = function (data) {
+        s.tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.tableLoader = false;
+        })
+    }
+
+    s.selectPerson = function (person) {
+        processPersonInfo(person);
+        s.getLabtest(person.qrCode);
+        s.showBackBtn = true;
+        //console.log(person);
+        //s.qrData = person;
+        s.showInfoForm = true;
     }
 
     s.getLabtest = function (qrCode) {
@@ -146,11 +213,9 @@
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
-            $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url("../Labtest/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+            $('#clientList_tbl').DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableLabList = $('#clientList_tbl').DataTable({
                 "ajax": {
@@ -231,7 +296,6 @@
                 ],
                 "order": [[0, "asc"]]
             });
-        }
 
     }
 

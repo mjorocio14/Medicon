@@ -255,14 +255,9 @@
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#screening_tbl")) {
-            $("#screening_tbl").DataTable().clear();
-            $("#screening_tbl")
-              .DataTable()
-              .ajax.url("../ClinicalScreening/getScreenedClients?date=" + moment(dateFilter).format('YYYY-MM-DD'))
-              .load();
+            $("#screening_tbl").DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tblScreened = $("#screening_tbl").DataTable({
                 ajax: {
@@ -383,7 +378,6 @@
                 getIllness(data.screeningID);
 
             });
-        }
     }
 
     s.cancelViewing = function () {

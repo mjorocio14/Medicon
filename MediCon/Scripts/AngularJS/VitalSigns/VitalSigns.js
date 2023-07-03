@@ -39,12 +39,10 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl"))
         {
-            $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url("../VitalSigns/getVitalSignList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+            $('#clientList_tbl').DataTable().clear().destroy();
         }
 
-        else
-        {
+      
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableVSlist = $('#clientList_tbl').DataTable({
                 "ajax": {
@@ -170,7 +168,6 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                     }
                 });
             });
-        }
     }
 
     s.mainSearch = function (qrCode)

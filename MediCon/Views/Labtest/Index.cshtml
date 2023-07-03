@@ -58,21 +58,31 @@
                 <div class="col-lg-5 col-md-5">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title text-center">
-                            <label class="text-center">QR CODE INFORMATION</label>
+                            <label style="margin-right: 20px;">SEARCH BY: </label>
+                            <div class="radio radio-primary radio-inline">
+                                <input type="radio" id="radio_byQR" name="radio_byQR" value="byQR" ng-model="searchBy" ng-change="selectSearchBy(searchBy)" />
+                                <label for="radio_byQR"> <b>QR CODE</b> </label>
+                            </div>
+                            <div class="radio radio-danger radio-inline">
+                                <input type="radio" id="radio_byName" name="radio_byName" value="byName" ng-model="searchBy" ng-change="selectSearchBy(searchBy)" />
+                                <label for="radio_byName"> <b>NAME</b> </label>
+                            </div>
                         </div>
                         <div class="ibox-content">
-                            <div class="profile_img">
-                                <!-- Current avatar -->
-                                <video id="preview" class="img-responsive avatar-view" style="width: 100%; height: 100%;" />
-                            </div>
-                            <form name="qrSearchForm">
-                                <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
-                                    <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
-                                    <span class="input-group-btn">
-                                        <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
-                                    </span>
+                            <div ng-show="searchBy == 'byQR'">
+                                <div class="profile_img">
+                                    <!-- Current avatar -->
+                                    <video id="preview" class="img-responsive avatar-view" style="width: 100%; height: 100%;" />
                                 </div>
-                            </form>
+                                <form name="qrSearchForm">
+                                    <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                        <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
                             <br />
 
                             <div class="text-center" ng-show="loader" style="margin-top: 10%;">
@@ -83,7 +93,8 @@
                                 <text><i>Please wait, we are getting your data...</i></text>
                             </div>
                             <div ng-show="!loader">
-                                <form id="QR_FORM" name="QR_FORM">
+                                <button class="btn btn-primary full-width" ng-show="showBackBtn" ng-click="showInfoForm = !showInfoForm; showBackBtn = !showBackBtn"><i class="fa fa-search"></i> Back to Search </button>
+                                <form id="QR_FORM" name="QR_FORM" ng-show="showInfoForm">
                                     <div class="row">
                                         <div class="col-sm-6">
                                             <div class="form-group">
@@ -146,6 +157,68 @@
                                         </div>
                                     </div>
                                 </form>
+
+                                <div ng-show="!showInfoForm">
+                                    <form id="INFO_FORM" name="INFO_FORM">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <button class="btn btn-primary full-width" ng-disabled="INFO_FORM.$invalid" ng-click="mainSearchByName(infoFormData)"><i class="fa fa-search"></i> Search Record </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <hr />
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 300px !important;">
+                                        <table class="table table-stripped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Last name</th>
+                                                    <th>First name</th>
+                                                    <th>Middle name</th>
+                                                    <th>Sex</th>
+                                                    <th>Birthday</th>
+                                                    <th class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="tableLoader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="searchResultList.length == 0 && tableLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="person in searchResultList | orderBy: 'firstName'">
+                                                    <td>{{person.lastName}}</td>
+                                                    <td>{{person.firstName}}</td>
+                                                    <td>{{person.middleName}}</td>
+                                                    <td>{{person.sex == 'MALE' ? 'M' : person.sex == 'FEMALE' ? 'F' : ''}}</td>
+                                                    <td>{{person.birthDate}}</td>
+                                                    <td class="text-center">
+                                                        <button class="btn btn-sm btn-primary" ng-click="selectPerson(person)">Select</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 

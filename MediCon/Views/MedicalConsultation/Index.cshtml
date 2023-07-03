@@ -266,7 +266,7 @@
                                                             <label class="text-danger">NO INFORMATION FOUND!</label>
                                                         </td>
                                                     </tr>
-                                                    <tr ng-repeat="rx in rxHistoryList | orderBy: '-dateTimeRx'">
+                                                    <tr ng-repeat="rx in rxHistoryList | orderBy: '-dateTimeRx' track by $index">
                                                         <td class="text-center">{{$index + 1}}</td>
                                                         <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
                                                         <td>{{rx[0].dateTimeRx}}</td>
@@ -660,7 +660,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4">
                                                             <div class="checkbox checkbox-danger">
-                                                                <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006">
+                                                                <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006" ng-change="labtest.L0006 == false ? xrayDesc = '':''">
                                                                 <label for="L0006"> X-ray </label>
                                                             </div>
                                                         </div>
@@ -673,7 +673,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4">
                                                             <div class="checkbox checkbox-danger">
-                                                                <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004">
+                                                                <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004" ng-change="labtest.L0004 == false ? ecgDesc = '':''">
                                                                 <label for="L0004"> ECG </label>
                                                             </div>
                                                         </div>
@@ -688,7 +688,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4">
                                                             <div class="checkbox checkbox-danger">
-                                                                <input type="checkbox" id="L0023" value="L0023" ng-model="labtest.L0023">
+                                                                <input type="checkbox" id="L0023" value="L0023" ng-model="labtest.L0023" ng-change="labtest.L0023 == false ? ultrasoundDesc = '':''">
                                                                 <label for="L0023"> Ultrasound </label>
                                                             </div>
                                                         </div>
@@ -710,7 +710,7 @@
                                             <div class="col-lg-12">
                                                 <div class="col-lg-4 col-md-4">
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0022" value="OtherLab" ng-model="labtest.L0022" ng-change="labtest.L0022 == false ? labtest.otherLabDesc = '':''">
+                                                        <input type="checkbox" id="L0022" value="OtherLab" ng-model="labtest.L0022" ng-change="labtest.L0022 == false ? otherLabDesc = '':''">
                                                         <label for="L0022"> Other Laboratory </label>
                                                     </div>
                                                 </div>
@@ -823,7 +823,7 @@
                                                 <td>{{$index + 1}}</td>
                                                 <td><b>{{item.productDesc}}</b></td>
                                                 <td>
-                                                    {{item.dosa}}
+                                                    {{item.dosage}}
                                                     {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' ? 'ML':item.unitDesc == 'Tablet' || item.unitDesc == 'Softgel' ? 'Tablet/s':item.unitDesc == 'Capsule' ? 'Capsule/s':item.unitDesc == 'Nebule'? item.unitDesc:item.unitDesc == 'Cream' ? 'Apply':item.unitDesc == 'Respule' ? item.unitDesc:item.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
                                                     {{item.perDay}} x a Day
                                                 </td>
@@ -893,7 +893,7 @@
     </div>
 
     <!-- MODAL PERSON RESULT DIAGNOSIS -->
-    <div id="personDiagnosis_modal" class="modal fade">
+    <div id="personDiagnosis_modal" class="modal fade" data-focus="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog  modal-lg">
             <div class="modal-content">
                 <div class="modal-header blue-bg">
@@ -949,373 +949,375 @@
                     </div>
 
                     <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#tab-MDresult"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
+                        <li class="active"><a class="text-primary" data-toggle="tab" href="#tab-MDresult"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
                         <li class=""><a data-toggle="tab" href="#tab-MPresult"><i class="fa fa-medkit"></i> Prescription</a></li>
                     </ul>
                     <div class="tab-content ">
                         <div id="tab-MDresult" class="tab-pane active">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <!-- VITAL SIGNS HISTORY -->
-                                    <div class="col-sm-4">
-                                        <p class="blue-bg text-center" style="width: 100%;"> VITAL SIGNS </p>
-                                        <div class="row">
-                                            <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Ht: {{resultDiag.vitalSign.height}}m</label></div>
-                                            <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Wt: {{resultDiag.vitalSign.weight}}kg</label></div>
-                                        </div>
-                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                            <table class="table table-stripped">
-                                                <thead>
-                                                    <tr>
-
-                                                        <th>Temp.</th>
-                                                        <th>BP</th>
-                                                        <th>Pulse Rate</th>
-                                                        <th>Date & Time</th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="text-center" ng-show="bpLoader">
-                                                        <td colspan="6">
-                                                            <div class="sk-spinner sk-spinner-double-bounce">
-                                                                <div class="sk-double-bounce1"></div>
-                                                                <div class="sk-double-bounce2"></div>
-                                                            </div>
-                                                            <text><i>Please wait, we are loading your data...</i></text>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                                        <td colspan="6">
-                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                        </td>
-                                                    </tr>
-                                                    <tr ng-repeat="vs in resultDiag.bp">
-                                                        <td>{{vs.temperature}}</td>
-                                                        <td>{{vs.systolic}}/{{vs.diastolic}}</td>
-                                                        <td>{{vs.pulseRate}}</td>
-                                                        <td>{{vs.dateTimeLog }}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                            <br />
+                            <div class="row">
+                                <!-- VITAL SIGNS HISTORY -->
+                                <div class="col-sm-4">
+                                    <p class="blue-bg text-center" style="width: 100%;"> VITAL SIGNS </p>
+                                    <div class="row">
+                                        <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Ht: {{resultDiag.vitalSign.height}}m</label></div>
+                                        <div class="col-xs-6"><label class="form-control" style="background: aliceblue;">Wt: {{resultDiag.vitalSign.weight}}kg</label></div>
                                     </div>
-                                    <!-- /VITAL SIGNS HISTORY -->
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped">
+                                            <thead>
+                                                <tr>
 
-                                    <div class="col-sm-8">
-                                        <p class="blue-bg text-center" style="width: 100%;"> DIAGNOSIS </p>
-                                        <div class="col-sm-6 col-xs-6">
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG005" value="Gastritis" ng-model="resultDiag.diag.DIAG005" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG005"> Acute Gastritis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG006" value="Gastroenteritis" ng-model="resultDiag.diag.DIAG006" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG006"> Acute Gastroenteritis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG018" value="Tonsillopharyngitis" ng-model="resultDiag.diag.DIAG018" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG018"> Acute Tonsillopharyngitis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG003" value="Rhinitis" ng-model="resultDiag.diag.DIAG003" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG003"> Allergic Rhinitis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG008" value="Amoebiasis" ng-model="resultDiag.diag.DIAG008" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG008"> Amoebiasis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG021" value="Arthritis" ng-model="resultDiag.diag.DIAG021" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG021"> Arthritis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG010" value="BPH" ng-model="resultDiag.diag.DIAG010" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG010"> BPH </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG004" value="Asthma" ng-model="resultDiag.diag.DIAG004" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG004"> Bronchial Asthma </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG011" value="Dermatitis" ng-model="resultDiag.diag.DIAG011" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG011"> Contact Dermatitis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG014" value="Diabetes" ng-model="resultDiag.diag.DIAG014" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG014"> Diabetes Mellitus </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG012" value="Eczema" ng-model="resultDiag.diag.DIAG012" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG012"> Eczema </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG020" value="Furuncle" ng-model="resultDiag.diag.DIAG020" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG020"> Furuncle/Carbuncle </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG028" value="Gastritis" ng-model="resultDiag.diag.DIAG028" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG028"> Gastritis </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-xs-6">
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG007" value="GERD" ng-model="resultDiag.diag.DIAG007" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG007"> GERD </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG015" value="Hyperlipidemia" ng-model="resultDiag.diag.DIAG015" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG015"> Hyperlipidemia </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG013" value="Hypertension" ng-model="resultDiag.diag.DIAG013" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG013"> Hypertension </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG016" value="Hyperuricemia" ng-model="resultDiag.diag.DIAG016" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG016"> Hyperuricemia </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG019" value="spasm" ng-model="resultDiag.diag.DIAG019" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG019"> Musculoskeletal spasm </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG022" value="Neuropathy" ng-model="resultDiag.diag.DIAG022" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG022"> Peripheral Neuropathy </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG002" value="Pneumonia" ng-model="resultDiag.diag.DIAG002" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG002"> Pneumonia </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG026" value="SystemicIllness" ng-model="resultDiag.diag.DIAG026" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG026"> Systemic Viral Illness </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG017" value="Headache" ng-model="resultDiag.diag.DIAG017" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG017"> Tension Headache </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG027" value="Tuberculosis" ng-model="resultDiag.diag.DIAG027" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG027"> Tuberculosis </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG025" value="LowRespiratory" ng-model="resultDiag.diag.DIAG025" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG025"> Lower Respiratory Tract Infection </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG001" value="Respiratory" ng-model="resultDiag.diag.DIAG001" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG001"> Upper Respiratory Tract Infection </label>
-                                            </div>
-                                            <div class="checkbox checkbox-danger">
-                                                <input type="checkbox" id="edit_DIAG009" value="Urinary" ng-model="resultDiag.diag.DIAG009" ng-disabled="!isEditting">
-                                                <label for="edit_DIAG009"> Urinary Tract Infection </label>
-                                            </div>
-                                        </div>
+                                                    <th>Temp.</th>
+                                                    <th>BP</th>
+                                                    <th>Pulse Rate</th>
+                                                    <th>Date & Time</th>
 
-                                        <div class="col-lg-12">
-                                            <div class="row">
-                                                <div class="col-lg-3 col-md-3">
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="edit_DIAG023" value="Others" ng-model="resultDiag.diag.DIAG023" ng-change="resultDiag.diag.DIAG023 == false ? resultDiag.otherDiagnosis = '':''" ng-disabled="!isEditting">
-                                                        <label for="edit_DIAG023"> Others </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-9 col-md-9">
-                                                    <div class="form-group">
-                                                        <input type="text" id="otherDiagnosis" name="otherDiagnosis" ng-model="resultDiag.otherDiagnosis" ng-disabled="resultDiag.diag.DIAG023 == false || resultDiag.diag.DIAG023 == undefined || !isEditting" placeholder="Identify diagnosis here..." class="form-control" ng-required="resultDiag.diag.DIAG023" />
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                        <div class="form-group col-lg-12 col-md-12">
-                                            <label class="control-label" for="remarks">Remarks</label>
-                                            <input type="text" id="remarks" name="remarks" ng-model="resultDiag.info.remarks" class="form-control" placeholder="Remarks here..." ng-disabled="!isEditting" />
-                                        </div>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="bpLoader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="vs in resultDiag.bp">
+                                                    <td>{{vs.temperature}}</td>
+                                                    <td>{{vs.systolic}}/{{vs.diastolic}}</td>
+                                                    <td>{{vs.pulseRate}}</td>
+                                                    <td>{{vs.dateTimeLog }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
+                                <!-- /VITAL SIGNS HISTORY -->
 
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <p class="blue-bg text-center" style="width: 100%;"> REFERRAL </p>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4">
+                                <div class="col-sm-8">
+                                    <p class="blue-bg text-center" style="width: 100%;"> DIAGNOSIS </p>
+                                    <div class="col-sm-6 col-xs-6">
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_SERVICE003" value="Diet" ng-model="resultDiag.ref.SERVICE003" ng-disabled="!isEditting || resultDiag.refIsEncoded.SERVICE003isEncoded">
-                                            <label for="edit_SERVICE003"> Diet Counseling </label>
+                                            <input type="checkbox" id="edit_DIAG005" value="Gastritis" ng-model="resultDiag.diag.DIAG005" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG005"> Acute Gastritis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG006" value="Gastroenteritis" ng-model="resultDiag.diag.DIAG006" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG006"> Acute Gastroenteritis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG018" value="Tonsillopharyngitis" ng-model="resultDiag.diag.DIAG018" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG018"> Acute Tonsillopharyngitis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG003" value="Rhinitis" ng-model="resultDiag.diag.DIAG003" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG003"> Allergic Rhinitis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG008" value="Amoebiasis" ng-model="resultDiag.diag.DIAG008" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG008"> Amoebiasis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG021" value="Arthritis" ng-model="resultDiag.diag.DIAG021" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG021"> Arthritis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG010" value="BPH" ng-model="resultDiag.diag.DIAG010" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG010"> BPH </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG004" value="Asthma" ng-model="resultDiag.diag.DIAG004" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG004"> Bronchial Asthma </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG011" value="Dermatitis" ng-model="resultDiag.diag.DIAG011" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG011"> Contact Dermatitis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG014" value="Diabetes" ng-model="resultDiag.diag.DIAG014" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG014"> Diabetes Mellitus </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG012" value="Eczema" ng-model="resultDiag.diag.DIAG012" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG012"> Eczema </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG020" value="Furuncle" ng-model="resultDiag.diag.DIAG020" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG020"> Furuncle/Carbuncle </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG028" value="Gastritis" ng-model="resultDiag.diag.DIAG028" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG028"> Gastritis </label>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4 col-md-4">
+                                    <div class="col-sm-6 col-xs-6">
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_SERVICE004" value="MRH" ng-model="resultDiag.ref.SERVICE004" ng-disabled="!isEditting || resultDiag.refIsEncoded.SERVICE004isEncoded">
-                                            <label for="edit_SERVICE004"> Male Reproductive Health </label>
+                                            <input type="checkbox" id="edit_DIAG007" value="GERD" ng-model="resultDiag.diag.DIAG007" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG007"> GERD </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG015" value="Hyperlipidemia" ng-model="resultDiag.diag.DIAG015" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG015"> Hyperlipidemia </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG013" value="Hypertension" ng-model="resultDiag.diag.DIAG013" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG013"> Hypertension </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG016" value="Hyperuricemia" ng-model="resultDiag.diag.DIAG016" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG016"> Hyperuricemia </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG019" value="spasm" ng-model="resultDiag.diag.DIAG019" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG019"> Musculoskeletal spasm </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG022" value="Neuropathy" ng-model="resultDiag.diag.DIAG022" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG022"> Peripheral Neuropathy </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG002" value="Pneumonia" ng-model="resultDiag.diag.DIAG002" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG002"> Pneumonia </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG026" value="SystemicIllness" ng-model="resultDiag.diag.DIAG026" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG026"> Systemic Viral Illness </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG017" value="Headache" ng-model="resultDiag.diag.DIAG017" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG017"> Tension Headache </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG027" value="Tuberculosis" ng-model="resultDiag.diag.DIAG027" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG027"> Tuberculosis </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG025" value="LowRespiratory" ng-model="resultDiag.diag.DIAG025" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG025"> Lower Respiratory Tract Infection </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG001" value="Respiratory" ng-model="resultDiag.diag.DIAG001" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG001"> Upper Respiratory Tract Infection </label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_DIAG009" value="Urinary" ng-model="resultDiag.diag.DIAG009" ng-disabled="!isEditting">
+                                            <label for="edit_DIAG009"> Urinary Tract Infection </label>
                                         </div>
                                     </div>
-                                    <div class="col-lg-4 col-md-4">
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_SERVICE005" value="Papsmear" ng-model="resultDiag.ref.SERVICE005" ng-disabled="!isEditting || resultDiag.refIsEncoded.SERVICE005isEncoded">
-                                            <label for="edit_SERVICE005"> Papsmear & Breast Exam </label>
-                                        </div>
-                                    </div>
+
                                     <div class="col-lg-12">
                                         <div class="row">
                                             <div class="col-lg-3 col-md-3">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_DIAG024" value="Refer" ng-model="resultDiag.diag.DIAG024" ng-change="resultDiag.diag.DIAG024 == false ? resultDiag.info.outsideReferral = '':''" ng-disabled="!isEditting">
-                                                    <label for="edit_DIAG024"> Refer to Health Facility </label>
+                                                    <input type="checkbox" id="edit_DIAG023" value="Others" ng-model="resultDiag.diag.DIAG023" ng-change="resultDiag.diag.DIAG023 == false ? resultDiag.otherDiagnosis = '':''" ng-disabled="!isEditting">
+                                                    <label for="edit_DIAG023"> Others </label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-9 col-md-9">
                                                 <div class="form-group">
-                                                    <input type="text" id="referDesc" name="referDesc" ng-model="resultDiag.info.outsideReferral" ng-disabled="resultDiag.diag.DIAG024 == false || resultDiag.diag.DIAG024 == undefined || !isEditting" placeholder="Identify referral info here..." class="form-control" ng-required="resultDiag.diag.DIAG024" />
+                                                    <input type="text" id="otherDiagnosis" name="otherDiagnosis" ng-model="resultDiag.otherDiagnosis" ng-disabled="resultDiag.diag.DIAG023 == false || resultDiag.diag.DIAG023 == undefined || !isEditting" placeholder="Identify diagnosis here..." class="form-control" ng-required="resultDiag.diag.DIAG023" />
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <p class="blue-bg text-center" style="width: 100%;"> LABORATORY </p>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0002" value="L0002" ng-model="resultDiag.laboratory.L0002" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0002isEncoded">
-                                            <label for="edit_L0002"> CBC </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0001" value="L0001" ng-model="resultDiag.laboratory.L0001" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0001isEncoded">
-                                            <label for="edit_L0001"> Urinalysis </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0003" value="L0003" ng-model="resultDiag.laboratory.L0003" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0003isEncoded">
-                                            <label for="edit_L0003"> Fecalysis </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0005" value="L0005" ng-model="resultDiag.laboratory.L0005" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0005isEncoded">
-                                            <label for="edit_L0005"> FBS </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0009" value="L0009" ng-model="resultDiag.laboratory.L0009" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0009isEncoded">
-                                            <label for="edit_L0009"> Creatinine </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0007" value="L0007" ng-model="resultDiag.laboratory.L0007" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0007isEncoded">
-                                            <label for="edit_L0007"> Lipid Profile </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0010" value="L0010" ng-model="resultDiag.laboratory.L0010" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0010isEncoded">
-                                            <label for="edit_L0010"> Uric Acid </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0011" value="L0011" ng-model="resultDiag.laboratory.L0011" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0011isEncoded">
-                                            <label for="edit_L0011"> SGPT </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0012" value="L0012" ng-model="resultDiag.laboratory.L0012" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0012isEncoded">
-                                            <label for="edit_L0012"> SGOT </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0008" value="L0008" ng-model="resultDiag.laboratory.L0008" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0008isEncoded">
-                                            <label for="edit_L0008"> Serum Electrolytes </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12">
-                                        <hr style="margin: 7px 0px 15px 0px;" />
-                                    </div>
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0006" value="L0006" ng-model="resultDiag.laboratory.L0006" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0006isEncoded">
-                                                    <label for="edit_L0006"> X-ray </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-md-8">
-                                                <div class="form-group">
-                                                    <input type="text" id="xrayDesc" name="xrayDesc" ng-model="resultDiag.xrayDesc" ng-disabled="resultDiag.laboratory.L0006 == false || resultDiag.laboratory.L0006 == undefined || !isEditting || resultDiag.labIsEncoded.L0006isEncoded" placeholder="Identify other x-ray here..." class="form-control" ng-required="resultDiag.laboratory.L0006" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0004" value="L0004" ng-model="resultDiag.laboratory.L0004" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0004isEncoded">
-                                                    <label for="edit_L0004"> ECG </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-md-8">
-                                                <div class="form-group">
-                                                    <input type="text" id="ecgDesc" name="ecgDesc" ng-model="resultDiag.ecgDesc" ng-disabled="resultDiag.laboratory.L0004 == false || resultDiag.laboratory.L0004 == undefined || !isEditting || resultDiag.labIsEncoded.L0004isEncoded" placeholder="Identify other ECG here..." class="form-control" ng-required="resultDiag.laboratory.L0004" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="row">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0023" value="L0023" ng-model="resultDiag.laboratory.L0023" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0023isEncoded">
-                                                    <label for="edit_L0023"> Ultrasound </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-md-8">
-                                                <div class="form-group">
-                                                    <input type="text" id="ultrasoundDesc" name="ultrasoundDesc" ng-model="resultDiag.ultrasoundDesc" ng-disabled="resultDiag.laboratory.L0023 == false || resultDiag.laboratory.L0023 == undefined || !isEditting || resultDiag.labIsEncoded.L0023isEncoded" placeholder="Identify other Ultrasound here..." class="form-control" ng-required="resultDiag.laboratory.L0023" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0024" value="L0024" ng-model="resultDiag.laboratory.L0024" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0024isEncoded">
-                                            <label for="edit_L0024"> 2D Echocardiography </label>
-                                        </div>
-                                    </div>
-                                    <br />
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <div class="col-lg-4 col-md-4">
-                                                <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0022" value="OtherLab" ng-model="resultDiag.laboratory.L0022" ng-disabled="!isEditting" ng-change="resultDiag.laboratory.L0022 == false ? resultDiag.laboratory.otherLabDesc = '':''">
-                                                    <label for="edit_L0022"> Other Laboratory </label>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-8 col-md-8">
-                                                <div class="form-group">
-                                                    <input type="text" id="otherLabDesc" name="otherLabDesc" ng-model="resultDiag.otherLabDesc" ng-disabled="resultDiag.laboratory.L0022 == false || resultDiag.laboratory.L0022 == undefined || !isEditting" placeholder="Identify other laboratory here..." class="form-control" ng-required="resultDiag.laboratory.L0022" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="panel-footer" style="background-color: white;">
-                                    <div class="pull-right">
-                                        <button type="button" class="btn" ng-class="isEditting ? 'btn-primary':'btn-success'" ng-click="saveUpdate(resultDiag)">{{isEditting ? 'Save changes' : 'Edit Diagnosis'}}</button>
-                                        <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+
+                                    <div class="form-group col-lg-12 col-md-12">
+                                        <label class="control-label" for="remarks">Remarks</label>
+                                        <input type="text" id="remarks" name="remarks" ng-model="resultDiag.info.remarks" class="form-control" placeholder="Remarks here..." ng-disabled="!isEditting" />
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <p class="blue-bg text-center" style="width: 100%;"> REFERRAL </p>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_SERVICE003" value="Diet" ng-model="resultDiag.ref.SERVICE003" ng-disabled="!isEditting || resultDiag.refIsEncoded.SERVICE003isEncoded">
+                                        <label for="edit_SERVICE003"> Diet Counseling </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_SERVICE004" value="MRH" ng-model="resultDiag.ref.SERVICE004" ng-disabled="!isEditting || resultDiag.refIsEncoded.SERVICE004isEncoded">
+                                        <label for="edit_SERVICE004"> Male Reproductive Health </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_SERVICE005" value="Papsmear" ng-model="resultDiag.ref.SERVICE005" ng-disabled="!isEditting || resultDiag.refIsEncoded.SERVICE005isEncoded">
+                                        <label for="edit_SERVICE005"> Papsmear & Breast Exam </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="edit_DIAG024" value="Refer" ng-model="resultDiag.diag.DIAG024" ng-change="resultDiag.diag.DIAG024 == false ? resultDiag.info.outsideReferral = '':''" ng-disabled="!isEditting">
+                                                <label for="edit_DIAG024"> Refer to Health Facility </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-9 col-md-9">
+                                            <div class="form-group">
+                                                <input type="text" id="referDesc" name="referDesc" ng-model="resultDiag.info.outsideReferral" ng-disabled="resultDiag.diag.DIAG024 == false || resultDiag.diag.DIAG024 == undefined || !isEditting" placeholder="Identify referral info here..." class="form-control" ng-required="resultDiag.diag.DIAG024" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <p class="blue-bg text-center" style="width: 100%;"> LABORATORY </p>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0002" value="L0002" ng-model="resultDiag.laboratory.L0002" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0002isEncoded">
+                                        <label for="edit_L0002"> CBC </label>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0001" value="L0001" ng-model="resultDiag.laboratory.L0001" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0001isEncoded">
+                                        <label for="edit_L0001"> Urinalysis </label>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0003" value="L0003" ng-model="resultDiag.laboratory.L0003" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0003isEncoded">
+                                        <label for="edit_L0003"> Fecalysis </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0005" value="L0005" ng-model="resultDiag.laboratory.L0005" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0005isEncoded">
+                                        <label for="edit_L0005"> FBS </label>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0009" value="L0009" ng-model="resultDiag.laboratory.L0009" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0009isEncoded">
+                                        <label for="edit_L0009"> Creatinine </label>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0007" value="L0007" ng-model="resultDiag.laboratory.L0007" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0007isEncoded">
+                                        <label for="edit_L0007"> Lipid Profile </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0010" value="L0010" ng-model="resultDiag.laboratory.L0010" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0010isEncoded">
+                                        <label for="edit_L0010"> Uric Acid </label>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0011" value="L0011" ng-model="resultDiag.laboratory.L0011" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0011isEncoded">
+                                        <label for="edit_L0011"> SGPT </label>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0012" value="L0012" ng-model="resultDiag.laboratory.L0012" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0012isEncoded">
+                                        <label for="edit_L0012"> SGOT </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-md-3">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0008" value="L0008" ng-model="resultDiag.laboratory.L0008" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0008isEncoded">
+                                        <label for="edit_L0008"> Serum Electrolytes </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <hr style="margin: 7px 0px 15px 0px;" />
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="edit_L0006" value="L0006" ng-model="resultDiag.laboratory.L0006" ng-change="resultDiag.laboratory.L0006 == false ? resultDiag.xrayDesc = '':''" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0006isEncoded">
+                                                <label for="edit_L0006"> X-ray </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="form-group">
+                                                <input type="text" id="xrayDesc" name="xrayDesc" ng-model="resultDiag.xrayDesc" ng-disabled="resultDiag.laboratory.L0006 == false || resultDiag.laboratory.L0006 == undefined || !isEditting || resultDiag.labIsEncoded.L0006isEncoded" placeholder="Identify other x-ray here..." class="form-control" ng-required="resultDiag.laboratory.L0006" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="edit_L0004" value="L0004" ng-model="resultDiag.laboratory.L0004" ng-change="resultDiag.laboratory.L0004 == false ? resultDiag.ecgDesc = '':''" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0004isEncoded">
+                                                <label for="edit_L0004"> ECG </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="form-group">
+                                                <input type="text" id="ecgDesc" name="ecgDesc" ng-model="resultDiag.ecgDesc" ng-disabled="resultDiag.laboratory.L0004 == false || resultDiag.laboratory.L0004 == undefined || !isEditting || resultDiag.labIsEncoded.L0004isEncoded" placeholder="Identify other ECG here..." class="form-control" ng-required="resultDiag.laboratory.L0004" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="edit_L0023" value="L0023" ng-model="resultDiag.laboratory.L0023" ng-change="resultDiag.laboratory.L0023 == false ? resultDiag.ultrasoundDesc = '':''" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0023isEncoded">
+                                                <label for="edit_L0023"> Ultrasound </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="form-group">
+                                                <input type="text" id="ultrasoundDesc" name="ultrasoundDesc" ng-model="resultDiag.ultrasoundDesc" ng-disabled="resultDiag.laboratory.L0023 == false || resultDiag.laboratory.L0023 == undefined || !isEditting || resultDiag.labIsEncoded.L0023isEncoded" placeholder="Identify other Ultrasound here..." class="form-control" ng-required="resultDiag.laboratory.L0023" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="edit_L0024" value="L0024" ng-model="resultDiag.laboratory.L0024" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0024isEncoded">
+                                        <label for="edit_L0024"> 2D Echocardiography </label>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-4 col-md-4">
+                                            <div class="checkbox checkbox-danger">
+                                                <input type="checkbox" id="edit_L0022" value="OtherLab" ng-model="resultDiag.laboratory.L0022" ng-disabled="!isEditting" ng-change="resultDiag.laboratory.L0022 == false ? resultDiag.otherLabDesc = '':''">
+                                                <label for="edit_L0022"> Other Laboratory </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-8 col-md-8">
+                                            <div class="form-group">
+                                                <input type="text" id="otherLabDesc" name="otherLabDesc" ng-model="resultDiag.otherLabDesc" ng-disabled="resultDiag.laboratory.L0022 == false || resultDiag.laboratory.L0022 == undefined || !isEditting" placeholder="Identify other laboratory here..." class="form-control" ng-required="resultDiag.laboratory.L0022" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer" style="background-color: white;">
+                                <div class="pull-right">
+                                    <button type="button" class="btn" ng-class="isEditting ? 'btn-primary':'btn-success'" ng-click="saveUpdate(resultDiag)">{{isEditting ? 'Save changes' : 'Edit Diagnosis'}}</button>
+                                    <button type="button" class="btn btn-danger" ng-click="isEditting = !isEditting" ng-show="isEditting">Cancel</button>
+                                    <button type="button" class="btn btn-white" data-dismiss="modal" ng-show="!isEditting">Close</button>
+                                </div>
+                            </div>
+                            <br />
                         </div>
                         <div id="tab-MPresult" class="tab-pane">
-                            <div class="panel-body">
+                            <br />
+                            <div ng-show="isShowEditRxForm">
                                 <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                     <table class="table table-stripped table-hover" style="width: 100%;">
-                                        <thead style="background-color:aliceblue;">
-                                            <tr style="font-weight: bold;">
-                                                <td>Medicine Name</td>
-                                                <td>Dosage</td>
-                                                <td># Days</td>
-                                                <td>Qty</td>
+                                        <thead class="blue-bg">
+                                            <tr>
+                                                <td>MEDICINE NAME</td>
+                                                <td>DOSAGE</td>
+                                                <td># DAYS</td>
+                                                <td>QTY</td>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="text-center" ng-show="rxList.length == 0">
+                                            <tr class="text-center" ng-show="rxHistory.length == 0">
                                                 <td colspan="4">
                                                     <span class="text-danger"><label><i>No record found</i></label></span>
                                                 </td>
@@ -1331,16 +1333,121 @@
                                 </div>
                                 <div class="panel-footer" style="background-color: white;">
                                     <div class="pull-right">
-                                        <button type="button" class="btn btn-success" ng-click="editPrescription()">Edit Prescription</button>
+                                        <button type="button" class="btn btn-success" ng-click="enableRxEditting()">Edit Prescription</button>
                                         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-body">
+                            <div ng-show="!isShowEditRxForm">
                                 <div class="row">
-                                    <div></div>
+                                    <div class="col-lg-4 col-md-4">
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading text-center">
+                                                <label class="text-center">DRUGS & MEDICINES</label>
+                                            </div>
+                                            <div class="panel-body">
+                                                <form id="rxEdit_form" name="rxEdit_form" novalidate>
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="productCode_Edit">Item</label>
+                                                        <select name="productCode_Edit" id="productCode_Edit" ng-model="medsEdit.product" ng-change="onChangeMed(medsEdit.product)" style="width: 100%; text-transform : uppercase" class="form-control" required>
+                                                            <option value=""></option>
+                                                            <option ng-repeat="med in medList" value={{med}}>{{med.productDesc}} {{med.unitDesc}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="dosage">Dosage</label>
+                                                        <div class="form-inline">
+                                                            <div class="input-group m-b" style="width: 100%">
+                                                                <input type="number" min="0.01" step="0.01" id="dosage" name="dosage" required ng-model="medsEdit.dosage" placeholder="e.g. 10" class="form-control text-center" />
+                                                                <span class="input-group-addon"><b>{{unitEdit.unitDesc == 'Suspension' || unitEdit.unitDesc == 'Syrup' || unitEdit.unitDesc == 'Drops' ? 'ML' : unitEdit.unitDesc == 'Tablet' || unitEdit.unitDesc == 'Softgel' ? 'Tablet/s' : unitEdit.unitDesc == 'Capsule' ? 'Capsule/s' : unitEdit.unitDesc == 'Nebule'? unitEdit.unitDesc : unitEdit.unitDesc == 'Cream' ? 'Apply' : unitEdit.unitDesc == 'Respule' ? unitEdit.unitDesc : unitEdit.unitDesc == 'Sachet' ? unitEdit.unitDesc : unitEdit.unitDesc}}</b></span>
+                                                            </div>
+                                                            <div class="input-group m-b" style="width: 100%">
+                                                                <input type="number" min="1" onkeydown="return event.keyCode !== 190" id="perDay" name="perDay" required ng-model="medsEdit.perDay" placeholder="e.g. 5" class="form-control text-center" /> <span class="input-group-addon"><i class="fa fa-times text-danger"></i><b> a Day</b></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="noDay_Edit">No. of Days</label>
+                                                        <select name="noDay_Edit" id="noDay_Edit" ng-model="medsEdit.noDay" ng-change="onChangeNoDay(medsEdit.noDay)" style="width: 100%; text-transform : uppercase" class="form-control" required>
+                                                            <option value=""></option>
+                                                            <option value="maintenance">As Maintenance</option>
+                                                            <option value="needed">As Needed</option>
+                                                            <option value="single">Single Dose</option>
+                                                            <option value=1>1 Day</option>
+                                                            <option value=2>2 Days</option>
+                                                            <option value=3>3 Days</option>
+                                                            <option value=4>4 Days</option>
+                                                            <option value=5>5 Days</option>
+                                                            <option value=7>7 Days</option>
+                                                            <option value=10>10 Days</option>
+                                                            <option value=14>14 Days</option>
+                                                        </select>
+                                                    </div>
+                                                    <div ng-show="showRxQtyEdit" class="form-group">
+                                                        <label class="control-label" for="noDay">Qty</label>
+                                                        <div class="input-group m-b col-lg-5" style="width: 100%">
+                                                            <input type="number" min="1" step="1" id="inputQTY" name="inputQTY" ng-model="medsEdit.inputQTY" placeholder="e.g. 10" class="form-control  text-center" ng-required="showRxQtyEdit" />
+                                                            <span class="input-group-addon"><b>{{unitEdit.unitDesc == 'Suspension' || unitEdit.unitDesc == 'Syrup' || unitEdit.unitDesc == 'Drops' || unitEdit.unitDesc == 'Bottle' ? 'Bottle/s' : unitEdit.unitDesc == 'Tablet' || unitEdit.unitDesc == 'Softgel' ? 'Tablet/s' : unitEdit.unitDesc == 'Capsule' ? 'Capsule/s' : unitEdit.unitDesc == 'Nebule'? unit.unitDesc : unitEdit.unitDesc == 'Cream' ? 'Apply' : unitEdit.unitDesc == 'Respule' ? unitEdit.unitDesc : unitEdit.unitDesc == 'Sachet' ? unitEdit.unitDesc:''}}</b></span>
+                                                        </div>
+                                                    </div>
+                                                    <button class="btn btn-success pull-right " type="submit" ng-disabled="rxEdit_form.$invalid" ng-click="addMedToEditList(medsEdit)"><i class="fa fa-plus"></i> Add to Rx </button>
+                                                </form>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8 col-md-8">
+                                        <div class="panel panel-success">
+                                            <div class="panel-heading text-center">
+                                                <label class="text-center">MEDICAL PRESCRIPTION</label>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                                    <table class="table table-stripped table-hover" style="width: 100%;">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th class="">#</th>
+                                                                <th>Name</th>
+                                                                <th>Dosage</th>
+                                                                <th># Days</th>
+                                                                <th>Qty</th>
+                                                                <th class="text-right">Action</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="item in RxList">
+                                                                <td>{{$index + 1}}</td>
+                                                                <td><b>{{item.productDesc}}</b></td>
+                                                                <td>
+                                                                    {{item.dosage}}
+                                                                    {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' ? 'ML':item.unitDesc == 'Tablet' || item.unitDesc == 'Softgel' ? 'Tablet/s':item.unitDesc == 'Capsule' ? 'Capsule/s':item.unitDesc == 'Nebule'? item.unitDesc:item.unitDesc == 'Cream' ? 'Apply':item.unitDesc == 'Respule' ? item.unitDesc:item.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
+                                                                    {{item.perDay}} x a Day
+                                                                </td>
+                                                                <td>{{item.noDay == 'maintenance' ? 'as Maintenance':item.noDay == 'needed' ? 'as Needed':item.noDay == 'single' ? 'Single Dose':item.noDay + ' Day/s'}}</td>
+                                                                <td><b>{{item.qtyRx}} {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' || item.unitDesc == 'Bottle' ? 'Bottle/s':item.unitDesc == 'Cream' ? 'Tube':''}}</b></td>
+                                                                <td class="text-right">
+                                                                    <div class="btn-group">
+                                                                        <button class="btn-danger btn btn-xs" ng-disabled="item.isRelease" ng-click="removeMedicine($index)"> Remove <i class="fa fa-trash"></i></button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer" style="background-color: white;">
+                                    <div class="pull-right">
+                                        <button type="button" class="btn btn-primary" ng-click="updatePrescription(RxList)">Save changes</button>
+                                        <button type="button" class="btn btn-danger" ng-click="isShowEditRxForm = !isShowEditRxForm">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
+                            <br />
                         </div>
                     </div>
                 </div>

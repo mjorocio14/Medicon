@@ -199,6 +199,39 @@ namespace MediCon.Controllers
 
         }
 
+        public ActionResult getDiagnosis(string vitalSignID)
+        {
+            try
+            {
+                var diagList = db.Consultations.Join(db.ResultDiagnosis, con => con.consultID, res => res.consultID, (con, res) => new { con, res })
+                                           .Join(db.Diagnosis, conres => conres.res.diagnoseID, diag => diag.diagnoseID, (conres, diag) => new { conres, diag })
+                                           .Join(db.Personnels, p => p.conres.con.personnelID, pp => pp.personnelID, (p, pp) => new { p, pp })
+                                           .Where(w => w.p.conres.con.vSignID == vitalSignID && w.p.conres.con.serviceID == "SERVICE002")
+                                           .Select(s => new
+                                           {
+                                               s.p.conres.con.vSignID,
+                                               s.p.conres.con.consultID,
+                                               s.p.conres.con.outsideReferral,
+                                               s.p.conres.con.remarks,
+                                               s.p.conres.con.toothNum,
+                                               s.p.conres.con.personnelID,
+                                               s.p.conres.con.serviceID,
+                                               s.pp.personnel_firstName,
+                                               s.pp.personnel_midInit,
+                                               s.pp.personnel_lastName,
+                                               s.pp.personnel_extName,
+                                               s.p.conres.con.dateTimeLog,
+                                               s.p.diag.diagnoseName,
+                                           }).ToList();
+
+                return Json(diagList, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", ex = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         //.......       LIST OF DENTAL CLIENT
         [HttpPost]
         public ActionResult getClientList(string date)

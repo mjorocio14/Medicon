@@ -156,11 +156,9 @@
         indexNo = 1;
 
         if ($.fn.DataTable.isDataTable("#clientList_tbl")) {
-            $('#clientList_tbl').DataTable().clear();
-            $('#clientList_tbl').DataTable().ajax.url("../PapsmearBreastExam/getPatientList?date=" + moment(dateFilter).format('YYYY-MM-DD')).load();
+            $('#clientList_tbl').DataTable().clear().destroy();
         }
 
-        else {
             //............. LIST OF CLIENTS WITH VITAL SIGNS TABLE
             var tableLabList = $('#clientList_tbl').DataTable({
                 "ajax": {
@@ -245,7 +243,6 @@
                 ],
                 "order": [[0, "asc"]]
             });
-        }
     }
 
 }]);
