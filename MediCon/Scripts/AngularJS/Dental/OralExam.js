@@ -14,6 +14,8 @@
     //var vsIndexNo = 1;
     //getDiagnoseClientList();
     s.showRx = false;
+    s.isEdittingDiagnosis = false;
+    s.per = {};
     
 
     //s.showRxQty = false;
@@ -29,8 +31,8 @@
         s.showClientList = !s.showClientList;
 
         if (s.showClientList) {
-            s.xrayFilterDate = new Date();
-            getDiagnoseClientList(s.xrayFilterDate);
+            s.dentalFilterDate = new Date();
+            getDiagnoseClientList(s.dentalFilterDate);
         }
     };
 
@@ -122,13 +124,14 @@
 
             $('#listOralClient_tbl tbody').on('click', '#btnShowOralDiagnosis', function () {
                 var data = tableOralList.row($(this).parents('tr')).data();
-                
+              
                 s.diagnosisInfo = {};
-                s.diagnosisInfo.doctorName = data.DrLastName + ", " + data.DrFirstName + " " + (data.DrMiddleName != null ? data.DrMiddleName : '') + (data.DrExtName != null ? data.DrExtName : '');
+                s.diagnosisInfo.doctorName = data.dentistID ? (data.Dentist[0].DrLastName + ", " + data.Dentist[0].DrFirstName + " " + (data.Dentist[0].DrMiddleName != null ? data.Dentist[0].DrMiddleName : '') + (data.Dentist[0].DrExtName != null ? data.Dentist[0].DrExtName : '')) : '';
                 s.diagnosisInfo.dateTimeLog = moment(data.dateTimeLog).format('lll');
                 s.diagnosisInfo.remarks = data.remarks;
                 s.diagnosisInfo.outsideReferral = data.outsideReferral;
                 s.diagnosisInfo.toothNum = data.toothNum;
+                s.diagnosisInfo.rawData = data;
 
                 s.diagnosisList = {};
                 s.diagnosisList = data.diagnosis;
@@ -482,6 +485,118 @@
                 s.resetForm();
             }
         });
+    }
+
+    s.editDiagnosis = function (data) {
+        data.rawData.birthdate = data.rawData.birthDate != null ? new Date(moment(data.rawData.birthDate).format()) : null;
+        data.rawData.sex = data.rawData.sex != null ? (data.rawData.sex == "true" ? 'true' : 'false') : null;
+
+        s.qrData = data.rawData;
+        s.qrData.age = moment().diff(moment(data.rawData.birthDate).format('L'), 'years');
+        s.qrData.fullAddress = (data.rawData.brgyPermAddress == null ? "" : data.rawData.brgyPermAddress) + ' '
+                                + (data.rawData.cityMunPermAddress == null ? "" : data.rawData.cityMunPermAddress) + ' '
+                                + (data.rawData.provincePermAddress == null ? "" : data.rawData.provincePermAddress);
+
+        s.isEdittingDiagnosis = true;
+        s.diagnose = {};
+        s.diagnoseInfo = {}
+        getBPhistory(data.rawData.qrCode, s.qrData.age);
+
+        angular.forEach(data.rawData.diagnosis, function (rec) {
+            switch(rec.diagnoseID)
+            {
+                case 'DIAG023':     // Other Diagnosis
+                    s.diagnose.DIAG023 = true;
+                    s.diagnoseInfo.otherDiagnose = rec.otherDiagnosis;
+                    break;
+                case 'DIAG048':     // Cellulitis/Dento Alveolar Abscess
+                    s.diagnose.DIAG048 = true;
+                    break;
+                case 'DIAG049':     // Tooth Extraction
+                    s.diagnose.DIAG049 = true;
+                    s.diagnoseInfo.toothNum = data.rawData.toothNum;
+                    s.per.personnelID = data.rawData.dentistID;
+                    break;
+                case 'DIAG024':     // Referral
+                    s.diagnoseInfo.outsideReferral = data.rawData.outsideReferral;
+                    s.diagnoseInfo.remarks = data.rawData.remarks;
+                    break;
+            }
+        });
+
+        s.showClientList = !s.showClientList;
+        $('#diagnosHistory_modal').modal('hide');
+    }
+
+    s.cancelEditting = function () {
+        s.resetForm();
+        s.isEdittingDiagnosis = false;
+        s.showClientList = !s.showClientList;
+    }
+    
+    s.updateDiagnosis = function (diagnosis, info, dentist) {
+        if(!diagnosis.DIAG023 && !diagnosis.DIAG048 && !diagnosis.DIAG049 && !info.outsideReferral)
+        {
+            swal({
+                title: "Failed",
+                text: "Please fill-up the diagnosis form!",
+                type: "error"
+            });
+        }
+
+        else {
+            
+                    swal({
+                        title: "UPDATING",
+                        text: "Please wait while we are updating your data.",
+                        type: "info",
+                        showConfirmButton: false
+                    });
+
+
+                    var listChecked = [];
+                    angular.forEach(diagnosis, function (key, value) {
+                        if (key)
+                            listChecked.push(value);
+                    });
+
+                    let updateInfo = {};
+                    updateInfo.consultID = s.qrData.consultID;
+                    updateInfo.outsideReferral = info.outsideReferral;
+                    updateInfo.remarks = info.remarks;
+                    updateInfo.toothNum = info.toothNum;
+                    updateInfo.dentistID = dentist;
+
+                    h.post('../Dental/updateDentalDiagnosis', { checkedDiagnosis: listChecked, detail: updateInfo, otherDiag: info.otherDiagnose }).then(function (d) {
+                        if (d.data.status == "error") {
+                            swal({
+                                title: "ERROR",
+                                text: "<labal>" + d.data.msg + "</label>",
+                                type: "error",
+                                html: true
+                            });
+                        }
+
+                        else {
+                            swal({
+                                title: "SUCCESSFUL",
+                                text: d.data.msg,
+                                type: "success",
+                                showConfirmButton: true
+                            }, function (isConfirm) {
+                                if (isConfirm) {
+                                    //s.showRx = !s.showRx;
+                                    getDiagnoseClientList();
+                                    s.cancelEditting();
+                                    //s.showClientListBTN = false;
+                                    //s.conslultID = d.data.result;
+                                    s.$apply();
+                                }
+                            });
+
+                        }
+                    });
+                }
     }
 
 

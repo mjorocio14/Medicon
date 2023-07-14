@@ -9,6 +9,7 @@ using System.Net.NetworkInformation;
 using System.Net;
 using System.Net.Sockets;
 using MediCon.ModelTemp;
+using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
@@ -114,6 +115,64 @@ namespace MediCon.Controllers
 
                     return Json(new { result = detail.consultID, status = "success", msg = "Diagnosis is successfully saved!" }, JsonRequestBehavior.AllowGet);
                 }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult updateDentalDiagnosis(string[] checkedDiagnosis, Consultation detail, string otherDiag)
+        {
+            try
+            {
+                var date = new CurrentDateTime();
+
+                var findRec = db.Consultations.Find(detail.consultID);
+
+                findRec.outsideReferral = detail.outsideReferral;
+                findRec.remarks = detail.remarks;
+                findRec.toothNum = detail.toothNum;
+                findRec.dentistID = detail.dentistID;
+                db.Entry(findRec).State = EntityState.Modified;
+
+                // REMOVE EXISTING LIST OF RESULT DIAGNOSIS DATA
+                var resultDiag = db.ResultDiagnosis.Where(a => a.consultID == detail.consultID);
+                if (resultDiag != null) { db.ResultDiagnosis.RemoveRange(resultDiag); }
+
+                // ADD THE UPDATED DATA FOR RESULT DIAGNOSIS
+                    if (checkedDiagnosis != null)
+                    {
+                        var arrList = checkedDiagnosis.ToList();
+
+                        if (detail.outsideReferral != null && detail.outsideReferral != "")
+                        {
+                            arrList.Add("DIAG024");
+                            arrList = arrList.ToList();
+                        }
+
+                        foreach (var item in arrList)
+                        {
+                            guid = Guid.NewGuid();
+                            ResultDiagnosi RS = new ResultDiagnosi();
+                            RS.resultID = "RS" + guid.ToString().Substring(0, 8) + (DateTime.Now.GetHashCode() < 0 ? (DateTime.Now.GetHashCode() * -1) : DateTime.Now.GetHashCode());
+                            RS.resultID = RS.resultID.Length > 15 ? RS.resultID.Substring(0, 15) : RS.resultID;
+                            RS.diagnoseID = item;
+                            RS.otherDiagnosis = item == "DIAG023" ? otherDiag : null;
+                            RS.consultID = detail.consultID;
+                            db.ResultDiagnosis.Add(RS);
+                        }
+                        //......  /SAVE DATA IN RESULT DIAGNOSIS TABLE
+                    }
+
+                    var affectedRow = db.SaveChanges();
+
+                    if (affectedRow == 0)
+                        return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
+
+                    return Json(new { result = detail.consultID, status = "success", msg = "Diagnosis is successfully updated!" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -242,24 +301,25 @@ namespace MediCon.Controllers
                 DateTime dateEnd = DateTime.Parse(date + " 23:59:59");
 
                 var result = db.VitalSigns.Join(db.Consultations, r1 => r1.vSignID, con => con.vSignID, (r1, con) => new { r1, con })
-                                               .Join(db.Personnels, r2 => r2.con.dentistID, p => p.personnelID, (r2, p) => new { r2, p })
-                                               .Where(a => a.r2.con.serviceID == "SERVICE002" && a.r2.con.dateTimeLog >= dateStart && a.r2.con.dateTimeLog <= dateEnd)
+                                               .Where(a => a.con.serviceID == "SERVICE002" && a.con.dateTimeLog >= dateStart && a.con.dateTimeLog <= dateEnd)
                                                .Select(b => new
                                                {
-                                                   b.r2.r1.qrCode,
-                                                   b.r2.con.consultID,
-                                                   b.r2.con.outsideReferral,
-                                                   b.r2.con.remarks,
-                                                   b.r2.con.serviceID,
-                                                   b.r2.con.toothNum,
-                                                   b.r2.con.dateTimeLog,
-                                                   b.r2.con.dentistID,
-                                                   DrLastName = b.p.personnel_lastName,
-                                                   DrFirstName = b.p.personnel_firstName,
-                                                   DrMiddleName = b.p.personnel_midInit,
-                                                   DrExtName = b.p.personnel_extName,
+                                                   b.r1.qrCode,
+                                                   b.con.consultID,
+                                                   b.con.outsideReferral,
+                                                   b.con.remarks,
+                                                   b.con.serviceID,
+                                                   b.con.toothNum,
+                                                   b.con.dateTimeLog,
+                                                   b.con.dentistID,
+                                                   Dentist = db.Personnels.Where(den => den.personnelID == b.con.dentistID).Select(person => new {
+                                                       DrLastName = person.personnel_lastName,
+                                                       DrFirstName = person.personnel_firstName,
+                                                       DrMiddleName = person.personnel_midInit,
+                                                       DrExtName = person.personnel_extName,
+                                                   }),
                                                    diagnosis = db.ResultDiagnosis.Join(db.Diagnosis, rd => rd.diagnoseID, dg => dg.diagnoseID, (rd, dg) => new { rd, dg })
-                                                   .Where(c => c.rd.consultID == b.r2.con.consultID).Select(d => new
+                                                   .Where(c => c.rd.consultID == b.con.consultID).Select(d => new
                                                    {
                                                        d.rd.diagnoseID,
                                                        d.dg.diagnoseName,
@@ -278,16 +338,17 @@ namespace MediCon.Controllers
                                         a.r.serviceID,
                                         a.r.toothNum,
                                         a.r.dentistID,
-                                        a.r.DrFirstName,
-                                        a.r.DrMiddleName,
-                                        a.r.DrLastName,
-                                        a.r.DrExtName,
+                                        a.r.Dentist,
                                         a.pi.lastName,
                                         a.pi.firstName,
                                         a.pi.middleName,
                                         a.pi.extName,
                                         a.pi.sex,
                                         a.pi.birthDate,
+                                        a.pi.contactNo,
+                                        a.pi.brgyPermAddress,
+                                        a.pi.cityMunPermAddress,
+                                        a.pi.provincePermAddress,
                                         a.r.dateTimeLog,
                                         a.r.diagnosis
                                     }).OrderByDescending(b => b.dateTimeLog).ToList();
