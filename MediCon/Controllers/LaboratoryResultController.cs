@@ -610,5 +610,266 @@ namespace MediCon.Controllers
             var data = dbMed.Fecalysis.SingleOrDefault(e => e.labID == labID);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult getXrayResult(string labID)
+        {
+            var data = dbMed.MedCon_Xray.SingleOrDefault(e => e.labID == labID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult get2dEchoResult(string labID)
+        {
+            var data = dbMed.TwoDechoes.SingleOrDefault(e => e.labID == labID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult getUltrasoundResult(string labID)
+        {
+            var data = dbMed.Ultrasounds.SingleOrDefault(e => e.labID == labID);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult saveXray(MedCon_Xray result)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var xrayID = new IDgenerator(result.labID);
+
+                    // SAVE LAB RESULT OF XRAY
+                    result.medConXrayID = xrayID.generateID.Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    dbMed.MedCon_Xray.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
+                    dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult saveUltrasound(Ultrasound result)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var ultraID = new IDgenerator(result.labID);
+
+                    // SAVE LAB RESULT OF XRAY
+                    result.ultraID = ultraID.generateID.Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    dbMed.Ultrasounds.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
+                    dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult saveEcho(TwoDecho result)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var echoID = new IDgenerator(result.labID);
+
+                    // SAVE LAB RESULT OF XRAY
+                    result.echoID = echoID.generateID.Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    dbMed.TwoDechoes.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    findLab.dateEncoded = DateTime.Now;
+                    dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult editXray([Bind(Exclude = "dateTimeLog,dateEdited")] MedCon_Xray result, EditRemarks EditRemarks)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var data = dbMed.MedCon_Xray.Where(e => e.labID == result.labID).FirstOrDefault();
+
+                    // EDIT LAB RESULT OF FECALYSIS
+                    data.findings = result.findings;
+                    data.mcXrayDateResult = result.mcXrayDateResult;
+                    dbMed.Entry(data).State = EntityState.Modified;
+
+                    // SAVE PERSON WHO EDIT THE RECORD
+                    var edited = new EditRemark();
+                    string temp = Convert.ToString(DateTime.Now);
+                    var editID = new IDgenerator(temp);
+
+                    edited.editID = editID.generateID.Substring(0, 15);
+                    edited.labID = data.labID;
+                    edited.remarks = EditRemarks.remarks;
+                    edited.dateEdited = DateTime.Now;
+                    edited.editedBy = Session["personnelID"].ToString();
+                    dbMed.EditRemarks.Add(edited);
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult editUltrasound([Bind(Exclude = "dateTimeLog,dateEdited")] Ultrasound result, EditRemarks EditRemarks)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var data = dbMed.Ultrasounds.Where(e => e.labID == result.labID).FirstOrDefault();
+
+                    // EDIT LAB RESULT OF FECALYSIS
+                    data.findings = result.findings;
+                    data.ultraDateResult = result.ultraDateResult;
+                    dbMed.Entry(data).State = EntityState.Modified;
+
+                    // SAVE PERSON WHO EDIT THE RECORD
+                    var edited = new EditRemark();
+                    string temp = Convert.ToString(DateTime.Now);
+                    var editID = new IDgenerator(temp);
+
+                    edited.editID = editID.generateID.Substring(0, 15);
+                    edited.labID = data.labID;
+                    edited.remarks = EditRemarks.remarks;
+                    edited.dateEdited = DateTime.Now;
+                    edited.editedBy = Session["personnelID"].ToString();
+                    dbMed.EditRemarks.Add(edited);
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult editEcho([Bind(Exclude = "dateTimeLog,dateEdited")] TwoDecho result, EditRemarks EditRemarks)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var data = dbMed.TwoDechoes.Where(e => e.labID == result.labID).FirstOrDefault();
+
+                    // EDIT LAB RESULT OF FECALYSIS
+                    data.findings = result.findings;
+                    data.echoDateResult = result.echoDateResult;
+                    dbMed.Entry(data).State = EntityState.Modified;
+
+                    // SAVE PERSON WHO EDIT THE RECORD
+                    var edited = new EditRemark();
+                    string temp = Convert.ToString(DateTime.Now);
+                    var editID = new IDgenerator(temp);
+
+                    edited.editID = editID.generateID.Substring(0, 15);
+                    edited.labID = data.labID;
+                    edited.remarks = EditRemarks.remarks;
+                    edited.dateEdited = DateTime.Now;
+                    edited.editedBy = Session["personnelID"].ToString();
+                    dbMed.EditRemarks.Add(edited);
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
     }
 }

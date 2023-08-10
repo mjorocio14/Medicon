@@ -929,7 +929,38 @@
 
         //   CHEST X-RAY RESULT
         else if (data.labTestID == "L0006") {
+            s.xray = {};
 
+            h.post("../LaboratoryResult/getXrayResult?labID=" + data.labID).then(function (d) {
+                d.data.mcXrayDateResult = new Date(moment(d.data.mcXrayDateResult).format());
+                s.xray = d.data;
+            });
+
+            $('#modalXray').modal('show');
+        }
+
+        //   ULTRASOUND RESULT
+        else if (data.labTestID == "L0023") {
+            s.ultrasound = {};
+
+            h.post("../LaboratoryResult/getUltrasoundResult?labID=" + data.labID).then(function (d) {
+                d.data.ultraDateResult = new Date(moment(d.data.ultraDateResult).format());
+                s.ultrasound = d.data;
+            });
+
+            $('#modalUltrasound').modal('show');
+        }
+
+        //   2D ECHO RESULT
+        else if (data.labTestID == "L0024") {
+            s.echo = {};
+
+            h.post("../LaboratoryResult/get2dEchoResult?labID=" + data.labID).then(function (d) {
+                d.data.echoDateResult = new Date(moment(d.data.echoDateResult).format());
+                s.echo = d.data;
+            });
+
+            $('#modalEcho').modal('show');
         }
 
         //   ECG-12L RESULT

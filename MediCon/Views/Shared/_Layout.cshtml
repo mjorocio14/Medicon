@@ -88,19 +88,23 @@
                         </ul>
                     </li>
                     <li id="HEALTH">
-                        <a href="widgets.html"><i class="fa fa-stethoscope"></i> <span class="nav-label">Dental</span><span class="fa arrow"></span></a>
+                        <a><i class="fa fa-stethoscope"></i> <span class="nav-label">Dental</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="HEALTHsub">
                         </ul>
                     </li>
                     <li id="XRAY">
-                        <a href="widgets.html"><i class="fa fa-exclamation-triangle"></i> <span class="nav-label">X-ray</span><span class="fa arrow"></span></a>
+                        <a><i class="fa fa-exclamation-triangle"></i> <span class="nav-label">X-ray</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="XraySub"></ul>
                     </li>
                     <li id="PHARM">
                         <a href="../Pharmacy/Dispensing"><i class="fa fa-female"></i> <span class="nav-label">Pharmacy</span></a>
                     </li>
+                    <li id="SCHEDULER">
+                        <a><i class="fa fa-calendar"></i> <span class="nav-label">Scheduler</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse" id="schedulerSub"></ul>
+                    </li>
                     <li id="UTILITY">
-                        <a href="widgets.html"><i class="fa fa-gear"></i> <span class="nav-label">Utility</span><span class="fa arrow"></span></a>
+                        <a><i class="fa fa-gear"></i> <span class="nav-label">Utility</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="UTILITYsub">
                         </ul>
                     </li>
@@ -177,6 +181,7 @@
             var pharm = $('#PHARM');
             var analytics = $('#ANALYTICS');
             var xray = $('#XRAY');
+            var scheduler = $('#SCHEDULER');
 
             health.hide();
             utility.hide();
@@ -188,17 +193,18 @@
             pharm.hide();
             analytics.hide();
             xray.hide();
+            scheduler.hide();
 
             $.post('../Home/gMenuAccess').then(function (d) {
                 for(var x =0;x<d.length;x++){
                     if(d[x].mainMenu =='UTILITY'){
                         utility.show();
-                        $('#UTILITYsub').append('<li class="nav-item"><a href="../'+d[x].controller+'/'+d[x].action+'" class="nav-link"><i class="fa fa-circle-o"></i> '+d[x].menuDesc+'</a></li>');
+                        $('#UTILITYsub').append('<li class="nav-item"><a href="../'+d[x].controller+'/'+d[x].action+'" class="nav-link"> '+d[x].menuDesc+'</a></li>');
                     }
 
                     else  if (d[x].mainMenu == 'HEALTH') {
                         health.show();
-                        $('#HEALTHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
+                        $('#HEALTHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }
 
                     else if (d[x].mainMenu == 'VITAL SIGNS') {
@@ -211,7 +217,7 @@
 
                     else if (d[x].mainMenu == 'LAB') {
                         lab.show();
-                        $('#LABsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
+                        $('#LABsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }
 
                     else if (d[x].mainMenu == 'PBE') {
@@ -220,21 +226,26 @@
 
                     else if(d[x].mainMenu =='MRH'){
                         mrh.show();
-                        $('#MRHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
+                        $('#MRHsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }
 
                     else if (d[x].mainMenu == 'XRAY') {
                         xray.show();
-                        $('#XraySub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
+                        $('#XraySub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }
 
                     else if (d[x].mainMenu == 'PHARM') {
                         pharm.show();
                     }
 
+                    else if (d[x].mainMenu == 'SCHEDULER') {
+                        scheduler.show();
+                        $('#schedulerSub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
+                    }
+
                     else if (d[x].mainMenu == 'ANALYTICS') {
                         analytics.show();
-                        $('#ANALYTICSsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"><i class="fa fa-circle-o"></i> ' + d[x].menuDesc + '</a></li>');
+                        $('#ANALYTICSsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }
                 }
             })

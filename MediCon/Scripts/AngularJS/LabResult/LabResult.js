@@ -374,6 +374,39 @@
           );
       }
 
+      else if (labTestID == "L0006") { 
+          h.get("../LaboratoryResult/getXrayResult?labID=" + labID).then(
+            function (d) 
+            { 
+                s.xray = {}
+                d.data.mcXrayDateResult = new Date(moment(d.data.mcXrayDateResult).format());
+                s.xray = d.data;
+            }
+          );
+      }
+
+      else if (labTestID == "L0023") { 
+          h.get("../LaboratoryResult/getUltrasoundResult?labID=" + labID).then(
+            function (d) 
+            { 
+                s.ultrasound = {}
+                d.data.ultraDateResult = new Date(moment(d.data.ultraDateResult).format());
+                s.ultrasound = d.data;
+            }
+          );
+      }
+
+      else if (labTestID == "L0024") { 
+          h.get("../LaboratoryResult/get2dEchoResult?labID=" + labID).then(
+            function (d) 
+            { 
+                s.echo = {}
+                d.data.echoDateResult = new Date(moment(d.data.echoDateResult).format());
+                s.echo = d.data;
+            }
+          );
+      }
+
       else if (labTestID == "L0005" || labTestID == "L0010" || labTestID == "L0009" || labTestID == "L0007" || labTestID == "L0011" || labTestID == "L0012" || labTestID == "L0008") {
           h.post("../LaboratoryResult/getBloodChem?labID=" + labID).then(
           function (d) {
@@ -487,6 +520,24 @@
           s.ecg = {};
           s.isEditECG = isEdit;
           $("#modalECG").modal("show");
+      }
+
+      else if (data.labTestID == "L0006") {
+          s.xray = {};
+          s.isEditXray = isEdit;
+          $("#modalXray").modal("show");
+      }
+
+      else if (data.labTestID == "L0023") {
+          s.ultrasound = {};
+          s.isEditUltrasound = isEdit;
+          $("#modalUltrasound").modal("show");
+      }
+
+      else if (data.labTestID == "L0024") {
+          s.echo = {};
+          s.isEditEcho = isEdit;
+          $("#modalEcho").modal("show");
       }
     };
 
@@ -1235,5 +1286,400 @@
           .addClass("has-info");
       },
     });
+
+
+    // XRAY SAVING AND UPDATING
+    s.xrayEditRemarks = {};
+    s.isEditXray = 0;
+    $("#xrayForm").validate({
+        rules: {},
+        submitHandler: function () {
+        
+            if (s.isEditXray == 0) {
+                Swal.fire({
+                    title: "Save Result?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Saved!",
+                    showLoaderOnConfirm: true,
+                    icon: "question",
+                    preConfirm: () => {
+                        s.xray.labID = s.tempLabID;
+                
+                return h.post("../LaboratoryResult/saveXray", s.xray).then((response) => {
+                    return response;
+            })
+            .catch((error) => {
+                if (error.status == 500) {
+                    Swal.showValidationMessage(
+                    `Request failed: ${error.statusText}`
+                    );
+        } else if (error.status == 404) {
+        Swal.showValidationMessage(
+        `Request failed: Page Not Found`
+          );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+             Swal.showValidationMessage(
+             `Request failed: Unknown Error ${error.status}`
+           );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+        title: "Successfully saved!",
+    text: 'Laboratory Result',
+    type: "success",
+    html: true,
+    });
+
+    s.xray = {};
+    $("#modalXray").modal("hide");
+    s.getLabtest(s.qrData.qrCode);
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    } else if (s.isEditXray == 1) {
+        Swal.fire({
+            title: "Update Result?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Saved!",
+            showLoaderOnConfirm: true,
+            icon: "question",
+            preConfirm: () => {
+                return h.post("../LaboratoryResult/editXray", {result: s.xray, EditRemarks: s.xrayEditRemarks})
+                  .then((response) => {
+                      return response;
+    })
+    .catch((error) => {
+        if (error.status == 500) {
+            Swal.showValidationMessage(
+            `Request failed: ${error.statusText}`
+            );
+    } else if (error.status == 404) {
+        Swal.showValidationMessage(
+          `Request failed: Page Not Found`
+      );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+        Swal.showValidationMessage(
+          `Request failed: Unknown Error ${error.status}`
+    );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+      swal({
+        title: "Successfully updated",
+    text: 'Laboratory Result',
+    type: "success",
+    html: true,
+    });
+    s.xray = {};
+    s.xrayEditRemarks = {};
+    $("#modalXray").modal("hide");
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    }
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-info")
+          .addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-error")
+          .addClass("has-info");
+    },
+    });
+
+
+    // ULTRASOUND SAVING AND UPDATING
+    s.ultrasoundEditRemarks = {};
+    s.isEditUltrasound = 0;
+    $("#ultrasoundForm").validate({
+        rules: {},
+        submitHandler: function () {
+        
+            if (s.isEditUltrasound == 0) {
+                Swal.fire({
+                    title: "Save Result?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Saved!",
+                    showLoaderOnConfirm: true,
+                    icon: "question",
+                    preConfirm: () => {
+                        s.ultrasound.labID = s.tempLabID;
+                
+                return h.post("../LaboratoryResult/saveUltrasound", s.ultrasound).then((response) => {
+                    return response;
+            })
+            .catch((error) => {
+                if (error.status == 500) {
+                    Swal.showValidationMessage(
+                    `Request failed: ${error.statusText}`
+                    );
+        } else if (error.status == 404) {
+        Swal.showValidationMessage(
+        `Request failed: Page Not Found`
+          );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+             Swal.showValidationMessage(
+             `Request failed: Unknown Error ${error.status}`
+           );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+        title: "Successfully saved!",
+        text: 'Laboratory Result',
+        type: "success",
+        html: true,
+        });
+
+        s.ultrasound = {};
+        $("#modalUltrasound").modal("hide");
+        s.getLabtest(s.qrData.qrCode);
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    } else if (s.isEditUltrasound == 1) {
+        Swal.fire({
+            title: "Update Result?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Saved!",
+            showLoaderOnConfirm: true,
+            icon: "question",
+            preConfirm: () => {
+                return h.post("../LaboratoryResult/editUltrasound", {result: s.ultrasound, EditRemarks: s.ultrasoundEditRemarks})
+                  .then((response) => {
+                      return response;
+    })
+    .catch((error) => {
+        if (error.status == 500) {
+            Swal.showValidationMessage(
+            `Request failed: ${error.statusText}`
+            );
+    } else if (error.status == 404) {
+        Swal.showValidationMessage(
+          `Request failed: Page Not Found`
+      );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+        Swal.showValidationMessage(
+          `Request failed: Unknown Error ${error.status}`
+    );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+      swal({
+        title: "Successfully updated",
+    text: 'Laboratory Result',
+    type: "success",
+    html: true,
+    });
+    s.ultrasound = {};
+    s.ultrasoundEditRemarks = {};
+    $("#modalUltrasound").modal("hide");
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    }
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-info")
+          .addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-error")
+          .addClass("has-info");
+    },
+    });
+
+
+    // 2D ECHO SAVING AND UPDATING
+    s.echoEditRemarks = {};
+    s.isEditEcho = 0;
+    $("#echoForm").validate({
+        rules: {},
+        submitHandler: function () {
+        
+            if (s.isEditEcho == 0) {
+                Swal.fire({
+                    title: "Save Result?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Saved!",
+                    showLoaderOnConfirm: true,
+                    icon: "question",
+                    preConfirm: () => {
+                        s.echo.labID = s.tempLabID;
+                
+                return h.post("../LaboratoryResult/saveEcho", s.echo).then((response) => {
+                    return response;
+            })
+            .catch((error) => {
+                if (error.status == 500) {
+                    Swal.showValidationMessage(
+                    `Request failed: ${error.statusText}`
+                    );
+        } else if (error.status == 404) {
+        Swal.showValidationMessage(
+        `Request failed: Page Not Found`
+          );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+             Swal.showValidationMessage(
+             `Request failed: Unknown Error ${error.status}`
+           );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+                title: "Successfully saved!",
+                text: 'Laboratory Result',
+                type: "success",
+                html: true,
+            });
+
+    s.echo = {};
+    $("#modalEcho").modal("hide");
+    s.getLabtest(s.qrData.qrCode);
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    } else if (s.isEditEcho == 1) {
+        Swal.fire({
+            title: "Update Result?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Saved!",
+            showLoaderOnConfirm: true,
+            icon: "question",
+            preConfirm: () => {
+                return h.post("../LaboratoryResult/editEcho", {result: s.echo, EditRemarks: s.echoEditRemarks})
+                  .then((response) => {
+                      return response;
+    })
+    .catch((error) => {
+        if (error.status == 500) {
+            Swal.showValidationMessage(
+            `Request failed: ${error.statusText}`
+            );
+    } else if (error.status == 404) {
+        Swal.showValidationMessage(
+          `Request failed: Page Not Found`
+      );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+        Swal.showValidationMessage(
+          `Request failed: Unknown Error ${error.status}`
+    );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+      swal({
+        title: "Successfully updated",
+        text: 'Laboratory Result',
+        type: "success",
+        html: true,
+        });
+    
+        s.echo = {};
+        s.echoEditRemarks = {};
+        $("#modalEcho").modal("hide");
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    }
+    },
+    errorElement: "span",
+    errorPlacement: function (error, element) {
+        error.addClass("invalid-feedback");
+        element.closest(".form-group").append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-info")
+          .addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-error")
+          .addClass("has-info");
+    },
+    });
+
   },
 ]);

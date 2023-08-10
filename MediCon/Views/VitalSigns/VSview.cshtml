@@ -335,11 +335,12 @@
                                     <th>Systolic</th>
                                     <th>Diastolic</th>
                                     <th>Date & Time</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="text-center" ng-show="historyList.length == 0">
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <text class="text-danger"><label><i>No record found</i></label></text>
                                     </td>
                                 </tr>
@@ -350,6 +351,7 @@
                                     <td><label>{{hist.systolic == null ? '---':hist.systolic}}</label></td>
                                     <td><label>{{hist.diastolic == null ? '---':hist.diastolic}}</label></td>
                                     <td>{{hist.dateTimeLog}}</td>
+                                    <td class="text-center"><button class="btn btn-sm btn-success" ng-click="editVS(hist)"><i class="fa fa-pencil"></i></button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -359,6 +361,59 @@
         </div>
     </div>
     <!-- /MODAL INDIVIDUAL VITAL HISTORY -->
+
+    <!-- MODAL EDIT VITAL SIGNS -->
+    <div id="editVS_modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header blue-bg">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h2 class="modal-title text-center">VITAL SIGNS EDITTING</h2>
+                </div>
+                <div class="modal-body">
+                    <form name="editVS_form">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="temp">Temperature</label>
+                                    <div class="input-group m-b" style="width: 100%">
+                                        <input type="number" min="20" id="temp" name="temp" required ng-model="editData.temperature" class="form-control text-center" /> <span class="input-group-addon"><b> °C</b></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="pulse">Pulse</label>
+                                    <div class="input-group m-b" style="width: 100%">
+                                        <input type="number" min="1" id="pulse" name="pulse" required ng-model="editData.pulseRate" class="form-control text-center" /> <span class="input-group-addon"><b> b/min</b></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="systolic">Systolic</label>
+                                    <input type="number" min="1" id="systolic" name="systolic" ng-model="editData.systolic" placeholder="Systolic" class="form-control text-center" required/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label" for="diastolic">Diastolic</label>
+                                    <input type="number" min="1" id="diastolic" name="diastolic" ng-model="editData.diastolic" placeholder="Diastolic" class="form-control text-center" required />
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-success pull-right" ng-click="!editVS_form.$invalid ? updateVitalSign(editData):''"> Save Changes </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL EDIT VITAL SIGNS  -->
 
 </div>
 

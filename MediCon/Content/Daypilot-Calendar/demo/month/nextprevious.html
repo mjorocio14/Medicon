@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Next/Previous (Open-Source JavaScript Monthly Event Calendar)</title>
+
+    <!-- head -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../helpers/v2/main.css?v=2023.2.477" type="text/css" rel="stylesheet"/>
+    <script src="../js/daypilot-all.min.js?v=2023.2.477"></script>
+
+	<!-- /head -->
+
+    <style>
+        a.navi-button {
+            width: 120px;
+            padding: 10px 10px;
+            text-align: center;
+            display: inline-block;
+            background-color: #3495CF;
+            color: white;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<!-- top -->
+<template id="content" data-version="2023.2.477">
+
+<!-- /top -->
+<div class="note"><b>Note:</b> Read more about the <a href="https://doc.daypilot.org/month/next-and-previous-buttons/">next/previous buttons</a> [doc.daypilot.org].</div>
+
+<div class="space">
+    <a href="javascript:dp.startDate = dp.startDate.addMonths(-1); dp.update();" class="navi-button">Previous</a>
+    <a href="javascript:dp.startDate = dp.startDate.addMonths(1); dp.update();" class="navi-button">Next</a>
+</div>
+
+<div id="dp"></div>
+
+<script type="text/javascript">
+    var dp = new DayPilot.Month("dp");
+
+    // view
+    dp.startDate = "2021-03-01";
+
+    // generate and load events
+    for (var i = 0; i < 10; i++) {
+        var duration = Math.floor(Math.random() * 1.2);
+        var start = Math.floor(Math.random() * 6) - 3; // -3 to 3
+
+        var e = new DayPilot.Event({
+            start: new DayPilot.Date("2021-03-04T00:00:00").addDays(start),
+            end: new DayPilot.Date("2021-03-04T12:00:00").addDays(start).addDays(duration),
+            id: DayPilot.guid(),
+            text: "Event " + i
+        });
+        dp.events.add(e);
+    }
+
+    // event creating
+    dp.onTimeRangeSelected = function (args) {
+        var name = prompt("New event name:", "Event");
+        dp.clearSelection();
+        if (!name) return;
+        var e = new DayPilot.Event({
+            start: args.start,
+            end: args.end,
+            id: DayPilot.guid(),
+            text: name
+        });
+        dp.events.add(e);
+    };
+
+    dp.onEventClicked = function(args) {
+        alert("clicked: " + args.e.id());
+    };
+
+    dp.init();
+
+
+</script>
+
+<!-- bottom -->
+</template>
+
+<script src="../helpers/v2/app.js?v=2023.2.477"></script>
+
+<!-- /bottom -->
+
+</body>
+</html>
+

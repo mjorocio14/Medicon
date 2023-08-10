@@ -39,6 +39,7 @@ namespace MediCon.Controllers
                             a.contactNum,
                             a.dateTimeLog,
                             a.serviceID,
+                            a.hospitalID,
                             userDesc = db.UserTypes.FirstOrDefault( b=> b.userTypeID == a.userTypeID).userTypeDesc,
                             service = db.Services.FirstOrDefault(e => e.serviceID == a.serviceID).serviceName
                             }).OrderByDescending(b => b.dateTimeLog).ToList();
@@ -113,6 +114,13 @@ namespace MediCon.Controllers
             return Json(userTypes, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult getHospital()
+        {
+            var hospitals = db.Hospitals.OrderBy(a => a.hospitalName).ToList();
+
+            return Json(hospitals, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public ActionResult updateAccount(Personnel info)
         {
@@ -131,6 +139,7 @@ namespace MediCon.Controllers
                 find.sex = info.sex;
                 find.title = info.title;
                 find.userTypeID = info.userTypeID;
+                find.hospitalID = info.hospitalID;
                 db.Entry(find).State = EntityState.Modified;
 
                 var affectedRow = db.SaveChanges();

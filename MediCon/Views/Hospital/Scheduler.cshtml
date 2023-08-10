@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Scheduler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .month_green_cell_inner{
+        cursor: pointer;
+    }
+
+    .month_green_cell_inner:hover {
+        font-size: larger;
+        color: #47A477;
+        background-color: #d9f9e9;
+    }
+
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        height: 400px !important;
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+
+    .month_default_shadow_forbidden .month_default_shadow_inner {
+      background-color: #cc4125;
+    }
+</style>
+
+<link href="~/Content/Daypilot-Calendar/demo/themes/month_green.css" rel="stylesheet" />
+
+@{
+    string isCarmen = "false", isKapalong = "false", isIgacos = "false", isAdmin = "false";
+    
+    switch(@Session["hospitalID"].ToString())
+    {
+        case "HPL001":
+            isCarmen = "true";
+            break;
+        case "HPL002":
+            isKapalong = "true";
+            break;
+        case "HPL003":
+            isIgacos = "true";
+            break;
+        default:
+            isAdmin = "true";
+            break;
+    }
+}
+
+<div ng-controller="hospitalSchedulerCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-12">
+            <h2>Hospital Scheduler</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li>
+                    <a href="">Hospital</a>
+                </li>
+                <li class="active">
+                    <strong>Scheduler</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+        <div class="row">
+            <div class="animated fadeInRight ecommerce">
+                <div class="col-sm-12 col-xs-12" style="margin-bottom: 5px;">
+                    <h1 style="margin-top: -5px; text-align: center;">{{calendar}}</h1>
+                    <div class="text-center">
+                        <a class="btn btn-white btn-bitbucket" ng-click="previousMonth()">
+                            <i class="fa fa-angle-double-left"></i>
+                        </a>
+                        <a class="btn btn-primary btn-facebook btn-outline" ng-click="today()">
+                            Today {{currentDate}}
+                        </a>
+                        <a class="btn btn-white btn-bitbucket" ng-click="nextMonth()">
+                            <i class="fa fa-angle-double-right"></i>
+                        </a>
+                    </div>
+                    <div style="margin-bottom: -9px; margin-top: 10px;">
+                        <p id="sessionHospitalID" class="hidden">@Session["hospitalID"].ToString()</p>
+                        <p>
+                            <span class="label label-primary" ng-if="@isCarmen || @isAdmin">CARMEN DISTRICT HOSPITAL</span>
+                            <span class="label label-danger" ng-if="@isKapalong || @isAdmin">KAPALONG DISTRICT HOSPITAL</span>
+                            <span class="label" style="background-color: rgb(126, 155, 230); color: white;" ng-if="@isIgacos || @isAdmin">IGACOS DISTRICT HOSPITAL</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-4" ng-if="showSchedPatient">
+                    <div class="ibox float-e-margins animated fadeInLeft" style="border: 1px solid #aaa;">
+                        <div class="ibox-title" style="background-color: #636363; color: white;">
+                            <h5>Scheduled Patients - {{headerDate}}</h5>
+                            <div class="ibox-tools">
+                                <a class="close-link" ng-click="hideClientList()">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="height: 582px;">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>ID no.</th>
+                                            <th>Employee Name</th>
+                                            <th>Department</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="text-center" ng-show="tbl_loader">
+                                            <td colspan="4">
+                                                <div class="sk-spinner sk-spinner-double-bounce">
+                                                    <div class="sk-double-bounce1"></div>
+                                                    <div class="sk-double-bounce2"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center" ng-show="patientList.length == 0 && tbl_loader == false">
+                                            <td colspan="4">
+                                                <span>NO INFORMATION FOUND!</span>
+                                            </td>
+                                        </tr>
+                                        <tr ng-repeat="item in patientList">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{item.idNo}}</td>
+                                            <td><i ng-show="item.isTested > 0" class="fa fa-check-circle text-success"></i> {{item.fullNameLast}}</td>
+                                            <td>{{item.shortDepartmentName}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-class="showSchedPatient ? 'col-sm-8 col-xs-8' : 'col-sm-12 col-xs-12'">
+                    <div id="dp" style="margin-bottom: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+@section scripts
+{
+    <script src="~/Content/Daypilot-Calendar/scripts/daypilot-all.min.js"></script>
+    <script src="~/Scripts/AngularJS/Hospital/Scheduler.js"></script>
+}

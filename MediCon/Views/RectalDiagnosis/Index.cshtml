@@ -2299,6 +2299,90 @@
         </div>
         @*MODAL FECALYSIS*@
 
+        <!-- MODAL X-RAY -->
+        <div class="modal fade" id="modalXray">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">X-RAY</h4>
+                    </div>
+                    <form role="form" name="xrayForm" id="xrayForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="mcXrayDateResult">Date of Result</label>
+                                <input type="date" class="form-control form-control-sm" id="mcXrayDateResult" name="mcXrayDateResult" ng-model="xray.mcXrayDateResult" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="xrayFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="8" id="xrayFindings" name="xrayFindings" ng-model="xray.findings" disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /MODAL X-RAY -->
+
+        <!-- MODAL ULTRASOUND -->
+        <div class="modal fade" id="modalUltrasound">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">ULTRASOUND</h4>
+                    </div>
+                    <form role="form" name="ultrasoundForm" id="ultrasoundForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="ultraDateResult">Date of Result</label>
+                                <input type="date" class="form-control form-control-sm" id="ultraDateResult" name="ultraDateResult" ng-model="ultrasound.ultraDateResult" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="ultraFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="8" id="ultraFindings" name="ultraFindings" ng-model="ultrasound.findings" disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /MODAL ULTRASOUND -->
+
+        <!-- MODAL 2D ECHO -->
+        <div class="modal fade" id="modalEcho">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">2D ECHO</h4>
+                    </div>
+                    <form role="form" name="echoForm" id="echoForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="echoDateResult">Date of Result</label>
+                                <input type="date" class="form-control form-control-sm" id="echoDateResult" name="echoDateResult" ng-model="echo.echoDateResult" disabled />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="echoFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="8" id="echoFindings" name="echoFindings" ng-model="echo.findings" disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /MODAL 2D ECHO -->
+
     </div>
 </div>
 

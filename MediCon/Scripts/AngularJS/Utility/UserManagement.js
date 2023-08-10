@@ -1,6 +1,7 @@
 ﻿app.controller('userCtrl', ['$scope', '$http', function (s, h) {
     getUserTypes();
     getServices();
+    getHospital();
     s.users = {};
     var usern = new RegExp("^(?=.{6,})");
     var pass = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.{6,})");
@@ -363,6 +364,14 @@
 
         h.post('../SystemUser/getServices').then(function (d) {
             s.services = d.data;
+        });
+    }
+
+    function getHospital() {
+        s.hospitalList = [];
+
+        h.post('../SystemUser/getHospital').then(function (d) {
+            s.hospitalList = d.data;
         });
     }
 

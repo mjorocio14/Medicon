@@ -37,7 +37,6 @@ namespace MediCon.Models
         public virtual DbSet<ECG> ECGs { get; set; }
         public virtual DbSet<EditRemark> EditRemarks { get; set; }
         public virtual DbSet<Fecalysi> Fecalysis { get; set; }
-        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
         public virtual DbSet<LaboratoryGroupTest> LaboratoryGroupTests { get; set; }
         public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
@@ -48,10 +47,8 @@ namespace MediCon.Models
         public virtual DbSet<MRHrequest> MRHrequests { get; set; }
         public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
         public virtual DbSet<PapsmearBreastExam> PapsmearBreastExams { get; set; }
-        public virtual DbSet<Personnel> Personnels { get; set; }
         public virtual DbSet<ProductList> ProductLists { get; set; }
         public virtual DbSet<ProductUnit> ProductUnits { get; set; }
-        public virtual DbSet<Referral> Referrals { get; set; }
         public virtual DbSet<ResultDiagnosi> ResultDiagnosis { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
@@ -69,6 +66,16 @@ namespace MediCon.Models
         public virtual DbSet<Xray_PersonStatus> Xray_PersonStatus { get; set; }
         public virtual DbSet<Xray_Screening> Xray_Screening { get; set; }
         public virtual DbSet<Xray_ScutumLabRequest> Xray_ScutumLabRequest { get; set; }
+        public virtual DbSet<Hospital> Hospitals { get; set; }
+        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
+        public virtual DbSet<HospitalCalendar> HospitalCalendars { get; set; }
+        public virtual DbSet<Personnel> Personnels { get; set; }
+        public virtual DbSet<Referral> Referrals { get; set; }
+        public virtual DbSet<MedCon_Xray> MedCon_Xray { get; set; }
+        public virtual DbSet<TwoDecho> TwoDechoes { get; set; }
+        public virtual DbSet<Ultrasound> Ultrasounds { get; set; }
+        public virtual DbSet<PhysicianCalendar> PhysicianCalendars { get; set; }
+        public virtual DbSet<PatientAppointment> PatientAppointments { get; set; }
     
         [DbFunction("MediconEntities", "fn_DashboardAnalytics")]
         public virtual IQueryable<fn_DashboardAnalytics_Result> fn_DashboardAnalytics()

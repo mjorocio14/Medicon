@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Date Picker (Open-Source JavaScript Event Calendar)</title>
+
+    <!-- head -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../helpers/v2/main.css?v=2023.2.477" type="text/css" rel="stylesheet"/>
+    <script src="../js/daypilot-all.min.js?v=2023.2.477"></script>
+
+    <!-- /head -->
+
+
+    <style>
+        a.navi-button {
+            width: 200px;
+            padding: 10px 10px;
+            text-align: center;
+            display: inline-block;
+            background-color: #3495CF;
+            color: white;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<!-- top -->
+<template id="content" data-version="2023.2.477">
+
+    <!-- /top -->
+
+    <div class="space">
+        <a href="#" onclick="picker.show(); return false;" id="start" class="navi-button">Change</a>
+    </div>
+
+    <script type="text/javascript">
+        const picker = new DayPilot.DatePicker({
+            target: 'start',
+            pattern: 'M/d/yyyy',
+            onTimeRangeSelected: function (args) {
+                dp.startDate = args.start;
+                dp.update();
+            }
+        });
+    </script>
+
+    <div id="dp"></div>
+
+    <script type="text/javascript">
+
+        var dp = new DayPilot.Calendar("dp");
+
+        // view
+        dp.startDate = DayPilot.Date.today();
+
+        // event creating
+        dp.onTimeRangeSelected = function (args) {
+            var name = prompt("New event name:", "Event");
+            if (!name) return;
+            var e = new DayPilot.Event({
+                start: args.start,
+                end: args.end,
+                id: DayPilot.guid(),
+                text: name
+            });
+            dp.events.add(e);
+            dp.clearSelection();
+        };
+
+        dp.onEventClick = function (args) {
+            alert("clicked: " + args.e.id());
+        };
+
+        dp.init();
+
+        var e = new DayPilot.Event({
+            start: DayPilot.Date.today().addHours(12),
+            end: DayPilot.Date.today().addHours(15),
+            id: DayPilot.guid(),
+            text: "Special event"
+        });
+        dp.events.add(e);
+
+    </script>
+
+
+    <!-- bottom -->
+</template>
+
+<script src="../helpers/v2/app.js?v=2023.2.477"></script>
+
+<!-- /bottom -->
+
+</body>
+</html>
+

@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Resources View (Open-Source JavaScript Event Calendar)</title>
+
+    <!-- head -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../helpers/v2/main.css?v=2023.2.477" type="text/css" rel="stylesheet"/>
+    <script src="../js/daypilot-all.min.js?v=2023.2.477"></script>
+
+    <!-- /head -->
+
+</head>
+<body>
+
+<!-- top -->
+<template id="content" data-version="2023.2.477">
+
+    <!-- /top -->
+
+    <div class="note"><b>Note:</b> Read more about the <a href="https://doc.daypilot.org/calendar/resources-view/">resource calendar</a> [doc.daypilot.org].
+    </div>
+
+    <div id="dp"></div>
+
+    <script type="text/javascript">
+
+        var dp = new DayPilot.Calendar("dp");
+
+        // view
+        dp.startDate = "2022-06-24";
+        dp.viewType = "Resources";
+        dp.columns.list = [
+            {name: "Room A", id: "A"},
+            {name: "Room B", id: "B"},
+            {name: "Room C", id: "C"},
+            {name: "Room D", id: "D"},
+        ];
+
+        // event creating
+        dp.onTimeRangeSelected = function (args) {
+            var name = prompt("New event name:", "Event");
+            if (!name) return;
+            var e = new DayPilot.Event({
+                start: args.start,
+                end: args.end,
+                resource: args.resource,
+                id: DayPilot.guid(),
+                text: name
+            });
+            dp.events.add(e);
+            dp.clearSelection();
+        };
+
+        dp.init();
+
+        dp.events.add({
+            start: "2022-06-24T12:00:00",
+            end: "2022-06-24T15:00:00",
+            resource: "B",
+            id: DayPilot.guid(),
+            text: "Room reservation"
+        });
+
+    </script>
+
+    <!-- bottom -->
+</template>
+
+<script src="../helpers/v2/app.js?v=2023.2.477"></script>
+
+<!-- /bottom -->
+
+</body>
+</html>
+

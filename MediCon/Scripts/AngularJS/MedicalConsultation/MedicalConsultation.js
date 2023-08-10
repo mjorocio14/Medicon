@@ -20,8 +20,101 @@
     s.isEditting = false;
     getSpecialist();
     s.isShowEditRxForm = true;
+    s.labSchedInfo = {};
+    s.checkLabList = 0;
+    events = [];
+    let filteredEvents = [];
+
+
+    //  Date Picker for Scheduler Initialization
+    let date_picker = $(".datePicker").flatpickr({
+        wrap: true,
+        minDate: "today"
+    });
+    //  /Date Picker for Scheduler Initialization
+
+    //  Date Picker for Modal Initialization
+    var datePicker_modal = $(".datePicker_modal").flatpickr({
+        wrap: true,
+        minDate: "today"
+    });
+    //  /Date Picker for Modal Initialization
+
+    function resetDatePicker(isModal)
+    {
+        if (isModal) {
+            datePicker_modal.config.disable = [];
+            datePicker_modal.config.onDayCreate = [];
+        }
+
+        else {
+            date_picker.config.disable = [];
+            date_picker.config.onDayCreate = [];
+        }
+        
+    }
+
+    s.selectHospital = function (id, isModal) {
+        isModal ? datePicker_modal.clear() : date_picker.clear();
+     
+        if (id == undefined || id == '')
+            resetDatePicker(isModal);
+
+        else {
+            filteredEvents = events.filter(function (d) {
+                return d.hospitalID == id;
+            });
+         
+            if (isModal) {
+                // EDIT MODAL DIALOG
+                // SET RED DOT INDICATOR TO CALENDAR ACCORDING TO HOSPITAL LAB AVAILABILITY
+                datePicker_modal.config.onDayCreate = [datePicker_onDayCreate];
+                // DISABLE DATES THAT ARE NOT PART OF HOSPITAL LAB AVAILABILITY
+                datePicker_modal.config.disable.push(datePicker_disable_dates);
+            }
+            
+            else {
+                // SET RED DOT INDICATOR TO CALENDAR ACCORDING TO HOSPITAL LAB AVAILABILITY
+                date_picker.config.onDayCreate = [datePicker_onDayCreate];
+                // DISABLE DATES THAT ARE NOT PART OF HOSPITAL LAB AVAILABILITY
+                date_picker.config.disable.push(datePicker_disable_dates);
+            }
+        }
+
+        isModal ? datePicker_modal.redraw() : date_picker.redraw();
+    }
+
+    let datePicker_onDayCreate = function (dObj, dStr, fp, dayElem) {
+        // Utilize dayElem.dateObj, which is the corresponding Date
+        let exist = filteredEvents.filter(function (e) {
+            return e.scheduleDate == moment(dayElem.dateObj).format('YYYY-MM-DD');
+        });
+      
+        // calendar sched
+        if (exist.length > 0) {
+            dayElem.innerHTML += "<span class='hospital-sched'></span>";
+        }
+    }
+
+    let datePicker_disable_dates = function (date) {
+        let dateExist = filteredEvents.filter(function (sched) {
+            // LIMIT NUMBER OF PATIENT PER HOSPITAL
+            // CARMEN - 20, KAPALONG - 25, IGACOS - 0
+            return sched.hospitalID == "HPL001" ? (sched.scheduleDate == moment(date).format('YYYY-MM-DD') && sched.patientCount < 20)
+                   : sched.hospitalID == "HPL002" ? (sched.scheduleDate == moment(date).format('YYYY-MM-DD') && sched.patientCount < 25)
+                   : (sched.scheduleDate == moment(date).format('YYYY-MM-DD') && sched.patientCount < 0);
+        })
+        
+        return dateExist.length > 0 ? false : true;
+    }
 
     s.filterResult = function (date) {
+        // Fetch schedule from BE according to date diagnose
+        getSchedule(true, moment(date).format('YYYY-MM-DD'));
+
+        // Set Min Date of Date Picker to filter date/date diagnose
+        datePicker_modal.config.minDate = date;
+
         getDiagnoseClients(date);
     }
 
@@ -67,6 +160,23 @@
         });
     }
 
+    function getHospitalList() {
+        h.post('../MedicalConsultation/getHospitalList').then(function (d) {
+            if (d.data.status == 'error') {
+                swal({
+                    title: "ERROR",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                s.hospitalList = {};
+                s.hospitalList = d.data;
+            }
+        });
+    }
+
     s.mainSearch = function (info) {
         s.loader = true;
 
@@ -105,14 +215,25 @@
 
         if (!s.showMedicalRecord)
         {
+            // Get all schedule of lab from hospitals
+            getSchedule(false, moment().format('YYYY-MM-DD'));
+
             s.diagnose = {};
             s.diagnoseInfo = {}
             s.diagnoseRemarks = '';
+            s.referral = {};
+            s.labtest = {};
+            s.labSchedInfo = {};
+            s.xrayDesc = '';
+            s.ecgDesc = '';
+            s.ultrasoundDesc = '';
+            s.labSchedInfo = {};
             s.newlyAddedConsultID = null;
             s.bpLoader = true;
             s.bpHistoryList = {};
             s.vitalSigns = {};
             s.BMI = {};
+            getHospitalList();
 
             h.post('../VitalSigns/getBPhistory?qrCode=' + s.qrData.qrCode).then(function (d) {
                 if (d.data.status == 'error') {
@@ -268,7 +389,38 @@
 
         //   CHEST X-RAY RESULT
         else if (data.labTestID == "L0006") {
+            s.xray = {};
 
+            h.post("../LaboratoryResult/getXrayResult?labID=" + data.labID).then(function (d) {
+                d.data.mcXrayDateResult = new Date(moment(d.data.mcXrayDateResult).format());
+                s.xray = d.data;
+            });
+
+            $('#modalXray').modal('show');
+        }
+
+        //   ULTRASOUND RESULT
+        else if (data.labTestID == "L0023") {
+            s.ultrasound = {};
+
+            h.post("../LaboratoryResult/getUltrasoundResult?labID=" + data.labID).then(function (d) {
+                d.data.ultraDateResult = new Date(moment(d.data.ultraDateResult).format());
+                s.ultrasound = d.data;
+            });
+
+            $('#modalUltrasound').modal('show');
+        }
+
+        //   2D ECHO RESULT
+        else if (data.labTestID == "L0024") {
+            s.echo = {};
+
+            h.post("../LaboratoryResult/get2dEchoResult?labID=" + data.labID).then(function (d) {
+                d.data.echoDateResult = new Date(moment(d.data.echoDateResult).format());
+                s.echo = d.data;
+            });
+
+            $('#modalEcho').modal('show');
         }
 
         //   ECG RESULT
@@ -290,12 +442,21 @@
         }
     }
 
-    s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, otherLabDesc, xrayDesc, ecgDesc, ultrasoundDesc) {
-        
+    s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, labSchedInfo, xrayDesc, ecgDesc, ultrasoundDesc)
+    {
         if (s.qrData.qrCode == '' || s.qrData.qrCode == null) {
             swal({
                 title: "ERROR",
                 text: "<label class='text-danger'>No personal information found!</label>",
+                type: "error",
+                html: true
+            });
+        }
+        
+        else if (s.checkLabList > 0 && labSchedInfo.labSchedule == undefined || labSchedInfo.labSchedule == ''){
+            swal({
+                title: "ERROR",
+                text: "Please set a laboratory schedule for the selected hospital.",
                 type: "error",
                 html: true
             });
@@ -343,8 +504,13 @@
            
             h.post('../MedicalConsultation/saveDiagnosis', {
                 qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList,
-                otherLab: otherLabDesc, xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
+                hospitalID: labSchedInfo.hospitalID, labSchedule: labSchedInfo.labSchedule, xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
             }).then(function (d) {
+                
+                // Send SMS schedule to patient
+                s.qrData.contactNo = '09688515104';
+                if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '')) sendSMS(labSchedInfo);
+
                     if (d.data.status == "error") {
                         swal({
                             title: "ERROR",
@@ -369,6 +535,7 @@
                                 getMedicineList();
                                 s.newlyAddedConsultID = d.data.consultID;
                                 s.showClientListBTN = false;
+                                s.labSchedInfo = {};
                                 s.$apply();
                             }
                         });
@@ -377,6 +544,37 @@
         }
     }
 
+    s.checkLab = function(labtest) {
+        // Push all checked laboratory to labtestList
+        s.checkLabList = 0;
+     
+        angular.forEach(labtest, function (key, value) {
+            if (key)
+                s.checkLabList++;
+        });
+
+        if (s.checkLabList == 0)
+            s.labSchedInfo = {};
+    }
+
+    function getSchedule(isEditting, dateFilter) {
+        h.get('../Hospital/AllHospitalSchedule?date=' + dateFilter).then(function (d) {
+            events = [];
+
+            // Clear and Reset date picker to initial state
+            isEditting ? datePicker_modal.clear() : date_picker.clear();
+            resetDatePicker(isEditting);
+            isEditting ? datePicker_modal.redraw() : date_picker.redraw();
+
+            let schedList = d.data.map(function (rec) {
+                rec.scheduleDate = moment(rec.scheduleDate).format('YYYY-MM-DD');
+
+                return rec;
+            });
+
+            events = schedList;
+        });
+    }
 
     // SELECT2 INITIALIZATION
     $("#productCode").on('select2:select', function (e) {
@@ -468,7 +666,6 @@
 
         }
     }
-
 
     s.removeMedicine = function (removeMedIndex) {
         s.RxList.splice(removeMedIndex, 1);
@@ -622,7 +819,7 @@
                 s.resultDiag = {};
                 s.resultDiag.info = data;
                 s.isEditting = false;
-                
+
                 h.post('../MedicalConsultation/getPersonVSignDiagnoseResult', { consultID: data.consultID, vSignID: data.vSignID }).then(function (d) {
                     if (d.data.status == 'error') {
                         swal({
@@ -754,11 +951,10 @@
                         var laboratory = {};
                         var labIsEncoded = {};
                         s.rxHistory = [];
-                        s.otherLabDesc = '';
                         s.xrayDesc = '';
                         s.ecgDesc = '';
                         s.ultrasoundDesc = '';
-                        
+                       
                         // Push all checked referral to referral
                         angular.forEach(d.data.referral, function (item) {
 
@@ -837,10 +1033,6 @@
                                     laboratory.L0012 = true;
                                     labIsEncoded.L0012isEncoded = item.isTested;
                                     break;
-                                case 'L0022':
-                                    laboratory.L0022 = true;
-                                    s.resultDiag.otherLabDesc = item.otherLabDesc;
-                                    break;
                                 case 'L0023':
                                     laboratory.L0023 = true;
                                     s.resultDiag.ultrasoundDesc = item.ultrasoundDesc;
@@ -854,6 +1046,29 @@
                         });
                         s.resultDiag.laboratory = laboratory;
                         s.resultDiag.labIsEncoded = labIsEncoded;
+                      
+                        // GET HOSPITAL AND LAB SCHEDULE FROM REFERRALS
+                        let hospitalData = d.data.referral.filter(function (d) { return d.serviceID == 'SERVICE006' });
+                        
+                        s.resultDiag.setLabSched = {
+                            isNeededLab: false,
+                            hospitalID: '',
+                            labSchedule: ''
+                        };
+                        
+                        // If hospital and lab schedule is present
+                        if (hospitalData.length > 0) {
+                            s.selectHospital(hospitalData[0].hospitalID, true);
+                           
+                            // Set date picker month to labSchedule month
+                            datePicker_modal.changeMonth(moment(hospitalData[0].scheduleDate).format('M') - 1, false);
+
+                            s.resultDiag.setLabSched = {
+                                isNeededLab: true,
+                                hospitalID: hospitalData[0].hospitalID,
+                                labSchedule: moment(hospitalData[0].scheduleDate).format('YYYY-MM-DD')
+                            };
+                        }
 
                         s.rxHistory = d.data.rxList;
                     }
@@ -868,6 +1083,13 @@
         if (s.showClientList) {
             s.FilterDate = new Date();
             getDiagnoseClients(s.FilterDate);
+            getHospitalList();
+
+            // Fetch schedule from BE according to date diagnose
+            getSchedule(true, moment(s.FilterDate).format('YYYY-MM-DD'));
+
+            // Set Min Date of Date Picker to filter date/date diagnose
+            datePicker_modal.config.minDate = s.FilterDate;
         }
     }
 
@@ -903,12 +1125,7 @@
     }
 
     s.saveUpdate = function (result) {
-   
-        if (s.isEditting == false) {
-            s.isEditting = true;
-        }
-
-        else {
+        
             swal({
                 title: "SAVING",
                 text: "Please wait while we are saving your data.",
@@ -928,8 +1145,8 @@
             angular.forEach(result.ref, function (key, value) {
                 if (key && value != 'SERVICE006')
                     referralList.push(value);
-                });
-            
+            });
+
             // Push all checked laboratory to labList
             var labList = [];
             angular.forEach(result.laboratory, function (key, value) {
@@ -954,7 +1171,7 @@
                     }
                 }
             });
-
+            
             // Push Service ID SERVICE006 - LABORATORY to referralList if laboratory are included in diagnosis
             if (labList.length > 0) referralList.push('SERVICE006');
            
@@ -968,33 +1185,52 @@
                 dentistID: null,
                 remarks: result.info.remarks,
             }
-          
-            h.post('../MedicalConsultation/updateDiagnosis', {
-                qrCode: result.info.qrCode, consult: consultInfo, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
-                referral: referralList, outsideReferral: result.info.outsideReferral, labReq: labList, otherLab: result.otherLabDesc,
-                xrayDesc: result.xrayDesc, ecgDesc: result.ecgDesc, ultrasoundDesc: result.ultrasoundDesc
-            }).then(function (d) {
-                if (d.data.status == "error") {
-                    swal({
-                        title: "ERROR",
-                        text: "<labal>" + d.data.msg + "</label>",
-                        type: "error",
-                        html: true
-                    });
-                }
+           
+            //if((!result.hospitalID || !result.labSchedule) && labList.length > 0)
+            //{
+            //    swal({
+            //        title: "ERROR",
+            //        text: "Please select hospital and set laboratory date.",
+            //        type: "error"
+            //    });
+            //}
 
-                else {
-                    swal({
-                        title: "SUCCESSFUL",
-                        text: d.data.msg,
-                        type: "success",
-                    });
+            if (labList.length > 0 && result.setLabSched.labSchedule == undefined || result.setLabSched.labSchedule == '') {
+                swal({
+                    title: "ERROR",
+                    text: "Please set a laboratory schedule for the selected hospital.",
+                    type: "error",
+                    html: true
+                });
+            }
 
-                    $('#personDiagnosis_modal').modal('hide');
-                    getDiagnoseClients();
-                }
-            });
-        }
+            else {
+                h.post('../MedicalConsultation/updateDiagnosis', {
+                    qrCode: result.info.qrCode, consult: consultInfo, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
+                    referral: referralList, outsideReferral: result.info.outsideReferral, labReq: labList, hospitalID: result.setLabSched.hospitalID == undefined ? null : result.setLabSched.hospitalID, labSchedule: result.setLabSched.labSchedule,
+                    xrayDesc: result.xrayDesc, ecgDesc: result.ecgDesc, ultrasoundDesc: result.ultrasoundDesc
+                }).then(function (d) {
+                    if (d.data.status == "error") {
+                        swal({
+                            title: "ERROR",
+                            text: "<labal>" + d.data.msg + "</label>",
+                            type: "error",
+                            html: true
+                        });
+                    }
+
+                    else {
+                        swal({
+                            title: "SUCCESSFUL",
+                            text: d.data.msg,
+                            type: "success",
+                        });
+
+                        $('#personDiagnosis_modal').modal('hide');
+                        s.filterResult(s.FilterDate);
+                    }
+                });
+            }
     }
 
     s.printRx = function (data, length) {
@@ -1119,5 +1355,20 @@
             }
         });
     }
+
+    function sendSMS(schedInfo) {
+        let data = {
+            employee: s.qrData.fullNameTitle,
+            //contactNo: s.qrData.contactNo,
+            contactNo: "09688515104",
+            appointee: schedInfo.hospitalID == 'HPL001' ? 'Carmen District Hospital' : schedInfo.hospitalID == 'HPL002' ? 'Kapalong District Hospital' : schedInfo.hospitalID == 'HPL003' ? 'IGACOS District Hospital' : '',
+            schedule: schedInfo.labSchedule
+        };
+    
+        h.post('../SendSMS/Send', { info: data, isHospital: true }).then(function (d) {
+            console.log(d);
+        });
+    }
+
 
 }]);

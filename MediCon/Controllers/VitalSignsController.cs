@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MediCon.Models;
 using MediCon.ModelTemp;
 using MediCon.Classes;
+using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
@@ -36,6 +37,20 @@ namespace MediCon.Controllers
                     var bp = dbMed.BloodPressures.Where(a => a.vSignID == vSign.vSignID).OrderByDescending(b => b.dateTimeLog);
                     return Json(new { bp = bp, vs = vSign }, JsonRequestBehavior.AllowGet);
                 }
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve vital signs information.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult getBPrecord(string vSignID)
+        {
+            try
+            {
+                var vSign = dbMed.VitalSigns.SingleOrDefault(a => a.vSignID == vSignID);
+                var bp = dbMed.BloodPressures.Where(a => a.vSignID == vSignID).OrderByDescending(b => b.dateTimeLog);
+                return Json(new { bp = bp, vs = vSign }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -119,6 +134,33 @@ namespace MediCon.Controllers
                     return Json(new { status = "error", msg = "Vital signs is not saved!" }, JsonRequestBehavior.AllowGet);
 
                 return Json(new { status = "success", msg = "Vital signs is successfully saved!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult updateVitalSigns(BloodPressure bpData)
+        {
+            try
+            {
+                var bpRecord = dbMed.BloodPressures.SingleOrDefault(a => a.BPID == bpData.BPID);
+
+                bpRecord.dateTimeLog = DateTime.Now;
+                bpRecord.diastolic = bpData.diastolic;
+                bpRecord.pulseRate = bpData.pulseRate;
+                bpRecord.systolic = bpData.systolic;
+                bpRecord.temperature = bpData.temperature;
+                dbMed.Entry(bpRecord).State = EntityState.Modified;
+
+                var affectedRow = dbMed.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Vital signs is not updated!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Vital signs is successfully updated!" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {

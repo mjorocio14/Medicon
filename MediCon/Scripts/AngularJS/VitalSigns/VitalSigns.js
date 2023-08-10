@@ -124,7 +124,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                },
                {
                    "data": null, render: function (row) {
-                       return moment(row.dateTimeEncoded).format('lll');
+                       return moment(row.dateTimeLog).format('lll');
                    }
                },
                {
@@ -145,29 +145,33 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
             $('#clientList_tbl tbody').on('click', '#btnShowVShistory', function () {
                 var data = tableVSlist.row($(this).parents('tr')).data();
-
-                h.post('../VitalSigns/getBPhistory?qrCode=' + data.qrCode).then(function (d) {
-                    if (d.data.status == "error") {
-                        swal({
-                            title: "ERROR",
-                            text: "Something went wrong, " + d.data.msg,
-                            type: "error"
-                        });
-                    }
-
-                    else {
-                        s.historyList = [];
-                        s.historyList = d.data.bp;
-                        s.historyList.reverse();
-
-                        angular.forEach(s.historyList, function (val) {
-                            val.dateTimeLog = moment(val.dateTimeLog).format('lll');
-                        });
-
-                        $('#vitalHistory_modal').modal('show');
-                    }
-                });
+                
+                showVSrecord(data.vSignID);
             });
+    }
+
+    function showVSrecord(vSignID) {
+        h.post('../VitalSigns/getBPrecord?vSignID=' + vSignID).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "Something went wrong, " + d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                s.historyList = [];
+                s.historyList = d.data.bp;
+                s.historyList.reverse();
+
+                angular.forEach(s.historyList, function (val) {
+                    val.dateTimeLog = moment(val.dateTimeLog).format('lll');
+                });
+
+                $('#vitalHistory_modal').modal('show');
+            }
+        });
     }
 
     s.mainSearch = function (qrCode)
@@ -340,6 +344,58 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
             s.FilterDate = new Date();
             getVitalList(s.FilterDate);
         }
+    }
+
+    s.editVS = function (data) {
+        s.editData = {};
+        s.editData = angular.copy(data);
+       
+        $('#vitalHistory_modal').modal('hide');
+        $('#editVS_modal').modal('show');
+    }
+
+    s.updateVitalSign = function (data) {
+        swal({
+            title: "UPDATING",
+            text: "Please wait while we are saving your changes.",
+            type: "info",
+            showConfirmButton: false
+        });
+
+        let bp = {
+            BPID: data.BPID,
+            temperature: data.temperature,
+            systolic: data.systolic,
+            diastolic: data.diastolic,
+            pulseRate: data.pulseRate
+        };
+
+        h.post('../VitalSigns/updateVitalSigns', { bpData: bp }).then(function (d) {
+            if (d.data.status == "error") {
+                swal({
+                    title: "ERROR",
+                    text: "Something went wrong, " + d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                swal({
+                    title: "SUCCESSFUL",
+                    text: d.data.msg,
+                    type: "success",
+                    closeOnConfirm: true
+                }, function (isConfirm) {
+                    $('#editVS_modal').modal('hide');
+
+                    if (isConfirm) {
+                        s.editData = {};
+                        showVSrecord(data.vSignID);
+                        $('#vitalHistory_modal').modal('show');
+                    }
+                });
+            }
+        });
     }
 
 }]);

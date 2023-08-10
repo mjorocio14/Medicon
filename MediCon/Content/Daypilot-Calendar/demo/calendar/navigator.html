@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Navigator (Open-Source JavaScript Event Calendar)</title>
+
+    <!-- head -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../helpers/v2/main.css?v=2023.2.477" type="text/css" rel="stylesheet"/>
+    <script src="../js/daypilot-all.min.js?v=2023.2.477"></script>
+
+    <!-- /head -->
+
+</head>
+<body>
+
+<!-- top -->
+<template id="content" data-version="2023.2.477">
+
+    <!-- /top -->
+    <div class="note"><b>Note:</b> Read more about integrating the <a
+        href="https://doc.daypilot.org/calendar/navigator/">date navigator</a> [doc.daypilot.org].
+    </div>
+
+    <div style="display: flex;">
+
+        <div style="margin-right: 10px;">
+            <div id="nav"></div>
+        </div>
+        <div style="flex-grow: 1;">
+            <div id="dp"></div>
+        </div>
+    </div>
+
+    <div id="print"></div>
+
+    <script type="text/javascript">
+        var nav = new DayPilot.Navigator("nav", {
+            showMonths: 3,
+            selectMode: "Week",
+            freeHandSelectionEnabled: true,
+            onTimeRangeSelected: function (args) {
+                dp.startDate = args.start;
+                dp.update();
+            }
+        });
+        nav.init();
+
+        var dp = new DayPilot.Calendar("dp");
+
+        // view
+        dp.viewType = "Week";
+
+        // event creating
+        dp.onTimeRangeSelected = function (args) {
+            var name = prompt("New event name:", "Event");
+            if (!name) return;
+            var e = new DayPilot.Event({
+                start: args.start,
+                end: args.end,
+                id: DayPilot.guid(),
+                text: name
+            });
+            dp.events.add(e);
+            dp.clearSelection();
+        };
+
+        dp.onEventClick = function (args) {
+            alert("clicked: " + args.e.id());
+        };
+
+        dp.init();
+
+        var e = new DayPilot.Event({
+            start: DayPilot.Date.today().addHours(12),
+            end: DayPilot.Date.today().addHours(15),
+            id: DayPilot.guid(),
+            text: "Special event"
+        });
+        dp.events.add(e);
+
+    </script>
+
+
+    <!-- bottom -->
+</template>
+
+<script src="../helpers/v2/app.js?v=2023.2.477"></script>
+
+<!-- /bottom -->
+
+</body>
+</html>
+

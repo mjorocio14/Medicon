@@ -175,6 +175,7 @@
     <Compile Include="Controllers\ClinicalScreeningController.cs" />
     <Compile Include="Controllers\DentalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HospitalController.cs" />
     <Compile Include="Controllers\LaboratoryController.cs" />
     <Compile Include="Controllers\LaboratoryResultController.cs" />
     <Compile Include="Controllers\LabtestController.cs" />
@@ -182,11 +183,14 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MedicalConsultationController.cs" />
     <Compile Include="Controllers\PapsmearBreastExamController.cs" />
+    <Compile Include="Controllers\PatientCalendarController.cs" />
     <Compile Include="Controllers\PharmacyController.cs" />
+    <Compile Include="Controllers\PhysicianCalendarController.cs" />
     <Compile Include="Controllers\PrintController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\QRPersonalInfoController.cs" />
     <Compile Include="Controllers\RectalDiagnosisController.cs" />
+    <Compile Include="Controllers\SendSMSController.cs" />
     <Compile Include="Controllers\SessionTimeoutAttribute.cs" />
     <Compile Include="Controllers\SystemUserController.cs" />
     <Compile Include="Controllers\UserAccess.cs" />
@@ -301,6 +305,12 @@
     <Compile Include="Models\fn_vitalSignList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Hospital.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\HospitalCalendar.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\HRISDB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -336,6 +346,9 @@
     <Compile Include="Models\Measurement.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MedCon_Xray.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\MedicalPrescription.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -366,10 +379,16 @@
     <Compile Include="Models\PapsmearBreastExam.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PatientAppointment.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\PersonalInfo.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Personnel.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PhysicianCalendar.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ProductList.cs">
@@ -412,6 +431,12 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Temp_Morbidity.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TwoDecho.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Ultrasound.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Urinalysi.cs">
@@ -485,6 +510,87 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\angular.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\angularjs.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\angularjsctrlas.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\datepicker.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\day.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\days.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\eventareas.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\eventcustomization.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\eventdeleting.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\eventmenu.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\index.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\localization.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\navigator.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\nextprevious.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\react.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\resources.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\themegreen.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\themetransparent.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\themewhite.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\vue.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\calendar\week.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\helpers\v2\app.js" />
+    <Content Include="Content\Daypilot-Calendar\demo\helpers\v2\img-front\calendar-270x150.png" />
+    <Content Include="Content\Daypilot-Calendar\demo\helpers\v2\img-front\month-270x150.png" />
+    <Content Include="Content\Daypilot-Calendar\demo\helpers\v2\img-front\scheduler-270x150.png" />
+    <Content Include="Content\Daypilot-Calendar\demo\helpers\v2\main.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\helpers\v2\reporter.js" />
+    <Content Include="Content\Daypilot-Calendar\demo\icons\daypilot.svg" />
+    <Content Include="Content\Daypilot-Calendar\demo\index.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\js\daypilot-all.min.js" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\angular.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\angularjs.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\angularjsctrlas.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\datepicker.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\eventareas.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\eventcustomization.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\eventdeleting.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\eventmenu.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\index.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\localization.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\navigator.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\nextprevious.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\react.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\themegreen.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\themetransparent.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\themewhite.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\month\vue.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\scheduler\index.html" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\calendar_green.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\calendar_traditional.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\calendar_transparent.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\calendar_white.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\month_green.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\month_traditional.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\month_transparent.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\month_white.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\navigator_green.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\navigator_transparent.css" />
+    <Content Include="Content\Daypilot-Calendar\demo\themes\navigator_white.css" />
+    <Content Include="Content\Daypilot-Calendar\documentation\readme.html" />
+    <Content Include="Content\Daypilot-Calendar\license\LICENSE.txt" />
+    <Content Include="Content\Daypilot-Calendar\license\NOTICE.txt" />
+    <Content Include="Content\Daypilot-Calendar\scripts\daypilot-all.min.d.ts" />
+    <Content Include="Content\Daypilot-Calendar\scripts\daypilot-all.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\daypilot-all.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-calendar.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-common.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-datepicker.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-menu.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-modal.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-month.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\min\daypilot-navigator.min.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-calendar.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-common.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-datepicker.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-menu.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-modal.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-month.src.js" />
+    <Content Include="Content\Daypilot-Calendar\scripts\src\daypilot-navigator.src.js" />
+    <Content Include="Content\Flatpickr-DatePicker\flatpickr.js" />
+    <Content Include="Content\Flatpickr-DatePicker\flatpickr.min.css" />
     <Content Include="Content\ISPINIA\awesome-bootstrap-checkbox\awesome-bootstrap-checkbox.css" />
     <Content Include="Content\ISPINIA\css\animate.css" />
     <Content Include="Content\ISPINIA\css\bootstrap.min.css" />
@@ -557,6 +663,7 @@
     <Content Include="Scripts\AngularJS\angular.min.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
     <Content Include="Scripts\AngularJS\Dental\ToothExtraction.js" />
+    <Content Include="Scripts\AngularJS\Hospital\Scheduler.js" />
     <Content Include="Scripts\AngularJS\LabResult\LabResult.js" />
     <Content Include="Scripts\AngularJS\Labtest\Labtest.js" />
     <Content Include="Scripts\AngularJS\MaleRepro\MaleRepro.js" />
@@ -564,7 +671,9 @@
     <Content Include="Scripts\AngularJS\MedConApp.js" />
     <Content Include="Scripts\AngularJS\Medicines\MedicineProducts.js" />
     <Content Include="Scripts\AngularJS\PapsmearBreastExam\PapsmearBreastExam.js" />
+    <Content Include="Scripts\AngularJS\PatientCalendar\PatientCalendar.js" />
     <Content Include="Scripts\AngularJS\Pharmacy\pharmacyDispensing.js" />
+    <Content Include="Scripts\AngularJS\PhysicianCalendar\PhysicianCalendar.js" />
     <Content Include="Scripts\AngularJS\RectalDiagnosis\RectalDiagnosis.js" />
     <Content Include="Scripts\AngularJS\Utility\Laboratory.js" />
     <Content Include="Scripts\AngularJS\Utility\MedicineProducts.js" />
@@ -686,10 +795,15 @@
     <Content Include="Views\XrayScutumLab\Form2A.cshtml" />
     <Content Include="Views\XrayResult\Index.cshtml" />
     <Content Include="Views\XrayScutumResult\Result.cshtml" />
+    <Content Include="Views\Hospital\Scheduler.cshtml" />
+    <Content Include="Views\PhysicianCalendar\Calendar.cshtml" />
+    <Content Include="Views\PatientCalendar\Appointment.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\QRPersonalInfo\" />
+    <Folder Include="Views\SendSMS\" />
+    <Folder Include="Views\SMS\" />
     <Folder Include="Views\UserAccess\" />
   </ItemGroup>
   <ItemGroup>

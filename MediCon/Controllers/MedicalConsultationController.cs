@@ -38,6 +38,21 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
+        public ActionResult getHospitalList()
+        {
+            try
+            {
+                var medList = dbMed.Hospitals.Where(a => a.hospitalID != "HPL003").ToList();
+
+                return Json(medList, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while fetching the medicines.", error = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
         public ActionResult getLabHistory(string qrCode)
         {
             try
@@ -54,7 +69,7 @@ namespace MediCon.Controllers
                                                        b.res3.res2.res1.lt.labTestName,
                                                        b.res3.res2.res1.le.isTested,
                                                        b.res3.res2.res1.le.isEncoded,
-                                                       b.res3.res2.res1.le.otherLabDesc,
+                                                       //b.res3.res2.res1.le.otherLabDesc,
                                                        b.res3.res2.res1.le.xrayDesc,
                                                        b.res3.res2.res1.le.ecgDesc,
                                                        b.res3.res2.res1.le.ultrasoundDesc,
@@ -210,7 +225,7 @@ namespace MediCon.Controllers
 
 
         [HttpPost]
-        public ActionResult saveDiagnosis(string qrCode, string[] checkedDiagnosis, ResultDiagnosi detail, string[] referral, Consultation consultation, string[] lab, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        public ActionResult saveDiagnosis(string qrCode, string[] checkedDiagnosis, ResultDiagnosi detail, string[] referral, Consultation consultation, string[] lab, string hospitalID, DateTime labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
             {
@@ -229,7 +244,7 @@ namespace MediCon.Controllers
                 {
                     foreach (var item in referral)
                     {
-                        CreateReferralRecord(consultation.consultID, item, lab, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                        CreateReferralRecord(consultation.consultID, item, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
                     }
                 }
                 //......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
@@ -241,8 +256,8 @@ namespace MediCon.Controllers
                     {
                         CreateResultDiagnosisRecord(consultation.consultID, item, detail.otherDiagnosis);
                     }
-                    //......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
                 }
+                //......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
 
                 var affectedRow = dbMed.SaveChanges();
 
@@ -258,7 +273,7 @@ namespace MediCon.Controllers
 
         }
 
-        private void CreateLabExamRecord(string labtestID, string referralID, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        private void CreateLabExamRecord(string labtestID, string referralID, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
                 var labID = new IDgenerator(referralID);
 
@@ -266,7 +281,7 @@ namespace MediCon.Controllers
                 labEx.labID = labID.generateID.Substring(0, 15);
                 labEx.referralID = referralID;
                 labEx.labTestID = labtestID;
-                labEx.otherLabDesc = labtestID == "L0022" ? otherLab : null;
+                //labEx.otherLabDesc = labtestID == "L0022" ? otherLab : null;
                 labEx.xrayDesc = labtestID == "L0006" ? xrayDesc : null;
                 labEx.ecgDesc = labtestID == "L0004" ? ecgDesc : null;
                 labEx.ultrasoundDesc = labtestID == "L0023" ? ultrasoundDesc : null;
@@ -309,21 +324,24 @@ namespace MediCon.Controllers
             dbMed.ResultDiagnosis.Add(RS);
         }
 
-        private void CreateReferralRecord(string consultID, string item, string[] lab, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        private void CreateReferralRecord(string consultID, string item, string[] lab, string hospitalID, DateTime labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             var referralID = new IDgenerator(consultID);
+            //var schedLab = DateTime.Parse(labSchedule);
+            var calendarID = item == "SERVICE006" ? dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID : null;
 
             Referral Ref = new Referral();
             Ref.referralID = referralID.generateID.Substring(0, 15);
             Ref.referredServiceID = item;
             Ref.consultID = consultID;
+            Ref.calendarID = calendarID;
             dbMed.Referrals.Add(Ref);
 
             if (item == "SERVICE006")
             {
                 foreach (var labtestID in lab)
                 {
-                    CreateLabExamRecord(labtestID, Ref.referralID, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                    CreateLabExamRecord(labtestID, Ref.referralID, xrayDesc, ecgDesc, ultrasoundDesc);
                 }
             }
 
@@ -456,18 +474,21 @@ namespace MediCon.Controllers
             try
             {
                 var referral = dbMed.Referrals.Where(a => a.consultID == consultID)
-                                              .Select(b => 
+                                              .Select(b =>
                                                   new
                                                   {
                                                       b.referredServiceID,
-                                                      b.referralID
+                                                      b.referralID,
+                                                      b.calendarID,
+                                                      hospital = dbMed.HospitalCalendars.FirstOrDefault(c => c.calendarID == b.calendarID)
                                                   }
                                               ).ToList();
 
                 var refList = new List<ReferralList>();
                 foreach (var element in referral)
                 {
-                    refList.Add(new ReferralList() { serviceID = element.referredServiceID, referralID = element.referralID, isEncoded = isDataEncoded(element.referralID, element.referredServiceID) });
+                    refList.Add(new ReferralList() { serviceID = element.referredServiceID, referralID = element.referralID, isEncoded = isDataEncoded(element.referralID, element.referredServiceID), 
+                                                     calendarID = element.calendarID, hospitalID = element.hospital == null ? null : element.hospital.hospitalID, scheduleDate = element.hospital == null ? DateTime.Parse("0001-01-01") :  DateTime.Parse(element.hospital.scheduleDate.ToString()) });
                 }
 
                 var lab = dbMed.LaboratoryExams.Join(dbMed.Referrals, le => le.referralID, r => r.referralID, (le, r) => new { le, r })
@@ -475,7 +496,7 @@ namespace MediCon.Controllers
                                                .Select(b => new
                                                {
                                                    b.le.labTestID,
-                                                   b.le.otherLabDesc,
+                                                   //b.le.otherLabDesc,
                                                    b.le.xrayDesc,
                                                    b.le.ecgDesc,
                                                    b.le.ultrasoundDesc,
@@ -518,6 +539,9 @@ namespace MediCon.Controllers
             public string serviceID { get; set; }
             public string referralID { get; set; }
             public bool isEncoded { get; set; }
+            public string calendarID { get; set; }
+            public string hospitalID { get; set; }
+            public DateTime scheduleDate { get; set; }
         }
 
         private bool isDataEncoded(string referralID, string serviceID)
@@ -554,13 +578,13 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string otherLab, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string hospitalID, DateTime labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
             {
                 //......  UPDATE DATA TO CONSULTATION TABLE
                 var con = dbMed.Consultations.SingleOrDefault(a => a.consultID == consult.consultID);
-                con.dateTimeLog = DateTime.Now;
+                //con.dateTimeLog = DateTime.Now;
                 con.outsideReferral = consult.outsideReferral;
                 con.personnelID = Session["personnelID"].ToString();
                 con.remarks = consult.remarks;
@@ -621,6 +645,18 @@ namespace MediCon.Controllers
                                     break;
                             }
                         }
+
+                        else
+                        {
+                            if (refrecord.referredServiceID == "SERVICE006")
+                            {
+                                //var schedLab = DateTime.Parse(labSchedule);
+                                var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
+
+                                refrecord.calendarID = calendarID;
+                                dbMed.Entry(refrecord).State = EntityState.Modified;
+                            }
+                        }
                         
                     }
                 }
@@ -639,7 +675,7 @@ namespace MediCon.Controllers
                         // then Add this new referredServiceID
                         if (!isExistInNew)
                         {
-                            CreateReferralRecord(consult.consultID, newServiceID, labReq, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                            CreateReferralRecord(consult.consultID, newServiceID, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
                         }
                     }
                 }
@@ -681,7 +717,7 @@ namespace MediCon.Controllers
                         // then Add this new referredServiceID
                         if (!isExistNewLab)
                         {
-                            CreateLabExamRecord(newLab, labReferralID, otherLab, xrayDesc, ecgDesc, ultrasoundDesc);
+                            CreateLabExamRecord(newLab, labReferralID, xrayDesc, ecgDesc, ultrasoundDesc);
                         }
                     }
                 }

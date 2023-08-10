@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f10a9595ff8447f096d966f7845dca95" Name="Diagram1">
+      <Diagram DiagramId="f10a9595ff8447f096d966f7845dca95" Name="Diagram1" ZoomLevel="85">
         <EntityTypeShape EntityType="MediconModel.BloodChem" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.BloodPressure" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.BrandList" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
@@ -15,7 +15,6 @@
         <EntityTypeShape EntityType="MediconModel.ECG" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.EditRemark" Width="1.5" PointX="4.75" PointY="7.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Fecalysi" Width="1.5" PointX="6.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MediconModel.LaboratoryExam" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.LaboratoryGroupTest" Width="1.5" PointX="8.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.LaboratoryTest" Width="1.5" PointX="8.75" PointY="8.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.MaleRepro_Diagnosis" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
@@ -26,10 +25,8 @@
         <EntityTypeShape EntityType="MediconModel.MRHrequest" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.OutgoingItem" Width="1.5" PointX="12.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.PapsmearBreastExam" Width="1.5" PointX="4.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MediconModel.Personnel" Width="1.5" PointX="6.75" PointY="12.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.ProductList" Width="1.5" PointX="12.75" PointY="9.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.ProductUnit" Width="1.5" PointX="12.75" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MediconModel.Referral" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.ResultDiagnosi" Width="1.5" PointX="14.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Service" Width="1.5" PointX="14.75" PointY="6.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.sysdiagram" Width="1.5" PointX="8.75" PointY="14.75" IsExpanded="true" />
@@ -47,6 +44,16 @@
         <EntityTypeShape EntityType="MediconModel.Xray_PersonStatus" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Xray_Screening" Width="1.5" PointX="18.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Xray_ScutumLabRequest" Width="1.5" PointX="4.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MediconModel.Hospital" Width="1.5" PointX="7.375" PointY="18.75" />
+        <EntityTypeShape EntityType="MediconModel.LaboratoryExam" Width="1.5" PointX="19.375" PointY="8.75" />
+        <EntityTypeShape EntityType="MediconModel.HospitalCalendar" Width="1.5" PointX="11.375" PointY="19.75" />
+        <EntityTypeShape EntityType="MediconModel.Personnel" Width="1.5" PointX="19.375" PointY="13.75" />
+        <EntityTypeShape EntityType="MediconModel.Referral" Width="1.5" PointX="17.375" PointY="19.75" />
+        <EntityTypeShape EntityType="MediconModel.MedCon_Xray" Width="1.5" PointX="19.75" PointY="19.75" />
+        <EntityTypeShape EntityType="MediconModel.TwoDecho" Width="1.5" PointX="0.75" PointY="20.75" />
+        <EntityTypeShape EntityType="MediconModel.Ultrasound" Width="1.5" PointX="21.75" PointY="0.75" />
+        <EntityTypeShape EntityType="MediconModel.PhysicianCalendar" Width="1.5" PointX="21.375" PointY="4.75" />
+        <EntityTypeShape EntityType="MediconModel.PatientAppointment" Width="1.5" PointX="21.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

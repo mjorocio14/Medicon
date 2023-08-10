@@ -501,7 +501,7 @@
         s.diagnose = {};
         s.diagnoseInfo = {}
         getBPhistory(data.rawData.qrCode, s.qrData.age);
-
+ 
         angular.forEach(data.rawData.diagnosis, function (rec) {
             switch(rec.diagnoseID)
             {

@@ -627,7 +627,7 @@
                             <div class="row" ng-if="isEditBloodChem=='1' && isShowResult">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label class="form-control" style="border:none" for="bloodChemRemarks">REMARKS</label>
+                                        <label class="control-label" style="border:none" for="bloodChemRemarks">REMARKS</label>
                                         <input type="text" class="form-control form-control-sm" id="bloodChemRemarks" name="bloodChemRemarks" ng-model="bloodChemRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
                                     </div>
                                 </div>
@@ -1012,7 +1012,7 @@
                             <div class="row" ng-if="isEditUrinalysis=='1' && isShowResult">
                                 <div class="col-lg-12">
                                     <div class="form-group">
-                                        <label class="form-control" style="border:none" for="uriRemarks">REMARKS</label>
+                                        <label class="control-label" style="border:none" for="uriRemarks">REMARKS</label>
                                         <input type="text" class="form-control form-control-sm" id="uriRemarks" name="uriRemarks" ng-model="uriEdit.remarks" placeholder="Enter Remarks/Reason for Update" required>
                                     </div>
                                 </div>
@@ -1488,6 +1488,123 @@
             </div>
         </div>
         @*MODAL FECALYSIS*@
+
+        @*MODAL X-RAY*@
+        <div class="modal fade" id="modalXray">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">X-RAY</h4>
+                    </div>
+                    <form role="form" name="xrayForm" id="xrayForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="mcXrayDateResult">Date of Result</label>
+                                <input type="date" class="form-control form-control-sm" id="mcXrayDateResult" name="mcXrayDateResult" ng-model="xray.mcXrayDateResult" ng-disabled="!isShowResult" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control" style="border:none" for="xrayFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="8" id="xrayFindings" name="xrayFindings" ng-model="xray.findings" ng-disabled="!isShowResult" required></textarea>
+                            </div>
+                            <div class="row" ng-if="isEditXray=='1' && isShowResult">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="control-label" style="border:none" for="editXray">REMARKS</label>
+                                        <input type="text" class="form-control form-control-sm" id="editXray" name="editXray" ng-model="xrayEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-if="isEditXray=='0'">Save</button>
+                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
+                            <button type="submit" ng-click="!xrayForm.$invalid ? saveXray(xray, true):''" class="btn btn-primary" ng-if="isEditXray=='1' && isShowResult">Save Update</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @*MODAL X-RAY*@
+
+        @*MODAL ULTRASOUND*@
+        <div class="modal fade" id="modalUltrasound">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">ULTRASOUND</h4>
+                    </div>
+                    <form role="form" name="ultrasoundForm" id="ultrasoundForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="ultraDateResult">Date of Result</label>
+                                <input type="date" class="form-control form-control-sm" id="ultraDateResult" name="ultraDateResult" ng-model="ultrasound.ultraDateResult" ng-disabled="!isShowResult" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control" style="border:none" for="ultrasoundFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="8" id="ultrasoundFindings" name="ultrasoundFindings" ng-model="ultrasound.findings" ng-disabled="!isShowResult" required></textarea>
+                            </div>
+                            <div class="row" ng-if="isEditUltrasound=='1' && isShowResult">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="control-label" style="border:none" for="editUltrasound">REMARKS</label>
+                                        <input type="text" class="form-control form-control-sm" id="editUltrasound" name="editUltrasound" ng-model="ultrasoundEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-if="isEditUltrasound=='0'">Save</button>
+                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
+                            <button type="submit" ng-click="!ultrasoundForm.$invalid ? saveUltrasound(ultrasound, true):''" class="btn btn-primary" ng-if="isEditUltrasound=='1' && isShowResult">Save Update</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @*MODAL ULTRASOUND*@
+
+        @*MODAL 2D ECHO*@
+        <div class="modal fade" id="modalEcho">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">2D ECHO</h4>
+                    </div>
+                    <form role="form" name="echoForm" id="echoForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="echoDateResult">Date of Result</label>
+                                <input type="date" class="form-control form-control-sm" id="echoDateResult" name="echoDateResult" ng-model="echo.echoDateResult" ng-disabled="!isShowResult" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" style="border:none" for="echoFindings">Findings:</label>
+                                <textarea class="form-control form-control-sm" rows="8" id="echoFindings" name="echoFindings" ng-model="echo.findings" ng-disabled="!isShowResult" required></textarea>
+                            </div>
+                            <div class="row" ng-if="isEditEcho=='1' && isShowResult">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label class="control-label" style="border:none" for="editEcho">REMARKS</label>
+                                        <input type="text" class="form-control form-control-sm" id="editEcho" name="editEcho" ng-model="echoEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-if="isEditEcho=='0'">Save</button>
+                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
+                            <button type="submit" ng-click="!echoForm.$invalid ? saveEcho(echo, true):''" class="btn btn-primary" ng-if="isEditEcho=='1' && isShowResult">Save Update</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @*MODAL 2D ECHO*@
     </div>
 </div>
 

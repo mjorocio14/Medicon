@@ -30,6 +30,7 @@ namespace MediCon.Models
         public string password { get; set; }
         public Nullable<bool> isActive { get; set; }
         public string userTypeID { get; set; }
+        public string hospitalID { get; set; }
         public string userEncoder { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
