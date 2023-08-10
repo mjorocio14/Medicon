@@ -501,10 +501,11 @@
                 outsideReferral: detail.referDesc,
                 remarks: remarks
             };
-           
+   
             h.post('../MedicalConsultation/saveDiagnosis', {
                 qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList,
-                hospitalID: labSchedInfo.hospitalID, labSchedule: labSchedInfo.labSchedule, xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
+                hospitalID: labSchedInfo.hospitalID, labSchedule: labSchedInfo.labSchedule,
+                xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
             }).then(function (d) {
                 
                 // Send SMS schedule to patient

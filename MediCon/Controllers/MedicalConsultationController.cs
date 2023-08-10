@@ -225,7 +225,7 @@ namespace MediCon.Controllers
 
 
         [HttpPost]
-        public ActionResult saveDiagnosis(string qrCode, string[] checkedDiagnosis, ResultDiagnosi detail, string[] referral, Consultation consultation, string[] lab, string hospitalID, DateTime labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        public ActionResult saveDiagnosis(string qrCode, string[] checkedDiagnosis, ResultDiagnosi detail, string[] referral, Consultation consultation, string[] lab, string hospitalID, DateTime? labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
             {
@@ -324,7 +324,7 @@ namespace MediCon.Controllers
             dbMed.ResultDiagnosis.Add(RS);
         }
 
-        private void CreateReferralRecord(string consultID, string item, string[] lab, string hospitalID, DateTime labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        private void CreateReferralRecord(string consultID, string item, string[] lab, string hospitalID, DateTime? labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             var referralID = new IDgenerator(consultID);
             //var schedLab = DateTime.Parse(labSchedule);
