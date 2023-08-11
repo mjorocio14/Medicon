@@ -37,26 +37,17 @@ namespace MediCon.Controllers
             values.Add("is_intl", "false");
 
             if (isHospital)
-                values.Add("content", "Hi " + info.employee + ", we would like to inform you that your laboratory schedule at " + info.appointee + " is on " + info.schedule.ToLongDateString() + ".");
+                values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory schedule at PEEDO-" + info.appointee + " will be on " + info.schedule.ToLongDateString() + ", at 7 a.m."
+                                       + " It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the hospital laboratory. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
 
             else
             {
                 var physician = dbMed.Personnels.SingleOrDefault(a => a.personnelID == info.appointee);
                 var physicianName = "Dr. " + physician.personnel_firstName + " " + physician.personnel_lastName;
 
-                values.Add("content", "Hi " + info.employee + ", we would like to inform you that your laboratory results are already available and you are scheduled to visit " + physicianName + 
-                    " on " + info.schedule.ToLongDateString() + " at DavNor Employee Clinic.");
+                values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory results are already available and you are scheduled to visit " + physicianName +
+                    " on " + info.schedule.ToLongDateString() + ", at DavNor Employee`s Clinic. It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the physician`s schedule. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
             }
-
-            //{
-            //    { "app_key", "DavN0rHR!S" },
-            //    { "app_secret", "gyNJUQ486EBZ9tZeNpdqPjMuCn17tgcr" },
-            //    { "msisdn", info.contactNo },
-            //    { "content", "Hi " + info.fullName + ", we would like to inform you that your laboratory schedule at " + info.hospitalName + " is on " + info.schedule.ToLongDateString() + "." },
-            //    { "shortcode_mask", "PG DavNor" },
-            //    { "rcvd_transid", "S858340416-9601" },
-            //    { "is_intl", "false" },
-            //};
 
             var content = new FormUrlEncodedContent(values);
 

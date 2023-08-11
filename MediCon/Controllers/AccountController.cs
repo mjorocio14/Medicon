@@ -78,11 +78,11 @@ namespace MediCon.Controllers
                 Session["extName"] = granted.personnel_extName;
                 Session["position"] = granted.position;
                 Session["userTypeID"] = granted.userTypeID;
-                Session["hospitalID"] = granted.userTypeID == "1" ? "Admin" : granted.hospitalID;
+                Session["hospitalID"] = granted.userTypeID == "1" || granted.userTypeID == "10" ? "Admin" : granted.hospitalID;
 
-                var access = granted.userTypeID == "1" || granted.userTypeID == "4" || granted.userTypeID == "9" ? 
+                var access = (granted.userTypeID == "1" || granted.userTypeID == "4" || granted.userTypeID == "9" || granted.userTypeID == "10") ? 
                              db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID ).OrderBy(e => e.orderNo).ToList() :
-                             granted.userTypeID == "5" ? db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID && (x.serviceID == granted.serviceID || x.serviceID == null) ).OrderBy(e => e.orderNo).ToList() :
+                             granted.userTypeID == "5" ? db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID && (x.serviceID == granted.serviceID || x.serviceID == null)).OrderBy(e => e.orderNo).ToList() :
                              db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID && x.serviceID == granted.serviceID ).OrderBy(e => e.orderNo).ToList();
 
                 Session["MenuAccess"] = access;
@@ -104,19 +104,19 @@ namespace MediCon.Controllers
 
                 }, identity);
 
-                //return Content("0");
+                return RedirectToAction("Index", "Home");
 
-                if (Session["controllerName"] != null && Session["actionName"] != null)
-                {
-                    string controllerName = Session["controllerName"].ToString();
-                    string actionName = Session["actionName"].ToString();
+                //if (Session["controllerName"] != null && Session["actionName"] != null)
+                //{
+                //    string controllerName = Session["controllerName"].ToString();
+                //    string actionName = Session["actionName"].ToString();
 
-                    return RedirectToAction(actionName, controllerName);
-                }
-                else
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                //    return RedirectToAction(actionName, controllerName);
+                //}
+                //else
+                //{
+                //    return RedirectToAction("Index", "Home");
+                //}
 
             }
             else

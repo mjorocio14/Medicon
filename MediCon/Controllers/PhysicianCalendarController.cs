@@ -27,9 +27,9 @@ namespace MediCon.Controllers
             {
                 var userType = Session["userTypeID"].ToString();
                 var personnelID = string.Empty;
-                if (userType != "1") personnelID = Session["personnelID"].ToString();
+                if (userType != "1" || userType != "10") personnelID = Session["personnelID"].ToString();
 
-                var list = userType == "1" ? dbMed.PhysicianCalendars.ToList() : dbMed.PhysicianCalendars.Where(a => a.personnelID == personnelID).ToList();
+                var list = userType == "1" || userType == "10" ? dbMed.PhysicianCalendars.ToList() : dbMed.PhysicianCalendars.Where(a => a.personnelID == personnelID).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }

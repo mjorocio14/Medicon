@@ -80,8 +80,8 @@ dp.onTimeRangeSelected = function (args) {
     let sessionUserTypeID = document.getElementById("sessionUserTypeID").innerText;
     s.selectedDate = args;
 
-    // Account is ADMIN
-    if(sessionUserTypeID == 1)
+    // Account is ADMIN or HR
+    if(sessionUserTypeID == 1 || sessionUserTypeID == 10)
     {
         getPhysicianList();
         $('#modalPhysician').modal('show');
@@ -200,8 +200,8 @@ s.createAppointment = function(selectedPersonnel) {
 }
 
 
-function getSchedule() { 
-    h.get('../PhysicianCalendar/Schedule').then(function (d) {
+async function getSchedule() { 
+   await h.get('../PhysicianCalendar/Schedule').then(function (d) {
 
         let userType = document.getElementById("sessionUserTypeID").innerText; 
        
@@ -217,7 +217,7 @@ function getSchedule() {
                 start: startDate,
                 end: endDate,
                 id: rec.phyCalendarID,
-                text: userType == 1 ? 'Dr. ' + colorValue[0].personnel_lastName : 'Capitol Employees',
+                text: userType == 1 || userType == 10 ? 'Dr. ' + colorValue[0].personnel_lastName : 'Capitol Employees',
                 personnelID: rec.personnelID,
                 backColor: colorValue[0].color,
                 borderColor: colorValue[0].color

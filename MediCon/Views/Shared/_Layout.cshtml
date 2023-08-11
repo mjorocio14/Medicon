@@ -159,6 +159,7 @@
     <script src="~/Scripts/js/select2/select2.full.min.js"></script>
     <script src="~/Content/ISPINIA/sweetalert/sweetalert.min.js"></script>
     <script src="~/Scripts/js/Moment/moment.min.js"></script>
+    <script src="~/Scripts/js/Moment/moment-timezone-with-data.min.js"></script>
  
     <script>
         $(document).ready(function () {
@@ -215,7 +216,7 @@
                         medcon.show();
                     }
 
-                    else if (d[x].mainMenu == 'LAB') {
+                    else if (d[x].mainMenu == 'LAB') { 
                         lab.show();
                         $('#LABsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }

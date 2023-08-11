@@ -177,6 +177,53 @@
         });
     }
 
+    s.searchByName = function () {
+        s.searchResultList = [];
+        s.infoFormData = {};
+        $('#modalPatient').modal('show');
+    }
+
+    s.mainSearchByName = function (data) {
+        s.modal_tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.modal_tableLoader = false;
+        })
+    }
+
+    s.selectEmp = function (empData) {
+        formatEmpData(empData);
+        $('#modalPatient').modal('hide');
+    }
+
+    function formatEmpData(data) {
+        data.birthdate = data.birthDate != null ? new Date(moment(data.birthDate).format()) : null;
+        data.sex = data.sex != null ? (data.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = data;
+        s.qrData.age = moment().diff(moment(data.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (data.brgyPermAddress == null ? "" : data.brgyPermAddress) + ' '
+                                + (data.cityMunPermAddress == null ? "" : data.cityMunPermAddress) + ' '
+                                + (data.provincePermAddress == null ? "" : data.provincePermAddress);
+    }
+
     s.mainSearch = function (info) {
         s.loader = true;
 
@@ -195,16 +242,9 @@
             }
 
             else {
-                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
-                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
-                    s.qrData = d.data;
-                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
-                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
-                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
-                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
-                    
-                    s.showMLR(info);
-                    getLabHistory(info);
+                formatEmpData(d.data);
+                s.showMLR(info);
+                getLabHistory(info);
             }
 
             s.loader = false;
@@ -509,7 +549,7 @@
             }).then(function (d) {
                 
                 // Send SMS schedule to patient
-                s.qrData.contactNo = '09688515104';
+                s.qrData.contactNo = '09306111573';
                 if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '')) sendSMS(labSchedInfo);
 
                     if (d.data.status == "error") {
@@ -561,7 +601,7 @@
     function getSchedule(isEditting, dateFilter) {
         h.get('../Hospital/AllHospitalSchedule?date=' + dateFilter).then(function (d) {
             events = [];
-
+            
             // Clear and Reset date picker to initial state
             isEditting ? datePicker_modal.clear() : date_picker.clear();
             resetDatePicker(isEditting);
@@ -1059,6 +1099,7 @@
                         
                         // If hospital and lab schedule is present
                         if (hospitalData.length > 0) {
+                            console.log(hospitalData);
                             s.selectHospital(hospitalData[0].hospitalID, true);
                            
                             // Set date picker month to labSchedule month
@@ -1195,8 +1236,8 @@
             //        type: "error"
             //    });
             //}
-
-            if (labList.length > 0 && result.setLabSched.labSchedule == undefined || result.setLabSched.labSchedule == '') {
+            
+            if (labList.length > 0 && result.setLabSched.labSchedule == undefined) {
                 swal({
                     title: "ERROR",
                     text: "Please set a laboratory schedule for the selected hospital.",

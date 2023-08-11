@@ -6,6 +6,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
     var vsIndexNo = 1;
     s.isVSexist = false;
     s.showClientList = false;
+    s.modal_tableLoader = false;
 
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner(
@@ -32,6 +33,43 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
         s.mainSearch(content);
     });
     // /QR Scanner Initialization
+
+    s.searchByName = function () {
+        s.searchResultList = [];
+        s.infoFormData = {};
+        $('#modalPatient').modal('show');
+    }
+
+    s.mainSearchByName = function (data) {
+        s.modal_tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.modal_tableLoader = false;
+        })
+    }
+
+    s.selectEmp = function (empData) {
+        formatEmpData(empData);
+        $('#modalPatient').modal('hide');
+    }
 
     function getVitalList(dateFilter)
     {
@@ -174,6 +212,29 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
         });
     }
 
+    function formatEmpData(data) {
+        data.birthdate = data.birthDate != null ? new Date(moment(data.birthDate).format()) : null;
+        data.sex = data.sex != null ? (data.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = data;
+        s.qrData.age = moment().diff(moment(data.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (data.brgyPermAddress == null ? "" : data.brgyPermAddress) + ' '
+                                + (data.cityMunPermAddress == null ? "" : data.cityMunPermAddress) + ' '
+                                + (data.provincePermAddress == null ? "" : data.provincePermAddress);
+
+        // Check and Get Vital Signs Data for the current day
+        h.get('../VitalSigns/getVitalSigns?qrCode=' + data.qrCode).then(function (d) {
+            if (d.data != null && d.data != '') {
+                s.isVSexist = true;
+                s.qrData.height = d.data.height;
+                s.qrData.weight = d.data.weight;
+            }
+
+            else {
+                s.isVSexist = false;
+            }
+        });
+    }
+
     s.mainSearch = function (qrCode)
     {
         s.loader = true;
@@ -191,29 +252,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
             }
 
             else
-            {
-                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
-                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE"? 'true' : 'false') : null;
-                    s.qrData = d.data;
-                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
-                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
-                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
-                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
-                    
-                    // Check and Get Vital Signs Data for the current day
-                    h.get('../VitalSigns/getVitalSigns?qrCode=' + qrCode).then(function (d) {
-                        if (d.data != null && d.data != '')
-                        {
-                            s.isVSexist = true;
-                            s.qrData.height = d.data.height;
-                            s.qrData.weight = d.data.weight;
-                        }
-
-                        else {
-                            s.isVSexist = false;
-                        }
-                    });
-            }
+                formatEmpData(d.data);
 
             s.loader = false;
         })

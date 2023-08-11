@@ -76,14 +76,14 @@
        
         let sessionHospitalID = document.getElementById("sessionHospitalID").innerText;
        
-        // Account is ADMIN
+        // Account is ADMIN or HR
         if(sessionHospitalID == 'Admin')
         {
             swal({
                 title: 'Select District Hospital',
                 text: '<div class="radio radio-success radio-inline"><input type="radio" id="radio_carmen" value="HPL001" name="radio_hospital" /><label for="radio_carmen"> CARMEN </label></div>' +
-                      '<div class="radio radio-danger radio-inline"><input type="radio" id="radio_kapalong" value="HPL002" name="radio_hospital" /><label for="radio_kapalong"> KAPALONG </label></div>' +
-                      '<div class="radio radio-primary radio-inline"><input type="radio" id="radio_igacos" value="HPL003" name="radio_hospital" /><label for="radio_igacos"> IGACOS </label></div>',
+                      '<div class="radio radio-danger radio-inline"><input type="radio" id="radio_kapalong" value="HPL002" name="radio_hospital" /><label for="radio_kapalong"> KAPALONG </label></div>',
+                      //'<div class="radio radio-primary radio-inline"><input type="radio" id="radio_igacos" value="HPL003" name="radio_hospital" /><label for="radio_igacos"> IGACOS </label></div>',
                 type: "info",
                 html: true,
                 showCancelButton: true,
@@ -261,7 +261,7 @@
               s.patientList = [];
 
               h.get('../Hospital/PatientList?calendarID=' + data.id).then(function (d) {
-                  s.patientList = d.data;
+                  s.patientList = d.data; console.log(d.data);
                   s.tbl_loader = false;
               });
 

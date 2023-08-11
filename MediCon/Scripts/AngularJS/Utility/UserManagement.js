@@ -325,19 +325,15 @@
 
     s.credentials = true;
 
-    s.sService = function (a) {
-        if (a == 3) {
+    s.sService = function (userTypeID) {
+        if (userTypeID == 3)
             s.credentials = false;
-        }
 
-        else if (a == 1 || a == 4 || a == 7 || a == 8)
-        {
-            s.users.serviceID = null;
-        }
-
-        else 
-        {
+        else {
             s.credentials = true;
+
+            if (userTypeID == 1 || userTypeID == 4 || userTypeID == 7 || userTypeID == 8 || userTypeID == 9 || userTypeID == 10)
+                s.users.serviceID = null;
         }
     }
 

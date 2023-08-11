@@ -154,7 +154,7 @@
                     start: startDate,
                     end: endDate,
                     id: rec.phyCalendarID,
-                    text: userType == 1 ? 'Dr. ' + colorValue[0].personnel_lastName : 'Capitol Employees',
+                    text: userType == 1 || userType == 10 ? 'Dr. ' + colorValue[0].personnel_lastName : 'Capitol Employees',
                     personnelID: rec.personnelID,
                     backColor: colorValue[0].color,
                     borderColor: colorValue[0].color

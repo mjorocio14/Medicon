@@ -578,7 +578,7 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string hospitalID, DateTime labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string hospitalID, DateTime? labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
         {
             try
             {

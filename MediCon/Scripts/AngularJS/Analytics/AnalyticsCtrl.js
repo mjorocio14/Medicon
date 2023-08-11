@@ -57,8 +57,11 @@
             else {
                 var data = [];
                 
-                // COMMUNICABLE SUMMARY (Upper Respiratory Tract Infection, Lower Respiratory Tract Infection, Systemic Viral Illness, Tuberculosis)
-                s.comDiseaseList = ['DIAG001', 'DIAG025', 'DIAG026', 'DIAG027'];
+                // COMMUNICABLE SUMMARY
+                s.comDiseaseList = [ { diseaseID: 'DIAG001', diseaseName: "Upper Respiratory Tract Infection" },
+                                     { diseaseID: 'DIAG025', diseaseName: "Lower Respiratory Tract Infection" },
+                                     { diseaseID: 'DIAG026', diseaseName: "Systemic Viral Illness"},
+                                     { diseaseID: 'DIAG027', diseaseName: "Tuberculosis"} ];
                 var MorbidityComMaleTotal = 0;
                 var MorbidityComFemaleTotal = 0;
                 s.comListSummary = {
@@ -67,21 +70,21 @@
                 };
 
                 angular.forEach(s.comDiseaseList, function(data) {
-                    var disease = d.data.stats.filter(f => f.diagnoseID == data);
+                    var disease = d.data.stats.filter(f => f.diagnoseID == data.diseaseID);
                     var diseaseObj = {};
-                    diseaseObj.diagnoseID = disease[0].diagnoseID;
-                    diseaseObj.diagnoseName = disease[0].diagnoseName;
+                    diseaseObj.diagnoseID = disease.length > 0 ? disease[0].diagnoseID : data.diseaseID;
+                    diseaseObj.diagnoseName = disease.length > 0 ? disease[0].diagnoseName : data.diseaseName;
 
                     // Assign data of disease per sex
                     angular.forEach(disease, function(data) {
                         if(data.sex)
                         {
-                            diseaseObj.male = data.MorbidityCount;
-                            MorbidityComMaleTotal += data.MorbidityCount;
+                            diseaseObj.male = data.MorbidityCount ?? 0;
+                            MorbidityComMaleTotal += data.MorbidityCount ?? 0;
                         }
                         else {
-                            diseaseObj.female = data.MorbidityCount;
-                            MorbidityComFemaleTotal += data.MorbidityCount;
+                            diseaseObj.female = data.MorbidityCount ?? 0;
+                            MorbidityComFemaleTotal += data.MorbidityCount ?? 0;
                         }
                     });
 
@@ -90,7 +93,12 @@
                 });
 
                 // NON-COMMUNICABLE SUMMARY (Hypertension, Diabetes, Arthritis, UTI, Gastritis, Bronchial Asthma)
-                s.noncomDiseaseList = ['DIAG013', 'DIAG014', 'DIAG021', 'DIAG009', 'DIAG028', 'DIAG004'];
+                s.noncomDiseaseList = [ { diseaseID: 'DIAG013', diseaseName: "Hypertension" },
+                                        { diseaseID: 'DIAG014', diseaseName: "Diabetis Mellitus" },
+                                        { diseaseID: 'DIAG021', diseaseName: "Arthritis" },
+                                        { diseaseID: 'DIAG009', diseaseName: "Urinary Tract Infection" },
+                                        { diseaseID: 'DIAG028', diseaseName: "Gastritis" },
+                                        { diseaseID: 'DIAG004', diseaseName: "Bronchial Asthma" } ];
                 var MorbidityNonComMaleTotal = 0;
                 var MorbidityNonComFemaleTotal = 0;
                 s.nonComListSummary = {
@@ -99,21 +107,21 @@
                 };
 
                 angular.forEach(s.noncomDiseaseList, function(data) {
-                    var disease = d.data.stats.filter(f => f.diagnoseID == data);
+                    var disease = d.data.stats.filter(f => f.diagnoseID == data.diseaseID);
                     var diseaseObj = {};
-                    diseaseObj.diagnoseID = disease[0].diagnoseID;
-                    diseaseObj.diagnoseName = disease[0].diagnoseName;
+                    diseaseObj.diagnoseID = disease.length > 0 ? disease[0].diagnoseID : data.diseaseID;
+                    diseaseObj.diagnoseName = disease.length > 0 ? disease[0].diagnoseName : data.diseaseName;
 
                     // Assign data of disease per sex
                     angular.forEach(disease, function(data) {
                         if(data.sex)
                         {
-                            diseaseObj.male = data.MorbidityCount;
-                            MorbidityNonComMaleTotal += data.MorbidityCount;
+                            diseaseObj.male = data.MorbidityCount ?? 0;
+                            MorbidityNonComMaleTotal += data.MorbidityCount ?? 0;
                         }
                         else {
-                            diseaseObj.female = data.MorbidityCount;
-                            MorbidityNonComFemaleTotal += data.MorbidityCount;
+                            diseaseObj.female = data.MorbidityCount ?? 0;
+                            MorbidityNonComFemaleTotal += data.MorbidityCount ?? 0;
                         }
                     });
 
@@ -347,9 +355,6 @@
 
         dtF = s.formatdate(dtF, 'YYYY-MM');
         dtT = s.formatdate(dtT, 'YYYY-MM');
-
-        console.log("date from: " + dtF)
-        console.log("date to: " + dtT)
     };
  
     s.formatdate = function (date, dformat) {

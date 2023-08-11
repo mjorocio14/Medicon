@@ -91,9 +91,9 @@ namespace MediCon.Controllers
             {
                 var userType = Session["userTypeID"].ToString();
                 var hospitalID = string.Empty;
-                if(userType != "1") hospitalID = Session["hospitalID"].ToString();
+                if (userType != "1" || userType != "10") hospitalID = Session["hospitalID"].ToString();
 
-                var list = userType == "1"? dbMed.HospitalCalendars.ToList() : dbMed.HospitalCalendars.Where(a => a.hospitalID == hospitalID).ToList();
+                var list = userType == "1" || userType == "10" ? dbMed.HospitalCalendars.ToList() : dbMed.HospitalCalendars.Where(a => a.hospitalID == hospitalID).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
             }
@@ -112,11 +112,14 @@ namespace MediCon.Controllers
 
                 // Only get the list of schedule for the date and onwards to reduce bulk fetching
                 var list = dbMed.HospitalCalendars.Where(a => a.scheduleDate >= firstDayMonth)
-                                                  .Select(b => new { 
-                                                        b.calendarID,
-                                                        b.hospitalID,
-                                                        b.scheduleDate,
-                                                        patientCount = dbMed.Referrals.Count(c => c.calendarID == b.calendarID)
+                                                  .Select(b => new
+                                                  {
+                                                      b.calendarID,
+                                                      b.hospitalID,
+                                                      b.scheduleDate,
+                                                      patientCount = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, con => con.vSignID, (vs, con) => new { vs, con }).
+                                                                     Join(dbMed.Referrals, r1 => r1.con.consultID, reff => reff.consultID, (r1, reff) => new { r1, reff })
+                                                                     .Select(a => new { a.reff.calendarID, a.r1.vs.qrCode }).Distinct().Count(c => c.calendarID == b.calendarID)
                                                   }).ToList();
 
                 return Json(list, JsonRequestBehavior.AllowGet);
@@ -137,17 +140,19 @@ namespace MediCon.Controllers
                                                .Where(a => a.reff.referredServiceID == "SERVICE006" && a.reff.calendarID == calendarID)
                                                .Select(b => new { 
                                                     b.r1.vs.qrCode,
-                                                    b.r1.con.consultID,
-                                                    b.reff.referralID,
-                                                    isTested = dbMed.LaboratoryExams.Count(d => d.referralID == b.reff.referralID && d.isTested == true)
-                                               }).ToList();
+                                               }).Distinct().ToList();
 
                 var list = patients.Join(hrisDB.vEmployeeHealthWells, hw => hw.qrCode, emp => emp.qrCode, (hw, emp) => new { hw, emp })
-                                    .Select(a => new { 
+                                    .Select(a => new
+                                    {
                                         a.emp.idNo,
+                                        a.emp.qrCode,
                                         a.emp.fullNameLast,
                                         a.emp.shortDepartmentName,
-                                        a.hw.isTested
+                                        isTested = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, con => con.vSignID, (vs, con) => new { vs, con })
+                                                 .Join(dbMed.Referrals, r1 => r1.con.consultID, reff => reff.consultID, (r1, reff) => new { r1, reff })
+                                                 .Join(dbMed.LaboratoryExams, r2 => r2.reff.referralID, le => le.referralID, (r2, le) => new { r2, le })
+                                                 .Count(b => b.r2.r1.vs.qrCode == a.emp.qrCode && b.le.isTested == true)
                                     }).OrderBy(b => b.fullNameLast);
 
                 return Json(list, JsonRequestBehavior.AllowGet);
