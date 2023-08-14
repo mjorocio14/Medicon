@@ -54,6 +54,20 @@
         
     }
 
+    s.refetchMeds = function () {
+        s.refreshBtn = document.getElementById('refetchMeds');
+        s.refreshBtn.classList.add('fa-spin');
+
+        getMedicineList(true);
+    }
+
+    s.refetchMeds_modal = function () {
+        s.refreshBtn = document.getElementById('refetchMeds_modal');
+        s.refreshBtn.classList.add('fa-spin');
+
+        getMedicineList(true);
+    }
+
     s.selectHospital = function (id, isModal) {
         isModal ? datePicker_modal.clear() : date_picker.clear();
      
@@ -143,7 +157,7 @@
     });
 
 
-    function getMedicineList() {
+    function getMedicineList(isRefreshing) {
         h.post('../MedicalConsultation/getMedicineList').then(function (d) {
             if (d.data.status == 'error') {
                 swal({
@@ -156,6 +170,12 @@
             else {
                 s.medList = {};
                 s.medList = d.data;
+
+                if (isRefreshing) {
+                    setTimeout(function () {
+                        s.refreshBtn.classList.remove('fa-spin');
+                    }, 1000);
+                } 
             }
         });
     }
@@ -211,6 +231,8 @@
 
     s.selectEmp = function (empData) {
         formatEmpData(empData);
+        s.showMLR(empData.qrCode);
+        getLabHistory(empData.qrCode);
         $('#modalPatient').modal('hide');
     }
 
@@ -463,6 +485,18 @@
             $('#modalEcho').modal('show');
         }
 
+        //   HbA1c RESULT
+        else if (data.labTestID == "L0025") {
+            s.hba1c = {};
+
+            //h.post("../LaboratoryResult/getHbA1cResult?labID=" + data.labID).then(function (d) {
+            //    d.data.echoDateResult = new Date(moment(d.data.echoDateResult).format());
+            //    s.echo = d.data;
+            //});
+
+            //$('#modalEcho').modal('show');
+        }
+
         //   ECG RESULT
         else if (data.labTestID == "L0004") {
             s.ecg = {};
@@ -541,17 +575,12 @@
                 outsideReferral: detail.referDesc,
                 remarks: remarks
             };
-   
+            
             h.post('../MedicalConsultation/saveDiagnosis', {
                 qrCode: s.qrData.qrCode, checkedDiagnosis: diagnosisList, detail: detail, referral: referralList, consultation: consult, lab: labtestList,
                 hospitalID: labSchedInfo.hospitalID, labSchedule: labSchedInfo.labSchedule,
                 xrayDesc: xrayDesc, ecgDesc: ecgDesc, ultrasoundDesc: ultrasoundDesc
             }).then(function (d) {
-                
-                // Send SMS schedule to patient
-                s.qrData.contactNo = '09306111573';
-                if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '')) sendSMS(labSchedInfo);
-
                     if (d.data.status == "error") {
                         swal({
                             title: "ERROR",
@@ -561,7 +590,20 @@
                         });
                     }
 
+                    else if (d.data.status == "full") {
+                        swal({
+                            title: "ERROR",
+                            text: "<labal>" + d.data.msg + "</label>",
+                            type: "error",
+                            html: true
+                        });
+                    }
+
                     else {
+                        // Send SMS schedule to patient
+                        s.qrData.contactNo = "09688515104";
+                        if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '')) sendSMS(labSchedInfo);
+
                         swal({
                             title: "SUCCESSFUL",
                             text: d.data.msg + " <label>Proceeding with Prescription.</label>",
@@ -573,7 +615,7 @@
                         }, function (isConfirm) {
                             if (isConfirm) {
                                 s.showRx = !s.showRx;
-                                getMedicineList();
+                                getMedicineList(false);
                                 s.newlyAddedConsultID = d.data.consultID;
                                 s.showClientListBTN = false;
                                 s.labSchedInfo = {};
@@ -1083,6 +1125,10 @@
                                     laboratory.L0024 = true;
                                     labIsEncoded.L0024isEncoded = item.isTested;
                                     break;
+                                case 'L0025':
+                                    laboratory.L0025 = true;
+                                    labIsEncoded.L0025isEncoded = item.isTested;
+                                    break;
                             }
                         });
                         s.resultDiag.laboratory = laboratory;
@@ -1094,12 +1140,13 @@
                         s.resultDiag.setLabSched = {
                             isNeededLab: false,
                             hospitalID: '',
-                            labSchedule: ''
+                            labSchedule: '',
+                            currentCalendarID: ''
                         };
                         
                         // If hospital and lab schedule is present
                         if (hospitalData.length > 0) {
-                            console.log(hospitalData);
+                            
                             s.selectHospital(hospitalData[0].hospitalID, true);
                            
                             // Set date picker month to labSchedule month
@@ -1108,7 +1155,8 @@
                             s.resultDiag.setLabSched = {
                                 isNeededLab: true,
                                 hospitalID: hospitalData[0].hospitalID,
-                                labSchedule: moment(hospitalData[0].scheduleDate).format('YYYY-MM-DD')
+                                labSchedule: moment(hospitalData[0].scheduleDate).format('YYYY-MM-DD'),
+                                currentCalendarID: hospitalData[0].calendarID
                             };
                         }
 
@@ -1152,7 +1200,7 @@
                 //s.showClientList = true;
                 s.showMedicalRecord = true;
                 s.showRx = true;
-                getMedicineList();
+                getMedicineList(false);
                 }
             });
         }
@@ -1167,7 +1215,6 @@
     }
 
     s.saveUpdate = function (result) {
-        
             swal({
                 title: "SAVING",
                 text: "Please wait while we are saving your data.",
@@ -1250,9 +1297,18 @@
                 h.post('../MedicalConsultation/updateDiagnosis', {
                     qrCode: result.info.qrCode, consult: consultInfo, diagnosis: diagnosisList, otherDiagnose: result.otherDiagnosis,
                     referral: referralList, outsideReferral: result.info.outsideReferral, labReq: labList, hospitalID: result.setLabSched.hospitalID == undefined ? null : result.setLabSched.hospitalID, labSchedule: result.setLabSched.labSchedule,
-                    xrayDesc: result.xrayDesc, ecgDesc: result.ecgDesc, ultrasoundDesc: result.ultrasoundDesc
+                    xrayDesc: result.xrayDesc, ecgDesc: result.ecgDesc, ultrasoundDesc: result.ultrasoundDesc, currentCalendarID: result.setLabSched.currentCalendarID
                 }).then(function (d) {
                     if (d.data.status == "error") {
+                        swal({
+                            title: "ERROR",
+                            text: "<labal>" + d.data.msg + "</label>",
+                            type: "error",
+                            html: true
+                        });
+                    }
+
+                    else if (d.data.status == "full") {
                         swal({
                             title: "ERROR",
                             text: "<labal>" + d.data.msg + "</label>",
@@ -1293,7 +1349,7 @@
 
     s.enableRxEditting = function () {
         s.isShowEditRxForm = !s.isShowEditRxForm;
-        getMedicineList();
+        getMedicineList(false);
         angular.copy(s.rxHistory, s.RxList);
     }
 

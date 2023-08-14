@@ -103,6 +103,22 @@ namespace MediCon.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult SchedulePerHospital(string hospitalID, DateTime dateParam)
+        {
+            try
+            {
+                var firstDayMonth = new DateTime(dateParam.Year, dateParam.Month, 1);
+
+                var list = dbMed.HospitalCalendars.Where(a => a.hospitalID == hospitalID && a.scheduleDate >= firstDayMonth).ToList();
+                return Json(list, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while fetching the medicines.", error = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpGet]
         public ActionResult AllHospitalSchedule(DateTime date)
         {

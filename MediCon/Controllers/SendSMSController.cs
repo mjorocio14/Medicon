@@ -46,7 +46,7 @@ namespace MediCon.Controllers
                 var physicianName = "Dr. " + physician.personnel_firstName + " " + physician.personnel_lastName;
 
                 values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory results are already available and you are scheduled to visit " + physicianName +
-                    " on " + info.schedule.ToLongDateString() + ", at DavNor Employee`s Clinic. It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the physician`s schedule. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
+                    " on " + info.schedule.ToLongDateString() + ", at DavNor Employees' Clinic. It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the physicians' schedule. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
             }
 
             var content = new FormUrlEncodedContent(values);

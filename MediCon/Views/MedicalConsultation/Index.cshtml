@@ -683,6 +683,10 @@
                                                         <input type="checkbox" id="L0008" value="L0008" ng-model="labtest.L0008">
                                                         <label for="L0008"> Serum Electrolytes </label>
                                                     </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0025" value="L0025" ng-model="labtest.L0025">
+                                                        <label for="L0025"> HbA1c </label>
+                                                    </div>
                                                 </div>
                                                 <div class="col-lg-12">
                                                     <hr style="margin: 7px 0px 15px 0px;" />
@@ -786,7 +790,7 @@
                     <div class="col-lg-4 col-md-4">
                         <div class="panel panel-primary">
                             <div class="panel-heading text-center">
-                                <label class="text-center">DRUGS & MEDICINES</label>
+                                <label class="text-center">DRUGS & MEDICINES</label><a id="refetchMeds" ng-click="refetchMeds()" style="float: right; font-size: medium; color: white;"><i class="fa fa-refresh"></i></a>
                             </div>
                             <div class="panel-body">
                                 <form id="prescription_form" name="prescription_form" novalidate>
@@ -1276,6 +1280,10 @@
                                             <input type="checkbox" id="edit_L0008" value="L0008" ng-model="resultDiag.laboratory.L0008" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0008isEncoded">
                                             <label for="edit_L0008"> Serum Electrolytes </label>
                                         </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_L0025" value="edit_L0025" ng-model="resultDiag.laboratory.L0025" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0025isEncoded">
+                                            <label for="edit_L0025"> HbA1c </label>
+                                        </div>
                                     </div>
                                     <div class="col-lg-12">
                                         <hr style="margin: 7px 0px 15px 0px;" />
@@ -1416,7 +1424,7 @@
                                     <div class="col-lg-4 col-md-4">
                                         <div class="panel panel-success">
                                             <div class="panel-heading text-center">
-                                                <label class="text-center">DRUGS & MEDICINES</label>
+                                                <label class="text-center">DRUGS & MEDICINES</label><a id="refetchMeds_modal" ng-click="refetchMeds_modal()" style="float: right; font-size: medium; color: white;"><i class="fa fa-refresh"></i></a>
                                             </div>
                                             <div class="panel-body">
                                                 <form id="rxEdit_form" name="rxEdit_form" novalidate>
