@@ -24,6 +24,7 @@ namespace MediCon.Report
                     rpt.ReportDocument = new LRRF.LRRFRpt();
                     rpt.Parameters.Add("labRequestID", labRequestID);
                     break;
+
                 case "prescription":
                     rpt.Parameters.Add("rxID", Session["rxID"].ToString());
                     rpt.Parameters.Add("rxLength", Session["rxLength"].ToString());
@@ -40,7 +41,7 @@ namespace MediCon.Report
                     rpt.Parameters.Add("personnel_extName", Session["personnel_extName"].ToString());
                     rpt.Parameters.Add("personnel_title", Session["personnel_title"].ToString());
                     rpt.Parameters.Add("personnel_licenseNo", Session["personnel_licenseNo"].ToString());
-                    rpt.ReportDocument = new Prescription.Prescription();
+                    rpt.ReportDocument = new Prescription.RX();
                     break;
             }
 
