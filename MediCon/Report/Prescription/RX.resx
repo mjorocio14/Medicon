@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="textBox13.Value" xml:space="preserve">
+    <value>= Format("{0:N0}",Fields.dosage) + " " + Fields.unitDesc + " " + Fields.perDay + "x a Day" + "  " + IIF(Fields.noDay = "maintenance", "Maintenance", IIf(Fields.noDay = "needed", "As Needed", IIf(Fields.noDay = "single", "Single Dose", Fields.noDay + " Day/s")))  </value>
+  </data>
   <metadata name="sqlDataSource2.DefaultValues" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFhUZWxlcmlrLlJlcG9ydGluZywgVmVyc2lvbj03LjIuMTMuMTAx
@@ -3379,7 +3382,7 @@ where MedicalPrescription.rxID = @rxID</value>
 </value>
   </data>
   <metadata name="$this.Zoom" type="System.Single, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>1.5</value>
+    <value>2</value>
   </metadata>
   <metadata name="$this.ShowSnapGrid" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
