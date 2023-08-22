@@ -1605,6 +1605,73 @@
             </div>
         </div>
         @*MODAL 2D ECHO*@
+
+        @*MODAL HBA1C*@
+        <div class="modal fade" id="modalHba1c">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title text-center">BLOOD CHEMISTRY</h4>
+                    </div>
+                    <form role="form" name="hba1cForm" id="hba1cForm">
+                        <div class="modal-body" style="height: 100%;">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center">Test</th>
+                                        <th style="text-align:center">Result</th>
+                                        <th style="text-align:center">Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><label class="form-control" style="border:none" for="hba1c">GLYCOSYLATED HEMOGLOBIN (HBA1C)</label></td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm text-center" id="hba1c" name="hba1c" ng-model="hba1c.result" min="4" max="6" step="0.1" placeholder="Enter result" ng-disabled="!isShowResult">
+                                        </td>
+                                        <td class="text-center">
+                                            4.0 - 6.0 %
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
+                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="hba1c.pathologist" ng-disabled="!isShowResult">
+                                            <option value="">Select Pathologist</option>
+                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
+                                                {{s.fullname}}
+                                            </option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
+                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="hba1c.medtech" ng-disabled="!isShowResult">
+                                            <option value="">Select Medical Tech</option>
+                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" ng-if="isEditHba1c=='0'">Save</button>
+                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
+                            <button type="submit" ng-click="!hba1cForm.$invalid ? saveEcho(hba1c, true):''" class="btn btn-primary" ng-if="isEditHba1c=='1' && isShowResult">Save Update</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        @*MODAL HBA1C*@
+
     </div>
 </div>
 

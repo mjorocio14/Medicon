@@ -36,5 +36,9 @@ namespace MediCon.Models
         public string contactNo { get; set; }
         public Nullable<System.DateTime> birthDate { get; set; }
         public string sex { get; set; }
+        public string personnel_firstName { get; set; }
+        public string personnel_midInit { get; set; }
+        public string personnel_lastName { get; set; }
+        public string personnel_extName { get; set; }
     }
 }

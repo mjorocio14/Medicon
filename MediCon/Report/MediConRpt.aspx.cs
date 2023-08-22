@@ -34,6 +34,7 @@ namespace MediCon.Report
                     rpt.Parameters.Add("PatientExtName", Session["PatientExtName"].ToString());
                     rpt.Parameters.Add("PatientAddress", Session["PatientAddress"].ToString());
                     rpt.Parameters.Add("PatientAge", Session["PatientAge"].ToString());
+                    rpt.Parameters.Add("PatientOffice", Session["PatientOffice"].ToString());
 
                     rpt.Parameters.Add("personnel_firstName", Session["personnel_firstName"].ToString());
                     rpt.Parameters.Add("personnel_midInit", Session["personnel_midInit"].ToString());

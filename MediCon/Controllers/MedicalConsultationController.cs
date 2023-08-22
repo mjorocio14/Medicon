@@ -27,7 +27,7 @@ namespace MediCon.Controllers
         {
             try
             {
-                var medList = dbMed.fn_MedicineList().ToList();
+                var medList = dbMed.fn_MedicineList().OrderBy(a => a.productDesc).ToList();
 
                 return Json(medList, JsonRequestBehavior.AllowGet);
             }
@@ -88,11 +88,12 @@ namespace MediCon.Controllers
                                                        consultPersonID = b.res3.c.personnelID,
                                                        consultDT = b.res3.c.dateTimeLog,
                                                        consultPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.c.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
-                                                       bloodChemResult = dbMed.BloodChems.Where(dd => dd.labID == b.res3.res2.res1.le.labID).Select(ee => new { 
-                                                            ee.result,
-                                                            ee.bloodChemID,
-                                                            ee.LabTestGroupID,
-                                                            bloodChemDateEncoded = ee.dateTimeLog
+                                                       bloodChemResult = dbMed.BloodChems.Where(dd => dd.labID == b.res3.res2.res1.le.labID).Select(ee => new
+                                                       {
+                                                           ee.result,
+                                                           ee.bloodChemID,
+                                                           ee.LabTestGroupID,
+                                                           bloodChemDateEncoded = ee.dateTimeLog
                                                        }).OrderBy(xx => xx.LabTestGroupID)
                                                    }).ToList();
 
@@ -239,51 +240,73 @@ namespace MediCon.Controllers
         {
             try
             {
-                var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
-                var countSched = CheckSchedCount(calendarID);
-
-                if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                if(hospitalID == null && labSchedule == null)
                 {
-                    var consultID = new IDgenerator(consultation.vSignID);
+                    var result = saveProcess(detail, checkedDiagnosis, referral, consultation, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
 
-                    //......  SAVE DATA TO CONSULTATION SURGERY TABLE
-                    consultation.consultID = consultID.generateID.Substring(0, 15);
-                    consultation.toothNum = null;
-                    consultation.personnelID = Session["personnelID"].ToString();
-                    consultation.dateTimeLog = DateTime.Now;
-                    dbMed.Consultations.Add(consultation);
-                    //......  /SAVE DATA TO CONSULATION SURGERY TABLE
-
-                    //......  SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
-                    if (referral != null)
-                    {
-                        foreach (var item in referral)
-                        {
-                            CreateReferralRecord(consultation.consultID, item, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
-                        }
-                    }
-                    //......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
-
-                    //......  SAVE DATA TO RESULT DIAGNOSIS TABLE
-                    if (checkedDiagnosis != null)
-                    {
-                        foreach (var item in checkedDiagnosis)
-                        {
-                            CreateResultDiagnosisRecord(consultation.consultID, item, detail.otherDiagnosis);
-                        }
-                    }
-                    //......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
-
-                    var affectedRow = dbMed.SaveChanges();
-
-                    if (affectedRow == 0)
+                    if (result == "error")
                         return Json(new { status = "error", msg = "Diagnosis is not saved!" }, JsonRequestBehavior.AllowGet);
 
-                    return Json(new { status = "success", msg = "Diagnosis is successfully saved!", consultID = consultation.consultID }, JsonRequestBehavior.AllowGet);
+                    return Json(new { status = "success", msg = "Diagnosis is successfully saved!", consultID = result }, JsonRequestBehavior.AllowGet);
                 }
 
                 else
-                    return Json(new { status = "full", msg = "Selected hospital and date have reached its limit, please select another date." }, JsonRequestBehavior.AllowGet);
+                {
+                    var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
+                    var countSched = CheckSchedCount(calendarID);
+
+                    if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                    {
+                        var result = saveProcess(detail, checkedDiagnosis, referral, consultation, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
+                       
+                        if (result == "error")
+                            return Json(new { status = "error", msg = "Diagnosis is not saved!" }, JsonRequestBehavior.AllowGet);
+
+                        return Json(new { status = "success", msg = "Diagnosis is successfully saved!", consultID = result }, JsonRequestBehavior.AllowGet);
+
+                        //var consultID = new IDgenerator(consultation.vSignID);
+
+                        ////......  SAVE DATA TO CONSULTATION SURGERY TABLE
+                        //consultation.consultID = consultID.generateID.Substring(0, 15);
+                        //consultation.toothNum = null;
+                        //consultation.personnelID = Session["personnelID"].ToString();
+                        //consultation.dateTimeLog = DateTime.Now;
+                        //dbMed.Consultations.Add(consultation);
+                        ////......  /SAVE DATA TO CONSULATION SURGERY TABLE
+
+                        ////......  SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
+                        //if (referral != null)
+                        //{
+                        //    foreach (var item in referral)
+                        //    {
+                        //        CreateReferralRecord(consultation.consultID, item, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
+                        //    }
+                        //}
+                        ////......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
+
+                        ////......  SAVE DATA TO RESULT DIAGNOSIS TABLE
+                        //if (checkedDiagnosis != null)
+                        //{
+                        //    foreach (var item in checkedDiagnosis)
+                        //    {
+                        //        CreateResultDiagnosisRecord(consultation.consultID, item, detail.otherDiagnosis);
+                        //    }
+                        //}
+                        ////......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
+
+                        //var affectedRow = dbMed.SaveChanges();
+
+                        //if (affectedRow == 0)
+                        //    return Json(new { status = "error", msg = "Diagnosis is not saved!" }, JsonRequestBehavior.AllowGet);
+
+                        //return Json(new { status = "success", msg = "Diagnosis is successfully saved!", consultID = consultation.consultID }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    else
+                        return Json(new { status = "full", msg = "Selected hospital and date have reached its limit, please select another date." }, JsonRequestBehavior.AllowGet);
+                }
+
+                
                 
             }
             catch (Exception ex)
@@ -291,6 +314,46 @@ namespace MediCon.Controllers
                 return Json(new { status = "error", msg = "An error occured while saving the diagnosis.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        private string saveProcess(ResultDiagnosi detail, string[] checkedDiagnosis, string[] referral, Consultation consultation, string[] lab, string hospitalID, DateTime? labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc)
+        {
+            var consultID = new IDgenerator(consultation.vSignID);
+
+            //......  SAVE DATA TO CONSULTATION SURGERY TABLE
+            consultation.consultID = consultID.generateID.Substring(0, 15);
+            consultation.toothNum = null;
+            consultation.personnelID = Session["personnelID"].ToString();
+            consultation.dateTimeLog = DateTime.Now;
+            dbMed.Consultations.Add(consultation);
+            //......  /SAVE DATA TO CONSULATION SURGERY TABLE
+
+            //......  SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
+            if (referral != null)
+            {
+                foreach (var item in referral)
+                {
+                    CreateReferralRecord(consultation.consultID, item, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
+                }
+            }
+            //......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
+
+            //......  SAVE DATA TO RESULT DIAGNOSIS TABLE
+            if (checkedDiagnosis != null)
+            {
+                foreach (var item in checkedDiagnosis)
+                {
+                    CreateResultDiagnosisRecord(consultation.consultID, item, detail.otherDiagnosis);
+                }
+            }
+            //......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
+
+            var affectedRow = dbMed.SaveChanges();
+
+            if (affectedRow == 0)
+                return "error";
+
+            return consultation.consultID;
         }
 
         private void CreateLabExamRecord(string labtestID, string referralID, string xrayDesc, string ecgDesc, string ultrasoundDesc)
@@ -602,24 +665,22 @@ namespace MediCon.Controllers
         {
             try
             {
-                var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
-
-                if (currentCalendarID == calendarID)
+                if ((hospitalID == null || hospitalID == "") && labSchedule == null)
                 {
-                   var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, calendarID);
+                        var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, null, null, xrayDesc, ecgDesc, ultrasoundDesc, null);
 
-                   if (result == "error")
-                       return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
+                        if (result == "error")
+                            return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
 
-                   return Json(new { status = "success", msg = "Diagnosis is successfully updated!" }, JsonRequestBehavior.AllowGet);
-                
+                        return Json(new { status = "success", msg = "Diagnosis is successfully updated!" }, JsonRequestBehavior.AllowGet);
                 }
 
                 else
                 {
-                    var countSched = CheckSchedCount(calendarID);
+                    var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
 
-                    if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                    // Check if previous and selected calendarID is same
+                    if (currentCalendarID == calendarID)
                     {
                         var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, calendarID);
 
@@ -627,13 +688,27 @@ namespace MediCon.Controllers
                             return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
 
                         return Json(new { status = "success", msg = "Diagnosis is successfully updated!" }, JsonRequestBehavior.AllowGet);
+
                     }
 
                     else
-                        return Json(new { status = "full", msg = "Selected hospital and date have reached its limit, please select another date." }, JsonRequestBehavior.AllowGet);
-                }
+                    {
+                        var countSched = CheckSchedCount(calendarID);
 
-                
+                        if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                        {
+                            var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, calendarID);
+
+                            if (result == "error")
+                                return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
+
+                            return Json(new { status = "success", msg = "Diagnosis is successfully updated!" }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        else
+                            return Json(new { status = "full", msg = "Selected hospital and date have reached its limit, please select another date." }, JsonRequestBehavior.AllowGet);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -648,7 +723,7 @@ namespace MediCon.Controllers
             var con = dbMed.Consultations.SingleOrDefault(a => a.consultID == consult.consultID);
             //con.dateTimeLog = DateTime.Now;
             con.outsideReferral = consult.outsideReferral;
-            con.personnelID = Session["personnelID"].ToString();
+            con.personnelID = Session["userTypeID"].ToString() == "1" ? con.personnelID : Session["personnelID"].ToString();
             con.remarks = consult.remarks;
             dbMed.Entry(con).State = EntityState.Modified;
             //......  /UPDATE DATA TO CONSULATIONSURGERY TABLE
@@ -815,7 +890,7 @@ namespace MediCon.Controllers
                     //........  UPDATE MEDICAL PRESCRIPTION
                     if(medRx != null)
                     {
-                        medRx.personnelID = Session["personnelID"].ToString();
+                        medRx.personnelID = Session["userTypeID"].ToString() == "1" ? medRx.personnelID : Session["personnelID"].ToString();
                         medRx.dateTimeRx = DateTime.Now;
                         dbMed.Entry(medRx).State = EntityState.Modified;
                     }

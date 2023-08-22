@@ -144,6 +144,17 @@
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
+        <EntityType Name="HbA1c">
+          <Key>
+            <PropertyRef Name="hba1cID" />
+          </Key>
+          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="hba1cID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="labID" Type="varchar" MaxLength="15" />
+          <Property Name="result" Type="decimal" Precision="5" Scale="2" />
+          <Property Name="dateTimeLog" Type="datetime" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+        </EntityType>
         <EntityType Name="Hospital">
           <Key>
             <PropertyRef Name="hospitalID" />
@@ -746,6 +757,10 @@
                 <Property Name="contactNo" Type="varchar" MaxLength="13" />
                 <Property Name="birthDate" Type="date" />
                 <Property Name="sex" Type="varchar" MaxLength="6" />
+                <Property Name="personnel_firstName" Type="varchar" MaxLength="50" />
+                <Property Name="personnel_midInit" Type="char" MaxLength="1" />
+                <Property Name="personnel_lastName" Type="varchar" MaxLength="50" />
+                <Property Name="personnel_extName" Type="varchar" MaxLength="10" />
               </RowType>
             </CollectionType>
           </ReturnType>
@@ -1242,6 +1257,7 @@
           <EntitySet Name="ECG" EntityType="Self.ECG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EditRemarks" EntityType="Self.EditRemarks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Fecalysis" EntityType="Self.Fecalysis" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HbA1c" EntityType="Self.HbA1c" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Hospital" EntityType="Self.Hospital" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HospitalCalendar" EntityType="Self.HospitalCalendar" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LaboratoryExam" EntityType="Self.LaboratoryExam" Schema="dbo" store:Type="Tables" />
@@ -1867,10 +1883,6 @@
           <FunctionImport Name="fn_DashboardDental" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardDental_Result)" />
           <FunctionImport Name="fn_DashboardMorbidity" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardMorbidity_Result)" />
           <FunctionImport Name="fn_DashboardMRH" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardMRH_Result)" />
-          <FunctionImport Name="fn_getDiagnoseClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getDiagnoseClients_Result)">
-            <Parameter Name="serviceID" Mode="In" Type="String" />
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
-          </FunctionImport>
           <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)">
           <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
@@ -1954,6 +1966,11 @@
           <EntitySet Name="Ultrasounds" EntityType="MediconModel.Ultrasound" />
           <EntitySet Name="PhysicianCalendars" EntityType="MediconModel.PhysicianCalendar" />
           <EntitySet Name="PatientAppointments" EntityType="MediconModel.PatientAppointment" />
+          <FunctionImport Name="fn_getDiagnoseClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getDiagnoseClients_Result)">
+            <Parameter Name="serviceID" Mode="In" Type="String" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <EntitySet Name="HbA1c" EntityType="MediconModel.HbA1c" />
         </EntityContainer>
         <ComplexType Name="fn_DashboardAnalytics_Result">
           <Property Type="Boolean" Name="sex" Nullable="true" />
@@ -1972,31 +1989,6 @@
         <ComplexType Name="fn_DashboardMRH_Result">
           <Property Type="Boolean" Name="sex" Nullable="true" />
           <Property Type="Int32" Name="MRHcount" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="fn_getDiagnoseClients_Result">
-          <Property Type="String" Name="consultID" Nullable="false" MaxLength="15" />
-          <Property Type="String" Name="serviceID" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="outsideReferral" Nullable="true" MaxLength="200" />
-          <Property Type="String" Name="remarks" Nullable="true" MaxLength="200" />
-          <Property Type="String" Name="toothNum" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
-          <Property Type="DateTime" Name="dateTimeLog" Nullable="true" Precision="23" />
-          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
-          <Property Type="String" Name="EIC" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="idNO" Nullable="true" MaxLength="6" />
-          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="lastName" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="firstName" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="middleName" Nullable="true" MaxLength="30" />
-          <Property Type="String" Name="extName" Nullable="true" MaxLength="4" />
-          <Property Type="String" Name="fullNameLast" Nullable="true" MaxLength="150" />
-          <Property Type="String" Name="shortDepartmentName" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="brgyPermAddress" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="citymunPermAddress" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="provincePermAddress" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="13" />
-          <Property Type="DateTime" Name="birthDate" Nullable="true" Precision="10" />
-          <Property Type="String" Name="sex" Nullable="true" MaxLength="6" />
         </ComplexType>
         <ComplexType Name="fn_getLabPatients_Result">
           <Property Type="DateTime" Name="labDT" Nullable="true" Precision="23" />
@@ -2592,6 +2584,46 @@
           <Property Name="qrCode" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <ComplexType Name="fn_getDiagnoseClients_Result">
+          <Property Type="String" Name="consultID" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="serviceID" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="outsideReferral" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="remarks" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="toothNum" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="DateTime" Name="dateTimeLog" Nullable="true" Precision="23" />
+          <Property Type="String" Name="vSignID" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="EIC" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="idNO" Nullable="true" MaxLength="6" />
+          <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="lastName" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="firstName" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="middleName" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="extName" Nullable="true" MaxLength="4" />
+          <Property Type="String" Name="fullNameLast" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="shortDepartmentName" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="brgyPermAddress" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="citymunPermAddress" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="provincePermAddress" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="contactNo" Nullable="true" MaxLength="13" />
+          <Property Type="DateTime" Name="birthDate" Nullable="true" Precision="10" />
+          <Property Type="String" Name="sex" Nullable="true" MaxLength="6" />
+          <Property Type="String" Name="personnel_firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="personnel_lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_extName" Nullable="true" MaxLength="10" />
+        </ComplexType>
+        <EntityType Name="HbA1c">
+          <Key>
+            <PropertyRef Name="hba1cID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="hba1cID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="result" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3206,35 +3238,6 @@
               <ComplexTypeMapping TypeName="MediconModel.fn_DashboardMRH_Result">
                 <ScalarProperty Name="sex" ColumnName="sex" />
                 <ScalarProperty Name="MRHcount" ColumnName="MRHcount" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="fn_getDiagnoseClients" FunctionName="MediconModel.Store.fn_getDiagnoseClients">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="MediconModel.fn_getDiagnoseClients_Result">
-                <ScalarProperty Name="consultID" ColumnName="consultID" />
-                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
-                <ScalarProperty Name="outsideReferral" ColumnName="outsideReferral" />
-                <ScalarProperty Name="remarks" ColumnName="remarks" />
-                <ScalarProperty Name="toothNum" ColumnName="toothNum" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
-                <ScalarProperty Name="EIC" ColumnName="EIC" />
-                <ScalarProperty Name="idNO" ColumnName="idNO" />
-                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
-                <ScalarProperty Name="lastName" ColumnName="lastName" />
-                <ScalarProperty Name="firstName" ColumnName="firstName" />
-                <ScalarProperty Name="middleName" ColumnName="middleName" />
-                <ScalarProperty Name="extName" ColumnName="extName" />
-                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
-                <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
-                <ScalarProperty Name="brgyPermAddress" ColumnName="brgyPermAddress" />
-                <ScalarProperty Name="citymunPermAddress" ColumnName="citymunPermAddress" />
-                <ScalarProperty Name="provincePermAddress" ColumnName="provincePermAddress" />
-                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
-                <ScalarProperty Name="birthDate" ColumnName="birthDate" />
-                <ScalarProperty Name="sex" ColumnName="sex" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -3912,6 +3915,51 @@
                 <ScalarProperty Name="qrCode" ColumnName="qrCode" />
                 <ScalarProperty Name="phyCalendarID" ColumnName="phyCalendarID" />
                 <ScalarProperty Name="appointmentID" ColumnName="appointmentID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="fn_getDiagnoseClients" FunctionName="MediconModel.Store.fn_getDiagnoseClients">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getDiagnoseClients_Result">
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="outsideReferral" ColumnName="outsideReferral" />
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="toothNum" ColumnName="toothNum" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="EIC" ColumnName="EIC" />
+                <ScalarProperty Name="idNO" ColumnName="idNO" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+                <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
+                <ScalarProperty Name="brgyPermAddress" ColumnName="brgyPermAddress" />
+                <ScalarProperty Name="citymunPermAddress" ColumnName="citymunPermAddress" />
+                <ScalarProperty Name="provincePermAddress" ColumnName="provincePermAddress" />
+                <ScalarProperty Name="contactNo" ColumnName="contactNo" />
+                <ScalarProperty Name="birthDate" ColumnName="birthDate" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+                <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="HbA1c">
+            <EntityTypeMapping TypeName="MediconModel.HbA1c">
+              <MappingFragment StoreEntitySet="HbA1c">
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="result" ColumnName="result" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="hba1cID" ColumnName="hba1cID" />
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
               </MappingFragment>
             </EntityTypeMapping>

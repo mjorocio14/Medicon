@@ -244,7 +244,7 @@
                                                     <tr ng-repeat="dh in diagnoseHistoryList | orderBy: '-dateTimeLog'">
                                                         <td class="text-center">{{$index + 1}}</td>
                                                         <td>{{dh[0].dateTimeLog}}</td>
-                                                        <td>{{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
+                                                        <td>Dr. {{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
                                                         <td>{{dh[0].serviceName}}</td>
                                                         <td>{{dh[0].outsideReferral}}</td>
                                                         <td>{{dh[0].remarks}}</td>
@@ -295,7 +295,7 @@
                                                     </tr>
                                                     <tr ng-repeat="rx in rxHistoryList | orderBy: '-dateTimeRx' track by $index">
                                                         <td class="text-center">{{$index + 1}}</td>
-                                                        <td>{{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
+                                                        <td>Dr. {{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
                                                         <td>{{rx[0].dateTimeRx}}</td>
                                                         <td>{{rx[0].serviceName}}</td>
                                                         <td class="text-center"><button class="btn btn-primary btn-xs" ng-click="printRx(rx[0], rx.length)"> Print <i class="fa fa-print"></i></button></td>
@@ -800,7 +800,7 @@
                                                 <label class="control-label" for="productCode">Name</label>
                                                 <select name="productCode" id="productCode" style="width: 100%; text-transform : uppercase" class="form-control" required>
                                                     <option value=""></option>
-                                                    <option ng-repeat="med in medList" value="{{med}}">{{med.productDesc}} {{med.unitDesc}}</option>
+                                                    <option ng-repeat="med in medList" value="{{med}}">{{med.productDesc}} {{med.measurementDesc}} {{med.unitDesc}}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -927,7 +927,8 @@
                                     <th>Suffix</th>
                                     <th>Sex</th>
                                     <th>Age</th>
-                                    <th>Contact no.</th>
+                                    <th>Office</th>
+                                    <th>Physician</th>
                                     <th>Diagnosed Date & Time</th>
                                     <th class="text-right" data-sort-ignore="true">Action</th>
 
@@ -1432,7 +1433,7 @@
                                                         <label class="control-label" for="productCode_Edit">Item</label>
                                                         <select name="productCode_Edit" id="productCode_Edit" ng-model="medsEdit.product" ng-change="onChangeMed(medsEdit.product)" style="width: 100%; text-transform : uppercase" class="form-control" required>
                                                             <option value=""></option>
-                                                            <option ng-repeat="med in medList" value={{med}}>{{med.productDesc}} {{med.unitDesc}}</option>
+                                                            <option ng-repeat="med in medList" value={{med}}>{{med.productDesc}} {{med.measurementDesc}} {{med.unitDesc}}</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group">

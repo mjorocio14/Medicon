@@ -114,7 +114,7 @@
 
    s.saveMedz = function (a) {
        a.unitID = unitSelect.val();
-       a.measureID = measurementSelect.val();
+       a.measurementID = measurementSelect.val();
        h.post('../Products/saveMedz',a).then(function (d) {
                if (d.data.status == "dupli") {
                    swal({

@@ -36,6 +36,7 @@ namespace MediCon.Controllers
             Session["PatientExtName"] = info.extName == null ? "" : info.extName;
             Session["PatientAddress"] = (info.address == null ? "" : info.address) + " " + (info.brgyDesc == null ? "" : info.brgyDesc) + " " + (info.citymunDesc == null ? "" : info.citymunDesc);
             Session["PatientAge"] = info.age;
+            Session["PatientOffice"] = info.office;
 
             Session["personnel_firstName"] = physician.personnel_firstName;
             Session["personnel_midInit"] = physician.personnel_midInit == null ? "" : physician.personnel_midInit;
@@ -57,6 +58,7 @@ namespace MediCon.Controllers
             public string brgyDesc { get; set; }
             public string citymunDesc { get; set; }
             public int age { get; set; }
+            public string office { get; set; }
         }
 
         public class PhysicianInfo

@@ -156,7 +156,7 @@ namespace MediCon.Controllers
                 {
                     if (p.unitID == null)
                     {
-                        var x = db.Measurements.Count();
+                        var x = db.ProductUnits.Count();
                         var xx = x + 1;
                         p.unitID = "U" + xx.ToString("D4");
                         p.dateTimeLog = DateTime.Now;

@@ -76,6 +76,7 @@ namespace MediCon.Models
         public virtual DbSet<Ultrasound> Ultrasounds { get; set; }
         public virtual DbSet<PhysicianCalendar> PhysicianCalendars { get; set; }
         public virtual DbSet<PatientAppointment> PatientAppointments { get; set; }
+        public virtual DbSet<HbA1c> HbA1c { get; set; }
     
         [DbFunction("MediconEntities", "fn_DashboardAnalytics")]
         public virtual IQueryable<fn_DashboardAnalytics_Result> fn_DashboardAnalytics()
@@ -99,20 +100,6 @@ namespace MediCon.Models
         public virtual IQueryable<fn_DashboardMRH_Result> fn_DashboardMRH()
         {
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_DashboardMRH_Result>("[MediconEntities].[fn_DashboardMRH]()");
-        }
-    
-        [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
-        public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID, Nullable<System.DateTime> paramDate)
-        {
-            var serviceIDParameter = serviceID != null ?
-                new ObjectParameter("serviceID", serviceID) :
-                new ObjectParameter("serviceID", typeof(string));
-    
-            var paramDateParameter = paramDate.HasValue ?
-                new ObjectParameter("paramDate", paramDate) :
-                new ObjectParameter("paramDate", typeof(System.DateTime));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getDiagnoseClients_Result>("[MediconEntities].[fn_getDiagnoseClients](@serviceID, @paramDate)", serviceIDParameter, paramDateParameter);
         }
     
         [DbFunction("MediconEntities", "fn_getLabPatients")]
@@ -363,6 +350,20 @@ namespace MediCon.Models
                 new ObjectParameter("paramDate", typeof(System.DateTime));
     
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getRectalClients_Result>("[MediconEntities].[fn_getRectalClients](@paramDate)", paramDateParameter);
+        }
+    
+        [DbFunction("MediconEntities", "fn_getDiagnoseClients")]
+        public virtual IQueryable<fn_getDiagnoseClients_Result> fn_getDiagnoseClients(string serviceID, Nullable<System.DateTime> paramDate)
+        {
+            var serviceIDParameter = serviceID != null ?
+                new ObjectParameter("serviceID", serviceID) :
+                new ObjectParameter("serviceID", typeof(string));
+    
+            var paramDateParameter = paramDate.HasValue ?
+                new ObjectParameter("paramDate", paramDate) :
+                new ObjectParameter("paramDate", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getDiagnoseClients_Result>("[MediconEntities].[fn_getDiagnoseClients](@serviceID, @paramDate)", serviceIDParameter, paramDateParameter);
         }
     }
 }

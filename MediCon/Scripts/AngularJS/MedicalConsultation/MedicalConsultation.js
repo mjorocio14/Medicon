@@ -29,14 +29,16 @@
     //  Date Picker for Scheduler Initialization
     let date_picker = $(".datePicker").flatpickr({
         wrap: true,
-        minDate: "today"
+        minDate: "today",
+	disableMobile: "true"
     });
     //  /Date Picker for Scheduler Initialization
 
     //  Date Picker for Modal Initialization
     var datePicker_modal = $(".datePicker_modal").flatpickr({
         wrap: true,
-        minDate: "today"
+        minDate: "today",
+	disableMobile: "true"
     });
     //  /Date Picker for Modal Initialization
 
@@ -601,7 +603,7 @@
 
                     else {
                         // Send SMS schedule to patient
-                        s.qrData.contactNo = "09688515104";
+                        //s.qrData.contactNo = "09688515104";
                         if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '')) sendSMS(labSchedInfo);
 
                         swal({
@@ -870,7 +872,12 @@
                    }
                },
                {
-                   "data": 'contactNo'
+                   "data": 'shortDepartmentName'
+               },
+               {
+                   "data": null, render: function (row) {
+                       return 'Dr. ' + row.personnel_firstName + ' ' + row.personnel_lastName + ' ' + (row.personnel_extName ?? '');
+                   }
                },
                {
                    "data": null, render: function (row) {
@@ -1339,9 +1346,10 @@
             extName: s.qrData.extName,
             brgyDesc: s.qrData.brgyPermAddress,
             citymunDesc: s.qrData.cityMunPermAddress,
-            age: s.qrData.age
+            age: s.qrData.age,
+            office: s.qrData.shortDepartmentName
         };
-
+     
         h.post('../Print/printRX', { rxID: data.rxID, info: patient, physician: data.physician[0], length: length }).then(function (d) {
             window.open("../Report/MediConRpt.aspx?type=prescription");
         });
@@ -1457,8 +1465,8 @@
     function sendSMS(schedInfo) {
         let data = {
             employee: s.qrData.fullNameTitle,
-            //contactNo: s.qrData.contactNo,
-            contactNo: "09688515104",
+            contactNo: s.qrData.contactNo,
+            //contactNo: "09688515104",
             appointee: schedInfo.hospitalID == 'HPL001' ? 'Carmen District Hospital' : schedInfo.hospitalID == 'HPL002' ? 'Kapalong District Hospital' : schedInfo.hospitalID == 'HPL003' ? 'IGACOS District Hospital' : '',
             schedule: schedInfo.labSchedule
         };

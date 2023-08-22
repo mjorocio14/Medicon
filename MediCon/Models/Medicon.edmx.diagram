@@ -54,6 +54,7 @@
         <EntityTypeShape EntityType="MediconModel.Ultrasound" Width="1.5" PointX="21.75" PointY="0.75" />
         <EntityTypeShape EntityType="MediconModel.PhysicianCalendar" Width="1.5" PointX="21.375" PointY="4.75" />
         <EntityTypeShape EntityType="MediconModel.PatientAppointment" Width="1.5" PointX="21.375" PointY="7.75" />
+        <EntityTypeShape EntityType="MediconModel.HbA1c" Width="1.5" PointX="7.375" PointY="21.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

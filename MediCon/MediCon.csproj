@@ -305,6 +305,9 @@
     <Compile Include="Models\fn_vitalSignList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HbA1c.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Hospital.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -504,6 +507,12 @@
     </Compile>
     <Compile Include="Report\Prescription\Prescription.Designer.cs">
       <DependentUpon>Prescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\Prescription\RX.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\Prescription\RX.Designer.cs">
+      <DependentUpon>RX.cs</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -826,6 +835,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Report\Prescription\Prescription.resx">
       <DependentUpon>Prescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\Prescription\RX.resx">
+      <DependentUpon>RX.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

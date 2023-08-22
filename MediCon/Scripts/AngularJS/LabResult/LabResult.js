@@ -407,6 +407,16 @@
           );
       }
 
+      else if (labTestID == "L0025") { 
+          h.get("../LaboratoryResult/getHbA1cResult?labID=" + labID).then(
+            function (d) 
+            { 
+                s.hba1c = {}
+                s.hba1c = d.data[0];
+            }
+          );
+      }
+
       else if (labTestID == "L0005" || labTestID == "L0010" || labTestID == "L0009" || labTestID == "L0007" || labTestID == "L0011" || labTestID == "L0012" || labTestID == "L0008") {
           h.post("../LaboratoryResult/getBloodChem?labID=" + labID).then(
           function (d) {
@@ -538,6 +548,12 @@
           s.echo = {};
           s.isEditEcho = isEdit;
           $("#modalEcho").modal("show");
+      }
+
+      else if (data.labTestID == "L0025") {
+          s.hba1c = {};
+          s.isEditHba1c = isEdit;
+          $("#modalHba1c").modal("show");
       }
     };
 
@@ -751,6 +767,134 @@
     s.editResult = function() {
         s.isShowResult = !s.isShowResult;
     }
+
+    // HBA1C SAVING AND UPDATING
+    s.isEditHba1c = 0;
+    $("#hba1cForm").validate({
+        rules: {},
+        submitHandler: function () {
+        
+            if (s.isEditHba1c == 0) {
+                Swal.fire({
+                    title: "Save Result?",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Saved!",
+                    showLoaderOnConfirm: true,
+                    icon: "question",
+                    preConfirm: () => {
+                        s.hba1c.labID = s.tempLabID;
+                
+                return h.post("../LaboratoryResult/saveHBA1C", { result: s.hba1c, medTech: s.hba1c.medtech, pathologist: s.hba1c.pathologist }).then((response) => {
+                    return response;
+                }).catch((error) => {
+                if (error.status == 500) {
+                    Swal.showValidationMessage(
+                    `Request failed: ${error.statusText}`
+                    );
+        } else if (error.status == 404) {
+        Swal.showValidationMessage(
+        `Request failed: Page Not Found`
+          );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+             Swal.showValidationMessage(
+             `Request failed: Unknown Error ${error.status}`
+           );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+            title: "Successfully saved!",
+            text: 'Laboratory Result',
+            type: "success",
+            html: true,
+            });
+
+            s.hba1c = {};
+            $("#modalHba1c").modal("hide");
+            s.getLabtest(s.qrData.qrCode);
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    } else if (s.isEditHba1c == 1) {
+        Swal.fire({
+            title: "Update Result?",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Saved!",
+            showLoaderOnConfirm: true,
+            icon: "question",
+            preConfirm: () => {
+                return h.post("../LaboratoryResult/editHBA1C", { result: s.hba1c, medTech: s.hba1c.medtech, pathologist: s.hba1c.pathologist })
+                  .then((response) => {
+                      return response;
+    })
+    .catch((error) => {
+        if (error.status == 500) {
+            Swal.showValidationMessage(
+            `Request failed: ${error.statusText}`
+                );
+    } else if (error.status == 404) {
+        Swal.showValidationMessage(
+          `Request failed: Page Not Found`
+      );
+    } else if (error.status == -1) {
+        Swal.showValidationMessage(
+          `Request failed: No Internet Connection`
+      );
+    } else {
+        Swal.showValidationMessage(
+          `Request failed: Unknown Error ${error.status}`
+    );
+    }
+    });
+    },
+    allowOutsideClick: () => !Swal.isLoading(),
+    }).then((result) => {
+        if (result.isConfirmed) {
+            swal({
+            title: "Successfully updated",
+            text: 'Laboratory Result',
+            type: "success",
+            html: true,
+    });
+    s.hba1c = {};
+ 
+    $("#modalHba1c").modal("hide");
+    } else if (result.isDismissed) {
+        Swal.fire({ title: "Canceled", icon: "info" }).then(
+          (result) => {}
+        );
+    }
+    });
+    }
+    },
+    errorElement: "span",
+        errorPlacement: function (error, element) {
+            error.addClass("invalid-feedback");
+            element.closest(".form-group").append(error);
+        },
+    highlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-info")
+          .addClass("has-error");
+    },
+    unhighlight: function (element, errorClass, validClass) {
+        $(element)
+          .closest(".form-group")
+          .removeClass("has-error")
+          .addClass("has-info");
+    },
+    });
 
     // ECG SAVING AND UPDATING
     s.ecgEditRemarks = {};

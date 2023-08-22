@@ -871,5 +871,94 @@ namespace MediCon.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
             }
         }
+
+        [HttpPost]
+        public ActionResult saveHBA1C(HbA1c result, string medTech, string pathologist)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var hba1cID = new IDgenerator(result.labID);
+
+                    // SAVE LAB RESULT OF XRAY
+                    result.hba1cID = hba1cID.generateID.Substring(0, 15);
+                    result.dateTimeLog = DateTime.Now;
+                    result.personnelID = Session["personnelID"].ToString();
+                    dbMed.HbA1c.Add(result);
+
+                    // SAVE TAGGING OF TRUE TO ISENCODED FIELD (LABORATORY EXAM)
+                    var findLab = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLab.isEncoded = true;
+                    findLab.medtech = medTech;
+                    findLab.pathologist = pathologist;
+                    findLab.dateEncoded = DateTime.Now;
+                    dbMed.Entry(findLab).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
+
+        public ActionResult getHbA1cResult(string labID)
+        {
+            var data = dbMed.HbA1c.Where(e => e.labID == labID).Select(a => new { 
+                                a.hba1cID,
+                                a.labID,
+                                a.personnelID,
+                                a.result,
+                                a.dateTimeLog,
+                                medtech = dbMed.LaboratoryExams.FirstOrDefault(b => b.labID == labID).medtech,
+                                pathologist = dbMed.LaboratoryExams.FirstOrDefault(c => c.labID == labID).pathologist
+                            });
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult editHBA1C([Bind(Exclude = "dateTimeLog,dateEdited")] HbA1c result, string medTech, string pathologist)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    var temp = string.Join(" | ", ModelState.Values
+                     .SelectMany(v => v.Errors)
+                     .Select(e => e.ErrorMessage));
+                    return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, "Model State Not Valid" + temp);
+                }
+                else
+                {
+                    var data = dbMed.HbA1c.Where(e => e.labID == result.labID).FirstOrDefault();
+
+                    // EDIT LAB RESULT OF FECALYSIS
+                    data.result = result.result;
+                    dbMed.Entry(data).State = EntityState.Modified;
+
+                    var findLabExam = dbMed.LaboratoryExams.SingleOrDefault(a => a.labID == result.labID);
+                    findLabExam.medtech = medTech;
+                    findLabExam.pathologist = pathologist;
+                    dbMed.Entry(findLabExam).State = EntityState.Modified;
+
+                    dbMed.SaveChanges();
+                }
+                return new HttpStatusCodeResult(HttpStatusCode.OK, "Successfully Save");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.InnerException.Message);
+            }
+        }
     }
 }
