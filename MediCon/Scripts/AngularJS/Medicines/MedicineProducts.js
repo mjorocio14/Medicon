@@ -114,37 +114,40 @@
 
    s.saveMedz = function (a) {
        a.unitID = unitSelect.val();
-       a.measureID = measurementSelect.val();
-       h.post('../Products/saveMedz',a).then(function (d) {
-               if (d.data.status == "dupli") {
-                   swal({
-                       title: d.data.msg,
-                       text: "ERROR",
-                       type: "error"
-                   });
-               }
+       a.measurementID = measurementSelect.val();
 
-               else if (d.data.status == "error") {
-                   swal({
-                       title: "ERROR",
-                       text: "Something went wrong, " + d.data.msg,
-                       type: "error"
-                   });
-               }
+       console.log(a);
 
-               else {
-                   swal({
-                       title: "SUCCESSFUL",
-                       text: d.data.msg,
-                       type: "success",
-                   });
+       //h.post('../Products/saveMedz',a).then(function (d) {
+       //        if (d.data.status == "dupli") {
+       //            swal({
+       //                title: d.data.msg,
+       //                text: "ERROR",
+       //                type: "error"
+       //            });
+       //        }
 
-                   s.info = {};
-                   $('#unitSelect').val('').trigger('change');
-                   $('#measurementSelect').val('').trigger('change');
-                   loadTable();
-               }
-           });
+       //        else if (d.data.status == "error") {
+       //            swal({
+       //                title: "ERROR",
+       //                text: "Something went wrong, " + d.data.msg,
+       //                type: "error"
+       //            });
+       //        }
+
+       //        else {
+       //            swal({
+       //                title: "SUCCESSFUL",
+       //                text: d.data.msg,
+       //                type: "success",
+       //            });
+
+       //            s.info = {};
+       //            $('#unitSelect').val('').trigger('change');
+       //            $('#measurementSelect').val('').trigger('change');
+       //            loadTable();
+       //        }
+       //    });
    }
 
    s.getMeasurement = function () {

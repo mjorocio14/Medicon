@@ -186,6 +186,7 @@
     <Compile Include="Controllers\PatientCalendarController.cs" />
     <Compile Include="Controllers\PharmacyController.cs" />
     <Compile Include="Controllers\PhysicianCalendarController.cs" />
+    <Compile Include="Controllers\PrescriptionsController.cs" />
     <Compile Include="Controllers\PrintController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\QRPersonalInfoController.cs" />
@@ -302,6 +303,9 @@
     <Compile Include="Models\fn_MedicineList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\fn_Prescriptions_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\fn_vitalSignList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -361,8 +365,8 @@
       <DependentUpon>Medicon.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Medicon.cs">
-      <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Medicon.Designer.cs">
@@ -415,10 +419,10 @@
     <Compile Include="Models\spOT_MedicineDispensing_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sp_getXrayClientRecord_Result.cs">
+    <Compile Include="Models\spXrayClientList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sp_getXrayClientScreened_Result.cs">
+    <Compile Include="Models\sp_getXrayClientRecord_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
@@ -428,6 +432,7 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
+      <SubType>Code</SubType>
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Temp_LabPrices.cs">
@@ -508,11 +513,23 @@
     <Compile Include="Report\Prescription\Prescription.Designer.cs">
       <DependentUpon>Prescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\Prescription\rxList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\Prescription\rxList.Designer.cs">
+      <DependentUpon>rxList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Report\Prescription\RX.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Report\Prescription\RX.Designer.cs">
       <DependentUpon>RX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\RequestForm\RequestForm.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\RequestForm\RequestForm.Designer.cs">
+      <DependentUpon>RequestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -684,6 +701,7 @@
     <Content Include="Scripts\AngularJS\Pharmacy\pharmacyDispensing.js" />
     <Content Include="Scripts\AngularJS\PhysicianCalendar\PhysicianCalendar.js" />
     <Content Include="Scripts\AngularJS\RectalDiagnosis\RectalDiagnosis.js" />
+    <Content Include="Scripts\AngularJS\RX\RxCtrl.js" />
     <Content Include="Scripts\AngularJS\Utility\Laboratory.js" />
     <Content Include="Scripts\AngularJS\Utility\MedicineProducts.js" />
     <Content Include="Scripts\AngularJS\Utility\UserManagement.js" />
@@ -726,7 +744,9 @@
     <Content Include="Models\Medicon.edmx.diagram">
       <DependentUpon>Medicon.edmx</DependentUpon>
     </Content>
+    <None Include="Properties\PublishProfiles\MedCon.pubxml" />
     <None Include="Properties\PublishProfiles\Medicon.pubxml" />
+    <None Include="Properties\PublishProfiles\Medicon2.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -807,6 +827,7 @@
     <Content Include="Views\Hospital\Scheduler.cshtml" />
     <Content Include="Views\PhysicianCalendar\Calendar.cshtml" />
     <Content Include="Views\PatientCalendar\Appointment.cshtml" />
+    <Content Include="Views\Prescriptions\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -836,8 +857,14 @@
     <EmbeddedResource Include="Report\Prescription\Prescription.resx">
       <DependentUpon>Prescription.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Report\Prescription\rxList.resx">
+      <DependentUpon>rxList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\Prescription\RX.resx">
       <DependentUpon>RX.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RequestForm\RequestForm.resx">
+      <DependentUpon>RequestForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

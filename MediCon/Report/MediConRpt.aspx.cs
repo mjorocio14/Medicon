@@ -44,6 +44,22 @@ namespace MediCon.Report
                     rpt.Parameters.Add("personnel_licenseNo", Session["personnel_licenseNo"].ToString());
                     rpt.ReportDocument = new Prescription.RX();
                     break;
+
+
+                case "prescriptionList":
+
+                    rpt.Parameters.Add("rxID", Session["rxID"].ToString());
+                    rpt.Parameters.Add("fullName", Session["fullName"].ToString());
+                    rpt.Parameters.Add("PatientAddress", Session["PatientAddress"].ToString());
+                    rpt.Parameters.Add("PatientAge", Session["PatientAge"].ToString());
+
+                    rpt.Parameters.Add("personnelFullName", Session["personnelFullName"].ToString());
+                    rpt.Parameters.Add("personnel_title", Session["personnel_title"].ToString());
+                    rpt.Parameters.Add("personnel_licenseNo", Session["personnel_licenseNo"].ToString());
+                    rpt.Parameters.Add("mp_dateTimeRx", Session["mp_dateTimeRx"].ToString());
+
+                    rpt.ReportDocument = new Prescription.rxList();
+                    break;
             }
 
             MediconReportViewer.ReportSource = rpt;

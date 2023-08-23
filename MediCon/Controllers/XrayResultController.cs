@@ -25,8 +25,9 @@ namespace MediCon.Controllers
         {
             try
             {
-                var find = dbMed.sp_getXrayClientScreened(param, type).GroupBy(a => a.qrCode);
-                return Json(find, JsonRequestBehavior.AllowGet);
+                //var find = dbMed.sp_getXrayClientScreened(param, type).GroupBy(a => a.qrCode);
+                //return Json(find, JsonRequestBehavior.AllowGet);
+                return Content("Ok");
             }
             catch (Exception ex)
             {

@@ -1,6 +1,6 @@
 namespace MediCon.Report.Prescription
 {
-    partial class RX
+    partial class rxList
     {
         #region Component Designer generated code
         /// <summary>
@@ -25,12 +25,6 @@ namespace MediCon.Report.Prescription
             Telerik.Reporting.ReportParameter reportParameter6 = new Telerik.Reporting.ReportParameter();
             Telerik.Reporting.ReportParameter reportParameter7 = new Telerik.Reporting.ReportParameter();
             Telerik.Reporting.ReportParameter reportParameter8 = new Telerik.Reporting.ReportParameter();
-            Telerik.Reporting.ReportParameter reportParameter9 = new Telerik.Reporting.ReportParameter();
-            Telerik.Reporting.ReportParameter reportParameter10 = new Telerik.Reporting.ReportParameter();
-            Telerik.Reporting.ReportParameter reportParameter11 = new Telerik.Reporting.ReportParameter();
-            Telerik.Reporting.ReportParameter reportParameter12 = new Telerik.Reporting.ReportParameter();
-            Telerik.Reporting.ReportParameter reportParameter13 = new Telerik.Reporting.ReportParameter();
-            Telerik.Reporting.ReportParameter reportParameter14 = new Telerik.Reporting.ReportParameter();
             Telerik.Reporting.Drawing.StyleRule styleRule1 = new Telerik.Reporting.Drawing.StyleRule();
             this.textBox39 = new Telerik.Reporting.TextBox();
             this.detail = new Telerik.Reporting.DetailSection();
@@ -39,7 +33,6 @@ namespace MediCon.Report.Prescription
             this.textBox16 = new Telerik.Reporting.TextBox();
             this.textBox8 = new Telerik.Reporting.TextBox();
             this.textBox13 = new Telerik.Reporting.TextBox();
-            this.sqlDataSource2 = new Telerik.Reporting.SqlDataSource();
             this.pageFooterSection1 = new Telerik.Reporting.PageFooterSection();
             this.pictureBox2 = new Telerik.Reporting.PictureBox();
             this.PhysicianName = new Telerik.Reporting.TextBox();
@@ -56,8 +49,7 @@ namespace MediCon.Report.Prescription
             this.textBox3 = new Telerik.Reporting.TextBox();
             this.textBox4 = new Telerik.Reporting.TextBox();
             this.textBox6 = new Telerik.Reporting.TextBox();
-            this.textBox9 = new Telerik.Reporting.TextBox();
-            this.textBox10 = new Telerik.Reporting.TextBox();
+            this.rxListDataSrc = new Telerik.Reporting.SqlDataSource();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // textBox39
@@ -87,11 +79,11 @@ namespace MediCon.Report.Prescription
             // 
             // table1
             // 
-            this.table1.Body.Columns.Add(new Telerik.Reporting.TableBodyColumn(Telerik.Reporting.Drawing.Unit.Cm(1.5795243978500366D)));
-            this.table1.Body.Columns.Add(new Telerik.Reporting.TableBodyColumn(Telerik.Reporting.Drawing.Unit.Cm(4.5304703712463379D)));
-            this.table1.Body.Columns.Add(new Telerik.Reporting.TableBodyColumn(Telerik.Reporting.Drawing.Unit.Cm(1.2700002193450928D)));
-            this.table1.Body.Rows.Add(new Telerik.Reporting.TableBodyRow(Telerik.Reporting.Drawing.Unit.Inch(0.24305547773838043D)));
-            this.table1.Body.Rows.Add(new Telerik.Reporting.TableBodyRow(Telerik.Reporting.Drawing.Unit.Inch(0.2527778148651123D)));
+            this.table1.Body.Columns.Add(new Telerik.Reporting.TableBodyColumn(Telerik.Reporting.Drawing.Unit.Inch(0.62185996770858765D)));
+            this.table1.Body.Columns.Add(new Telerik.Reporting.TableBodyColumn(Telerik.Reporting.Drawing.Unit.Inch(1.7836494445800781D)));
+            this.table1.Body.Columns.Add(new Telerik.Reporting.TableBodyColumn(Telerik.Reporting.Drawing.Unit.Inch(0.50000011920928955D)));
+            this.table1.Body.Rows.Add(new Telerik.Reporting.TableBodyRow(Telerik.Reporting.Drawing.Unit.Inch(0.24305544793605804D)));
+            this.table1.Body.Rows.Add(new Telerik.Reporting.TableBodyRow(Telerik.Reporting.Drawing.Unit.Inch(0.25277784466743469D)));
             this.table1.Body.SetCellContent(1, 0, this.textBox19);
             this.table1.Body.SetCellContent(0, 0, this.textBox16, 1, 2);
             this.table1.Body.SetCellContent(0, 2, this.textBox8);
@@ -102,7 +94,7 @@ namespace MediCon.Report.Prescription
             this.table1.ColumnGroups.Add(tableGroup1);
             this.table1.ColumnGroups.Add(tableGroup2);
             this.table1.ColumnGroups.Add(tableGroup3);
-            this.table1.DataSource = this.sqlDataSource2;
+            this.table1.DataSource = this.rxListDataSrc;
             this.table1.Items.AddRange(new Telerik.Reporting.ReportItemBase[] {
             this.textBox19,
             this.textBox16,
@@ -124,7 +116,7 @@ namespace MediCon.Report.Prescription
             tableGroup4.ReportItem = this.textBox39;
             tableGroup4.Sortings.Add(new Telerik.Reporting.Sorting("=Fields.rxID", Telerik.Reporting.SortDirection.Asc));
             this.table1.RowGroups.Add(tableGroup4);
-            this.table1.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Cm(7.59166145324707D), Telerik.Reporting.Drawing.Unit.Inch(0.49583327770233154D));
+            this.table1.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(2.9888429641723633D), Telerik.Reporting.Drawing.Unit.Inch(0.48749995231628418D));
             // 
             // textBox19
             // 
@@ -148,7 +140,7 @@ namespace MediCon.Report.Prescription
             this.textBox16.Style.Font.Name = "Arial Narrow";
             this.textBox16.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(9D);
             this.textBox16.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.textBox16.Value = "= Fields.productDesc + \" \" + Fields.measurementDesc + \" \" + Fields.unitDesc";
+            this.textBox16.Value = "= Fields.productDesc + \" \" + Fields.measurementDesc  + \" \" + Fields.unitDesc";
             // 
             // textBox8
             // 
@@ -160,7 +152,7 @@ namespace MediCon.Report.Prescription
             this.textBox8.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Left;
             this.textBox8.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
             this.textBox8.StyleName = "";
-            this.textBox8.Value = "=\"# \" + Fields.qtyRx ";
+            this.textBox8.Value = "=\"# \" + Fields.qtyRx";
             // 
             // textBox13
             // 
@@ -174,16 +166,6 @@ namespace MediCon.Report.Prescription
             this.textBox13.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Top;
             this.textBox13.StyleName = "";
             this.textBox13.Value = resources.GetString("textBox13.Value");
-            // 
-            // sqlDataSource2
-            // 
-            this.sqlDataSource2.ConnectionString = "Data Source=LOG1C;Initial Catalog=Medicon;User ID=sa;Password=L0g1c;MultipleActiv" +
-    "eResultSets=True;Application Name=EntityFramework";
-            this.sqlDataSource2.Name = "sqlDataSource2";
-            this.sqlDataSource2.Parameters.AddRange(new Telerik.Reporting.SqlDataSourceParameter[] {
-            new Telerik.Reporting.SqlDataSourceParameter("@rxID", System.Data.DbType.String, "=Parameters.rxID.Value")});
-            this.sqlDataSource2.ProviderName = "System.Data.SqlClient";
-            this.sqlDataSource2.SelectCommand = resources.GetString("sqlDataSource2.SelectCommand");
             // 
             // pageFooterSection1
             // 
@@ -221,7 +203,7 @@ namespace MediCon.Report.Prescription
             this.PhysicianName.Style.Font.Underline = true;
             this.PhysicianName.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
             this.PhysicianName.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.PhysicianName.Value = resources.GetString("PhysicianName.Value");
+            this.PhysicianName.Value = "= ToUpper(Parameters.personnelFullName.Value)\r\n";
             // 
             // textBox15
             // 
@@ -245,7 +227,7 @@ namespace MediCon.Report.Prescription
             this.textBox14.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(8D);
             this.textBox14.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
             this.textBox14.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.textBox14.Value = "License No. {Parameters.personnel_licenseNo.Value}";
+            this.textBox14.Value = "License No. _______________";
             // 
             // pageHeaderSection1
             // 
@@ -260,9 +242,7 @@ namespace MediCon.Report.Prescription
             this.textBox2,
             this.textBox3,
             this.textBox4,
-            this.textBox6,
-            this.textBox9,
-            this.textBox10});
+            this.textBox6});
             this.pageHeaderSection1.Name = "pageHeaderSection1";
             this.pageHeaderSection1.Style.BorderStyle.Bottom = Telerik.Reporting.Drawing.BorderType.None;
             this.pageHeaderSection1.Style.BorderStyle.Default = Telerik.Reporting.Drawing.BorderType.None;
@@ -282,6 +262,7 @@ namespace MediCon.Report.Prescription
             // 
             // textBox7
             // 
+            this.textBox7.Format = "{0:D}";
             this.textBox7.Location = new Telerik.Reporting.Drawing.PointU(Telerik.Reporting.Drawing.Unit.Inch(3.0583333969116211D), Telerik.Reporting.Drawing.Unit.Inch(0.60000002384185791D));
             this.textBox7.Name = "textBox7";
             this.textBox7.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(0.94992130994796753D), Telerik.Reporting.Drawing.Unit.Inch(0.20000000298023224D));
@@ -292,7 +273,7 @@ namespace MediCon.Report.Prescription
             this.textBox7.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(8D);
             this.textBox7.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
             this.textBox7.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.textBox7.Value = "=Format(\'{0:MMM dd, yyyy}\',Now())";
+            this.textBox7.Value = "=Format(\'{0:MMM dd, yyyy}\', Parameters.mp_dateTimeRx.Value)";
             // 
             // textBox5
             // 
@@ -374,15 +355,13 @@ namespace MediCon.Report.Prescription
             this.textBox4.Style.Font.Name = "Arial Narrow";
             this.textBox4.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(8D);
             this.textBox4.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.textBox4.Value = "= ToUpper(Parameters.PatientFirstName.Value + \" \" + Substr(Parameters.PatientMidN" +
-    "ame.Value, 0, 1) + \". \" + Parameters.PatientLastName.Value + \" \" + Parameters.Pa" +
-    "tientExtName.Value)";
+            this.textBox4.Value = "= ToUpper(Parameters.fullName.Value)";
             // 
             // textBox6
             // 
             this.textBox6.Location = new Telerik.Reporting.Drawing.PointU(Telerik.Reporting.Drawing.Unit.Inch(0.5D), Telerik.Reporting.Drawing.Unit.Inch(1.1417454481124878D));
             this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(2.3740158081054688D), Telerik.Reporting.Drawing.Unit.Inch(0.20000001788139343D));
+            this.textBox6.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(3.3999998569488525D), Telerik.Reporting.Drawing.Unit.Inch(0.20000001788139343D));
             this.textBox6.Style.BorderStyle.Bottom = Telerik.Reporting.Drawing.BorderType.Solid;
             this.textBox6.Style.BorderWidth.Bottom = Telerik.Reporting.Drawing.Unit.Point(0.5D);
             this.textBox6.Style.Font.Name = "Arial Narrow";
@@ -390,60 +369,35 @@ namespace MediCon.Report.Prescription
             this.textBox6.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
             this.textBox6.Value = "= ToUpper(Parameters.PatientAddress.Value)";
             // 
-            // textBox9
+            // rxListDataSrc
             // 
-            this.textBox9.Location = new Telerik.Reporting.Drawing.PointU(Telerik.Reporting.Drawing.Unit.Inch(2.964850902557373D), Telerik.Reporting.Drawing.Unit.Inch(1.1417455673217773D));
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(0.33506998419761658D), Telerik.Reporting.Drawing.Unit.Inch(0.20000000298023224D));
-            this.textBox9.Style.Font.Name = "Arial Narrow";
-            this.textBox9.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(8D);
-            this.textBox9.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
-            this.textBox9.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.textBox9.Value = "Office:";
+            this.rxListDataSrc.ConnectionString = "Medicon";
+            this.rxListDataSrc.Name = "rxListDataSrc";
+            this.rxListDataSrc.Parameters.AddRange(new Telerik.Reporting.SqlDataSourceParameter[] {
+            new Telerik.Reporting.SqlDataSourceParameter("@rxID", System.Data.DbType.String, "=Parameters.rxID.Value")});
+            this.rxListDataSrc.SelectCommand = resources.GetString("rxListDataSrc.SelectCommand");
             // 
-            // textBox10
+            // rxList
             // 
-            this.textBox10.Location = new Telerik.Reporting.Drawing.PointU(Telerik.Reporting.Drawing.Unit.Inch(3.2999997138977051D), Telerik.Reporting.Drawing.Unit.Inch(1.1417455673217773D));
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(0.60000008344650269D), Telerik.Reporting.Drawing.Unit.Inch(0.20000000298023224D));
-            this.textBox10.Style.BorderStyle.Bottom = Telerik.Reporting.Drawing.BorderType.Solid;
-            this.textBox10.Style.BorderWidth.Bottom = Telerik.Reporting.Drawing.Unit.Point(0.5D);
-            this.textBox10.Style.Font.Bold = true;
-            this.textBox10.Style.Font.Name = "Arial Narrow";
-            this.textBox10.Style.Font.Size = Telerik.Reporting.Drawing.Unit.Point(8D);
-            this.textBox10.Style.TextAlign = Telerik.Reporting.Drawing.HorizontalAlign.Center;
-            this.textBox10.Style.VerticalAlign = Telerik.Reporting.Drawing.VerticalAlign.Middle;
-            this.textBox10.Value = "= Parameters.PatientOffice.Value";
-            // 
-            // RX
-            // 
-            this.DocumentName = "= ToUpper(Parameters.PatientFirstName.Value + \" \" + Substr(Parameters.PatientMidN" +
-    "ame.Value, 0, 1) + \". \" + Parameters.PatientLastName.Value + \" \" + Parameters.Pa" +
-    "tientExtName.Value)";
+            this.DocumentName = "= ToUpper(Parameters.fullName.Value)";
             this.Items.AddRange(new Telerik.Reporting.ReportItemBase[] {
             this.pageHeaderSection1,
             this.detail,
             this.pageFooterSection1});
-            this.Name = "RX";
+            this.Name = "rxList";
             this.PageSettings.Landscape = false;
             this.PageSettings.Margins = new Telerik.Reporting.Drawing.MarginsU(Telerik.Reporting.Drawing.Unit.Inch(0.10000000149011612D), Telerik.Reporting.Drawing.Unit.Inch(0.10000000149011612D), Telerik.Reporting.Drawing.Unit.Inch(0.10000000149011612D), Telerik.Reporting.Drawing.Unit.Inch(0.10000000149011612D));
             this.PageSettings.PaperKind = System.Drawing.Printing.PaperKind.Custom;
             this.PageSettings.PaperSize = new Telerik.Reporting.Drawing.SizeU(Telerik.Reporting.Drawing.Unit.Inch(4.25D), Telerik.Reporting.Drawing.Unit.Inch(5.5D));
             reportParameter1.Name = "rxID";
             reportParameter1.Text = "rxID";
-            reportParameter2.Name = "PatientFirstName";
-            reportParameter3.Name = "PatientMidName";
-            reportParameter4.Name = "PatientLastName";
-            reportParameter5.Name = "PatientExtName";
-            reportParameter6.Name = "PatientAddress";
-            reportParameter7.Name = "PatientAge";
-            reportParameter8.Name = "personnel_firstName";
-            reportParameter9.Name = "personnel_midInit";
-            reportParameter10.Name = "personnel_lastName";
-            reportParameter11.Name = "personnel_extName";
-            reportParameter12.Name = "personnel_licenseNo";
-            reportParameter13.Name = "personnel_title";
-            reportParameter14.Name = "PatientOffice";
+            reportParameter2.Name = "fullName";
+            reportParameter3.Name = "PatientAddress";
+            reportParameter4.Name = "PatientAge";
+            reportParameter5.Name = "personnelFullName";
+            reportParameter6.Name = "personnel_licenseNo";
+            reportParameter7.Name = "personnel_title";
+            reportParameter8.Name = "mp_dateTimeRx";
             this.ReportParameters.Add(reportParameter1);
             this.ReportParameters.Add(reportParameter2);
             this.ReportParameters.Add(reportParameter3);
@@ -452,12 +406,6 @@ namespace MediCon.Report.Prescription
             this.ReportParameters.Add(reportParameter6);
             this.ReportParameters.Add(reportParameter7);
             this.ReportParameters.Add(reportParameter8);
-            this.ReportParameters.Add(reportParameter9);
-            this.ReportParameters.Add(reportParameter10);
-            this.ReportParameters.Add(reportParameter11);
-            this.ReportParameters.Add(reportParameter12);
-            this.ReportParameters.Add(reportParameter13);
-            this.ReportParameters.Add(reportParameter14);
             this.Style.BackgroundColor = System.Drawing.Color.White;
             styleRule1.Selectors.AddRange(new Telerik.Reporting.Drawing.ISelector[] {
             new Telerik.Reporting.Drawing.TypeSelector(typeof(Telerik.Reporting.TextItemBase)),
@@ -484,7 +432,6 @@ namespace MediCon.Report.Prescription
         private Telerik.Reporting.TextBox textBox19;
         private Telerik.Reporting.TextBox textBox13;
         private Telerik.Reporting.TextBox textBox16;
-        private Telerik.Reporting.SqlDataSource sqlDataSource2;
         private Telerik.Reporting.TextBox textBox39;
         private Telerik.Reporting.TextBox textBox7;
         private Telerik.Reporting.TextBox textBox5;
@@ -496,7 +443,6 @@ namespace MediCon.Report.Prescription
         private Telerik.Reporting.TextBox textBox4;
         private Telerik.Reporting.TextBox textBox6;
         private Telerik.Reporting.TextBox textBox8;
-        private Telerik.Reporting.TextBox textBox9;
-        private Telerik.Reporting.TextBox textBox10;
+        private Telerik.Reporting.SqlDataSource rxListDataSrc;
     }
 }
