@@ -113,9 +113,6 @@
    }
 
    s.saveMedz = function (a) {
-
-       console.log(a);
-
        a.unitID = unitSelect.val();
        a.measurementID = measurementSelect.val();
        h.post('../Products/saveMedz',a).then(function (d) {

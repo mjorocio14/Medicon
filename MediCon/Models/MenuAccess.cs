@@ -21,6 +21,6 @@ namespace MediCon.Models
         public string userTypeID { get; set; }
         public string serviceID { get; set; }
         public string mainMenu { get; set; }
-        public Nullable<int> orderNo { get; set; }
+        public Nullable<byte> orderNo { get; set; }
     }
 }

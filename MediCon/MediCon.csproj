@@ -365,8 +365,8 @@
       <DependentUpon>Medicon.Context.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Medicon.cs">
-      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Medicon.Designer.cs">
@@ -419,10 +419,10 @@
     <Compile Include="Models\spOT_MedicineDispensing_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\spXrayClientList_Result.cs">
+    <Compile Include="Models\sp_getXrayClientRecord_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sp_getXrayClientRecord_Result.cs">
+    <Compile Include="Models\sp_getXrayClientScreened_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
@@ -432,7 +432,6 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <SubType>Code</SubType>
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Temp_LabPrices.cs">

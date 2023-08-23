@@ -16,7 +16,7 @@ namespace MediCon.Report.Prescription
             Telerik.Reporting.TableGroup tableGroup5 = new Telerik.Reporting.TableGroup();
             Telerik.Reporting.TableGroup tableGroup6 = new Telerik.Reporting.TableGroup();
             Telerik.Reporting.TableGroup tableGroup7 = new Telerik.Reporting.TableGroup();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(rxList));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RX));
             Telerik.Reporting.ReportParameter reportParameter1 = new Telerik.Reporting.ReportParameter();
             Telerik.Reporting.ReportParameter reportParameter2 = new Telerik.Reporting.ReportParameter();
             Telerik.Reporting.ReportParameter reportParameter3 = new Telerik.Reporting.ReportParameter();
@@ -177,12 +177,10 @@ namespace MediCon.Report.Prescription
             // 
             // sqlDataSource2
             // 
-            this.sqlDataSource2.ConnectionString = "Data Source=LOG1C;Initial Catalog=Medicon;User ID=sa;Password=L0g1c;MultipleActiv" +
-    "eResultSets=True;Application Name=EntityFramework";
+            this.sqlDataSource2.ConnectionString = "Medicon";
             this.sqlDataSource2.Name = "sqlDataSource2";
             this.sqlDataSource2.Parameters.AddRange(new Telerik.Reporting.SqlDataSourceParameter[] {
             new Telerik.Reporting.SqlDataSourceParameter("@rxID", System.Data.DbType.String, "=Parameters.rxID.Value")});
-            this.sqlDataSource2.ProviderName = "System.Data.SqlClient";
             this.sqlDataSource2.SelectCommand = resources.GetString("sqlDataSource2.SelectCommand");
             // 
             // pageFooterSection1

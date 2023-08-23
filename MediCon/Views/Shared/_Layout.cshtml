@@ -103,6 +103,10 @@
                         <a><i class="fa fa-calendar"></i> <span class="nav-label">Scheduler</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="schedulerSub"></ul>
                     </li>
+                    <li id="REPORTS">
+                        <a><i class="fa fa-signal"></i> <span class="nav-label">Reports</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse" id="REPORTSsub"></ul>
+                    </li>
                     <li id="UTILITY">
                         <a><i class="fa fa-gear"></i> <span class="nav-label">Utility</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="UTILITYsub">
@@ -183,6 +187,7 @@
             var analytics = $('#ANALYTICS');
             var xray = $('#XRAY');
             var scheduler = $('#SCHEDULER');
+            var reports = $('#REPORTS');
 
             health.hide();
             utility.hide();
@@ -195,6 +200,7 @@
             analytics.hide();
             xray.hide();
             scheduler.hide();
+            reports.hide();
 
             $.post('../Home/gMenuAccess').then(function (d) {
                 for(var x =0;x<d.length;x++){
@@ -247,6 +253,11 @@
                     else if (d[x].mainMenu == 'ANALYTICS') {
                         analytics.show();
                         $('#ANALYTICSsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
+                    }
+
+                    else if (d[x].mainMenu == 'REPORTS') {
+                        reports.show();
+                        $('#REPORTSsub').append('<li class="nav-item"><a href="../' + d[x].controller + '/' + d[x].action + '" class="nav-link"> ' + d[x].menuDesc + '</a></li>');
                     }
                 }
             })

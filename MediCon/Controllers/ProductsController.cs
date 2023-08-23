@@ -9,13 +9,13 @@ using System.Data.Entity;
 
 namespace MediCon.Controllers
 {
-  
+    [SessionTimeout]
     public class ProductsController : Controller
     {
        MediconEntities db2 = new MediconEntities();
         //DAVNORWELLNESSEntities db2 = new DAVNORWELLNESSEntities();
 
-    
+        [UserAccess]
         // GET: Products
         public ActionResult Medicines()
         {
@@ -64,14 +64,12 @@ namespace MediCon.Controllers
                 var xx = x + 1;
                 p.productCode = "PC" + xx.ToString("D8");
                 p.dateTimeLog = DateTime.Now;
-              //  p.personnelID = Session["personnelID"].ToString();
-                p.personnelID = "123";
+                p.personnelID = Session["personnelID"].ToString();
                 db2.ProductLists.Add(p);
             }
             else {
                 p.dateTimeLog = DateTime.Now;
-                //  p.personnelID = Session["personnelID"].ToString();
-                p.personnelID = "123";
+                p.personnelID = Session["personnelID"].ToString();
                 db2.Entry(p).State = EntityState.Modified;
             }
            
@@ -118,15 +116,13 @@ namespace MediCon.Controllers
                         var xx = x + 1;
                         p.measurementID = "M" + xx.ToString("D4");
                         p.dateTimeLog = DateTime.Now;
-                        //  p.personnelID = Session["personnelID"].ToString();
-                        p.personnelID = "123";
+                        p.personnelID = Session["personnelID"].ToString();
                         db2.Measurements.Add(p);
                     }
                     else
                     {
                         p.dateTimeLog = DateTime.Now;
-                        //  p.personnelID = Session["personnelID"].ToString();
-                        p.personnelID = "123";
+                        p.personnelID = Session["personnelID"].ToString();
                         db2.Entry(p).State = EntityState.Modified;
                     }
 
@@ -161,19 +157,17 @@ namespace MediCon.Controllers
                 {
                     if (p.unitID == null)
                     {
-                        var x = db.ProductUnits.Count();
+                        var x = db2.ProductUnits.Count();
                         var xx = x + 1;
                         p.unitID = "U" + xx.ToString("D4");
                         p.dateTimeLog = DateTime.Now;
-                        //  p.personnelID = Session["personnelID"].ToString();
-                        p.personnelID = "123";
+                        p.personnelID = Session["personnelID"].ToString();
                         db2.ProductUnits.Add(p);
                     }
                     else
                     {
                         p.dateTimeLog = DateTime.Now;
-                        //  p.personnelID = Session["personnelID"].ToString();
-                        p.personnelID = "123";
+                        p.personnelID = Session["personnelID"].ToString();
                         db2.Entry(p).State = EntityState.Modified;
                     }
 
