@@ -190,6 +190,7 @@
     <Compile Include="Controllers\PrintController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
     <Compile Include="Controllers\QRPersonalInfoController.cs" />
+    <Compile Include="Controllers\ReadingGlassesController.cs" />
     <Compile Include="Controllers\RectalDiagnosisController.cs" />
     <Compile Include="Controllers\SendSMSController.cs" />
     <Compile Include="Controllers\SessionTimeoutAttribute.cs" />
@@ -204,9 +205,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\BloodChem.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\BloodPressure.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -215,9 +213,6 @@
     </Compile>
     <Compile Include="Models\Brgy.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\CBC.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CityMun.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
@@ -246,13 +241,10 @@
     <Compile Include="Models\DietCounseling.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\ECG.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\EditRemark.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Fecalysi.cs">
+    <Compile Include="Models\EyeCare.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_DashboardAnalytics_Result.cs">
@@ -309,9 +301,6 @@
     <Compile Include="Models\fn_vitalSignList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\HbA1c.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\Hospital.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -351,9 +340,6 @@
     </Compile>
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Measurement.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\MedCon_Xray.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MedicalPrescription.cs">
@@ -438,15 +424,6 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Temp_Morbidity.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\TwoDecho.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Ultrasound.cs">
-      <DependentUpon>Medicon.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Urinalysi.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserType.cs">
@@ -699,6 +676,7 @@
     <Content Include="Scripts\AngularJS\PatientCalendar\PatientCalendar.js" />
     <Content Include="Scripts\AngularJS\Pharmacy\pharmacyDispensing.js" />
     <Content Include="Scripts\AngularJS\PhysicianCalendar\PhysicianCalendar.js" />
+    <Content Include="Scripts\AngularJS\ReadingGlasses\ReadingGlasses.js" />
     <Content Include="Scripts\AngularJS\RectalDiagnosis\RectalDiagnosis.js" />
     <Content Include="Scripts\AngularJS\RX\RxCtrl.js" />
     <Content Include="Scripts\AngularJS\Utility\Laboratory.js" />
@@ -754,6 +732,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\JSPrintManager.d.ts" />
+    <Content Include="Scripts\JSPrintManager.js" />
     <Content Include="Scripts\js\dataTables\datatables.min.css" />
     <Content Include="Scripts\js\dataTables\datatables.min.js" />
     <Content Include="Scripts\js\Moment\moment-timezone-with-data.min.js" />
@@ -826,7 +806,9 @@
     <Content Include="Views\Hospital\Scheduler.cshtml" />
     <Content Include="Views\PhysicianCalendar\Calendar.cshtml" />
     <Content Include="Views\PatientCalendar\Appointment.cshtml" />
+    <Content Include="Views\Home\Scanner.cshtml" />
     <Content Include="Views\Prescriptions\List.cshtml" />
+    <Content Include="Views\ReadingGlasses\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

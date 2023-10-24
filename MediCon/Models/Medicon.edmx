@@ -4,19 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="BloodChem">
-          <Key>
-            <PropertyRef Name="bloodChemID" />
-          </Key>
-          <Property Name="recNO" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="bloodChemID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="result" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="LabTestGroupID" Type="varchar" MaxLength="10" />
-          <Property Name="dateTimeLog" Type="datetime" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-        </EntityType>
+    <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BloodPressure">
           <Key>
             <PropertyRef Name="BPID" />
@@ -37,29 +25,6 @@
           <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="brandID" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="brandName" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="CBC">
-          <Key>
-            <PropertyRef Name="cbcID" />
-          </Key>
-          <Property Name="recNO" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="cbcID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="wbc" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="neu" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="lym" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="mon" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="eos" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="bas" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="rbc" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="hgb" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="hct" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="mcv" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="mch" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="mchc" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="plt" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="Consultation">
           <Key>
@@ -101,17 +66,6 @@
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
-        <EntityType Name="ECG">
-          <Key>
-            <PropertyRef Name="ECGID" />
-          </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ECGID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="findings" Type="varchar(max)" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-          <Property Name="dateTimeLog" Type="datetime" />
-        </EntityType>
         <EntityType Name="EditRemarks">
           <Key>
             <PropertyRef Name="editID" />
@@ -123,37 +77,15 @@
           <Property Name="editedBy" Type="varchar" MaxLength="8" />
           <Property Name="dateEdited" Type="datetime" />
         </EntityType>
-        <EntityType Name="Fecalysis">
+        <EntityType Name="EyeCare">
           <Key>
-            <PropertyRef Name="fecalysisID" />
+            <PropertyRef Name="eyeCareID_rxID" />
           </Key>
           <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="fecalysisID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="color" Type="varchar" MaxLength="5" />
-          <Property Name="otherColorDesc" Type="varchar" MaxLength="100" />
-          <Property Name="consistency" Type="varchar" MaxLength="5" />
-          <Property Name="otherConDesc" Type="varchar" MaxLength="100" />
-          <Property Name="pusFrom" Type="smallint" />
-          <Property Name="pusTo" Type="smallint" />
-          <Property Name="rbcFrom" Type="smallint" />
-          <Property Name="rbcTo" Type="smallint" />
-          <Property Name="fatGlobules" Type="varchar" MaxLength="5" />
-          <Property Name="bacteria" Type="varchar" MaxLength="5" />
-          <Property Name="otherFindings" Type="varchar(max)" />
+          <Property Name="eyeCareID_rxID" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="qrCode" Type="varchar" MaxLength="30" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
-        </EntityType>
-        <EntityType Name="HbA1c">
-          <Key>
-            <PropertyRef Name="hba1cID" />
-          </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="hba1cID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="result" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="dateTimeLog" Type="datetime" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
         </EntityType>
         <EntityType Name="Hospital">
           <Key>
@@ -189,8 +121,7 @@
           <Property Name="isTested" Type="bit" />
           <Property Name="isEncoded" Type="bit" />
           <Property Name="dateEncoded" Type="datetime" />
-          <Property Name="pathologist" Type="varchar" MaxLength="8" />
-          <Property Name="medtech" Type="varchar" MaxLength="8" />
+          <Property Name="encodedBy" Type="varchar" MaxLength="8" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
@@ -271,18 +202,6 @@
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
-        <EntityType Name="MedCon_Xray">
-          <Key>
-            <PropertyRef Name="medConXrayID" />
-          </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="medConXrayID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="findings" Type="varchar(max)" />
-          <Property Name="mcXrayDateResult" Type="date" />
-          <Property Name="dateTimeLog" Type="datetime" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-        </EntityType>
         <EntityType Name="MedicalPrescription">
           <Key>
             <PropertyRef Name="rxID" />
@@ -336,6 +255,7 @@
           <Property Name="dosage" Type="decimal" Precision="5" Scale="2" />
           <Property Name="perDay" Type="int" />
           <Property Name="noDay" Type="varchar" MaxLength="30" />
+          <Property Name="note" Type="varchar" MaxLength="200" />
           <Property Name="isRelease" Type="bit" />
           <Property Name="qtyReleased" Type="int" />
           <Property Name="userIDreleased" Type="varchar" MaxLength="8" />
@@ -482,66 +402,6 @@
           <Property Name="male" Type="int" />
           <Property Name="female" Type="int" />
           <Property Name="type" Type="varchar" MaxLength="20" />
-        </EntityType>
-        <EntityType Name="TwoDecho">
-          <Key>
-            <PropertyRef Name="echoID" />
-          </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="echoID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="findings" Type="varchar(max)" />
-          <Property Name="echoDateResult" Type="date" />
-          <Property Name="dateTimeLog" Type="datetime" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-        </EntityType>
-        <EntityType Name="Ultrasound">
-          <Key>
-            <PropertyRef Name="ultraID" />
-          </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ultraID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="findings" Type="varchar(max)" />
-          <Property Name="ultraDateResult" Type="date" />
-          <Property Name="dateTimeLog" Type="datetime" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-        </EntityType>
-        <EntityType Name="Urinalysis">
-          <Key>
-            <PropertyRef Name="urinalysisID" />
-          </Key>
-          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="urinalysisID" Type="varchar" MaxLength="15" Nullable="false" />
-          <Property Name="labID" Type="varchar" MaxLength="15" />
-          <Property Name="color" Type="varchar" MaxLength="15" />
-          <Property Name="transparency" Type="varchar" MaxLength="15" />
-          <Property Name="albumin" Type="varchar" MaxLength="15" />
-          <Property Name="sugar" Type="varchar" MaxLength="15" />
-          <Property Name="reaction" Type="decimal" Precision="5" Scale="3" />
-          <Property Name="spGravity" Type="decimal" Precision="5" Scale="3" />
-          <Property Name="pusCells" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="rbcCells" Type="decimal" Precision="5" Scale="2" />
-          <Property Name="epithelialCells" Type="varchar" MaxLength="15" />
-          <Property Name="renalCells" Type="decimal" Precision="6" Scale="2" />
-          <Property Name="mucusThread" Type="varchar" MaxLength="15" />
-          <Property Name="bacteria" Type="varchar" MaxLength="15" />
-          <Property Name="yeastCells" Type="varchar" MaxLength="15" />
-          <Property Name="coarseGranular" Type="varchar" MaxLength="15" />
-          <Property Name="fineGranular" Type="varchar" MaxLength="15" />
-          <Property Name="hyaline" Type="varchar" MaxLength="15" />
-          <Property Name="pusCellsCast" Type="varchar" MaxLength="15" />
-          <Property Name="rbcCast" Type="varchar" MaxLength="15" />
-          <Property Name="waxyCast" Type="varchar" MaxLength="15" />
-          <Property Name="amourphousUrates" Type="varchar" MaxLength="15" />
-          <Property Name="amourphousPhospates" Type="varchar" MaxLength="15" />
-          <Property Name="triplePhospates" Type="varchar" MaxLength="15" />
-          <Property Name="uricAcid" Type="varchar" MaxLength="15" />
-          <Property Name="calciumOxalates" Type="varchar" MaxLength="15" />
-          <Property Name="pregnancyTest" Type="varchar" MaxLength="15" />
-          <Property Name="others" Type="varchar" MaxLength="15" />
-          <Property Name="personnelID" Type="varchar" MaxLength="8" />
-          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="UserType">
           <Key>
@@ -943,10 +803,6 @@
                 <Property Name="isEncoded" Type="bit" />
                 <Property Name="labTestID" Type="varchar" MaxLength="5" />
                 <Property Name="labTestName" Type="varchar" MaxLength="50" />
-                <Property Name="bloodChemID" Type="varchar" MaxLength="15" />
-                <Property Name="result" Type="decimal" Precision="5" Scale="2" />
-                <Property Name="LabTestGroupID" Type="varchar" MaxLength="10" />
-                <Property Name="bloodChemDateEncoded" Type="datetime" />
                 <Property Name="dateTested" Type="datetime" />
                 <Property Name="referredServiceID" Type="varchar" MaxLength="10" />
                 <Property Name="MRDiagnosisID" Type="varchar" MaxLength="15" />
@@ -1275,17 +1131,13 @@
           <Parameter Name="qrCode" Type="varchar" Mode="In" />
         </Function>
         <EntityContainer Name="MediconModelStoreContainer">
-          <EntitySet Name="BloodChem" EntityType="Self.BloodChem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BloodPressure" EntityType="Self.BloodPressure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandList" EntityType="Self.BrandList" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="CBC" EntityType="Self.CBC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consultation" EntityType="Self.Consultation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DietCounseling" EntityType="Self.DietCounseling" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ECG" EntityType="Self.ECG" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EditRemarks" EntityType="Self.EditRemarks" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Fecalysis" EntityType="Self.Fecalysis" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="HbA1c" EntityType="Self.HbA1c" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EyeCare" EntityType="Self.EyeCare" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Hospital" EntityType="Self.Hospital" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HospitalCalendar" EntityType="Self.HospitalCalendar" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LaboratoryExam" EntityType="Self.LaboratoryExam" Schema="dbo" store:Type="Tables" />
@@ -1294,7 +1146,6 @@
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MaleRepro_Interview" EntityType="Self.MaleRepro_Interview" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Measurement" EntityType="Self.Measurement" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="MedCon_Xray" EntityType="Self.MedCon_Xray" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MedicalPrescription" EntityType="Self.MedicalPrescription" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MenuAccess" EntityType="Self.MenuAccess" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MRHrequest" EntityType="Self.MRHrequest" Schema="dbo" store:Type="Tables" />
@@ -1311,9 +1162,6 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Temp_LabPrices" EntityType="Self.Temp_LabPrices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Temp_Morbidity" EntityType="Self.Temp_Morbidity" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="TwoDecho" EntityType="Self.TwoDecho" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Ultrasound" EntityType="Self.Ultrasound" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Urinalysis" EntityType="Self.Urinalysis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSigns" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Xray_Comorbidity" EntityType="Self.Xray_Comorbidity" Schema="dbo" store:Type="Tables" />
@@ -1326,8 +1174,7 @@
           <EntitySet Name="Xray_Screening" EntityType="Self.Xray_Screening" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Xray_ScutumLabRequest" EntityType="Self.Xray_ScutumLabRequest" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MediconModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -1757,18 +1604,6 @@
           <Property Name="birthDate" Type="DateTime" />
           <Property Name="sex" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
         </ComplexType>
-        <EntityType Name="BloodChem">
-          <Key>
-            <PropertyRef Name="bloodChemID" />
-          </Key>
-          <Property Name="recNO" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="bloodChemID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="result" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="LabTestGroupID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="BloodPressure">
           <Key>
             <PropertyRef Name="BPID" />
@@ -1789,29 +1624,6 @@
           <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="brandID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="brandName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="CBC">
-          <Key>
-            <PropertyRef Name="cbcID" />
-          </Key>
-          <Property Name="recNO" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="cbcID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="wbc" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="neu" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="lym" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="mon" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="eos" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="bas" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="rbc" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="hgb" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="hct" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="mcv" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="mch" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="mchc" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="plt" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Consultation">
           <Key>
@@ -1853,17 +1665,6 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="ECG">
-          <Key>
-            <PropertyRef Name="ECGID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ECGID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="findings" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="EditRemark">
           <Key>
             <PropertyRef Name="editID" />
@@ -1874,38 +1675,6 @@
           <Property Name="remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="editedBy" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateEdited" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="Fecalysi">
-          <Key>
-            <PropertyRef Name="fecalysisID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="fecalysisID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="color" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="otherColorDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="consistency" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="otherConDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="pusFrom" Type="Int16" />
-          <Property Name="pusTo" Type="Int16" />
-          <Property Name="rbcFrom" Type="Int16" />
-          <Property Name="rbcTo" Type="Int16" />
-          <Property Name="fatGlobules" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="bacteria" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="otherFindings" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="HbA1c">
-          <Key>
-            <PropertyRef Name="hba1cID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="hba1cID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="result" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Hospital">
           <Key>
@@ -1923,26 +1692,6 @@
           <Property Name="calendarID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="hospitalID" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
           <Property Name="scheduleDate" Type="DateTime" Precision="0" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="LaboratoryExam">
-          <Key>
-            <PropertyRef Name="labID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="xrayDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ultrasoundDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ecgDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="isTested" Type="Boolean" />
-          <Property Name="isEncoded" Type="Boolean" />
-          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
-          <Property Name="pathologist" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="medtech" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
@@ -2023,18 +1772,6 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="MedCon_Xray">
-          <Key>
-            <PropertyRef Name="medConXrayID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="medConXrayID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="findings" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="mcXrayDateResult" Type="DateTime" Precision="0" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="MedicalPrescription">
           <Key>
             <PropertyRef Name="rxID" />
@@ -2075,23 +1812,6 @@
           <Property Name="diagnoseDT" Type="DateTime" Precision="3" />
           <Property Name="requestPersonID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="requestDT" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="OutgoingItem">
-          <Key>
-            <PropertyRef Name="outID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="outID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="qtyRx" Type="Int32" />
-          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="perDay" Type="Int32" />
-          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="isRelease" Type="Boolean" />
-          <Property Name="qtyReleased" Type="Int32" />
-          <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="PapsmearBreastExam">
           <Key>
@@ -2234,66 +1954,6 @@
           <Property Name="male" Type="Int32" />
           <Property Name="female" Type="Int32" />
           <Property Name="type" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="TwoDecho">
-          <Key>
-            <PropertyRef Name="echoID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="echoID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="findings" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="echoDateResult" Type="DateTime" Precision="0" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Ultrasound">
-          <Key>
-            <PropertyRef Name="ultraID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ultraID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="findings" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="ultraDateResult" Type="DateTime" Precision="0" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="Urinalysi">
-          <Key>
-            <PropertyRef Name="urinalysisID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="urinalysisID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="color" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="transparency" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="albumin" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="sugar" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="reaction" Type="Decimal" Precision="5" Scale="3" />
-          <Property Name="spGravity" Type="Decimal" Precision="5" Scale="3" />
-          <Property Name="pusCells" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="rbcCells" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="epithelialCells" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="renalCells" Type="Decimal" Precision="6" Scale="2" />
-          <Property Name="mucusThread" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="bacteria" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="yeastCells" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="coarseGranular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="fineGranular" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="hyaline" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="pusCellsCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="rbcCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="waxyCast" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="amourphousUrates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="amourphousPhospates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="triplePhospates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="uricAcid" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="calciumOxalates" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="pregnancyTest" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="others" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="UserType">
           <Key>
@@ -2438,30 +2098,22 @@
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityContainer Name="MediconEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="BloodChems" EntityType="Self.BloodChem" />
           <EntitySet Name="BloodPressures" EntityType="Self.BloodPressure" />
           <EntitySet Name="BrandLists" EntityType="Self.BrandList" />
-          <EntitySet Name="CBCs" EntityType="Self.CBC" />
           <EntitySet Name="Consultations" EntityType="Self.Consultation" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="Self.DietCounseling" />
-          <EntitySet Name="ECGs" EntityType="Self.ECG" />
           <EntitySet Name="EditRemarks" EntityType="Self.EditRemark" />
-          <EntitySet Name="Fecalysis" EntityType="Self.Fecalysi" />
-          <EntitySet Name="HbA1c" EntityType="Self.HbA1c" />
           <EntitySet Name="Hospitals" EntityType="Self.Hospital" />
           <EntitySet Name="HospitalCalendars" EntityType="Self.HospitalCalendar" />
-          <EntitySet Name="LaboratoryExams" EntityType="Self.LaboratoryExam" />
           <EntitySet Name="LaboratoryGroupTests" EntityType="Self.LaboratoryGroupTest" />
           <EntitySet Name="LaboratoryTests" EntityType="Self.LaboratoryTest" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" />
           <EntitySet Name="MaleRepro_Interview" EntityType="Self.MaleRepro_Interview" />
           <EntitySet Name="Measurements" EntityType="Self.Measurement" />
-          <EntitySet Name="MedCon_Xray" EntityType="Self.MedCon_Xray" />
           <EntitySet Name="MedicalPrescriptions" EntityType="Self.MedicalPrescription" />
           <EntitySet Name="MenuAccesses" EntityType="Self.MenuAccess" />
           <EntitySet Name="MRHrequests" EntityType="Self.MRHrequest" />
-          <EntitySet Name="OutgoingItems" EntityType="Self.OutgoingItem" />
           <EntitySet Name="PapsmearBreastExams" EntityType="Self.PapsmearBreastExam" />
           <EntitySet Name="PatientAppointments" EntityType="Self.PatientAppointment" />
           <EntitySet Name="Personnels" EntityType="Self.Personnel" />
@@ -2474,9 +2126,6 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="Temp_LabPrices" EntityType="Self.Temp_LabPrices" />
           <EntitySet Name="Temp_Morbidity" EntityType="Self.Temp_Morbidity" />
-          <EntitySet Name="TwoDechoes" EntityType="Self.TwoDecho" />
-          <EntitySet Name="Ultrasounds" EntityType="Self.Ultrasound" />
-          <EntitySet Name="Urinalysis" EntityType="Self.Urinalysi" />
           <EntitySet Name="UserTypes" EntityType="Self.UserType" />
           <EntitySet Name="VitalSigns" EntityType="Self.VitalSign" />
           <EntitySet Name="Xray_Comorbidity" EntityType="Self.Xray_Comorbidity" />
@@ -2497,39 +2146,36 @@
             <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabResult" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabResult_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getMRHclients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getMRHclients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getPapsmearBreastExamClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPapsmearBreastExamClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
-          </FunctionImport>
-          <FunctionImport Name="fn_getPatientLabHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPatientLabHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getPatientXrayHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPatientXrayHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_getRectalClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getRectalClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getXrayLabReqClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayLabReqClients_Result)" />
           <FunctionImport Name="fn_getXrayScreenedClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayScreenedClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getXrayTagClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayTagClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_MedicineList" IsComposable="true" ReturnType="Collection(MediconModel.fn_MedicineList_Result)" />
           <FunctionImport Name="fn_Prescriptions" IsComposable="true" ReturnType="Collection(MediconModel.fn_Prescriptions_Result)">
-            <Parameter Name="date" Mode="In" Type="String" />
+          <Parameter Name="date" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_vitalSignList" IsComposable="true" ReturnType="Collection(MediconModel.fn_vitalSignList_Result)">
-            <Parameter Name="dateFilter" Mode="In" Type="DateTime" />
+          <Parameter Name="dateFilter" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -2569,6 +2215,9 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
+          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
+          <EntitySet Name="EyeCares" EntityType="MediconModel.EyeCare" />
+          <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
           <FunctionImport Name="spOT_MedicineDispensing" ReturnType="Collection(MediconModel.spOT_MedicineDispensing_Result)">
             <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
@@ -2661,6 +2310,53 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
+        <EntityType Name="LaboratoryExam">
+          <Key>
+            <PropertyRef Name="labID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="xrayDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ultrasoundDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ecgDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="isEncoded" Type="Boolean" />
+          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
+          <Property Name="encodedBy" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="EyeCare">
+          <Key>
+            <PropertyRef Name="eyeCareID_rxID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="eyeCareID_rxID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OutgoingItem">
+          <Key>
+            <PropertyRef Name="outID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="outID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="qtyRx" Type="Int32" />
+          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="perDay" Type="Int32" />
+          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="isRelease" Type="Boolean" />
+          <Property Name="qtyReleased" Type="Int32" />
+          <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
+        </EntityType>
         <ComplexType Name="spOT_MedicineDispensing_Result">
           <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
           <Property Type="String" Name="serviceID" Nullable="true" MaxLength="10" />
@@ -2669,6 +2365,9 @@
           <Property Type="String" Name="productCode" Nullable="true" MaxLength="10" />
           <Property Type="String" Name="productDesc" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="measurementDesc" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="dateTimeRx" Nullable="true" Precision="23" />
+          <Property Type="String" Name="personnelID" Nullable="true" MaxLength="8" />
+          <Property Type="String" Name="consultID" Nullable="true" MaxLength="15" />
           <Property Type="String" Name="unitDesc" Nullable="true" MaxLength="50" />
           <Property Type="Decimal" Name="dosage" Nullable="true" Precision="5" Scale="2" />
           <Property Type="Int32" Name="perDay" Nullable="true" />
@@ -2677,6 +2376,11 @@
           <Property Type="Boolean" Name="isRelease" Nullable="true" />
           <Property Type="Int32" Name="qtyReleased" Nullable="true" />
           <Property Type="DateTime" Name="dateTimeReleased" Nullable="true" Precision="23" />
+          <Property Type="String" Name="note" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="personnel_lastName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_firstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
+          <Property Type="String" Name="personnel_extName" Nullable="true" MaxLength="10" />
         </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2684,19 +2388,6 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="MediconModelStoreContainer" CdmEntityContainer="MediconEntities">
-          <EntitySetMapping Name="BloodChems">
-            <EntityTypeMapping TypeName="MediconModel.BloodChem">
-              <MappingFragment StoreEntitySet="BloodChem">
-                <ScalarProperty Name="recNO" ColumnName="recNO" />
-                <ScalarProperty Name="bloodChemID" ColumnName="bloodChemID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="result" ColumnName="result" />
-                <ScalarProperty Name="LabTestGroupID" ColumnName="LabTestGroupID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="BloodPressures">
             <EntityTypeMapping TypeName="MediconModel.BloodPressure">
               <MappingFragment StoreEntitySet="BloodPressure">
@@ -2717,30 +2408,6 @@
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
                 <ScalarProperty Name="brandID" ColumnName="brandID" />
                 <ScalarProperty Name="brandName" ColumnName="brandName" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CBCs">
-            <EntityTypeMapping TypeName="MediconModel.CBC">
-              <MappingFragment StoreEntitySet="CBC">
-                <ScalarProperty Name="recNO" ColumnName="recNO" />
-                <ScalarProperty Name="cbcID" ColumnName="cbcID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="wbc" ColumnName="wbc" />
-                <ScalarProperty Name="neu" ColumnName="neu" />
-                <ScalarProperty Name="lym" ColumnName="lym" />
-                <ScalarProperty Name="mon" ColumnName="mon" />
-                <ScalarProperty Name="eos" ColumnName="eos" />
-                <ScalarProperty Name="bas" ColumnName="bas" />
-                <ScalarProperty Name="rbc" ColumnName="rbc" />
-                <ScalarProperty Name="hgb" ColumnName="hgb" />
-                <ScalarProperty Name="hct" ColumnName="hct" />
-                <ScalarProperty Name="mcv" ColumnName="mcv" />
-                <ScalarProperty Name="mch" ColumnName="mch" />
-                <ScalarProperty Name="mchc" ColumnName="mchc" />
-                <ScalarProperty Name="plt" ColumnName="plt" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2787,18 +2454,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ECGs">
-            <EntityTypeMapping TypeName="MediconModel.ECG">
-              <MappingFragment StoreEntitySet="ECG">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="ECGID" ColumnName="ECGID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="findings" ColumnName="findings" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="EditRemarks">
             <EntityTypeMapping TypeName="MediconModel.EditRemark">
               <MappingFragment StoreEntitySet="EditRemarks">
@@ -2808,40 +2463,6 @@
                 <ScalarProperty Name="remarks" ColumnName="remarks" />
                 <ScalarProperty Name="editedBy" ColumnName="editedBy" />
                 <ScalarProperty Name="dateEdited" ColumnName="dateEdited" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Fecalysis">
-            <EntityTypeMapping TypeName="MediconModel.Fecalysi">
-              <MappingFragment StoreEntitySet="Fecalysis">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="fecalysisID" ColumnName="fecalysisID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="color" ColumnName="color" />
-                <ScalarProperty Name="otherColorDesc" ColumnName="otherColorDesc" />
-                <ScalarProperty Name="consistency" ColumnName="consistency" />
-                <ScalarProperty Name="otherConDesc" ColumnName="otherConDesc" />
-                <ScalarProperty Name="pusFrom" ColumnName="pusFrom" />
-                <ScalarProperty Name="pusTo" ColumnName="pusTo" />
-                <ScalarProperty Name="rbcFrom" ColumnName="rbcFrom" />
-                <ScalarProperty Name="rbcTo" ColumnName="rbcTo" />
-                <ScalarProperty Name="fatGlobules" ColumnName="fatGlobules" />
-                <ScalarProperty Name="bacteria" ColumnName="bacteria" />
-                <ScalarProperty Name="otherFindings" ColumnName="otherFindings" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="HbA1c">
-            <EntityTypeMapping TypeName="MediconModel.HbA1c">
-              <MappingFragment StoreEntitySet="HbA1c">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="hba1cID" ColumnName="hba1cID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="result" ColumnName="result" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2861,27 +2482,6 @@
                 <ScalarProperty Name="calendarID" ColumnName="calendarID" />
                 <ScalarProperty Name="hospitalID" ColumnName="hospitalID" />
                 <ScalarProperty Name="scheduleDate" ColumnName="scheduleDate" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="LaboratoryExams">
-            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
-              <MappingFragment StoreEntitySet="LaboratoryExam">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
-                <ScalarProperty Name="xrayDesc" ColumnName="xrayDesc" />
-                <ScalarProperty Name="ultrasoundDesc" ColumnName="ultrasoundDesc" />
-                <ScalarProperty Name="ecgDesc" ColumnName="ecgDesc" />
-                <ScalarProperty Name="isTested" ColumnName="isTested" />
-                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
-                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
-                <ScalarProperty Name="pathologist" ColumnName="pathologist" />
-                <ScalarProperty Name="medtech" ColumnName="medtech" />
                 <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
@@ -2969,19 +2569,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="MedCon_Xray">
-            <EntityTypeMapping TypeName="MediconModel.MedCon_Xray">
-              <MappingFragment StoreEntitySet="MedCon_Xray">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="medConXrayID" ColumnName="medConXrayID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="findings" ColumnName="findings" />
-                <ScalarProperty Name="mcXrayDateResult" ColumnName="mcXrayDateResult" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="MedicalPrescriptions">
             <EntityTypeMapping TypeName="MediconModel.MedicalPrescription">
               <MappingFragment StoreEntitySet="MedicalPrescription">
@@ -3023,24 +2610,6 @@
                 <ScalarProperty Name="diagnoseDT" ColumnName="diagnoseDT" />
                 <ScalarProperty Name="requestPersonID" ColumnName="requestPersonID" />
                 <ScalarProperty Name="requestDT" ColumnName="requestDT" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OutgoingItems">
-            <EntityTypeMapping TypeName="MediconModel.OutgoingItem">
-              <MappingFragment StoreEntitySet="OutgoingItems">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="outID" ColumnName="outID" />
-                <ScalarProperty Name="rxID" ColumnName="rxID" />
-                <ScalarProperty Name="productCode" ColumnName="productCode" />
-                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
-                <ScalarProperty Name="dosage" ColumnName="dosage" />
-                <ScalarProperty Name="perDay" ColumnName="perDay" />
-                <ScalarProperty Name="noDay" ColumnName="noDay" />
-                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
-                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
-                <ScalarProperty Name="userIDreleased" ColumnName="userIDreleased" />
-                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3195,69 +2764,6 @@
                 <ScalarProperty Name="male" ColumnName="male" />
                 <ScalarProperty Name="female" ColumnName="female" />
                 <ScalarProperty Name="type" ColumnName="type" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TwoDechoes">
-            <EntityTypeMapping TypeName="MediconModel.TwoDecho">
-              <MappingFragment StoreEntitySet="TwoDecho">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="echoID" ColumnName="echoID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="findings" ColumnName="findings" />
-                <ScalarProperty Name="echoDateResult" ColumnName="echoDateResult" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Ultrasounds">
-            <EntityTypeMapping TypeName="MediconModel.Ultrasound">
-              <MappingFragment StoreEntitySet="Ultrasound">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="ultraID" ColumnName="ultraID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="findings" ColumnName="findings" />
-                <ScalarProperty Name="ultraDateResult" ColumnName="ultraDateResult" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Urinalysis">
-            <EntityTypeMapping TypeName="MediconModel.Urinalysi">
-              <MappingFragment StoreEntitySet="Urinalysis">
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-                <ScalarProperty Name="urinalysisID" ColumnName="urinalysisID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="color" ColumnName="color" />
-                <ScalarProperty Name="transparency" ColumnName="transparency" />
-                <ScalarProperty Name="albumin" ColumnName="albumin" />
-                <ScalarProperty Name="sugar" ColumnName="sugar" />
-                <ScalarProperty Name="reaction" ColumnName="reaction" />
-                <ScalarProperty Name="spGravity" ColumnName="spGravity" />
-                <ScalarProperty Name="pusCells" ColumnName="pusCells" />
-                <ScalarProperty Name="rbcCells" ColumnName="rbcCells" />
-                <ScalarProperty Name="epithelialCells" ColumnName="epithelialCells" />
-                <ScalarProperty Name="renalCells" ColumnName="renalCells" />
-                <ScalarProperty Name="mucusThread" ColumnName="mucusThread" />
-                <ScalarProperty Name="bacteria" ColumnName="bacteria" />
-                <ScalarProperty Name="yeastCells" ColumnName="yeastCells" />
-                <ScalarProperty Name="coarseGranular" ColumnName="coarseGranular" />
-                <ScalarProperty Name="fineGranular" ColumnName="fineGranular" />
-                <ScalarProperty Name="hyaline" ColumnName="hyaline" />
-                <ScalarProperty Name="pusCellsCast" ColumnName="pusCellsCast" />
-                <ScalarProperty Name="rbcCast" ColumnName="rbcCast" />
-                <ScalarProperty Name="waxyCast" ColumnName="waxyCast" />
-                <ScalarProperty Name="amourphousUrates" ColumnName="amourphousUrates" />
-                <ScalarProperty Name="amourphousPhospates" ColumnName="amourphousPhospates" />
-                <ScalarProperty Name="triplePhospates" ColumnName="triplePhospates" />
-                <ScalarProperty Name="uricAcid" ColumnName="uricAcid" />
-                <ScalarProperty Name="calciumOxalates" ColumnName="calciumOxalates" />
-                <ScalarProperty Name="pregnancyTest" ColumnName="pregnancyTest" />
-                <ScalarProperty Name="others" ColumnName="others" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -3634,29 +3140,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionName="MediconModel.Store.fn_getPatientLabHistory" FunctionImportName="fn_getPatientLabHistory">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="MediconModel.fn_getPatientLabHistory_Result">
-                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
-                <ScalarProperty Name="consultID" ColumnName="consultID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="isTested" ColumnName="isTested" />
-                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
-                <ScalarProperty Name="bloodChemID" ColumnName="bloodChemID" />
-                <ScalarProperty Name="result" ColumnName="result" />
-                <ScalarProperty Name="LabTestGroupID" ColumnName="LabTestGroupID" />
-                <ScalarProperty Name="bloodChemDateEncoded" ColumnName="bloodChemDateEncoded" />
-                <ScalarProperty Name="dateTested" ColumnName="dateTested" />
-                <ScalarProperty Name="referredServiceID" ColumnName="referredServiceID" />
-                <ScalarProperty Name="MRDiagnosisID" ColumnName="MRDiagnosisID" />
-                <ScalarProperty Name="ConsultServiceName" ColumnName="ConsultServiceName" />
-                <ScalarProperty Name="refServiceName" ColumnName="refServiceName" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionName="MediconModel.Store.fn_getPatientXrayHistory" FunctionImportName="fn_getPatientXrayHistory">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.fn_getPatientXrayHistory_Result">
@@ -4021,6 +3504,56 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="MediconModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="MediconModel.Store.sp_upgraddiagrams" />
+          <EntitySetMapping Name="LaboratoryExams">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
+              <MappingFragment StoreEntitySet="LaboratoryExam">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="encodedBy" ColumnName="encodedBy" />
+                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="ecgDesc" ColumnName="ecgDesc" />
+                <ScalarProperty Name="ultrasoundDesc" ColumnName="ultrasoundDesc" />
+                <ScalarProperty Name="xrayDesc" ColumnName="xrayDesc" />
+                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EyeCares">
+            <EntityTypeMapping TypeName="MediconModel.EyeCare">
+              <MappingFragment StoreEntitySet="EyeCare">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="eyeCareID_rxID" ColumnName="eyeCareID_rxID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OutgoingItems">
+            <EntityTypeMapping TypeName="MediconModel.OutgoingItem">
+              <MappingFragment StoreEntitySet="OutgoingItems">
+                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
+                <ScalarProperty Name="userIDreleased" ColumnName="userIDreleased" />
+                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
+                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="noDay" ColumnName="noDay" />
+                <ScalarProperty Name="perDay" ColumnName="perDay" />
+                <ScalarProperty Name="dosage" ColumnName="dosage" />
+                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="rxID" ColumnName="rxID" />
+                <ScalarProperty Name="outID" ColumnName="outID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="spOT_MedicineDispensing" FunctionName="MediconModel.Store.spOT_MedicineDispensing">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.spOT_MedicineDispensing_Result">
@@ -4031,6 +3564,9 @@
                 <ScalarProperty Name="productCode" ColumnName="productCode" />
                 <ScalarProperty Name="productDesc" ColumnName="productDesc" />
                 <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+                <ScalarProperty Name="dateTimeRx" ColumnName="dateTimeRx" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
                 <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
                 <ScalarProperty Name="dosage" ColumnName="dosage" />
                 <ScalarProperty Name="perDay" ColumnName="perDay" />
@@ -4039,6 +3575,11 @@
                 <ScalarProperty Name="isRelease" ColumnName="isRelease" />
                 <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
                 <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="personnel_lastName" ColumnName="personnel_lastName" />
+                <ScalarProperty Name="personnel_firstName" ColumnName="personnel_firstName" />
+                <ScalarProperty Name="personnel_midInit" ColumnName="personnel_midInit" />
+                <ScalarProperty Name="personnel_extName" ColumnName="personnel_extName" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

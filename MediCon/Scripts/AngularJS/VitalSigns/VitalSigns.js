@@ -68,6 +68,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
 
     s.selectEmp = function (empData) {
         formatEmpData(empData);
+        getPhysician(empData.qrCode);
         $('#modalPatient').modal('hide');
     }
 
@@ -252,13 +253,27 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
             }
 
             else
+            {
                 formatEmpData(d.data);
-
+                getPhysician(qrCode);
+            }
             s.loader = false;
         })
     }
 
+    function getPhysician(qrCode) {
+        s.physician = '';
+
+        h.get('../VitalSigns/getPhysician?qrCode=' + qrCode).then(function (d) {
+            s.physician = d.data == null ? '' : 'DR. ' + d.data.personnel_firstName + ' ' + (d.data.personnel_midInit == null ? '' : d.data.personnel_midInit + ' ') +
+                          d.data.personnel_lastName + ' ' + (d.data.personnel_extName == null ? '' : d.data.personnel_extName + ' ') +
+                          (d.data.title == null ? '' : d.data.title);
+        })
+    }
+
     s.btnProceed = function (qrData) {
+        console.log(s.isVSexist);
+
         if (s.qrData.qrCode == null || s.qrData.qrCode == undefined || s.qrData.qrCode == '') {
             swal({
                 title: "ERROR",

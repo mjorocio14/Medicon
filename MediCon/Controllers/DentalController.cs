@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Sockets;
 using MediCon.ModelTemp;
 using System.Data.Entity;
+using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
@@ -40,7 +41,7 @@ namespace MediCon.Controllers
         {
             try
             {
-                var personnel = db.Personnels.Where(a => a.serviceID == "SERVICE002" && a.userTypeID == "6").OrderByDescending(d => d.personnel_lastName).ThenBy(e => e.personnel_firstName).ToList();
+                var personnel = db.Personnels.Where(a => a.serviceID == "SERVICE002" && a.userTypeID == "3").OrderByDescending(d => d.personnel_lastName).ThenBy(e => e.personnel_firstName).ToList();
                 return Json(personnel, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -214,6 +215,115 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
+        public ActionResult updatePrescription(string consultID, List<OutgoingItem> newListRx)
+        {
+            try
+            {
+                var medRx = db.MedicalPrescriptions.SingleOrDefault(a => a.consultID == consultID);
+                var existingRx = medRx == null ? null : db.OutgoingItems.Where(a => a.rxID == medRx.rxID).ToArray();
+
+                // If the new list of RX are empty, remove existing/old MedicalPrescription and OutgoingItems
+                if (newListRx == null)
+                {
+                    db.MedicalPrescriptions.Remove(medRx);
+                    db.OutgoingItems.RemoveRange(existingRx);
+                }
+
+                else
+                {
+                    var rxID = new IDgenerator(consultID);
+
+                    //........  UPDATE MEDICAL PRESCRIPTION
+                    if (medRx != null)
+                    {
+                        medRx.personnelID = Session["userTypeID"].ToString() == "1" ? medRx.personnelID : Session["personnelID"].ToString();
+                        medRx.dateTimeRx = DateTime.Now;
+                        db.Entry(medRx).State = EntityState.Modified;
+                    }
+
+                    else
+                    {
+                        MedicalPrescription mp = new MedicalPrescription();
+                        mp.rxID = rxID.generateID.Substring(0, 15);
+                        mp.serviceID = "SERVICE002";
+                        mp.consultID = consultID;
+                        mp.referralID = null;
+                        mp.personnelID = Session["personnelID"].ToString();
+                        mp.dateTimeRx = DateTime.Now;
+                        db.MedicalPrescriptions.Add(mp);
+                    }
+                    //........  /UPDATE MEDICAL PRESCRIPTION
+
+                    //........  UPDATE OUTGOING
+                    if (existingRx != null && existingRx.Length > 0)
+                    {
+                        foreach (var existRec in existingRx)
+                        {
+                            var existCounter = new OutgoingItem();
+
+                            // Check if old medicine exist in the new medicine rx list
+                            if (newListRx != null)
+                                existCounter = Array.Find(newListRx.ToArray(), element => element.productCode == existRec.productCode);
+
+                            // If old medicine does not exist anymore in the new medicine rx list
+                            // then remove this medicine and its related data
+                            if (existCounter == null)
+                                db.OutgoingItems.Remove(existRec);
+
+                            else
+                            {
+                                // only update the record that is not yet released
+                                if (existCounter.isRelease == false || existCounter.isRelease == null)
+                                {
+                                    existRec.qtyRx = existCounter.qtyRx;
+                                    existRec.dosage = existCounter.dosage;
+                                    existRec.perDay = existCounter.perDay;
+                                    existRec.noDay = existCounter.noDay;
+                                    db.Entry(existRec).State = EntityState.Modified;
+                                }
+                            }
+                        }
+                    }
+
+                    if (newListRx != null)
+                    {
+                        foreach (var newRx in newListRx)
+                        {
+                            bool isExistNewRx = false;
+
+                            // Check if NEW medicine rx exist in the OLD medicine rx list
+                            if (existingRx != null)
+                                isExistNewRx = Array.Exists(existingRx, element => element.productCode == newRx.productCode);
+
+                            // If new medicine rx does not exist in the old medicine rx list
+                            // then Add this new medicine rx
+                            if (!isExistNewRx)
+                            {
+                                var outID = new IDgenerator(medRx == null ? rxID.generateID.Substring(0, 15) : medRx.rxID);
+                                newRx.outID = outID.generateID.Substring(0, 15);
+                                newRx.rxID = medRx == null ? rxID.generateID.Substring(0, 15) : medRx.rxID;
+                                db.OutgoingItems.Add(newRx);
+                            }
+                        }
+                    }
+                    //........  /UPDATE OUTGOING
+                }
+
+                var affectedRow = db.SaveChanges();
+
+                if (affectedRow == 0)
+                    return Json(new { status = "error", msg = "Medical Prescription failed to update!" }, JsonRequestBehavior.AllowGet);
+
+                return Json(new { status = "success", msg = "Medical Prescription is successfully updated!" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving the prescription.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
+            }
+
+        }
+
+        [HttpPost]
         public ActionResult savePrescription_Dental(string consultID, List<listPrescription> listRx)
         {
             try
@@ -262,9 +372,11 @@ namespace MediCon.Controllers
         {
             try
             {
+                var consultID = db.Consultations.SingleOrDefault(a => a.vSignID == vitalSignID).consultID;
+
                 var diagList = db.Consultations.Join(db.ResultDiagnosis, con => con.consultID, res => res.consultID, (con, res) => new { con, res })
                                            .Join(db.Diagnosis, conres => conres.res.diagnoseID, diag => diag.diagnoseID, (conres, diag) => new { conres, diag })
-                                           .Join(db.Personnels, p => p.conres.con.personnelID, pp => pp.personnelID, (p, pp) => new { p, pp })
+                                           .Join(db.Personnels, p => p.conres.con.dentistID, pp => pp.personnelID, (p, pp) => new { p, pp })
                                            .Where(w => w.p.conres.con.vSignID == vitalSignID && w.p.conres.con.serviceID == "SERVICE002")
                                            .Select(s => new
                                            {
@@ -283,7 +395,7 @@ namespace MediCon.Controllers
                                                s.p.diag.diagnoseName,
                                            }).ToList();
 
-                return Json(diagList, JsonRequestBehavior.AllowGet);
+                return Json(new { consultID = consultID, diagList = diagList }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -406,6 +518,40 @@ namespace MediCon.Controllers
                                                                                  item.pu.unitDesc
                                                                              }).ToList()
                                                     }).ToList();
+                return Json(rxList, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while saving your data.", ex = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult getRxList(string consultID)
+        {
+            try
+            {
+                var rxList = db.MedicalPrescriptions.Join(db.OutgoingItems, mp => mp.rxID, oi => oi.rxID, (mp, oi) => new { mp, oi })
+                                                .Join(db.ProductLists, r1 => r1.oi.productCode, pl => pl.productCode, (r1, pl) => new { r1, pl })
+                                                .Join(db.Measurements, r2 => r2.pl.measurementID, m => m.measurementID, (r2, m) => new { r2, m })
+                                                .Join(db.ProductUnits, r3 => r3.r2.pl.unitID, pu => pu.unitID, (r3, pu) => new { r3, pu })
+                                                .Where(a => a.r3.r2.r1.mp.consultID == consultID)
+                                                .Select(b => new
+                                                {
+                                                    b.pu.unitID,
+                                                    b.pu.unitDesc,
+                                                    b.r3.m.measurementID,
+                                                    b.r3.m.measurementDesc,
+                                                    b.r3.r2.pl.productCode,
+                                                    b.r3.r2.pl.productDesc,
+                                                    b.r3.r2.r1.oi.dosage,
+                                                    b.r3.r2.r1.oi.noDay,
+                                                    b.r3.r2.r1.oi.outID,
+                                                    b.r3.r2.r1.oi.perDay,
+                                                    b.r3.r2.r1.oi.qtyRx,
+                                                    b.r3.r2.r1.oi.rxID
+                                                }).ToList();
+
                 return Json(rxList, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)

@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using MediCon.ModelTemp;
 using MediCon.Classes;
+using System.IO;
 
 namespace MediCon.Controllers
 {
@@ -73,12 +74,8 @@ namespace MediCon.Controllers
                                                        b.res3.res2.res1.le.xrayDesc,
                                                        b.res3.res2.res1.le.ecgDesc,
                                                        b.res3.res2.res1.le.ultrasoundDesc,
-                                                       b.res3.res2.res1.le.pathologist,
-                                                       b.res3.res2.res1.le.medtech,
                                                        labPersonID = b.res3.res2.res1.le.personnelID,
                                                        dateTested = b.res3.res2.res1.le.dateTimeLog,
-                                                       labPathologist = dbMed.Personnels.FirstOrDefault(c => c.personnelID == b.res3.res2.res1.le.pathologist).personnelID,
-                                                       labMedtech = dbMed.Personnels.FirstOrDefault(c => c.personnelID == b.res3.res2.res1.le.medtech).personnelID,
                                                        b.res3.res2.r.referralID,
                                                        b.res3.res2.r.MRDiagnosisID,
                                                        ConsultServiceName = dbMed.Services.FirstOrDefault(aa => aa.serviceID == b.res3.c.serviceID).serviceName,
@@ -88,13 +85,6 @@ namespace MediCon.Controllers
                                                        consultPersonID = b.res3.c.personnelID,
                                                        consultDT = b.res3.c.dateTimeLog,
                                                        consultPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.c.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
-                                                       bloodChemResult = dbMed.BloodChems.Where(dd => dd.labID == b.res3.res2.res1.le.labID).Select(ee => new
-                                                       {
-                                                           ee.result,
-                                                           ee.bloodChemID,
-                                                           ee.LabTestGroupID,
-                                                           bloodChemDateEncoded = ee.dateTimeLog
-                                                       }).OrderBy(xx => xx.LabTestGroupID)
                                                    }).ToList();
 
                 return Json(labHist, JsonRequestBehavior.AllowGet);
@@ -168,7 +158,8 @@ namespace MediCon.Controllers
                                                 b.r6.r5.r4.pl.measurementID,
                                                 b.r6.r5.r4.pl.unitID,
                                                 b.r6.r5.pu.unitDesc,
-                                                b.r6.m.measurementDesc
+                                                b.r6.m.measurementDesc,
+                                                b.r6.r5.r4.r3.oi.note
                                              })
                                              .OrderByDescending(x => x.dateTimeRx).GroupBy(c => c.rxID).ToList();
 
@@ -213,7 +204,8 @@ namespace MediCon.Controllers
                                                  b.r6.r5.r4.pl.measurementID,
                                                  b.r6.r5.r4.pl.unitID,
                                                  b.r6.r5.pu.unitDesc,
-                                                 b.r6.m.measurementDesc
+                                                 b.r6.m.measurementDesc,
+                                                 b.r6.r5.r4.r3.oi.note
                                              }).OrderByDescending(x => x.dateTimeRx).GroupBy(c => c.rxID).ToList();
 
                 return Json(new { diagnosis, rxHist, referralRx }, JsonRequestBehavior.AllowGet);
@@ -240,7 +232,7 @@ namespace MediCon.Controllers
         {
             try
             {
-                if(hospitalID == null && labSchedule == null)
+                if(hospitalID == "HPL004" || (hospitalID == null && labSchedule == null))
                 {
                     var result = saveProcess(detail, checkedDiagnosis, referral, consultation, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
 
@@ -263,43 +255,6 @@ namespace MediCon.Controllers
                             return Json(new { status = "error", msg = "Diagnosis is not saved!" }, JsonRequestBehavior.AllowGet);
 
                         return Json(new { status = "success", msg = "Diagnosis is successfully saved!", consultID = result }, JsonRequestBehavior.AllowGet);
-
-                        //var consultID = new IDgenerator(consultation.vSignID);
-
-                        ////......  SAVE DATA TO CONSULTATION SURGERY TABLE
-                        //consultation.consultID = consultID.generateID.Substring(0, 15);
-                        //consultation.toothNum = null;
-                        //consultation.personnelID = Session["personnelID"].ToString();
-                        //consultation.dateTimeLog = DateTime.Now;
-                        //dbMed.Consultations.Add(consultation);
-                        ////......  /SAVE DATA TO CONSULATION SURGERY TABLE
-
-                        ////......  SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
-                        //if (referral != null)
-                        //{
-                        //    foreach (var item in referral)
-                        //    {
-                        //        CreateReferralRecord(consultation.consultID, item, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
-                        //    }
-                        //}
-                        ////......  /SAVE DATA TO REFERRAL AND LABORATORY EXAM TABLE
-
-                        ////......  SAVE DATA TO RESULT DIAGNOSIS TABLE
-                        //if (checkedDiagnosis != null)
-                        //{
-                        //    foreach (var item in checkedDiagnosis)
-                        //    {
-                        //        CreateResultDiagnosisRecord(consultation.consultID, item, detail.otherDiagnosis);
-                        //    }
-                        //}
-                        ////......  /SAVE DATA TO RESULT DIAGNOSIS TABLE
-
-                        //var affectedRow = dbMed.SaveChanges();
-
-                        //if (affectedRow == 0)
-                        //    return Json(new { status = "error", msg = "Diagnosis is not saved!" }, JsonRequestBehavior.AllowGet);
-
-                        //return Json(new { status = "success", msg = "Diagnosis is successfully saved!", consultID = consultation.consultID }, JsonRequestBehavior.AllowGet);
                     }
 
                     else
@@ -411,7 +366,11 @@ namespace MediCon.Controllers
         {
             var referralID = new IDgenerator(consultID);
             //var schedLab = DateTime.Parse(labSchedule);
-            var calendarID = item == "SERVICE006" ? dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID : null;
+
+            string calendarID = null;
+
+            if(hospitalID != "HPL004")
+                calendarID = item == "SERVICE006" ? dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID : null;
 
             Referral Ref = new Referral();
             Ref.referralID = referralID.generateID.Substring(0, 15);
@@ -606,7 +565,8 @@ namespace MediCon.Controllers
                                                            b.r3.r2.pl.measurementID,
                                                            b.r3.r2.pl.unitID,
                                                            b.r3.m.measurementDesc,
-                                                           b.pu.unitDesc
+                                                           b.pu.unitDesc,
+                                                           b.r3.r2.r1.oi.note
                                                        }).ToList();
 
                 return Json(new { referral = refList, laboratory = lab, rxList = rx }, JsonRequestBehavior.AllowGet);
@@ -665,9 +625,9 @@ namespace MediCon.Controllers
         {
             try
             {
-                if ((hospitalID == null || hospitalID == "") && labSchedule == null)
+                if ((hospitalID == null || hospitalID == "" || hospitalID == "HPL004") && labSchedule == null)
                 {
-                        var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, null, null, xrayDesc, ecgDesc, ultrasoundDesc, null);
+                        var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID != null ? hospitalID : null, null, xrayDesc, ecgDesc, ultrasoundDesc, null);
 
                         if (result == "error")
                             return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
@@ -975,6 +935,21 @@ namespace MediCon.Controllers
                 return Json(new { status = "error", msg = "An error occured while saving the prescription.", exceptionMessage = ex }, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        public ActionResult getScannedLabResult(string qrCode, string fileName)
+        {
+            try
+            {
+                string fileDir = @"D:\DavNor Health & Wellness\LaboratoryResults\" + qrCode + "\\" + fileName;
+                //string fileuploadDir = @"C:\Users\LOG1C\Documents\LOG1C Files\System Development\Project Files\ASP.NET Projects\MediCon Sample Lab\" + qrCode + "\\" + fileName;
+                var path = Path.Combine(fileDir);
+                return base.File(path, "image/png");
+            }
+            catch
+            {
+                return Content("File not found!");
+            }
         }
     }
 }

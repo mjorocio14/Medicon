@@ -12,14 +12,12 @@ namespace MediCon.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class TwoDecho
+    public partial class EyeCare
     {
         public long recNo { get; set; }
-        public string echoID { get; set; }
-        public string labID { get; set; }
-        public string findings { get; set; }
-        public Nullable<System.DateTime> echoDateResult { get; set; }
-        public Nullable<System.DateTime> dateTimeLog { get; set; }
+        public string eyeCareID_rxID { get; set; }
+        public string qrCode { get; set; }
         public string personnelID { get; set; }
+        public Nullable<System.DateTime> dateTimeLog { get; set; }
     }
 }

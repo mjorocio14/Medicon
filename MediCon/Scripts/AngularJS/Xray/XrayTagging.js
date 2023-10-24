@@ -37,6 +37,48 @@
         s.mainSearch(content);
     });
 
+    s.searchByName = function () {
+        s.searchResultList = [];
+        s.infoFormData = {};
+        $('#modalPatient').modal('show');
+    }
+
+    s.mainSearchByName = function (data) {
+        s.modal_tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.modal_tableLoader = false;
+        })
+    }
+
+    s.selectEmp = function (empData) {
+        s.qrData = {};
+        s.status = {};
+        s.isAlreadyTagged = false;
+        s.searchQRcode = '';
+        s.mainSearch(empData.qrCode);
+        formatEmpData(empData);
+        $('#modalPatient').modal('hide');
+    }
+
     s.mainSearch = function (qrCode) {
         s.loader = true;
         s.qrData = {};
@@ -62,32 +104,40 @@
                     }
 
                     else {
-                        d.data.qr.birthdate = d.data.qr.birthDate != null ? new Date(moment(d.data.qr.birthDate).format()) : null;
-                        d.data.qr.sex = d.data.qr.sex != null ? (d.data.qr.sex == "MALE" ? 'true' : 'false') : null;
-                        s.qrData = d.data.qr;
-                        s.qrData.age = moment().diff(moment(d.data.qr.birthdate).format('L'), 'years');
-                        s.qrData.fullAddress = (d.data.qr.brgyPermAddress == null ? "" : d.data.qr.brgyPermAddress) + ' '
-                                                + (d.data.qr.cityMunPermAddress == null ? "" : d.data.qr.cityMunPermAddress) + ' '
-                                                + (d.data.qr.provincePermAddress == null ? "" : d.data.qr.provincePermAddress);
+                        formatEmpData(d.data.qr);
 
                         if (d.data.tag.length > 0) {
-                            s.status.isXray = d.data.tag[0].isXray == true ? 'true' : d.data.tag[0].isXray == false ? 'false' : '';
-                            s.status.isNeedScutum = d.data.tag[0].isNeedScutum == true ? 'true' : d.data.tag[0].isNeedScutum == false ? 'false' : '';
-                            s.isAlreadyTagged = true;
-
-                            if (s.isViewingRecord == false) {
-                                swal({
-                                    title: "TAGGED ALREADY",
-                                    text: "Client is already tagged today in x-ray tagging.",
-                                    type: "error"
-                                });
-                            }
+                            formatXrayTagData(d.data);
                         }
                     }
             }
 
             s.loader = false;
         })
+    }
+
+    function formatXrayTagData(data) {
+        s.status.isXray = data.tag[0].isXray == true ? 'true' :data.tag[0].isXray == false ? 'false' : '';
+        s.status.isNeedScutum = data.tag[0].isNeedScutum == true ? 'true' : data.tag[0].isNeedScutum == false ? 'false' : '';
+        s.isAlreadyTagged = true;
+
+        if (s.isViewingRecord == false) {
+            swal({
+                title: "TAGGED ALREADY",
+                text: "Client is already tagged today in x-ray tagging.",
+                type: "error"
+            });
+        }
+    }
+
+    function formatEmpData(data) {
+        data.birthdate = data.birthDate != null ? new Date(moment(data.birthDate).format()) : null;
+        data.sex = data.sex != null ? (data.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = data;
+        s.qrData.age = moment().diff(moment(data.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (data.brgyPermAddress == null ? "" : data.brgyPermAddress) + ' '
+                                + (data.cityMunPermAddress == null ? "" : data.cityMunPermAddress) + ' '
+                                + (data.provincePermAddress == null ? "" : data.provincePermAddress);
     }
 
     s.saveInformation = function (qrCode, status) {

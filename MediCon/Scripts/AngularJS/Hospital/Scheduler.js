@@ -1,7 +1,8 @@
 ﻿app.controller('hospitalSchedulerCtrl', ['$scope', '$http', function (s, h) {
     let events = [];
     getSchedule();
-   
+    s.labTestTaken_loader = false;
+
     let currMonth = new Date().getMonth();
     let currYr = new Date().getFullYear();
     let monthNow = currMonth + 1;
@@ -261,14 +262,42 @@
               s.patientList = [];
 
               h.get('../Hospital/PatientList?calendarID=' + data.id).then(function (d) {
-                  s.patientList = d.data; console.log(d.data);
+                  s.patientList = d.data; 
                   s.tbl_loader = false;
               });
 
               
           }
 
+          s.showTestedLab = function(data) {
+              s.labTestTaken_loader = true;
 
+              h.post('../MedicalConsultation/getLabHistory?qrCode=' + data.qrCode).then(function (d) {
+                  if (d.data.status == 'error') {
+                      swal({
+                          title: "ERROR",
+                          text: d.data.msg,
+                          type: "error"
+                      });
+                  }
 
+                  else {
+                      let result = d.data.filter(function(rec) {
+                          return rec.isTested == 1;
+                      });
+
+                      angular.forEach(result, function (value) {  
+                          value.dateTested = moment(value.dateTested).format('lll');
+                      });
+
+                      s.labHistoryList = result;
+                  }
+
+                  s.labTestTaken_loader = false;
+                  $('#modalLabTestTaken').modal('show');
+              });
+
+              
+          }
     
 }]);

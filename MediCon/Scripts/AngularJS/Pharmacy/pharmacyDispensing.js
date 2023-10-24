@@ -19,7 +19,57 @@
     s.filterResult = function (date) {
         getDispensedList(date);
     }
+
+    s.searchByName = function () {
+        s.searchResultList = [];
+        s.infoFormData = {};
+        $('#modalPatient').modal('show');
+    }
+
+    s.mainSearchByName = function (data) {
+        s.modal_tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.modal_tableLoader = false;
+        })
+    }
+
+    s.selectEmp = function (empData) {
+        formatEmpData(empData);
+        $('#modalPatient').modal('hide');
+    }
    
+    function formatEmpData(data) {
+        data.birthdate = data.birthDate != null ? new Date(moment(data.birthDate).format()) : null;
+        data.sex = data.sex != null ? (data.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = data;
+        s.qrData.age = moment().diff(moment(data.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (data.brgyPermAddress == null ? "" : data.brgyPermAddress) + ' '
+                                + (data.cityMunPermAddress == null ? "" : data.cityMunPermAddress) + ' '
+                                + (data.provincePermAddress == null ? "" : data.provincePermAddress);
+
+        s.isEditting = false;
+        getPrescription(data.qrCode);
+    }
+
     function getDispensedList(dateFilter) {
         vsIndexNo = 1;
 
@@ -159,19 +209,8 @@
                 });
             }
 
-            else {
-                d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
-                d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
-                s.qrData = d.data;
-                s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
-                s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
-                                        + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
-                                        + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
-
-
-                    s.isEditting = false;
-                   getPrescription(info);
-            }
+            else 
+                formatEmpData(d.data);
 
             s.loader = false;
         })
@@ -184,11 +223,13 @@
         h.post('../Pharmacy/getPrescription?qrCode=' + qrCode).then(function (d) {
             s.prescripted = {};
             s.prescripted = d.data;
-
+           
             angular.forEach(s.prescripted, function (value) {
                 angular.forEach(value, function (meds) {
+                    meds.dateTimeRx = moment(meds.dateTimeRx).format('lll');
                     meds.isRelease != true ? s.checkboxCounter++ : '';
                     meds.checkboxVal = angular.copy(meds.isRelease);
+                    meds.physician = 'DR. ' + meds.personnel_firstName + ' ' + (meds.personnel_midInit == null ? '' : meds.personnel_midInit + ' ') + meds.personnel_lastName + (meds.personnel_extName == null ? '' : ' ' + meds.personnel_extName);
                 });
                 value.sort(function(a, b) {
                     return b.isRelease - a.isRelease;

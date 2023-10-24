@@ -84,7 +84,7 @@
                 <i class="fa" ng-class="showMedicalRecord == false ? 'fa-stethoscope':'fa-list'"></i> {{showMedicalRecord == false ? 'Diagnose':'Medical Records'}}
             </button>
             <button class="btn" ng-class="showMedicalRecord == false ? 'btn-success':'btn-primary'" ng-show="!showClientList && (!showMedicalRecord || showRx)" ng-click="returnToHome()" ng-disabled="qrData.qrCode == undefined ? true : false">
-                <i class="fa" ng-class="showMedicalRecord == false ? 'fa-medkit':'fa-list'"></i> {{showMedicalRecord == false ? 'Prescription':'Medical Records'}} 
+                <i class="fa" ng-class="showMedicalRecord == false ? 'fa-medkit':'fa-list'"></i> {{showMedicalRecord == false ? 'Prescription':'Medical Records'}}
             </button>
             <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-show="showClientListBTN && !showMedicalRecord" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>
         </div>
@@ -93,294 +93,296 @@
 
     <div class="wrapper wrapper-content ">
         <div ng-show="!showClientList">
-            <div class="row">
-
-                <!-- QR CODE INFO FORM -->
-                <div class="col-sm-12">
-                    <div class="ibox float-e-margins">
-                        <div class="ibox-title text-center">
-                            <label class="text-center">QR CODE INFORMATION</label>
-                        </div>
-                        <div class="ibox-content">
-                            <div class="row">
-                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" ng-show="!showMedicalRecord">
-                                    <div class="profile_img">
-                                        <!-- Current avatar -->
-                                        <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
+            <!-- QR CODE INFO FORM -->
+            <div class="animated fadeInRight ecommerce">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title text-center">
+                        <label class="text-center">QR CODE INFORMATION</label>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12" ng-show="!showMedicalRecord">
+                                <div class="profile_img">
+                                    <!-- Current avatar -->
+                                    <video id="preview" class="img-responsive avatar-view" style="width: 400px; height: 100%;" />
+                                </div>
+                                <form name="qrSearchForm">
+                                    <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                        <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                        </span>
                                     </div>
-                                    <form name="qrSearchForm">
-                                        <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
-                                            <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
-                                            </span>
+                                </form>
+                                <br />
+                                <button class="btn btn-warning full-width" ng-click="searchByName()"><i class="fa fa-search"></i> Search by name</button>
+                                <br />
+                            </div>
+                            <div ng-class="showMedicalRecord ? 'col-lg-12 col-md-12 col-sm-12 col-xs-12' : 'col-lg-9 col-md-9 col-sm-12 col-xs-12'">
+                                <div class="text-center" ng-show="loader" style="margin-top: 10%;">
+                                    <div class="sk-spinner sk-spinner-double-bounce">
+                                        <div class="sk-double-bounce1"></div>
+                                        <div class="sk-double-bounce2"></div>
+                                    </div>
+                                    <text><i>Please wait, we are getting your data...</i></text>
+                                </div>
+                                <div ng-show="!loader">
+                                    <form id="QR_FORM" name="QR_FORM">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_lastName">Last name</label>
+                                                    <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_firstName">First name</label>
+                                                    <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_mi">Middle name</label>
+                                                    <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_suffix">Suffix</label>
+                                                    <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                    <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="control-label">Sex</label>
+                                                <div class="form-group text-center">
+                                                    <div class="radio radio-primary radio-inline">
+                                                        <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                        <label for="radio_sex_male"> Male </label>
+                                                    </div>
+                                                    <div class="radio radio-danger radio-inline">
+                                                        <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                        <label for="radio_sex_female"> Female </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                    <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_address">Address</label>
+                                                    <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </form>
-                                    <br />
-                                    <button class="btn btn-warning full-width" ng-click="searchByName()"><i class="fa fa-search"></i> Search by name</button>
-                                    <br />
-                                </div>
-                                <div ng-class="showMedicalRecord ? 'col-lg-12 col-md-12' : 'col-lg-9 col-md-9'">
-                                    <div class="text-center" ng-show="loader" style="margin-top: 10%;">
-                                        <div class="sk-spinner sk-spinner-double-bounce">
-                                            <div class="sk-double-bounce1"></div>
-                                            <div class="sk-double-bounce2"></div>
-                                        </div>
-                                        <text><i>Please wait, we are getting your data...</i></text>
-                                    </div>
-                                    <div ng-show="!loader">
-                                        <form id="QR_FORM" name="QR_FORM">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_lastName">Last name</label>
-                                                        <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.lastName" placeholder="Last name" class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_firstName">First name</label>
-                                                        <input type="text" id="qr_firstName" name="qr_firstName" required ng-model="qrData.firstName" placeholder="First name" class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_mi">Middle name</label>
-                                                        <input type="text" id="qr_mi" name="qr_mi" ng-model="qrData.middleName" placeholder="Middle name" class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-2">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_suffix">Suffix</label>
-                                                        <input type="text" id="qr_suffix" name="qr_suffix" ng-model="qrData.extName" placeholder="Suffix" class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_birthdate">Birthday</label>
-                                                        <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <label class="control-label">Sex</label>
-                                                    <div class="form-group text-center">
-                                                        <div class="radio radio-primary radio-inline">
-                                                            <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
-                                                            <label for="radio_sex_male"> Male </label>
-                                                        </div>
-                                                        <div class="radio radio-danger radio-inline">
-                                                            <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
-                                                            <label for="radio_sex_female"> Female </label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_contactNo">Contact no.</label>
-                                                        <input type="text" id="qr_contactNo" name="qr_contactNo" required ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <div class="form-group">
-                                                        <label class="control-label" for="qr_address">Address</label>
-                                                        <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- /QR CODE INFO FORM -->
+            </div>
+            <!-- /QR CODE INFO FORM -->
+            <!-- MEDICAL RECORDS -->
+            <div class="animated fadeInRight ecommerce" ng-show="!showRx  && !showMedicalRecord">
+                    <div class="tabs-container" style="height: 500px">
 
-                <!-- MEDICAL RECORDS -->
-                <div class="animated fadeInRight ecommerce" ng-show="!showRx  && !showMedicalRecord">
-                    <div class="col-lg-12">
-                        <div class="tabs-container" style="height: 500px">
-
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="#tab-MD"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
-                                <li class=""><a data-toggle="tab" href="#tab-MP"><i class="fa fa-medkit"></i> Prescription</a></li>
-                                <li class=""><a data-toggle="tab" href="#tab-Lab"><i class="fa fa-eyedropper"></i> Laboratory</a></li>
-                            </ul>
-                            <div class="tab-content ">
-                                <div id="tab-MD" class="tab-pane active">
-                                    <div class="panel-body">
-                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center" style="color: #1ab394;">#</th>
-                                                        <th style="color: #1ab394;">Diagnosis Date & Time</th>
-                                                        <th style="color: #1ab394;">Physician</th>
-                                                        <th style="color: #1ab394;">Service</th>
-                                                        <th style="color: #1ab394;">Refer to Health Facility</th>
-                                                        <th style="color: #1ab394;">Remarks</th>
-                                                        <th style="color: #1ab394;">Diagnosis</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="text-center" ng-show="medicalRecord_loader">
-                                                        <td colspan="7">
-                                                            <div class="sk-spinner sk-spinner-double-bounce">
-                                                                <div class="sk-double-bounce1"></div>
-                                                                <div class="sk-double-bounce2"></div>
-                                                            </div>
-                                                            <text><i>Please wait, we are loading your data...</i></text>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="text-center" ng-show="diagnoseHistoryList.length == 0 && medicalRecord_loader == false">
-                                                        <td colspan="7">
-                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                        </td>
-                                                    </tr>
-                                                    <tr ng-repeat="dh in diagnoseHistoryList | orderBy: '-dateTimeLog'">
-                                                        <td class="text-center">{{$index + 1}}</td>
-                                                        <td>{{dh[0].dateTimeLog}}</td>
-                                                        <td>Dr. {{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
-                                                        <td>{{dh[0].serviceName}}</td>
-                                                        <td>{{dh[0].outsideReferral}}</td>
-                                                        <td>{{dh[0].remarks}}</td>
-                                                        <td>
-                                                            <table class="table table-stripped" style="width: 100%;">
-                                                                <tbody>
-                                                                    <tr ng-repeat="diag in dh">
-                                                                        <td>{{diag.diagnoseName}}</td>
-                                                                        <td>{{diag.otherDiagnosis}}</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="tab-MP" class="tab-pane">
-                                    <div class="panel-body">
-                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center" style="color: #1ab394;">#</th>
-                                                        <th style="color: #1ab394;">Physician</th>
-                                                        <th style="color: #1ab394;">Rx Date & Time</th>
-                                                        <th style="color: #1ab394;">Service</th>
-                                                        <th class="text-center" style="color: #1ab394;">Action</th>
-                                                        <th style="color: #1ab394;">Prescription/s</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="text-center" ng-show="medicalRecord_loader">
-                                                        <td colspan="6">
-                                                            <div class="sk-spinner sk-spinner-double-bounce">
-                                                                <div class="sk-double-bounce1"></div>
-                                                                <div class="sk-double-bounce2"></div>
-                                                            </div>
-                                                            <text><i>Please wait, we are loading your data...</i></text>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="text-center" ng-show="rxHistoryList.length == 0 && medicalRecord_loader == false">
-                                                        <td colspan="6">
-                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                        </td>
-                                                    </tr>
-                                                    <tr ng-repeat="rx in rxHistoryList | orderBy: '-dateTimeRx' track by $index">
-                                                        <td class="text-center">{{$index + 1}}</td>
-                                                        <td>Dr. {{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
-                                                        <td>{{rx[0].dateTimeRx}}</td>
-                                                        <td>{{rx[0].serviceName}}</td>
-                                                        <td class="text-center"><button class="btn btn-primary btn-xs" ng-click="printRx(rx[0], rx.length)"> Print <i class="fa fa-print"></i></button></td>
-                                                        <td>
-                                                            <table class="table table-stripped" style="width: 100%;">
-                                                                <thead>
-                                                                    <tr style="font-weight: bold;">
-                                                                        <td>Medicine Name</td>
-                                                                        <td>Dosage</td>
-                                                                        <td># Days</td>
-                                                                        <td>Qty</td>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr ng-repeat="med in rx">
-                                                                        <td>{{med.productDesc}} {{med.measurementDesc}}</td>
-                                                                        <td>{{med.dosage}} {{med.unitDesc}} x {{med.perDay}} a Day</td>
-                                                                        <td>{{med.noDay == 'maintenance' ? 'as Maintenance':med.noDay == 'needed' ? 'as Needed':med.noDay == 'single' ? 'Single Dose':med.noDay + ' Day/s'}}</td>
-                                                                        <td>{{med.qtyRx}} {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' || med.unitDesc == 'Bottle' ? 'Bottle/s':med.unitDesc == 'Cream' ? 'Tube':''}}</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="tab-Lab" class="tab-pane">
-                                    <div class="panel-body">
-                                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                            <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="text-center" style="color: #1ab394;">#</th>
-                                                        <th style="color: #1ab394;">Test</th>
-                                                        <th style="color: #1ab394;" class="text-center">Service</th>
-                                                        <th style="color: #1ab394;" class="text-center">Tested</th>
-                                                        <th style="color: #1ab394;" class="text-center">Date & Time Tested</th>
-                                                        <th style="color: #1ab394;" class="text-center">With Result</th>
-                                                        <th style="color: #1ab394;" class="text-center">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="text-center" ng-show="medHistLoader_modal">
-                                                        <td colspan="7">
-                                                            <div class="sk-spinner sk-spinner-double-bounce">
-                                                                <div class="sk-double-bounce1"></div>
-                                                                <div class="sk-double-bounce2"></div>
-                                                            </div>
-                                                            <text><i>Please wait, we are loading your data...</i></text>
-                                                        </td>
-                                                    </tr>
-                                                    <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
-                                                        <td colspan="7">
-                                                            <label class="text-danger">NO INFORMATION FOUND!</label>
-                                                        </td>
-                                                    </tr>
-                                                    <tr ng-repeat="dh in labHistoryList | orderBy: '-dateTested'">
-                                                        <td class="text-center">{{$index + 1}}</td>
-                                                        <td>{{dh.labTestID == 'L0004' ? dh.labTestName + ' (' + dh.ecgDesc + ')' :
-                                                            dh.labTestID == 'L0006' ? dh.labTestName + ' (' + dh.xrayDesc + ')' : 
-                                                            dh.labTestID == 'L0023' ? dh.labTestName + ' (' + dh.ultrasoundDesc + ')' : dh.labTestName}}</td>
-                                                        <td class="text-center">{{dh.MRDiagnosisID == null ? dh.ConsultServiceName : dh.refServiceName}}</td>
-                                                        <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
-                                                        <td class="text-center">{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
-                                                        <td class="text-center">{{dh.isEncoded == true ? 'Yes':'No'}}</td>
-                                                        <td class="text-center"><button class="btn btn-primary btn-sm" ng-disabled="!dh.isEncoded" ng-click="viewLabResult(dh)"> Show </button></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-MD"><i class="fa fa-stethoscope"></i> Diagnosis </a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-MP"><i class="fa fa-medkit"></i> Prescription</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-Lab"><i class="fa fa-eyedropper"></i> Laboratory</a></li>
+                        </ul>
+                        <div class="tab-content ">
+                            <div id="tab-MD" class="tab-pane active">
+                                <div class="panel-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="color: #1ab394;">#</th>
+                                                    <th style="color: #1ab394;">Diagnosis Date & Time</th>
+                                                    <th style="color: #1ab394;">Physician</th>
+                                                    <th style="color: #1ab394;">Service</th>
+                                                    <th style="color: #1ab394;">Refer to Health Facility</th>
+                                                    <th style="color: #1ab394;">Remarks</th>
+                                                    <th style="color: #1ab394;">Diagnosis</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="medicalRecord_loader">
+                                                    <td colspan="7">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="diagnoseHistoryList.length == 0 && medicalRecord_loader == false">
+                                                    <td colspan="7">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="dh in diagnoseHistoryList | orderBy: '-dateTimeLog'">
+                                                    <td class="text-center">{{$index + 1}}</td>
+                                                    <td>{{dh[0].dateTimeLog}}</td>
+                                                    <td>Dr. {{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
+                                                    <td>{{dh[0].serviceName}}</td>
+                                                    <td>{{dh[0].outsideReferral}}</td>
+                                                    <td>{{dh[0].remarks}}</td>
+                                                    <td>
+                                                        <table class="table table-stripped" style="width: 100%;">
+                                                            <tbody>
+                                                                <tr ng-repeat="diag in dh">
+                                                                    <td>{{diag.diagnoseName}}</td>
+                                                                    <td>{{diag.otherDiagnosis}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-
-
+                            <div id="tab-MP" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="color: #1ab394;">#</th>
+                                                    <th style="color: #1ab394;">Physician</th>
+                                                    <th style="color: #1ab394;">Rx Date & Time</th>
+                                                    <th style="color: #1ab394;">Service</th>
+                                                    <th class="text-center" style="color: #1ab394;">Action</th>
+                                                    <th style="color: #1ab394;">Prescription/s</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="medicalRecord_loader">
+                                                    <td colspan="6">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="rxHistoryList.length == 0 && medicalRecord_loader == false">
+                                                    <td colspan="6">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="rx in rxHistoryList | orderBy: '-dateTimeRx' track by $index">
+                                                    <td class="text-center">{{$index + 1}}</td>
+                                                    <td>Dr. {{rx[0].physician[0].personnel_firstName}} {{rx[0].physician[0].personnel_midInit}} {{rx[0].physician[0].personnel_lastName}} {{rx[0].physician[0].personnel_extName}}</td>
+                                                    <td>{{rx[0].dateTimeRx}}</td>
+                                                    <td>{{rx[0].serviceName}}</td>
+                                                    <td class="text-center"><button class="btn btn-primary btn-xs" ng-click="printRx(rx[0], rx.length)"> Print <i class="fa fa-print"></i></button></td>
+                                                    <td>
+                                                        <table class="table table-stripped" style="width: 100%;">
+                                                            <thead>
+                                                                <tr style="font-weight: bold;">
+                                                                    <td>Medicine Name</td>
+                                                                    <td>Frequency</td>
+                                                                    <td># Days</td>
+                                                                    <td>Qty</td>
+                                                                    <td>Note/Instruction</td>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr ng-repeat="med in rx">
+                                                                    <td>{{med.productDesc}} {{med.measurementDesc}}</td>
+                                                                    <td>{{med.dosage}} {{med.unitDesc}} x {{med.perDay}} a Day</td>
+                                                                    <td>{{med.noDay == 'maintenance' ? 'as Maintenance':med.noDay == 'needed' ? 'as Needed':med.noDay == 'single' ? 'Single Dose':med.noDay + ' Day/s'}}</td>
+                                                                    <td>{{med.qtyRx}} {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' || med.unitDesc == 'Bottle' ? 'Bottle/s':med.unitDesc == 'Cream' ? 'Tube':''}}</td>
+                                                                    <td>{{med.note}}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab-Lab" class="tab-pane">
+                                <div class="panel-body">
+                                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                        <table class="table table-stripped table-hover table-bordered" style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-center" style="color: #1ab394;">#</th>
+                                                    <th style="color: #1ab394;">Test</th>
+                                                    <th style="color: #1ab394;" class="text-center">Service</th>
+                                                    <th style="color: #1ab394;" class="text-center">Tested</th>
+                                                    <th style="color: #1ab394;" class="text-center">Date & Time Tested</th>
+                                                    <th style="color: #1ab394;" class="text-center">With Result</th>
+                                                    <th style="color: #1ab394;" class="text-center">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="text-center" ng-show="medHistLoader_modal">
+                                                    <td colspan="7">
+                                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                                            <div class="sk-double-bounce1"></div>
+                                                            <div class="sk-double-bounce2"></div>
+                                                        </div>
+                                                        <text><i>Please wait, we are loading your data...</i></text>
+                                                    </td>
+                                                </tr>
+                                                <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
+                                                    <td colspan="7">
+                                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-repeat="dh in labHistoryList | orderBy: '-dateTested'">
+                                                    <td class="text-center">{{$index + 1}}</td>
+                                                    <td>
+                                                        {{dh.labTestID == 'L0004' ? dh.labTestName + ' (' + dh.ecgDesc + ')' :
+                                                        dh.labTestID == 'L0006' ? dh.labTestName + ' (' + dh.xrayDesc + ')' :
+                                                        dh.labTestID == 'L0023' ? dh.labTestName + ' (' + dh.ultrasoundDesc + ')' : dh.labTestName}}
+                                                    </td>
+                                                    <td class="text-center">{{dh.MRDiagnosisID == null ? dh.ConsultServiceName : dh.refServiceName}}</td>
+                                                    <td class="text-center">{{dh.isTested == true ? 'Yes':'No'}}</td>
+                                                    <td class="text-center">{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
+                                                    <td class="text-center">
+                                                        <p><span class="badge" ng-class="dh.isEncoded == true ? 'badge-info' : 'badge-danger'">{{dh.isEncoded == true ? 'Yes' : 'No'}}</span></p>
+                                                    </td>
+                                                    <td class="text-center"><button class="btn btn-primary btn-sm" ng-disabled="!dh.isEncoded" ng-click="viewLabResult(dh)"> Show </button></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <!-- /MEDICAL RECORDS -->
 
-                <div ng-show="showMedicalRecord && !showRx">
-                    <div class="animated fadeInRight ecommerce">
+
+                    </div>
+            </div>
+            <!-- /MEDICAL RECORDS -->
+
+            <div ng-show="showMedicalRecord && !showRx">
+                <div class="animated fadeInRight ecommerce">
+                    <div class="row">
                         <!-- VITAL SIGNS HISTORY -->
                         <div class="col-sm-4">
                             <div class="panel panel-success" style="height: 100%;">
@@ -447,7 +449,6 @@
                             </div>
                         </div>
                         <!-- /VITAL SIGNS HISTORY -->
-
                         <!--  DIAGNOSIS  -->
                         <div class="col-sm-8">
                             <div class="panel panel-info">
@@ -596,26 +597,26 @@
                                                 <label class="lazur-bg text-center" style="width: 100%;"> REFERRAL </label>
                                             </div>
                                             @*<div class="col-lg-12">
-                                                <div class="col-lg-4 col-md-4">
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="SERVICE003" value="SERVICE003" ng-model="referral.SERVICE003">
-                                                        <label for="SERVICE003"> Diet Counseling </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-md-4">
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="SERVICE004" value="SERVICE004" ng-model="referral.SERVICE004">
-                                                        <label for="SERVICE004"> Male Reproductive Health </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-4 col-md-4">
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="SERVICE005" value="SERVICE005" ng-model="referral.SERVICE005">
-                                                        <label for="SERVICE005"> Papsmear & Breast Exam </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br />*@
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="SERVICE003" value="SERVICE003" ng-model="referral.SERVICE003">
+                                        <label for="SERVICE003"> Diet Counseling </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="SERVICE004" value="SERVICE004" ng-model="referral.SERVICE004">
+                                        <label for="SERVICE004"> Male Reproductive Health </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="checkbox checkbox-danger">
+                                        <input type="checkbox" id="SERVICE005" value="SERVICE005" ng-model="referral.SERVICE005">
+                                        <label for="SERVICE005"> Papsmear & Breast Exam </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <br />*@
                                             <div class="col-lg-12">
                                                 <div class="col-lg-4 col-md-4">
                                                     <div class="checkbox checkbox-danger">
@@ -630,7 +631,6 @@
                                                 </div>
                                             </div>
                                             <!--  /REFERRAL CHECKBOX  -->
-
                                             <!--  LABORATORY CHECKBOX  -->
                                             <div class="col-lg-12">
                                                 <label class="lazur-bg text-center" style="width: 100%;"> LABORATORY </label>
@@ -742,7 +742,7 @@
                                                     <hr style="margin: 7px 0px 15px 0px;" />
                                                 </div>
                                                 <div ng-show="checkLabList > 0">
-                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                    <div ng-class="labSchedInfo.hospitalID == 'HPL004' ? 'col-lg-12 col-md-12 col-sm-12 col-xs-12' : 'col-lg-8 col-md-8 col-sm-12 col-xs-12'">
                                                         <div class="form-group">
                                                             <label class="control-label" for="hospitalID">Hospital</label>
                                                             <select name="hospitalID" id="hospitalID" style="width: 100%; text-transform : uppercase" ng-model="labSchedInfo.hospitalID" ng-change="selectHospital(labSchedInfo.hospitalID, false)" class="form-control" ng-required="checkLabList > 0">
@@ -751,7 +751,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                    <div ng-show="labSchedInfo.hospitalID != 'HPL004'" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                                         <div class="form-group">
                                                             <label class="control-label" for="labSchedule">Lab Schedule</label>
                                                             <div class="datePicker flatpickr">
@@ -784,9 +784,11 @@
                         <!--  /DIAGNOSIS  -->
                     </div>
                 </div>
+            </div>
 
-                <!-- MEDICAL PRESCRIPTION -->
-                <div class="animated fadeInRight ecommerce" ng-show="showRx">
+            <!-- MEDICAL PRESCRIPTION -->
+            <div class="animated fadeInRight ecommerce" ng-show="showRx">
+                <div class="row">
                     <div class="col-lg-4 col-md-4">
                         <div class="panel panel-primary">
                             <div class="panel-heading text-center">
@@ -806,7 +808,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label" for="dosage">Dosage</label>
+                                        <label class="control-label" for="dosage">Frequency</label>
                                         <div class="form-inline">
                                             <div class="input-group m-b" style="width: 100%">
                                                 <input type="number" min="0.01" step="0.01" id="dosage" name="dosage" required ng-model="meds.dosage" placeholder="e.g. 10" class="form-control text-center" />
@@ -841,6 +843,10 @@
                                             <span class="input-group-addon"><b>{{unit.unitDesc == 'Suspension' || unit.unitDesc == 'Syrup' || unit.unitDesc == 'Drops' || unit.unitDesc == 'Bottle' ? 'Bottle/s':unit.unitDesc == 'Tablet' || unit.unitDesc == 'Softgel' ? 'Tablet/s':unit.unitDesc == 'Capsule' ? 'Capsule/s':unit.unitDesc == 'Nebule'? unit.unitDesc:unit.unitDesc == 'Cream' ? 'Apply':unit.unitDesc == 'Respule' ? unit.unitDesc:unit.unitDesc == 'Sachet' ? unit.unitDesc:''}}</b></span>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="control-label" for="note">Note/Instruction</label>
+                                        <input type="text" id="note" name="note" ng-model="meds.note" class="form-control text-center" />
+                                    </div>
                                     <button class="btn btn-success pull-right " type="submit" ng-disabled="prescription_form.$invalid" ng-click="addMedicine(meds)"><i class="fa fa-plus"></i> Add to Rx </button>
                                 </form>
                             </div>
@@ -860,9 +866,10 @@
 
                                                 <th class="">#</th>
                                                 <th>Name</th>
-                                                <th>Dosage</th>
+                                                <th>Frequency</th>
                                                 <th># Days</th>
                                                 <th>Qty</th>
+                                                <th>Note/Instruction</th>
                                                 <th class="text-right">Action</th>
 
                                             </tr>
@@ -878,11 +885,12 @@
                                                 </td>
                                                 <td>{{item.noDay == 'maintenance' ? 'as Maintenance':item.noDay == 'needed' ? 'as Needed':item.noDay == 'single' ? 'Single Dose':item.noDay + ' Day/s'}}</td>
                                                 <td><b>{{item.qtyRx}} {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' || item.unitDesc == 'Bottle' ? 'Bottle/s':item.unitDesc == 'Cream' ? 'Tube':''}}</b></td>
-                                                <td class="text-right">
+                                                <td>{{item.note}}</td>
+                                                 <td class="text-right">
                                                     <div class="btn-group">
                                                         <button class="btn-danger btn btn-xs" ng-click="removeMedicine($index)"> Remove <i class="fa fa-trash"></i></button>
                                                     </div>
-                                                </td>
+                                                </td>   
                                             </tr>
                                         </tbody>
                                     </table>
@@ -892,20 +900,19 @@
                         </div>
                     </div>
                 </div>
-                <!-- MEDICAL PRESCRIPTION -->
-
             </div>
+            <!-- MEDICAL PRESCRIPTION -->
         </div>
 
         <!-- PATIENT LIST FOR CURRENT DAY -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
-            <div class="col-lg-12">
+            <div class="row">
                 <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" style="text-align:center !important">Consultation Date:</label>
-                        <div class="col-sm-2">
-                            <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
-                        </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <label style="margin-top: 5px;">Consultation Date:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
                     </div>
                 </form>
             </div>
@@ -1343,19 +1350,45 @@
                                         </div>
                                         <div class="col-lg-12">
                                             @*<div ng-show="resultDiag.setLabSched.isNeededLab">*@
+
+                                            @*<div ng-class="labSchedInfo.hospitalID == 'HPL004' ? 'col-lg-12 col-md-12 col-sm-12 col-xs-12' : 'col-lg-8 col-md-8 col-sm-12 col-xs-12'">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="hospitalID">Hospital</label>
+                                                    <select name="hospitalID" id="hospitalID" style="width: 100%; text-transform : uppercase" ng-model="labSchedInfo.hospitalID" ng-change="selectHospital(labSchedInfo.hospitalID, false)" class="form-control" ng-required="checkLabList > 0">
+                                                        <option value="">- Select Hospital -</option>
+                                                        <option ng-repeat="item in hospitalList" value="{{item.hospitalID}}">{{item.hospitalName}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div ng-show="labSchedInfo.hospitalID != 'HPL004'" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="labSchedule">Lab Schedule</label>
+                                                    <div class="datePicker flatpickr">
+                                                        <div class="input-group">
+                                                            <input style="background-color: white !important;" type="text" class="form-control" placeholder="Select Date.." ng-model="labSchedInfo.labSchedule" data-input> <span class="input-group-btn">
+                                                                <button id="btnClearSched" type="button" class="btn btn-default" title="clear" data-clear>
+                                                                    <i class="fa fa-close text-danger"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+
+
                                             <div>
-                                                <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                <div ng-class="resultDiag.setLabSched.hospitalID == 'HPL004' ? 'col-lg-12 col-md-12 col-sm-12 col-xs-12' : 'col-lg-8 col-md-8 col-sm-12 col-xs-12'">
                                                     <div class="form-group">
                                                         <label class="control-label" for="hospitalID">Hospital</label>
                                                         <select name="hospitalID" id="hospitalID" style="width: 100%; text-transform : uppercase" ng-model="resultDiag.setLabSched.hospitalID" ng-change="selectHospital(resultDiag.setLabSched.hospitalID, true)" class="form-control"
-                                                                 @*ng-required="resultDiag.setLabSched.isNeededLab"*@ 
+                                                                @*ng-required="resultDiag.setLabSched.isNeededLab"*@
                                                                 ng-disabled="!isEditting">
                                                             <option value="">- Select Hospital -</option>
                                                             <option ng-repeat="item in hospitalList" value="{{item.hospitalID}}">{{item.hospitalName}}</option>
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                                <div ng-show="resultDiag.setLabSched.hospitalID != 'HPL004'" class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                                     <div class="form-group">
                                                         <label class="control-label" for="labSchedule">Lab Schedule</label>
                                                         <div class="datePicker_modal flatpickr">
@@ -1393,9 +1426,10 @@
                                         <thead class="blue-bg">
                                             <tr>
                                                 <td>MEDICINE NAME</td>
-                                                <td>DOSAGE</td>
+                                                <td>FREQUENCY</td>
                                                 <td># DAYS</td>
                                                 <td>QTY</td>
+                                                <td>NOTE/INSTRUCTION</td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1409,6 +1443,7 @@
                                                 <td>{{rx.dosage}} {{rx.unitDesc}} x {{rx.perDay}} a Day</td>
                                                 <td>{{rx.noDay == 'maintenance' ? 'as Maintenance':rx.noDay == 'needed' ? 'as Needed':rx.noDay == 'single' ? 'Single Dose':rx.noDay + ' Day/s'}}</td>
                                                 <td>{{rx.qtyRx}} {{rx.unitDesc == 'Suspension' || rx.unitDesc == 'Syrup' || rx.unitDesc == 'Drops' || rx.unitDesc == 'Bottle' ? 'Bottle/s':rx.unitDesc == 'Cream' ? 'Tube':''}}</td>
+                                                <td>{{rx.note}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1437,7 +1472,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="control-label" for="dosage">Dosage</label>
+                                                        <label class="control-label" for="dosage">Frequency</label>
                                                         <div class="form-inline">
                                                             <div class="input-group m-b" style="width: 100%">
                                                                 <input type="number" min="0.01" step="0.01" id="dosage" name="dosage" required ng-model="medsEdit.dosage" placeholder="e.g. 10" class="form-control text-center" />
@@ -1472,6 +1507,10 @@
                                                             <span class="input-group-addon"><b>{{unitEdit.unitDesc == 'Suspension' || unitEdit.unitDesc == 'Syrup' || unitEdit.unitDesc == 'Drops' || unitEdit.unitDesc == 'Bottle' ? 'Bottle/s' : unitEdit.unitDesc == 'Tablet' || unitEdit.unitDesc == 'Softgel' ? 'Tablet/s' : unitEdit.unitDesc == 'Capsule' ? 'Capsule/s' : unitEdit.unitDesc == 'Nebule'? unit.unitDesc : unitEdit.unitDesc == 'Cream' ? 'Apply' : unitEdit.unitDesc == 'Respule' ? unitEdit.unitDesc : unitEdit.unitDesc == 'Sachet' ? unitEdit.unitDesc:''}}</b></span>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label" for="note">Note/Instruction</label>
+                                                        <input type="text" id="note" name="note" ng-model="medsEdit.note" class="form-control text-center" />
+                                                    </div>
                                                     <button class="btn btn-success pull-right " type="submit" ng-disabled="rxEdit_form.$invalid" ng-click="addMedToEditList(medsEdit)"><i class="fa fa-plus"></i> Add to Rx </button>
                                                 </form>
                                             </div>
@@ -1491,9 +1530,10 @@
 
                                                                 <th class="">#</th>
                                                                 <th>Name</th>
-                                                                <th>Dosage</th>
+                                                                <th>Frequency</th>
                                                                 <th># Days</th>
                                                                 <th>Qty</th>
+                                                                <th>Note/Instruction</th>
                                                                 <th class="text-right">Action</th>
 
                                                             </tr>
@@ -1509,6 +1549,7 @@
                                                                 </td>
                                                                 <td>{{item.noDay == 'maintenance' ? 'as Maintenance':item.noDay == 'needed' ? 'as Needed':item.noDay == 'single' ? 'Single Dose':item.noDay + ' Day/s'}}</td>
                                                                 <td><b>{{item.qtyRx}} {{item.unitDesc == 'Suspension' || item.unitDesc == 'Syrup' || item.unitDesc == 'Drops' || item.unitDesc == 'Bottle' ? 'Bottle/s':item.unitDesc == 'Cream' ? 'Tube':''}}</b></td>
+                                                                <td><b>{{item.note}}</b></td>
                                                                 <td class="text-right">
                                                                     <div class="btn-group">
                                                                         <button class="btn-danger btn btn-xs" ng-disabled="item.isRelease" ng-click="removeMedicine($index)"> Remove <i class="fa fa-trash"></i></button>
@@ -1537,1179 +1578,7 @@
         </div>
     </div>
     <!-- /MODAL PERSON RESULT DIAGNOSIS  -->
-
-    <!-- MODAL BLOODCHEM RESULT -->
-    <div class="modal fade" id="modalBLoodChem">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">BLOOD CHEMISTRY - {{BCResult.labTestName}}</h4>
-                </div>
-                <form role="form" id="bloodChemForm" name="bloodChemForm">
-                    <div class="modal-body" style="height: 100%;">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th width="30%">TEST NAME</th>
-                                    <th width="45%">RESULT</th>
-                                    <th width="25%">REFERENCE VALUE</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-show="BCResult.labTestID == 'L0005'">
-                                    <td>FBS</td>
-                                    <td>
-                                        <div class="form-group " style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_fbs" name="result_fbs" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        3.9 - 5.8 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0010'">
-                                    <td>SERUM URIC ACID</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_serumUricAcid" name="result_serumUricAcid" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class=" input-group-addon" style="background-color:#F5F5F6">umol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <b>MALE:</b> 208 - 430 umol/L
-                                        <hr style="margin:0px" />
-                                        <b>FEMALE:</b> 155 - 360 umol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0009'">
-                                    <td>CREATININE</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_creatinine" name="result_creatinine" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <b>MALE:</b> 62 - 115 umol/L
-                                        <hr style="margin:0px" />
-                                        <b>FEMALE:</b> 53 - 97 umol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0007'">
-                                    <td>CHOLESTEROL</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_cholesterol" name="result_cholesterol" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        3.6 - 5.7 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0007'">
-                                    <td>TRIGLYCERIDES</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_triglycerides" name="result_triglycerides" placeholder="Enter result" ng-model="BCResult.bloodChemResult[1].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        0.7 - 2.26 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0007'">
-                                    <td>HDL</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_hdl" name="result_hdl" placeholder="Enter result" ng-model="BCResult.bloodChemResult[2].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        0.79 - 1.94 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0007'">
-                                    <td>LDL</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_ldl" name="result_ldl" placeholder="Enter result" ng-model="BCResult.bloodChemResult[3].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        0.78 - 2.9 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0007'">
-                                    <td>VLDL</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_vldl" name="result_vldl" placeholder="Enter result" ng-model="BCResult.bloodChemResult[4].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        0.10 - 1.70 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0011'">
-                                    <td>SGPT</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_sgpt" name="result_sgpt" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">U/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <b>MALE:</b> 4 - 41 U/L
-                                        <hr style="margin:0px" />
-                                        <b>FEMALE:</b> 4 - 31 U/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0012'">
-                                    <td>SGOT</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_sgot" name="result_sgot" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <b>MALE:</b> 6 - 37 U/L
-                                        <hr style="margin:0px" />
-                                        <b>FEMALE:</b> 6 - 31 U/L
-                                    </td>
-                                </tr>
-                                @*<tr>
-        <td>BUN</td>
-        <td>
-            <div class="form-group" style="margin:0px">
-                <div class="input-group">
-                    <input type="number" class="form-control form-control-sm" id="bun" name="bun" placeholder="Enter result" ng-model="BCResult.bun">
-                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                </div>
-
-            </div>
-        </td>
-        <td>
-            2.2 - 7.1 mmol/L
-        </td>
-    </tr>*@
-                                <tr ng-show="BCResult.labTestID == 'L0008'">
-                                    <td>POTASSIUM (K<sup>++</sup>)</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_potassium" name="result_potassium" placeholder="Enter result" ng-model="BCResult.bloodChemResult[0].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        3.50 - 5.30 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0008'">
-                                    <td>SODIUM (Na<sup>+</sup>)</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_sodium" name="result_sodium" placeholder="Enter result" ng-model="BCResult.bloodChemResult[1].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        135 - 148.0 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0008'">
-                                    <td>CHLORIDE (Cl<sup>-</sup>)</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_chloride" name="result_chloride" placeholder="Enter result" ng-model="BCResult.bloodChemResult[2].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        98.0 - 107.0 mmol/L
-                                    </td>
-                                </tr>
-                                <tr ng-show="BCResult.labTestID == 'L0008'">
-                                    <td>CALCIUM (Ca<sup>-</sup>)</td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="input-group">
-                                                <input type="number" class="form-control form-control-sm text-center" id="result_calcium" name="result_calcium" placeholder="Enter result" ng-model="BCResult.bloodChemResult[3].result" readonly>
-                                                <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        1.10 - 1.30 mmol/L
-                                    </td>
-                                </tr>
-                                @*<tr>
-        <td>GLYCOSYLATED HEMOGLOBIN (HBA1C)</td>
-        <td>
-            <div class="form-group" style="margin:0px">
-                <div class="input-group">
-                    <input type="number" class="form-control form-control-sm" id="glycosylatedHemoglobin" name="glycosylatedHemoglobin" placeholder="Enter result" ng-model="BCResult.glycosylatedHemoglobin">
-                    <span class="input-group-addon" style="background-color:#F5F5F6">%</span>
-                </div>
-
-            </div>
-        </td>
-        <td>
-            4.0 - 6.0 %
-        </td>
-    </tr>*@
-                            </tbody>
-                        </table>
-
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                    <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required="" tabindex="-1" aria-hidden="true" ng-model="BCResult.pathologist" disabled>
-                                        <option value="" disabled>Select Pathologist</option>
-                                        <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                            {{s.fullname}}
-                                        </option>
-
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                    <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required="" tabindex="-1" aria-hidden="true" ng-model="BCResult.medtech" disabled>
-                                        <option value="" disabled>Select Medical Tech</option>
-                                        <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL BLOODCHEM RESULT -->
-
-    <!-- MODAL CBC RESULT -->
-    <div class="modal fade" id="modalCbc">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">CBC</h4>
-                </div>
-                <form role="form" id="cbcForm" novalidate>
-                    <div class="modal-body" style="height: 100%;">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th width="30%" style="text-align:center">Result</th>
-                                    <th width="20%" style="text-align:center">Reference</th>
-                                    <th width="30%" style="text-align:center">Result</th>
-                                    <th width="20%" style="text-align:center">Reference</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="wbc">WBC:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_wbc" name="result_wbc" ng-model="cbc.wbc" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "4.00 - 10.00" : "5.00 - 10.00"}}  10^9/L
-                                    </td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="rbc">RBC</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_rbc" name="result_rbc" ng-model="cbc.rbc" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "4.00 - 5.50" : "4.00 - 4.50"}}  10^12/L
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="neu">NEU%:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_neu" name="result_neu" ng-model="cbc.neu" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "50.0 - 70.0" : "55.0 - 65.0"}}  %
-                                    </td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="hgb">HGB</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_hgb" name="result_hgb" ng-model="cbc.hgb" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "130 - 180" : "120-150"}}  g/L
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="lym">Lym%:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_lym" name="result_lym" ng-model="cbc.lym" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "20.0 - 40.0" : "25.0 - 35.0"}}  %
-                                    </td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="hct">HCT</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_hct" name="result_hct" ng-model="cbc.hct" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "40.0 - 54.0" : "37.0 - 47.0"}}  %
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="mon">Mon%:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_mon" name="result_mon" ng-model="cbc.mon" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "3.0 - 12.0" : "2.0 - 6.0"}}  %
-                                    </td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="mcv">MCV</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_mcv" name="result_mcv" ng-model="cbc.mcv" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "80.0 - 100.0" : "80.0 - 96.0"}}  fL
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="eos">Eos%:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_eos" name="result_eos" ng-model="cbc.eos" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "0.5 - 5.0" : "2.0 - 4.0"}}  %
-                                    </td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="mch">MCH</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_mch" name="result_mch" ng-model="cbc.mch" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "27.0 - 34.0" : "27.5 - 33.2"}}  pg
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="bas">Bas%:</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_bas" name="result_bas" ng-model="cbc.bas" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "0.0 - 0.1" : "0.0 - 0.5"}}  %
-                                    </td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="mchc">MCHC</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_mchc" name="result_mchc" ng-model="cbc.mchc" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        {{qrData.sex == 'true' ? "320 - 360" : "334 - 335"}}  g/L
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <div class="form-group" style="margin:0px">
-                                            <div class="col-ld-12">
-                                                <div class="col-md-4">
-                                                    <label class="form-control" style="border:none" for="plt">PLT</label>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <input type="number" class="form-control form-control-sm text-center" id="result_plt" name="result_plt" ng-model="cbc.plt" placeholder="Enter result" readonly>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        150 - 350  10^9L
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required="" tabindex="-1" aria-hidden="true" ng-model="cbc.pathologist" disabled>
-                                            <option value="" disabled>Select Personel</option>
-                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                                {{s.fullname}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required="" tabindex="-1" aria-hidden="true" ng-model="cbc.medtech" disabled>
-                                            <option value="" disabled>Select Personel</option>
-                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL CBC RESULT -->
-
-    <!-- MODAL URINALYSIS RESULT -->
-    <div class="modal fade" id="modalUrinalysis">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">URINALYSIS</h4>
-                </div>
-                <form role="form" id="urinalysisForm" novalidate>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12 table-responsive">
-                                <div class="">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th width="25%" rowspan="2" style="text-align:center">MACROSCOPIC</th>
-                                                <th width="75%" colspan="3" style="text-align:center">MICROSCOPIC</th>
-                                            </tr>
-                                            <tr>
-                                                <th width="25%"></th>
-                                                <th width="25%">CAST/IPF</th>
-                                                <th width="50%">CRYSTAL/IPF</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 table-responsive">
-                                                            <table class="table borderless">
-                                                                <thead>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="color">Color:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_color" name="result_color" ng-model="uri.color" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="transparency">Transparency:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_transparency" name="result_transparency" ng-model="uri.transparency" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="albumin">Albumin:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_albumin" name="result_albumin" ng-model="uri.albumin" placeholder="Enter Result" class="form-control text-center" readonly/>
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="sugar">Sugar:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_sugar" name="result_sugar" ng-model="uri.sugar" placeholder="Enter Result" class="form-control text-center" readonly/>
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="reaction">Reaction:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_reaction" name="result_reaction" ng-model="uri.reaction" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="spGravity">Sp. Gravity:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_spGravity" name="result_spGravity" ng-model="uri.spGravity" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <table class="table borderless">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td><label class="control-label" for="pusCells">Pus Cells:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_pusCells" name="result_pusCells" ng-model="uri.pusCells" placeholder="Enter Result" class="form-control text-center" readonly/>
-                                                                            <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="rbcCells">RBC Cells:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_rbcCells" name="result_rbcCells" ng-model="uri.rbcCells" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                            <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="epithelialCells">Epithelial Cells:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_epithelialCells" name="result_epithelialCells" ng-model="uri.epithelialCells" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                            <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="renalCells">Renal Cells:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_renalCells" name="result_renalCells" ng-model="uri.renalCells" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                            <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="mucusThread">Mucus Thread:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_mucusThread" name="result_mucusThread" ng-model="uri.mucusThread" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                            <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="bacteria">Backteria:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_bacteria" name="result_bacteria" ng-model="uri.bacteria" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                            <span class="input-group-addon" style="background-color:#F5F5F6">/hpf</span>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="yeastCells">Yeast Cells:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_yeastCells" name="result_yeastCells" ng-model="uri.yeastCells" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                                <td>
-                                                    <div class="row">
-                                                        <div class="col-lg-12 table-responsive">
-                                                            <table class="table borderless">
-                                                                <thead>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="coarseGranular">Coarse Granular:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_coarseGranular" name="result_coarseGranular" ng-model="uri.coarseGranular" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="fineGranular">Fine Granular:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_fineGranular" name="result_fineGranular" ng-model="uri.fineGranular" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="hyaline">Hyaline:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_hyaline" name="result_hyaline" ng-model="uri.hyaline" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="pusCellsCast">Pus Cells Cast:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_pusCellsCast" name="result_pusCellsCast" ng-model="uri.pusCellsCast" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="reaction">RBC Cast:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_rbcCast" name="result_rbcCast" ng-model="uri.rbcCast" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td><label class="control-label" for="waxyCast">Waxy Cast:</label></td>
-                                                                        <td>
-                                                                            <div class="form-group ">
-                                                                                <div class="input-group">
-                                                                                    <input type="text" id="result_waxyCast" name="result_waxyCast" ng-model="uri.waxyCast" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                                </div>
-                                                                            </div>
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <table class="table borderless">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td><label class="control-label" for="amourphousUrates">Amourphous Urates:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_amourphousUrates" name="result_amourphousUrates" ng-model="uri.amourphousUrates" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="amourphousPhospates">Amourphous Phospates:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_amourphousPhospates" name="result_amourphousPhospates" ng-model="uri.amourphousPhospates" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="triplePhospates">Triple Phosphates:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_triplePhospates" name="result_triplePhospates" ng-model="uri.triplePhospates" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="uricAcid">Uric Acid:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_uricAcid" name="result_uricAcid" ng-model="uri.uricAcid" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="calciumOxalates">Calcium Oxalates:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_calciumOxalates" name="result_calciumOxalates" ng-model="uri.calciumOxalates" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="pregnancyTest">Pregnancy Test:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_pregnancyTest" name="result_pregnancyTest" ng-model="uri.pregnancyTest" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><label class="control-label" for="others">Others:</label></td>
-                                                                <td>
-                                                                    <div class="form-group ">
-                                                                        <div class="input-group">
-                                                                            <input type="text" id="result_others" name="result_others" ng-model="uri.others" placeholder="Enter Result" class="form-control text-center" readonly />
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required="" tabindex="-1" aria-hidden="true" ng-model="uri.pathologist" disabled>
-                                            <option value="" disabled>Select Personel</option>
-                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                                {{s.fullname}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required="" tabindex="-1" aria-hidden="true" ng-model="uri.medtech" disabled>
-                                            <option value="" disabled>Select Personel</option>
-                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL URINALYSIS RESULT -->
-
-    <!-- MODAL ECG* -->
-    <div class="modal fade" id="modalECG">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">ECG</h4>
-                </div>
-                <form role="form" name="ECGForm" id="ECGForm">
-                    <div class="modal-body" style="height: 100%;">
-                        <div class="form-group">
-                            <label class="form-control" style="border:none" for="ecgFindings">Findings:</label>
-                            <textarea class="form-control form-control-sm" rows="8" id="ecgFindings" name="ecgFindings" ng-model="ecg.findings" disabled required></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL ECG* -->
-
-    <!-- MODAL X-RAY -->
-    <div class="modal fade" id="modalXray">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">X-RAY</h4>
-                </div>
-                <form role="form" name="xrayForm" id="xrayForm">
-                    <div class="modal-body" style="height: 100%;">
-                        <div class="form-group">
-                            <label class="control-label" style="border:none" for="mcXrayDateResult">Date of Result</label>
-                            <input type="date" class="form-control form-control-sm" id="mcXrayDateResult" name="mcXrayDateResult" ng-model="xray.mcXrayDateResult" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" style="border:none" for="xrayFindings">Findings:</label>
-                            <textarea class="form-control form-control-sm" rows="8" id="xrayFindings" name="xrayFindings" ng-model="xray.findings" disabled ></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL X-RAY -->
-
-    <!-- MODAL ULTRASOUND -->
-    <div class="modal fade" id="modalUltrasound">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">ULTRASOUND</h4>
-                </div>
-                <form role="form" name="ultrasoundForm" id="ultrasoundForm">
-                    <div class="modal-body" style="height: 100%;">
-                        <div class="form-group">
-                            <label class="control-label" style="border:none" for="ultraDateResult">Date of Result</label>
-                            <input type="date" class="form-control form-control-sm" id="ultraDateResult" name="ultraDateResult" ng-model="ultrasound.ultraDateResult" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" style="border:none" for="ultraFindings">Findings:</label>
-                            <textarea class="form-control form-control-sm" rows="8" id="ultraFindings" name="ultraFindings" ng-model="ultrasound.findings" disabled></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL ULTRASOUND -->
-
-    <!-- MODAL 2D ECHO -->
-    <div class="modal fade" id="modalEcho">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">2D ECHO</h4>
-                </div>
-                <form role="form" name="echoForm" id="echoForm">
-                    <div class="modal-body" style="height: 100%;">
-                        <div class="form-group">
-                            <label class="control-label" style="border:none" for="echoDateResult">Date of Result</label>
-                            <input type="date" class="form-control form-control-sm" id="echoDateResult" name="echoDateResult" ng-model="echo.echoDateResult" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" style="border:none" for="echoFindings">Findings:</label>
-                            <textarea class="form-control form-control-sm" rows="8" id="echoFindings" name="echoFindings" ng-model="echo.findings" disabled></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL 2D ECHO -->
-
-    <!-- MODAL FECALYSIS -->
-    <div class="modal fade" id="modalFecalysis">
-        <div class="modal-dialog modal-md">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:#1ab394;color:white">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title text-center">FECALYSIS</h4>
-                </div>
-                <form role="form" name="FecalsysiForm" id="FecalsysiForm">
-                    <div class="modal-body" style="height: 100%;">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label class="control-label">Color</label>
-                                <div class="form-group text-center">
-                                    <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="radio_color_lb" value="LB" name="radio_color" ng-model="fecalysis.color" disabled />
-                                        <label for="radio_color_lb"> Light Brown </label>
-                                    </div>
-                                    <div class="radio radio-success radio-inline">
-                                        <input type="radio" id="radio_color_b" value="B" name="radio_color" ng-model="fecalysis.color" disabled />
-                                        <label for="radio_color_b"> Brown </label>
-                                    </div>
-                                    <div class="radio radio-warning radio-inline">
-                                        <input type="radio" id="radio_color_db" value="DB" name="radio_color" ng-model="fecalysis.color" disabled />
-                                        <label for="radio_color_db"> Dark Brown </label>
-                                    </div>
-                                    <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" disabled />
-                                        <label for="radio_color_ot"> Others </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ng-show="fecalysis.color == 'OT'">
-                                <div class="col-md-2">
-                                    <label class="form-control" style="border:none" for="otherColor">Others:</label>
-                                </div>
-                                <div class="col-md-10">
-                                    <input class="form-control form-control-sm" type="text" id="otherColor" name="otherColor" ng-model="fecalysis.otherColorDesc" disabled />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label class="control-label">Consistency</label>
-                                <div class="form-group text-center">
-                                    <div class="radio radio-primary radio-inline">
-                                        <input type="radio" id="radio_consistency_f" value="F" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
-                                        <label for="radio_consistency_f"> Formed </label>
-                                    </div>
-                                    <div class="radio radio-success radio-inline">
-                                        <input type="radio" id="radio_consistency_s" value="S" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
-                                        <label for="radio_consistency_s"> Soft </label>
-                                    </div>
-                                    <div class="radio radio-warning radio-inline">
-                                        <input type="radio" id="radio_consistency_w" value="W" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
-                                        <label for="radio_consistency_w"> Watery </label>
-                                    </div>
-                                    <div class="radio radio-danger radio-inline">
-                                        <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" disabled />
-                                        <label for="radio_consistency_ot"> Others </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div ng-show="fecalysis.consistency == 'OT'">
-                                <div class="col-md-2">
-                                    <label class="form-control" style="border:none" for="otherColorCons">Others:</label>
-                                </div>
-                                <div class="col-md-10">
-                                    <input class="form-control form-control-sm" type="text" id="otherColorCons" name="otherColorCons" ng-model="fecalysis.otherConDesc" disabled />
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label class="text-center" style="background-color: #1ab394; color: white; width: 100%;">MICROSCOPIC EXAMINATION</label>
-                            </div>
-                            <div class="col-lg-6">
-                                <label class="control-label" style="border:none" for="PUS">PUS</label>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <input type="number" min="0" class="form-control form-control-sm" id="PUSfrom" name="PUSfrom" ng-model="fecalysis.pusFrom" placeholder="From" disabled>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="number" min="0" class="form-control form-control-sm" id="PUSto" name="PUSto" ng-model="fecalysis.pusTo" placeholder="To" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <label class="control-label" style="border:none" for="RBC">RBC</label>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <input type="number" min="0" class="form-control form-control-sm" id="RBCfrom" name="RBCfrom" ng-model="fecalysis.rbcFrom" placeholder="From" disabled>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input type="number" min="0" class="form-control form-control-sm" id="RBCto" name="RBCto" ng-model="fecalysis.rbcTo" placeholder="To" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <label class="control-label" style="border:none" for="FatGlob">Fat Globules</label>
-                                <input type="text" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" disabled>
-                            </div>
-                            <div class="col-lg-6">
-                                <label class="control-label" style="border:none" for="Bacteria">Bacteria</label>
-                                <input type="text" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" disabled>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <label class="control-label" style="border:none" for="otherFindings">Findings:</label>
-                                <textarea class="form-control form-control-sm" rows="4" id="otherFindings" name="otherFindings" ng-model="fecalysis.otherFindings" disabled></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- /MODAL FECALYSIS -->
-
+    
     <!-- MODAL SELECT PATIENT -->
     <div class="modal fade" id="modalPatient">
         <div class="modal-dialog modal-lg">
@@ -2782,6 +1651,40 @@
         </div>
     </div>
     <!-- /MODAL SELECT PATIENT -->
+
+    @*MODAL LAB RESULT*@
+    <div class="modal fade" id="modalLabResult">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">{{modalTitle}}</h4>
+                </div>
+                <div class="modal-body" style="height: 100%;">
+                    <div class="text-center" ng-show="labResultLoader">
+                        <div class="sk-spinner sk-spinner-double-bounce">
+                            <div class="sk-double-bounce1"></div>
+                            <div class="sk-double-bounce2"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 col-xs-4">
+                            <button class="btn btn-outline btn-primary pull-left" ng-click="navLabImg('prev')"><i class="fa fa-caret-left"></i> Prev</button>
+                        </div>
+                        <div class="col-sm-4 col-xs-4 text-center">
+                            <label>{{currentImgIndex + 1}} of {{imgCount}} Images</label>
+                        </div>
+                        <div class="col-sm-4 col-xs-4">
+                            <button class="btn btn-outline btn-primary pull-right" ng-click="navLabImg('next')">Next <i class="fa fa-caret-right"></i></button>
+                        </div>
+                    </div>
+                    <br />
+                    <div id="labResult" ng-show="!labResultLoader" style="height:100%; width:100%;" class="img-responsive avatar-view"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*MODAL LAB RESULT*@
 
 </div>
 

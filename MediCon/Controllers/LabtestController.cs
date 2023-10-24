@@ -12,6 +12,7 @@ namespace MediCon.Controllers
     public class LabtestController : Controller
     {
         MediconEntities dbMed = new MediconEntities();
+        HRISDBEntities hrdb = new HRISDBEntities();
 
         [UserAccess]
         // GET: Labtest
@@ -29,7 +30,7 @@ namespace MediCon.Controllers
                                                    .Join(dbMed.Referrals, res1 => res1.le.referralID, r => r.referralID, (res1, r) => new { res1, r })
                                                    .Join(dbMed.Consultations, res2 => res2.r.consultID, c => c.consultID, (res2, c) => new { res2, c })
                                                    .Join(dbMed.VitalSigns, res3 => res3.c.vSignID, vs => vs.vSignID, (res3, vs) => new { res3, vs })
-                                                   .Where(a => a.vs.qrCode == qrCode)
+                                                   .Where(a => a.vs.qrCode == qrCode && a.res3.res2.r.calendarID != null)
                                                    .Select(b => new
                                                    {
                                                        b.res3.res2.res1.le.labID,
@@ -37,8 +38,6 @@ namespace MediCon.Controllers
                                                        b.res3.res2.res1.lt.labTestName,
                                                        b.res3.res2.res1.le.isTested,
                                                        b.res3.res2.res1.le.isEncoded,
-                                                       b.res3.res2.res1.le.pathologist,
-                                                       b.res3.res2.res1.le.medtech,
                                                        labPersonID = b.res3.res2.res1.le.personnelID,
                                                        labDT = b.res3.res2.res1.le.dateTimeLog,
                                                        labPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.res2.res1.le.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),

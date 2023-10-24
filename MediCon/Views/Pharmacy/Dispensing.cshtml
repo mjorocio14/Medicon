@@ -4,6 +4,27 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+     .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        height: 400px !important;
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+
+    th {
+	    position: sticky;
+	    position: -webkit-sticky;
+	    top: 0px;
+	    z-index: 2;
+    }
+</style>
+
 <div ng-app="OT22app" ng-controller="pharmacyDispensingCtrl">
 
     <!-- HEADER -->
@@ -52,6 +73,8 @@
                                     </span>
                                 </div>
                             </form>
+                            <br />
+                            <button class="btn btn-warning full-width" ng-click="searchByName()"><i class="fa fa-search"></i> Search by name</button>
                             <br />
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
@@ -160,18 +183,19 @@
                         <table id="listMeds_tbl" class="table table-stripped" style="width: 100%;">
                             <tbody>
                                 <tr ng-repeat="item in prescripted">
-                                    <th class="text-danger vertical-align">{{item[0].serviceName}}</th>
+                                    <td class="text-uppercase"><strong>{{item[0].serviceName}}</strong><br/> {{item[0].dateTimeRx}} <br /> <span class="label label-primary">{{item[0].physician}}</span></td>
                                     <td>
                                         <table class="table table-stripped">
                                             <tr ng-repeat="med in item" ng-style="med.checkboxVal == true && !isEditting ? {'background-color': '#ed5565', 'color': 'white'}:''">
                                                 <td class="text-center ">{{$index + 1}}</td>
-                                                <td class="text-left"><b>{{med.productDesc}}</b></td>
+                                                <td class="text-left"><b>{{med.productDesc}} {{med.measurementDesc}}</b></td>
                                                 <td class="text-left">
                                                     {{med.dosage}}
                                                     {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'ML':med.unitDesc == 'Tablet' || med.unitDesc == 'Softgel' ? 'Tablet/s':med.unitDesc == 'Capsule' ? 'Capsule/s':med.unitDesc == 'Nebule'? med.unitDesc:med.unitDesc == 'Cream' ? 'Apply':med.unitDesc == 'Respule' ? med.unitDesc:med.unitDesc == 'Sachet' ? 'Sachet dilluted in 240ml water':''}},
                                                     {{med.perDay}} x a Day
                                                 </td>
                                                 <td class="text-center">{{med.noDay == 'maintenance' ? 'as Maintenance':med.noDay == 'needed' ? 'as Needed':med.noDay == 'single' ? 'Single Dose':med.noDay + ' Day/s'}}</td>
+                                                <td class="text-center">{{med.note}}</td>
                                                 <td class="text-center">
                                                     <b>{{med.qtyRx}} {{med.unitDesc == 'Suspension' || med.unitDesc == 'Syrup' || med.unitDesc == 'Drops' ? 'Bottle/s':med.unitDesc == 'Cream' ? 'Tube':med.unitDesc + '/s'}}</b>
                                                 </td>
@@ -206,13 +230,13 @@
 
         <!-- LIST OF RELEASED MEDICINES PER PATIENT -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
-            <div class="col-lg-12">
+            <div class="row">
                 <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" style="text-align:center !important">Dispensed Date:</label>
-                        <div class="col-sm-2">
-                            <input type="date" id="pharmacyFilterDate" ng-change="filterResult(pharmacyFilterDate)" name="pharmacyFilterDate" style="text-transform:uppercase" ng-model="pharmacyFilterDate" class="text-center form-control">
-                        </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <label style="margin-top: 5px;">Dispensed Date:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <input type="date" id="pharmacyFilterDate" ng-change="filterResult(pharmacyFilterDate)" name="pharmacyFilterDate" style="text-transform:uppercase" ng-model="pharmacyFilterDate" class="text-center form-control">
                     </div>
                 </form>
             </div>
@@ -294,6 +318,79 @@
         </div>
     </div>
     <!-- /MODAL RELEASED MEDICINE PER CLIENT -->
+
+    <!-- MODAL SELECT PATIENT -->
+    <div class="modal fade" id="modalPatient">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="resetModal()">&times;</button>
+                    <h4 class="modal-title text-center">Search Employee</h4>
+                </div>
+                <div class="modal-body" style="height: 100%;">
+                    <form id="INFO_FORM" name="INFO_FORM">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" />
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary full-width" ng-disabled="INFO_FORM.$invalid" ng-click="mainSearchByName(infoFormData)"><i class="fa fa-search"></i> Search </button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr />
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 300px !important;">
+                        <table class="table table-stripped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Last name</th>
+                                    <th>First name</th>
+                                    <th>Middle name</th>
+                                    <th>Sex</th>
+                                    <th>Birthday</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" ng-show="modal_tableLoader">
+                                    <td colspan="6">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are loading your data...</i></text>
+                                    </td>
+                                </tr>
+                                <tr class="text-center" ng-show="searchResultList.length == 0 && modal_tableLoader == false">
+                                    <td colspan="6">
+                                        <text>NO INFORMATION FOUND!</text>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="person in searchResultList | orderBy: 'firstName'">
+                                    <td>{{person.lastName}}</td>
+                                    <td>{{person.firstName}}</td>
+                                    <td>{{person.middleName}}</td>
+                                    <td>{{person.sex == 'MALE' ? 'M' : person.sex == 'FEMALE' ? 'F' : ''}}</td>
+                                    <td>{{person.birthDate}}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-success" ng-click="selectEmp(person)">Select</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL SELECT PATIENT -->
 
 </div>
 

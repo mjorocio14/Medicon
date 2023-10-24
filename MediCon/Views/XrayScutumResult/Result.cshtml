@@ -29,7 +29,7 @@
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-6">
-            <h2>Scutum Result</h2>
+            <h2>Sputum Result</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="">Medicon</a>
@@ -49,93 +49,87 @@
     <!-- /HEADER -->
 
     <div class="wrapper wrapper-content ">
-        <div class="row">
-
-            <!-- PATIENT LIST -->
-            <div class="animated fadeInRight ecommerce">
-                <div class="col-sm-12 col-xs-12">
-                    <div class="panel">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
-                                    <h4 style="margin-top: 9px !important;"><label> LIST OF X-RAY CLIENTS </label></h4>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-                                    <form name="searchForm" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control border-aero" ng-model="searchVaccInfo" placeholder="Search by Last name" style="width:100%;" required>
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-primary" ng-disabled="searchForm.$invalid" ng-click="searchPerson(searchVaccInfo,'Name')"><i class="fa fa-search"></i> Find </button>
-                                            </span>
-                                        </div>
-                                    </form>
-                                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                                        <button class="btn btn-success pull-right" ng-click="showQRscanner()"><i class="fa fa-qrcode"></i></button>
-                                    </div>
-                                </div>
-                            </div>
+        <!-- PATIENT LIST -->
+        <div class="animated fadeInRight ecommerce">
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                            <h4 style="margin-top: 9px !important;"><label> LIST OF X-RAY CLIENTS </label></h4>
+                            <div class="clearfix"></div>
                         </div>
-                        <hr style="margin-top: 0px !important; margin-bottom: 0px !important;" />
-                        <div class="panel-body">
-                            <div class="row form-group form-horizontal form-label-left">
-                                <text class="control-label col-lg-8 col-md-8 col-sm-8 col-xs-12">Filter:</text>
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <input type="text" class="form-control" ng-model="filterResult" placeholder="Filter result">
+                        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+                            <form name="searchForm" class="col-lg-11 col-md-11 col-sm-11 col-xs-11">
+                                <div class="input-group">
+                                    <input type="text" class="form-control border-aero" ng-model="searchVaccInfo" placeholder="Search by Last name" style="width:100%;" required>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-primary" ng-disabled="searchForm.$invalid" ng-click="searchPerson(searchVaccInfo,'Name')"><i class="fa fa-search"></i> Find </button>
+                                    </span>
                                 </div>
-                            </div>
-                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                                <table id="xray_table" class="table table-stripped table-hover" style="width: 100%; height: 100%">
-                                    <thead>
-                                        <tr>
-
-                                            <th>#</th>
-                                            <th>QR Code</th>
-                                            <th>Last name</th>
-                                            <th>First name</th>
-                                            <th>M.I.</th>
-                                            <th>Suffix</th>
-                                            <th class="text-center">Sex</th>
-                                            <th class="text-center">Birthday</th>
-                                            <th class="text-center">Contact no.</th>
-                                            <th class="text-center" data-sort-ignore="true">Action</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-show="tableLoader">
-                                            <td colspan="12" class="text-center">
-                                                <span class="fa fa-spinner fa-spin fa-4x"></span><br /><br />
-                                            </td>
-                                        </tr>
-                                        <tr role="row" ng-show="!tableLoader" ng-repeat="item in personList | filter: filterResult">
-                                            <td>{{$index + 1}}</td>
-                                            <td>{{item[0].qrCode}}</td>
-                                            <td>{{item[0].lastName}}</td>
-                                            <td>{{item[0].firstName}}</td>
-                                            <td>{{item[0].middleName}}</td>
-                                            <td>{{item[0].extName}}</td>
-                                            <td class="text-center">{{item.sex[0] == true ? 'Male' : 'Female'}}</td>
-                                            <td class="text-center">{{item[0].birthdate}}</td>
-                                            <td class="text-center">{{item[0].contactNo}}</td>
-                                            <td class="text-center">
-                                                <button class="btn btn-primary btn-sm" ng-click="showResults(item)" data-toggle="tooltip" data-placement="top" title="Result"><i class="fa fa-list-ol"></i> </button>
-                                                <button class="btn btn-success btn-sm" ng-click="encodeResult(item)" data-toggle="tooltip" data-placement="top" title="Encode"><i class="fa fa-flask"></i> </button>
-                                            </td>
-                                        </tr>
-                                        <tr ng-show="personList.length == 0 && tableLoader == false">
-                                            <td class="text-center text-semibold" colspan="12"> No Record Found! </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            </form>
+                            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                                <button class="btn btn-success pull-right" ng-click="showQRscanner()"><i class="fa fa-qrcode"></i></button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- /PATIENT LIST -->
+                <hr style="margin-top: 0px !important; margin-bottom: 0px !important;" />
+                <div class="panel-body">
+                    <div class="row form-group form-horizontal form-label-left">
+                        <text class="control-label col-lg-8 col-md-8 col-sm-8 col-xs-12">Filter:</text>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <input type="text" class="form-control" ng-model="filterResult" placeholder="Filter result">
+                        </div>
+                    </div>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table id="xray_table" class="table table-stripped table-hover" style="width: 100%; height: 100%">
+                            <thead>
+                                <tr>
 
+                                    <th>#</th>
+                                    <th>QR Code</th>
+                                    <th>Last name</th>
+                                    <th>First name</th>
+                                    <th>M.I.</th>
+                                    <th>Suffix</th>
+                                    <th class="text-center">Sex</th>
+                                    <th class="text-center">Birthday</th>
+                                    <th class="text-center">Contact no.</th>
+                                    <th class="text-center" data-sort-ignore="true">Action</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-show="tableLoader">
+                                    <td colspan="12" class="text-center">
+                                        <span class="fa fa-spinner fa-spin fa-4x"></span><br /><br />
+                                    </td>
+                                </tr>
+                                <tr role="row" ng-show="!tableLoader" ng-repeat="item in personList | filter: filterResult">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{item[0].qrCode}}</td>
+                                    <td>{{item[0].lastName}}</td>
+                                    <td>{{item[0].firstName}}</td>
+                                    <td>{{item[0].middleName}}</td>
+                                    <td>{{item[0].extName}}</td>
+                                    <td class="text-center">{{item.sex[0] == true ? 'Male' : 'Female'}}</td>
+                                    <td class="text-center">{{item[0].birthdate}}</td>
+                                    <td class="text-center">{{item[0].contactNo}}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-primary btn-sm" ng-click="showResults(item)" data-toggle="tooltip" data-placement="top" title="Result"><i class="fa fa-list-ol"></i> </button>
+                                        <button class="btn btn-success btn-sm" ng-click="encodeResult(item)" data-toggle="tooltip" data-placement="top" title="Encode"><i class="fa fa-flask"></i> </button>
+                                    </td>
+                                </tr>
+                                <tr ng-show="personList.length == 0 && tableLoader == false">
+                                    <td class="text-center text-semibold" colspan="12"> No Record Found! </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!-- /PATIENT LIST -->
     </div>
 
     <!-- MODAL SCAN QR CODE-->

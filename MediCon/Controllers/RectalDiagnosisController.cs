@@ -171,21 +171,6 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult getLabHistory(string qrCode)
-        {
-            try
-            {
-                var labHist = dbMed.fn_getPatientLabHistory(qrCode).Where(a => a.MRDiagnosisID != null).OrderByDescending(b => b.dateTested).ToList();
-
-                return Json(labHist, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpPost]
         public ActionResult saveDiagnosis(MaleRepro_Diagnosis mrd, string requestID)
         {
             try
@@ -628,8 +613,6 @@ namespace MediCon.Controllers
                                              b.le.isTested,
                                              b.le.isEncoded,
                                              b.le.dateEncoded,
-                                             b.le.pathologist,
-                                             b.le.medtech,
                                              b.le.personnelID,
                                              b.le.dateTimeLog,
                                              b.le.xrayDesc,

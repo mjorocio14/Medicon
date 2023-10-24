@@ -74,6 +74,9 @@
                     <li id="MEDCON">
                         <a href="../MedicalConsultation/Index"><i class="fa fa-user-md"></i> <span class="nav-label">Medical Consultation</span></a>
                     </li>
+                    <li id="GLASSES">
+                        <a href="../ReadingGlasses/Index"><i class="fa fa-eye"></i> <span class="nav-label">Reading Glasses</span></a>
+                    </li>
                     <li id="LAB">
                         <a><i class="fa fa-eyedropper"></i> <span class="nav-label">Laboratory</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level collapse" id="LABsub">
@@ -180,6 +183,7 @@
             var health = $('#HEALTH');
             var vitalSigns = $('#VITALSIGNS'); 
             var medcon = $('#MEDCON');
+            var glasses = $('#GLASSES');
             var lab = $('#LAB');
             var pbe = $('#PBE');
             var mrh = $('#MRH');
@@ -193,6 +197,7 @@
             utility.hide();
             vitalSigns.hide();
             medcon.hide();
+            glasses.hide();
             lab.hide();
             pbe.hide();
             mrh.hide();
@@ -220,6 +225,10 @@
 
                     else if (d[x].mainMenu == 'MEDCON') {
                         medcon.show();
+                    }
+
+                    else if (d[x].mainMenu == 'READING GLASSES') {
+                        glasses.show();
                     }
 
                     else if (d[x].mainMenu == 'LAB') { 

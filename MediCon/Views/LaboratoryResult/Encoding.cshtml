@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <style>
+
     .swal2-container {
         z-index: 20000 !important;
     }
@@ -44,7 +45,7 @@
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Laboratory</h2>
+            <h2>Laboratory Result</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="">Medicon</a>
@@ -173,16 +174,16 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" />
+                                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" required />
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" />
+                                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" required />
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
-                                                <button class="btn btn-primary full-width" ng-disabled="INFO_FORM.$invalid" ng-click="mainSearchByName(infoFormData)"><i class="fa fa-search"></i> Search Record </button>
+                                                <button type="submit" class="btn btn-primary full-width" ng-click="!INFO_FORM.$invalid ? mainSearchByName(infoFormData):''"><i class="fa fa-search"></i> Search Record </button>
                                             </div>
                                         </div>
                                     </form>
@@ -247,16 +248,16 @@
                                             <th>Test</th>
                                             <th>Lab. Personnel</th>
                                             <th>Lab. Date & Time</th>
-                                            <th>Referred by</th>
-                                            <th>Date & Time</th>
-                                            <th>Status</th>
+                                            @*<th>Referred by</th>*@
+                                            @*<th>Date & Time</th>*@
+                                            <th class="text-center">Status</th>
                                             <th>Action</th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="text-center" ng-show="loader">
-                                            <td colspan="8">
+                                            <td colspan="7">
                                                 <div class="sk-spinner sk-spinner-double-bounce">
                                                     <div class="sk-double-bounce1"></div>
                                                     <div class="sk-double-bounce2"></div>
@@ -265,7 +266,7 @@
                                             </td>
                                         </tr>
                                         <tr class="text-center" ng-show="bpHistoryList.length == 0 && bpLoader == false">
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <label class="text-danger">NO INFORMATION FOUND!</label>
                                             </td>
                                         </tr>
@@ -274,11 +275,14 @@
                                             <td>{{hist.labTestName}}</td>
                                             <td>{{hist.labPersonnel[0].personnel_firstName}} {{hist.labPersonnel[0].personnel_middleName}} {{hist.labPersonnel[0].personnel_lastName}} {{hist.labPersonnel[0].personnel_extName}}</td>
                                             <td>{{hist.labDT}}</td>
-                                            <td>{{hist.consultPersonnel[0].personnel_firstName}} {{hist.consultPersonnel[0].personnel_middleName}} {{hist.consultPersonnel[0].personnel_lastName}} {{hist.consultPersonnel[0].personnel_extName}}</td>
-                                            <td>{{hist.consultDT}}</td>
-                                            <td><b ng-class="hist.isEncoded == true ? 'text-success' : 'text-danger'">{{hist.isEncoded == true ? 'Encoded' : 'Not Encoded'}}</b></td>
+                                            @*<td>{{hist.consultPersonnel[0].personnel_firstName}} {{hist.consultPersonnel[0].personnel_middleName}} {{hist.consultPersonnel[0].personnel_lastName}} {{hist.consultPersonnel[0].personnel_extName}}</td>*@
+                                            @*<td>{{hist.consultDT}}</td>*@
+                                            <td class="text-center">
+                                                <p><span class="badge" ng-class="hist.isEncoded == true ? 'badge-info' : 'badge-danger'">{{hist.isEncoded == true ? 'Encoded' : 'Not Encoded'}}</span></p>
+                                            </td>
                                             <td>
-                                                <button ng-disabled="hist.isEncoded == true" class="btn btn-success btn-sm" ng-click="encodeResult(hist, 0, true)">Encode</button>
+                                                <button ng-disabled="hist.isEncoded != true" class="btn btn-success btn-sm" ng-click="viewLabResult(hist)"><i class="fa fa-eye"></i></button>
+                                                <button class="btn btn-primary btn-sm" ng-click="encodeResult(hist, 0, true)"><i class="fa fa-pencil"></i></button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -294,13 +298,13 @@
 
         <!-- LIST OF PATIENTS -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
-            <div class="col-lg-12">
+            <div class="row">
                 <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" style="text-align:center !important">Laboratory Date:</label>
-                        <div class="col-sm-2">
-                            <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
-                        </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <label style="margin-top: 5px;">Laboratory Date:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
                     </div>
                 </form>
             </div>
@@ -339,1347 +343,107 @@
         </div>
         <!-- /LIST OF PATIENTS -->
 
-        <!-- Modal BLoodchem -->
-        <div class="modal fade" id="modalBLoodChem">
+
+        @*MODAL LAB RESULT*@
+        <div class="modal fade" id="modalLabResult">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
+                    <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">BLOOD CHEMISTRY</h4>
+                        <h4 class="modal-title text-center">{{modalTitle}}</h4>
                     </div>
-                    <form role="form" id="bloodChemForm" name="bloodChemForm">
-                        <div class="modal-body" style="height: 100%;">
-                            @*<div class="table-wrapper-scroll-y my-custom-scrollbar">*@
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th width="30%">TEST NAME</th>
-                                        <th width="45%">RESULT</th>
-                                        <th width="25%">REFERENCE VALUE</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-show="tempLabTestID == 'L0005'">
-                                        <td>FBS</td>
-                                        <td>
-                                            <div class="form-group " style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" class="form-control form-control-sm" id="fbs" name="fbs" placeholder="Enter result" ng-model="blood.fbs" ng-required="tempLabTestID == 'L0005'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            3.9 - 5.8 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0010'">
-                                        <td>SERUM URIC ACID</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control form-control-sm" id="serumUricAcid" name="serumUricAcid" placeholder="Enter result" ng-model="blood.serumUricAcid" ng-required="tempLabTestID == 'L0010'" ng-disabled="!isShowResult">
-                                                    <span class=" input-group-addon" style="background-color:#F5F5F6">umol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <b>MALE:</b> 208 - 430 umol/L
-                                            <hr style="margin:0px" />
-                                            <b>FEMALE:</b> 155 - 360 umol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0009'">
-                                        <td>CREATININE</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control form-control-sm" id="creatinine" name="creatinine" placeholder="Enter result" ng-model="blood.creatinine" ng-required="tempLabTestID == 'L0009'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <b>MALE:</b> 62 - 115 umol/L
-                                            <hr style="margin:0px" />
-                                            <b>FEMALE:</b> 53 - 97 umol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0007'">
-                                        <td>CHOLESTEROL</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="3.6" max="5.7" class="form-control form-control-sm" id="cholesterol" name="cholesterol" placeholder="Enter result" ng-model="blood.cholesterol" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            3.6 - 5.7 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0007'">
-                                        <td>TRIGLYCERIDES</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="0.7" max="2.26" class="form-control form-control-sm" id="triglycerides" name="triglycerides" placeholder="Enter result" ng-model="blood.triglycerides" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            0.7 - 2.26 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0007'">
-                                        <td>HDL</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="0.79" max="2" class="form-control form-control-sm" id="hdl" name="hdl" placeholder="Enter result" ng-model="blood.hdl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            0.79 - 1.94 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0007'">
-                                        <td>LDL</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="0.78" max="3" class="form-control form-control-sm" id="ldl" name="ldl" placeholder="Enter result" ng-model="blood.ldl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            0.78 - 2.9 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0007'">
-                                        <td>VLDL</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="0.10" max="2" class="form-control form-control-sm" id="vldl" name="vldl" placeholder="Enter result" ng-model="blood.vldl" ng-required="tempLabTestID == 'L0007'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            0.10 - 1.70 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0011'">
-                                        <td>SGPT</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" min="4" max="41" class="form-control form-control-sm" id="sgpt" name="sgpt" placeholder="Enter result" ng-model="blood.sgpt" ng-required="tempLabTestID == 'L0011'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">U/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <b>MALE:</b> 4 - 41 U/L
-                                            <hr style="margin:0px" />
-                                            <b>FEMALE:</b> 4 - 31 U/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0012'">
-                                        <td>SGOT</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" min="6" max="37" class="form-control form-control-sm" id="sgot" name="sgot" placeholder="Enter result" ng-model="blood.sgot" ng-required="tempLabTestID == 'L0012'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <b>MALE:</b> 6 - 37 U/L
-                                            <hr style="margin:0px" />
-                                            <b>FEMALE:</b> 6 - 31 U/L
-                                        </td>
-                                    </tr>
-                                    @*<tr>
-                                        <td>BUN</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control form-control-sm" id="bun" name="bun" placeholder="Enter result" ng-model="blood.bun">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
+                    <div class="modal-body" style="height: 100%;">
+                        <div class="text-center" ng-show="labResultLoader">
+                            <div class="sk-spinner sk-spinner-double-bounce">
+                                <div class="sk-double-bounce1"></div>
+                                <div class="sk-double-bounce2"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 col-xs-4">
+                                <button class="btn btn-outline btn-primary pull-left" ng-click="navLabImg('prev')"><i class="fa fa-caret-left"></i> Prev</button>
+                            </div>
+                            <div class="col-sm-4 col-xs-4 text-center">
+                                <label>{{currentImgIndex + 1}} of {{imgCount}} Images</label>
+                            </div>
+                            <div class="col-sm-4 col-xs-4">
+                                <button class="btn btn-outline btn-primary pull-right" ng-click="navLabImg('next')">Next <i class="fa fa-caret-right"></i></button>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 10px !important; margin-bottom: 10px !important;"/>
+                        <small class="pull-left">{{displayFileName}}</small><button class="btn btn-sm btn-danger pull-right" ng-click="deleteLabImg()"><i class="fa fa-trash-o"></i></button>
+                        <div id="labResult" ng-show="!labResultLoader" style="height:100%; width:100%;" class="img-responsive avatar-view"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*MODAL LAB RESULT*@
 
-                                            </div>
-                                        </td>
-                                        <td>
-                                            2.2 - 7.1 mmol/L
-                                        </td>
-                                    </tr>*@
-                                    <tr ng-show="tempLabTestID == 'L0008'">
-                                        <td>POTASSIUM (K<sup>++</sup>)</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="3.50" max="5.30" class="form-control form-control-sm" id="potassium" name="potassium" placeholder="Enter result" ng-model="blood.potassium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                        <td>
-                                            3.50 - 5.30 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0008'">
-                                        <td>SODIUM (Na<sup>+</sup>)</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="135.0" max="148.0" class="form-control form-control-sm" id="sodium" name="sodium" placeholder="Enter result" ng-model="blood.sodium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                        <td>
-                                            135 - 148.0 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0008'">
-                                        <td>CHLORIDE (Cl<sup>-</sup>)</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="98.0" max="107.0" class="form-control form-control-sm" id="chloride" name="chloride" placeholder="Enter result" ng-model="blood.chloride" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                        <td>
-                                            98.0 - 107.0 mmol/L
-                                        </td>
-                                    </tr>
-                                    <tr ng-show="tempLabTestID == 'L0008'">
-                                        <td>CALCIUM (Ca<sup>-</sup>)</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" step="0.01" min="1.10" max="1.30" class="form-control form-control-sm" id="calcium" name="calcium" placeholder="Enter result" ng-model="blood.calcium" ng-required="tempLabTestID == 'L0008'" ng-disabled="!isShowResult">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">mmol/L</span>
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                        <td>
-                                            1.10 - 1.30 mmol/L
-                                        </td>
-                                    </tr>
-                                    @*<tr>
-                                        <td>GLYCOSYLATED HEMOGLOBIN (HBA1C)</td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="input-group">
-                                                    <input type="number" class="form-control form-control-sm" id="glycosylatedHemoglobin" name="glycosylatedHemoglobin" placeholder="Enter result" ng-model="blood.glycosylatedHemoglobin">
-                                                    <span class="input-group-addon" style="background-color:#F5F5F6">%</span>
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                        <td>
-                                            4.0 - 6.0 %
-                                        </td>
-                                    </tr>*@
-                                </tbody>
-                            </table>
-                            @*</div>*@
-
+        @*MODAL SCANNER*@
+        <div class="modal fade" id="modalScanner">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="resetScannerCanvas()">&times;</button>
+                    </div>
+                    <div class="modal-body" style="height: 100%;">
+                        <div>
+                            <h1 class="text-center" style="margin-top: -8px !important;">Scan Laboratory Result</h1>
+                            <hr />
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                     <div class="form-group">
-                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="labPersonnel.pathologist" ng-disabled="!isShowResult">
-                                            <option value="">Select Pathologist</option>
-                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                                {{s.fullname}}
-                                            </option>
-
-                                        </select>
+                                        <label for="scannerName">Scanner:</label>
+                                        <select class="form-control" id="scannerName"></select>
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
                                     <div class="form-group">
-                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="labPersonnel.medtech" ng-disabled="!isShowResult">
-                                            <option value="">Select Medical Tech</option>
-                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
+                                        <label>Resolution (DPI):</label>
+                                        <input type="text" class="form-control" id="resolution" value="100" readonly />
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
+                                    <div class="form-group">
+                                        <label for="pixelMode">Pixel Mode:</label>
+                                        <select id="pixelMode" class="form-control">
+                                            <option>Grayscale</option>
+                                            <option selected>Color</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" ng-if="isEditBloodChem=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="bloodChemRemarks">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="bloodChemRemarks" name="bloodChemRemarks" ng-model="bloodChemRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
+                            @*<label>Image Format:</label>*@
+                            @*<select id="imageFormat">
+                                <option selected>JPG</option>
+                                <option>PNG</option>
+                            </select>*@
+                            <div class="text-center">
+                                <button class="btn btn-outline btn-primary" style="width: 150px;" ng-click="doScanning()"><i class="fa fa-print"></i> Scan </button>
+                                <button class="btn btn-outline btn-success" style="width: 150px;" ng-click="saveDocument()"><i class="fa fa-download"></i> Save </button>
                             </div>
-                            <br />
+                            <hr />
+                            @*<img id="scanOutput" />*@
+                            <canvas id="scanCanvas" style="width: 100% !important; height: 100% !important;"></canvas>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" class="btn btn-primary" ng-if="isEditBloodChem=='1' && isShowResult" ng-click="!bloodChemForm.$invalid ? saveBloodChem(blood, labPersonnel, true):''"> Save Update </button>
-                            <button type="submit" class="btn btn-primary" ng-if="isEditBloodChem=='0'" ng-click="!bloodChemForm.$invalid ? saveBloodChem(blood, labPersonnel, false):''">Save</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        @*MODAL URINALYSIS*@
-        <div class="modal fade" id="modalUrinalysis">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">Urinalysis</h4>
                     </div>
-                    <form role="form" id="urinalysisForm" novalidate>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-lg-12 table-responsive">
-                                    <div class="">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th width="25%" rowspan="2" style="text-align:center">MACROSCOPIC</th>
-                                                    <th width="75%" colspan="3" style="text-align:center">MICROSCOPIC</th>
-                                                </tr>
-                                                <tr>
-                                                    <th width="25%"></th>
-                                                    <th width="25%">CAST/IPF</th>
-                                                    <th width="50%">CRYSTAL/IPF</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="col-lg-12 table-responsive">
-                                                                <table class="table borderless">
-                                                                    <thead>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="color">Color:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="color" name="color" ng-model="uri.color" placeholder="Enter Result" class="form-control" required ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="transparency">Transparency:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="transparency" name="transparency" ng-model="uri.transparency" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="albumin">Albumin:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="albumin" name="albumin" ng-model="uri.albumin" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="sugar">Sugar:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="sugar" name="sugar" ng-model="uri.sugar" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="reaction">Reaction:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="reaction" name="reaction" ng-model="uri.reaction" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="spGravity">Sp. Gravity:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="spGravity" name="spGravity" ng-model="uri.spGravity" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <table class="table borderless">
-                                                            <thead>
-
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="pusCells">Pus Cells:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="pusCells" name="pusCells" ng-model="uri.pusCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="rbcCells">RBC Cells:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="rbcCells" name="rbcCells" ng-model="uri.rbcCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="epithelialCells">Epithelial Cells:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="epithelialCells" name="epithelialCells" ng-model="uri.epithelialCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="renalCells">Renal Cells:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="renalCells" name="renalCells" ng-model="uri.renalCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="mucusThread">Mucus Thread:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="mucusThread" name="mucusThread" ng-model="uri.mucusThread" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="bacteria">Backteria:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="bacteria" name="bacteria" ng-model="uri.bacteria" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                <span class="input-group-addon" style="background-color:#F5F5F6"><small>/hpf</small></span>
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="yeastCells">Yeast Cells:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="yeastCells" name="yeastCells" ng-model="uri.yeastCells" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                    <td>
-                                                        <div class="row">
-                                                            <div class="col-lg-12 table-responsive">
-                                                                <table class="table borderless">
-                                                                    <thead>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="coarseGranular">Coarse Granular:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="coarseGranular" name="coarseGranular" ng-model="uri.coarseGranular" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="fineGranular">Fine Granular:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="fineGranular" name="fineGranular" ng-model="uri.fineGranular" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="hyaline">Hyaline:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="hyaline" name="hyaline" ng-model="uri.hyaline" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="pusCellsCast">Pus Cells Cast:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="pusCellsCast" name="pusCellsCast" ng-model="uri.pusCellsCast" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="reaction">RBC Cast:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="rbcCast" name="rbcCast" ng-model="uri.rbcCast" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td><label class="control-label" for="waxyCast">Waxy Cast:</label></td>
-                                                                            <td>
-                                                                                <div class="form-group ">
-                                                                                    <div class="input-group">
-                                                                                        <input type="text" id="waxyCast" name="waxyCast" ng-model="uri.waxyCast" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <table class="table borderless">
-                                                            <thead>
-
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="amourphousUrates">Amourphous Urates:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="amourphousUrates" name="amourphousUrates" ng-model="uri.amourphousUrates" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="amourphousPhospates">Amourphous Phospates:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="amourphousPhospates" name="amourphousPhospates" ng-model="uri.amourphousPhospates" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="triplePhospates">Triple Phosphates:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="triplePhospates" name="triplePhospates" ng-model="uri.triplePhospates" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="uricAcid">Uric Acid:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="uricAcid" name="uricAcid" ng-model="uri.uricAcid" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="calciumOxalates">Calcium Oxalates:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="calciumOxalates" name="calciumOxalates" ng-model="uri.calciumOxalates" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="pregnancyTest">Pregnancy Test:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="pregnancyTest" name="pregnancyTest" ng-model="uri.pregnancyTest" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td><label class="control-label" for="others">Others:</label></td>
-                                                                    <td>
-                                                                        <div class="form-group ">
-                                                                            <div class="input-group">
-                                                                                <input type="text" id="others" name="others" ng-model="uri.others" placeholder="Enter Result" class="form-control" ng-disabled="!isShowResult" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="labPersonnel.pathologist" ng-disabled="!isShowResult">
-                                            <option value="">Select Pathologist</option>
-                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                                {{s.fullname}}
-                                            </option>
-
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="labPersonnel.medtech" ng-disabled="!isShowResult">
-                                            <option value="">Select Medical Tech</option>
-                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" ng-if="isEditUrinalysis=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="uriRemarks">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="uriRemarks" name="uriRemarks" ng-model="uriEdit.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditUrinalysis=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" class="btn btn-primary" ng-if="isEditUrinalysis=='1' && isShowResult"> Save Update </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
-        @*MODAL URINALYSIS*@
-
-        @*MODAL CBC*@
-        <div class="modal fade" id="modalCbc">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">CBC</h4>
-                    </div>
-                    <form role="form" id="cbcForm" novalidate>
-                        <div class="modal-body" style="height: 100%;">
-                            @*<div class="table-wrapper-scroll-y my-custom-scrollbar">*@
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th width="30%" style="text-align:center">Result</th>
-                                        <th width="20%" style="text-align:center">Reference</th>
-                                        <th width="30%"  style="text-align:center">Result</th>
-                                        <th width="20%" style="text-align:center">Reference</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                    <div class="col-ld-12">
-                                                        <div class="col-md-4">
-                                                            <label class="form-control" style="border:none" for="wbc">WBC:</label>
-                                                        </div>
-                                                        <div class="col-md-8">
-                                                            <input type="number" class="form-control form-control-sm" id="wbc" name="wbc" ng-model="cbc.wbc" placeholder="Enter result" ng-disabled="!isShowResult" required>
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "4.00 - 10.00" : "5.00 - 10.00"}}  10^9/L
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="rbc">RBC</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="rbc" name="rbc" ng-model="cbc.rbc" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "4.00 - 5.50" : "4.00 - 4.50"}}  10^12/L
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="neu">NEU%:</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="neu" name="neu" ng-model="cbc.neu" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "50.0 - 70.0" : "55.0 - 65.0"}}  %
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="hgb">HGB</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="hgb" name="hgb" ng-model="cbc.hgb" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "130 - 180" : "120-150"}}  g/L
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="lym">Lym%:</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="lym" name="lym" ng-model="cbc.lym" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "20.0 - 40.0" : "25.0 - 35.0"}}  %
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="hct">HTC</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="hct" name="hct" ng-model="cbc.hct" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "40.0 - 54.0" : "37.0 - 47.0"}}  %
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="mon">Mon%:</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="mon" name="mon" ng-model="cbc.mon" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "3.0 - 12.0" : "2.0 - 6.0"}}  %
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="mcv">MCV</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="mcv" name="mcv" ng-model="cbc.mcv" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "80.0 - 100.0" : "80.0 - 96.0"}}  fL
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="eos">Eos%:</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="eos" name="eos" ng-model="cbc.eos" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "0.5 - 5.0" : "2.0 - 4.0"}}  %
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="mch">MCH</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="mch" name="mch" ng-model="cbc.mch" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "27.0 - 34.0" : "27.5 - 33.2"}}  pg
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="bas">Bas%:</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="bas" name="bas" ng-model="cbc.bas" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "0.0 - 0.1" : "0.0 - 0.5"}}  %
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="mchc">MCHC</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="mchc" name="mchc" ng-model="cbc.mchc" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            {{qrData.sex == 'true' ? "320 - 360" : "334 - 335"}}  g/L
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                          
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                            <div class="form-group" style="margin:0px">
-                                                <div class="col-ld-12">
-                                                    <div class="col-md-4">
-                                                        <label class="form-control" style="border:none" for="plt">PLT</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <input type="number" class="form-control form-control-sm" id="plt" name="plt" ng-model="cbc.plt" placeholder="Enter result" ng-disabled="!isShowResult">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            150 - 350 10^9L
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            @*</div>*@
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="labPersonnel.pathologist" ng-disabled="!isShowResult">
-                                            <option value="">Select Pathologist</option>
-                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                                {{s.fullname}}
-                                            </option>
-
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="labPersonnel.medtech" ng-disabled="!isShowResult">
-                                            <option value="">Select Medical Tech</option>
-                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" ng-if="isEditCbc=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="remarks">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="cbcRemarks" name="cbcRemarks" ng-model="cbcEdit.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditCbc=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" class="btn btn-primary" ng-if="isEditCbc=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL CBC*@
-
-        @*MODAL ECG*@
-        <div class="modal fade" id="modalECG">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">ECG</h4>
-                    </div>
-                    <form role="form" name="ECGForm" id="ECGForm">
-                        <div class="modal-body" style="height: 100%;">
-                            <div class="form-group">
-                                <label class="form-control" style="border:none" for="ecgFindings">Findings:</label>
-                                <textarea class="form-control form-control-sm" rows="8" id="ecgFindings" name="ecgFindings" ng-model="ecg.findings" ng-disabled="!isShowResult" required></textarea>
-                            </div>
-                            <div class="row" ng-if="isEditECG=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="editECG">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="editECG" name="editECG" ng-model="ecgEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditECG=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!ECGForm.$invalid ? saveECG(ecg, true):''" class="btn btn-primary" ng-if="isEditECG=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL ECG*@
-
-        @*MODAL FECALYSIS*@
-        <div class="modal fade" id="modalFecalysis">
-            <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">FECALYSIS</h4>
-                    </div>
-                    <form role="form" name="FecalsysisForm" id="FecalsysisForm">
-                        <div class="modal-body" style="height: 100%;">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="control-label">Color</label>
-                                    <div class="form-group text-center">
-                                        <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="radio_color_lb" value="LB" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" required />
-                                            <label for="radio_color_lb"> Light Brown </label>
-                                        </div>
-                                        <div class="radio radio-success radio-inline">
-                                            <input type="radio" id="radio_color_b" value="B" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" />
-                                            <label for="radio_color_b"> Brown </label>
-                                        </div>
-                                        <div class="radio radio-warning radio-inline">
-                                            <input type="radio" id="radio_color_db" value="DB" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" />
-                                            <label for="radio_color_db"> Dark Brown </label>
-                                        </div>
-                                        <div class="radio radio-danger radio-inline">
-                                            <input type="radio" id="radio_color_ot" value="OT" name="radio_color" ng-model="fecalysis.color" ng-disabled="!isShowResult" ng-change="fecalysis.otherColorDesc = ''" />
-                                            <label for="radio_color_ot"> Others </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div ng-show="fecalysis.color == 'OT'">
-                                    <div class="col-md-2">
-                                        <label class="form-control" style="border:none" for="otherColor">Others:</label>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <input class="form-control form-control-sm" id="otherColor" name="otherColor" ng-model="fecalysis.otherColorDesc" ng-disabled="!isShowResult" ng-required="fecalysis.color == 'OT'" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="control-label">Consistency</label>
-                                    <div class="form-group text-center">
-                                        <div class="radio radio-primary radio-inline">
-                                            <input type="radio" id="radio_consistency_f" value="F" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" required />
-                                            <label for="radio_consistency_f"> Formed </label>
-                                        </div>
-                                        <div class="radio radio-success radio-inline">
-                                            <input type="radio" id="radio_consistency_s" value="S" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" />
-                                            <label for="radio_consistency_s"> Soft </label>
-                                        </div>
-                                        <div class="radio radio-warning radio-inline">
-                                            <input type="radio" id="radio_consistency_w" value="W" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" />
-                                            <label for="radio_consistency_w"> Watery </label>
-                                        </div>
-                                        <div class="radio radio-danger radio-inline">
-                                            <input type="radio" id="radio_consistency_ot" value="OT" name="radio_consistency" ng-model="fecalysis.consistency" ng-disabled="!isShowResult" ng-change="fecalysis.otherConDesc = ''" />
-                                            <label for="radio_consistency_ot"> Others </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div ng-show="fecalysis.consistency == 'OT'">
-                                    <div class="col-md-2">
-                                        <label class="form-control" style="border:none" for="otherColorCons">Others:</label>
-                                    </div>
-                                    <div class="col-md-10">
-                                        <input class="form-control form-control-sm" id="otherColorCons" name="otherColorCons" ng-model="fecalysis.otherConDesc" ng-disabled="!isShowResult" ng-required="fecalysis.consistency == 'OT'" />
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="text-center" style="background-color: #1ab394; color: white; width: 100%;">MICROSCOPIC EXAMINATION</label>
-                                </div>
-                                <div class="col-lg-6">
-                                    <label class="control-label" style="border:none" for="PUS">PUS</label>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="PUSfrom" name="PUSfrom" ng-model="fecalysis.pusFrom" placeholder="From" required ng-disabled="!isShowResult">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="PUSto" name="PUSto" ng-model="fecalysis.pusTo" placeholder="To" required ng-disabled="!isShowResult">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <label class="control-label" style="border:none" for="RBC">RBC</label>
-                                    <div class="row">
-                                        <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="RBCfrom" name="RBCfrom" ng-model="fecalysis.rbcFrom" placeholder="From" required ng-disabled="!isShowResult">
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <input type="number" min="0" class="form-control form-control-sm" id="RBCto" name="RBCto" ng-model="fecalysis.rbcTo" placeholder="To" required ng-disabled="!isShowResult">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <label class="control-label" style="border:none" for="FatGlob">Fat Globules</label>
-                                    <input type="text" class="form-control form-control-sm" id="FatGlob" name="FatGlob" ng-model="fecalysis.fatGlobules" placeholder="ex. +1" required ng-disabled="!isShowResult">
-                                </div>
-                                <div class="col-lg-6">
-                                    <label class="control-label" style="border:none" for="Bacteria">Bacteria</label>
-                                    <input type="text" class="form-control form-control-sm" id="Bacteria" name="Bacteria" ng-model="fecalysis.bacteria" placeholder="ex. +1" required ng-disabled="!isShowResult">
-                                </div>
-                            </div>
-                            <br />
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <label class="control-label" style="border:none" for="otherFindings">Findings:</label>
-                                    <textarea class="form-control form-control-sm" rows="4" id="otherFindings" name="otherFindings" ng-model="fecalysis.otherFindings" ng-disabled="!isShowResult" required></textarea>
-                                </div>
-                            </div>
-                            <div class="row" ng-if="isEditFecalysis=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="form-control" style="border:none" for="fecaEditRemarks">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="fecaEditRemarks" name="fecaEditRemarks" ng-model="fecaEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                            <br />
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditFecalysis=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit"  class="btn btn-primary" ng-if="isEditFecalysis=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL FECALYSIS*@
-
-        @*MODAL X-RAY*@
-        <div class="modal fade" id="modalXray">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">X-RAY</h4>
-                    </div>
-                    <form role="form" name="xrayForm" id="xrayForm">
-                        <div class="modal-body" style="height: 100%;">
-                            <div class="form-group">
-                                <label class="control-label" style="border:none" for="mcXrayDateResult">Date of Result</label>
-                                <input type="date" class="form-control form-control-sm" id="mcXrayDateResult" name="mcXrayDateResult" ng-model="xray.mcXrayDateResult" ng-disabled="!isShowResult" required />
-                            </div>
-                            <div class="form-group">
-                                <label class="form-control" style="border:none" for="xrayFindings">Findings:</label>
-                                <textarea class="form-control form-control-sm" rows="8" id="xrayFindings" name="xrayFindings" ng-model="xray.findings" ng-disabled="!isShowResult" required></textarea>
-                            </div>
-                            <div class="row" ng-if="isEditXray=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="editXray">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="editXray" name="editXray" ng-model="xrayEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditXray=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!xrayForm.$invalid ? saveXray(xray, true):''" class="btn btn-primary" ng-if="isEditXray=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL X-RAY*@
-
-        @*MODAL ULTRASOUND*@
-        <div class="modal fade" id="modalUltrasound">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">ULTRASOUND</h4>
-                    </div>
-                    <form role="form" name="ultrasoundForm" id="ultrasoundForm">
-                        <div class="modal-body" style="height: 100%;">
-                            <div class="form-group">
-                                <label class="control-label" style="border:none" for="ultraDateResult">Date of Result</label>
-                                <input type="date" class="form-control form-control-sm" id="ultraDateResult" name="ultraDateResult" ng-model="ultrasound.ultraDateResult" ng-disabled="!isShowResult" required />
-                            </div>
-                            <div class="form-group">
-                                <label class="form-control" style="border:none" for="ultrasoundFindings">Findings:</label>
-                                <textarea class="form-control form-control-sm" rows="8" id="ultrasoundFindings" name="ultrasoundFindings" ng-model="ultrasound.findings" ng-disabled="!isShowResult" required></textarea>
-                            </div>
-                            <div class="row" ng-if="isEditUltrasound=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="editUltrasound">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="editUltrasound" name="editUltrasound" ng-model="ultrasoundEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditUltrasound=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!ultrasoundForm.$invalid ? saveUltrasound(ultrasound, true):''" class="btn btn-primary" ng-if="isEditUltrasound=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL ULTRASOUND*@
-
-        @*MODAL 2D ECHO*@
-        <div class="modal fade" id="modalEcho">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">2D ECHO</h4>
-                    </div>
-                    <form role="form" name="echoForm" id="echoForm">
-                        <div class="modal-body" style="height: 100%;">
-                            <div class="form-group">
-                                <label class="control-label" style="border:none" for="echoDateResult">Date of Result</label>
-                                <input type="date" class="form-control form-control-sm" id="echoDateResult" name="echoDateResult" ng-model="echo.echoDateResult" ng-disabled="!isShowResult" required />
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label" style="border:none" for="echoFindings">Findings:</label>
-                                <textarea class="form-control form-control-sm" rows="8" id="echoFindings" name="echoFindings" ng-model="echo.findings" ng-disabled="!isShowResult" required></textarea>
-                            </div>
-                            <div class="row" ng-if="isEditEcho=='1' && isShowResult">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="control-label" style="border:none" for="editEcho">REMARKS</label>
-                                        <input type="text" class="form-control form-control-sm" id="editEcho" name="editEcho" ng-model="echoEditRemarks.remarks" placeholder="Enter Remarks/Reason for Update" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditEcho=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!echoForm.$invalid ? saveEcho(echo, true):''" class="btn btn-primary" ng-if="isEditEcho=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL 2D ECHO*@
-
-        @*MODAL HBA1C*@
-        <div class="modal fade" id="modalHba1c">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#1ab394;color:white">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title text-center">BLOOD CHEMISTRY</h4>
-                    </div>
-                    <form role="form" name="hba1cForm" id="hba1cForm">
-                        <div class="modal-body" style="height: 100%;">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align:center">Test</th>
-                                        <th style="text-align:center">Result</th>
-                                        <th style="text-align:center">Reference</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><label class="form-control" style="border:none" for="hba1c">GLYCOSYLATED HEMOGLOBIN (HBA1C)</label></td>
-                                        <td>
-                                            <input type="number" class="form-control form-control-sm text-center" id="hba1c" name="hba1c" ng-model="hba1c.result" min="4" max="6" step="0.1" placeholder="Enter result" ng-disabled="!isShowResult">
-                                        </td>
-                                        <td class="text-center">
-                                            4.0 - 6.0 %
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig1">PATHOLOGIST</label>
-                                        <select name="sig1" id="sig1" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="hba1c.pathologist" ng-disabled="!isShowResult">
-                                            <option value="">Select Pathologist</option>
-                                            <option ng-repeat="s in specialistData" data-foo="North to the Future" value="{{s.personnelID}}">
-                                                {{s.fullname}}
-                                            </option>
-
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group">
-                                        <label class="control-label" for="sig2">MEDICAL TECHNOLOGIST</label>
-                                        <select name="sig2" id="sig2" style="width: 100%; text-transform : uppercase" class="form-control" required tabindex="-1" aria-hidden="true" ng-model="hba1c.medtech" ng-disabled="!isShowResult">
-                                            <option value="">Select Medical Tech</option>
-                                            <option ng-repeat="s in specialistData" value="{{s.personnelID}}">{{s.fullname}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" ng-if="isEditHba1c=='0'">Save</button>
-                            <button type="button" ng-click="editResult()" class="btn btn-success" ng-if="!isShowResult">Edit Result</button>
-                            <button type="submit" ng-click="!hba1cForm.$invalid ? saveEcho(hba1c, true):''" class="btn btn-primary" ng-if="isEditHba1c=='1' && isShowResult">Save Update</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        @*MODAL HBA1C*@
+        @*MODAL SCANNER*@
 
     </div>
 </div>
 
 @section scripts
 {
+    @*   JSPrintManager Scanner   *@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bluebird/3.3.5/bluebird.min.js"></script>
+    @*<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>*@
+    <script src="~/Scripts/JSPrintManager.js"></script>
+
     <script src="~/Scripts/jquery-validation/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery-validation/additional-methods.min.js"></script>
     <script src="~/Scripts/AngularJS/LabResult/LabResult.js?v=1.1"></script>
     <script src="~/Scripts/sweetalert2@11.2.1.all.min.js"></script>
-
 }

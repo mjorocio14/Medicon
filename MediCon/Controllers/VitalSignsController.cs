@@ -167,5 +167,32 @@ namespace MediCon.Controllers
                 return Json(new { status = "error", msg = "An error occured while saving your data.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        [HttpGet]
+        public ActionResult getPhysician(string qrCode)
+        {
+            try
+            {
+                var rec = dbMed.Consultations.Join(dbMed.VitalSigns, con => con.vSignID, vs => vs.vSignID, (con, vs) => new { con, vs })
+                                             .Join(dbMed.Personnels, r1 => r1.con.personnelID, p => p.personnelID, (r1, p) => new { r1, p })
+                                             .Where(a => a.r1.vs.qrCode == qrCode)
+                                             .Select(b => new
+                                             {
+                                                 b.p.personnelID,
+                                                 b.p.personnel_firstName,
+                                                 b.p.personnel_midInit,
+                                                 b.p.personnel_lastName,
+                                                 b.p.personnel_extName,
+                                                 b.p.title,
+                                                 b.r1.con.dateTimeLog
+                                             }).OrderByDescending(c => c.dateTimeLog).First();
+
+                return Json(rec, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve vital signs information.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

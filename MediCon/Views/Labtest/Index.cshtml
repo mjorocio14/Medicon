@@ -34,13 +34,13 @@
     <!-- HEADER -->
     <div class="row wrapper border-bottom white-bg page-heading">
         <div class="col-lg-10">
-            <h2>Laboratory</h2>
+            <h2>Laboratory Request</h2>
             <ol class="breadcrumb">
                 <li>
                     <a href="">Medicon</a>
                 </li>
                 <li class="active">
-                    <strong>Laboratory</strong>
+                    <strong>Laboratory Request</strong>
                 </li>
             </ol>
         </div>
@@ -163,16 +163,16 @@
                                         <div class="row">
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" />
+                                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" required/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="form-group">
-                                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" />
+                                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" required/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-12">
-                                                <button class="btn btn-primary full-width" ng-disabled="INFO_FORM.$invalid" ng-click="mainSearchByName(infoFormData)"><i class="fa fa-search"></i> Search Record </button>
+                                                <button type="submit" class="btn btn-primary full-width" ng-click="!INFO_FORM.$invalid ? mainSearchByName(infoFormData):''"><i class="fa fa-search"></i> Search Record </button>
                                             </div>
                                         </div>
                                     </form>
@@ -316,7 +316,7 @@
                                             <td class="text-center">{{hist.consultDT}}</td>
                                             <td class="text-center">
                                                 <div class="checkbox checkbox-danger" style="margin-top: 3px !important;">
-                                                    <input type="checkbox" id="tagTested" value="true" ng-model="hist.isTested" ng-change="tagTested(hist, hist.isTested)">
+                                                    <input type="checkbox" id="tagTested" value="true" ng-disabled="hist.isEncoded" ng-model="hist.isTested" ng-change="tagTested(hist, hist.isTested)">
                                                     <label></label>
                                                 </div>
                                             </td>
@@ -335,13 +335,13 @@
 
         <!-- LIST OF PATIENTS -->
         <div class="animated fadeInRight ecommerce" ng-show="showClientList">
-            <div class="col-lg-12">
+            <div class="row">
                 <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label" style="text-align:center !important">Laboratory Date:</label>
-                        <div class="col-sm-2">
-                            <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
-                        </div>
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12">
+                        <label style="margin-top: 5px;">Laboratory Date:</label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <input type="date" id="FilterDate" ng-change="filterResult(FilterDate)" name="FilterDate" style="text-transform:uppercase" ng-model="FilterDate" class="text-center form-control">
                     </div>
                 </form>
             </div>

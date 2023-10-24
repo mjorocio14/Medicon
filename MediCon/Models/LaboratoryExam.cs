@@ -25,8 +25,7 @@ namespace MediCon.Models
         public Nullable<bool> isTested { get; set; }
         public Nullable<bool> isEncoded { get; set; }
         public Nullable<System.DateTime> dateEncoded { get; set; }
-        public string pathologist { get; set; }
-        public string medtech { get; set; }
+        public string encodedBy { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
     }

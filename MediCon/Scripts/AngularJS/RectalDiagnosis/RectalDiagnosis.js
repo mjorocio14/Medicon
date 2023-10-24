@@ -224,7 +224,6 @@
         s.labLoader = true;
         s.labHistoryList = [];
         
-        //h.post('../RectalDiagnosis/getLabHistory?qrCode=' + qrCode).then(function (d) {
         h.post('../MedicalConsultation/getLabHistory?qrCode=' + qrCode).then(function (d) {
             if (d.data.status == 'error') {
                 swal({
@@ -236,9 +235,9 @@
 
             else {
                 angular.forEach(d.data, function (value) {
-                    value.bloodChemDateEncoded = moment(value.bloodChemDateEncoded).format('lll');
                     value.dateTested = moment(value.dateTested).format('lll');
                 });
+
                 s.labHistoryList = d.data;
             }
             s.labLoader = false;

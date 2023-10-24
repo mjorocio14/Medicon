@@ -10,12 +10,14 @@
     getMedicineList();
     s.unit = {};
     s.RxList = [];
-    s.conslultID = '';
+    s.consultID = '';
     //var vsIndexNo = 1;
     //getDiagnoseClientList();
     s.showRx = false;
     s.isEdittingDiagnosis = false;
+    s.isEdittingRx = false;
     s.per = {};
+    s.isBPtoday = false;
     
 
     //s.showRxQty = false;
@@ -139,7 +141,7 @@
 
                 h.post('../Dental/getClientRx?consultID=' + data.consultID).then(function (d) {
                     s.rxHistoryList = {};
-
+                   
                     s.rxHistoryList = d.data;
                     s.rxHistoryList.dateTimeRx = moment(s.rxHistoryList.dateTimeRx).format('lll');
                 })
@@ -174,6 +176,57 @@
         s.mainSearch(content);
     });
 
+    s.searchByName = function () {
+        s.searchResultList = [];
+        s.infoFormData = {};
+        $('#modalPatient').modal('show');
+    }
+
+    s.mainSearchByName = function (data) {
+        s.modal_tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.modal_tableLoader = false;
+        })
+    }
+
+    s.selectEmp = function (empData) {
+        s.bpHistoryList = {};
+        formatEmpData(empData);
+        s.diagnoseRemarks = '';
+        s.isEditting = false;
+        getBPhistory(empData.qrCode, empData.birthdate);
+        $('#modalPatient').modal('hide');
+    }
+
+    function formatEmpData(data) {
+        data.birthdate = data.birthDate != null ? new Date(moment(data.birthDate).format()) : null;
+        data.sex = data.sex != null ? (data.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = data;
+        s.qrData.age = moment().diff(moment(data.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (data.brgyPermAddress == null ? "" : data.brgyPermAddress) + ' '
+                                + (data.cityMunPermAddress == null ? "" : data.cityMunPermAddress) + ' '
+                                + (data.provincePermAddress == null ? "" : data.provincePermAddress);
+    }
+
     s.mainSearch = function (info) {
         s.loader = true;
         s.bpHistoryList = {};
@@ -193,19 +246,12 @@
             }
 
             else {
-                    d.data.birthdate = d.data.birthDate != null ? new Date(moment(d.data.birthDate).format()) : null;
-                    d.data.sex = d.data.sex != null ? (d.data.sex == "MALE" ? 'true' : 'false') : null;
-                    s.qrData = d.data;
-                    s.qrData.age = moment().diff(moment(d.data.birthdate).format('L'), 'years');
-                    s.qrData.fullAddress = (d.data.brgyPermAddress == null ? "" : d.data.brgyPermAddress) + ' '
-                                            + (d.data.cityMunPermAddress == null ? "" : d.data.cityMunPermAddress) + ' '
-                                            + (d.data.provincePermAddress == null ? "" : d.data.provincePermAddress);
-
-                    s.diagnoseRemarks = '';
-                    s.isEditting = false;
-                    getBPhistory(info, d.data.birthdate);
-
+                formatEmpData(d.data);
+                s.diagnoseRemarks = '';
+                s.isEditting = false;
+                getBPhistory(info, d.data.birthdate);
             }
+
             s.loader = false;
         })
     }
@@ -213,7 +259,8 @@
     function getBPhistory(qrCode, age) {
         s.bpLoader = true;
         s.vitalSigns = {};
-   
+        s.isVsToday = false;
+
         h.post('../VitalSigns/getBPhistory?qrCode=' + qrCode).then(function (d) {
             if (d.data.status == 'error') {
                 swal({
@@ -224,47 +271,36 @@
             }
 
             else {
-                s.bpHistoryList = d.data.bp;
+                s.isVsToday = true;
 
-                angular.forEach(s.bpHistoryList, function (value) {
-                    value.BPdateTime = moment(value.BPdateTime).format('lll');
-                    value.AvaileDateTime = moment(value.AvaileDateTime).format('lll');
+                s.vitalSigns = d.data.vs;
+                s.vitalSignID = d.data.vs.vSignID;
+                s.bpHistoryList = angular.forEach(d.data.bp, function (value) {
+                    value.dateTimeLog = moment(value.dateTimeLog).format('lll');
                 });
-
-                    var max = moment(d.data.maxVS).format('L');
-                    var today = new Date();
-                    today = moment(today).format('L');
-
-                    var isBPtoday = max == today ? true : false;
-                    if (isBPtoday == false) {
-                        swal({
-                            title: "ERROR",
-                            text: "<label>Patient is <text class='text-danger'>NOT YET Screen (Vital Signs)<text> for today!</label>",
-                            type: "error",
-                            html: true
-                        });
-                    }
-                        
-                    else {
-                        s.vitalSignID = d.data.vs.vSignID;
-                        s.vitalSigns.age = age;
-                        s.vitalSigns.weight = d.data.vs.weight + ' kg' ;
-                        s.vitalSigns.height = d.data.vs.height + ' m'; 
-                    }
-                      
             }
+
             s.bpLoader = false;
         });
     }
 
     s.saveDiagnosis = function (diagnosisCheck, detail, personnelID) {
-
+       
         detail.vSignID = angular.copy(s.vitalSignID);
-      
+       
         if (s.qrData.qrCode == '' || s.qrData.qrCode == null) {
             swal({
                 title: "ERROR",
                 text: "<label class='text-danger'>NO Personal Information found!</label>",
+                type: "error",
+                html: true
+            });
+        }
+
+        else if (!s.isVsToday) {
+            swal({
+                title: "ERROR",
+                text: "Patient has no vital sign for today, please refer to vital sign station.",
                 type: "error",
                 html: true
             });
@@ -319,8 +355,9 @@
                                 s.showRx = !s.showRx;
                                 //getDiagnoseClientList();
                                 s.showClientListBTN = false;
-                                s.conslultID = d.data.result;
+                                s.consultID = d.data.result;
                                 s.$apply();
+                                s.isVsToday = false;
                             }
                         });
 
@@ -453,56 +490,75 @@
         s.diagnoseInfo = {}
         s.diagnoseRemarks = '';
         s.searchQRcode = '';
-        s.conslultID = '';
+        s.consultID = '';
         s.vitalSigns = {};
         s.showClientListBTN = true;
     }
 
-    s.savePrescription = function () {
+    s.savePrescription = function (bool) {
         swal({
             title: "SAVING",
             text: "Please wait while we are saving your data.",
             type: "info",
             showConfirmButton: false
         });
+     
+        // UPDATING
+        if (bool) {
+            h.post('../Dental/updatePrescription', { consultID: s.consultID, newListRx: s.RxList }).then(function (d) {
+                if (d.data.status == "error") {
+                    swal({
+                        title: "ERROR",
+                        text: "Something went wrong, " + d.data.msg,
+                        type: "error"
+                    });
+                }
 
-        h.post('../Dental/savePrescription_Dental', { consultID: s.conslultID, listRx: s.RxList }).then(function (d) {
-            if (d.data.status == "error") {
-                swal({
-                    title: "ERROR",
-                    text: "Something went wrong, " + d.data.msg,
-                    type: "error"
-                });
-            }
+                else {
+                    swal({
+                        title: "SUCCESSFUL",
+                        text: d.data.msg,
+                        type: "success",
+                    });
 
-            else {
-                swal({
-                    title: "SUCCESSFUL",
-                    text: d.data.msg,
-                    type: "success",
-                });
+                    s.cancelEditting('rx');
+                }
+            });
+        }
 
-                s.resetForm();
-            }
-        });
+        // SAVING
+        else {
+            h.post('../Dental/savePrescription_Dental', { consultID: s.consultID, listRx: s.RxList }).then(function (d) {
+                if (d.data.status == "error") {
+                    swal({
+                        title: "ERROR",
+                        text: "Something went wrong, " + d.data.msg,
+                        type: "error"
+                    });
+                }
+
+                else {
+                    swal({
+                        title: "SUCCESSFUL",
+                        text: d.data.msg,
+                        type: "success",
+                    });
+                }
+            });
+        }
+
+        s.resetForm();
     }
 
     s.editDiagnosis = function (data) {
-        data.rawData.birthdate = data.rawData.birthDate != null ? new Date(moment(data.rawData.birthDate).format()) : null;
-        data.rawData.sex = data.rawData.sex != null ? (data.rawData.sex == "true" ? 'true' : 'false') : null;
-
-        s.qrData = data.rawData;
-        s.qrData.age = moment().diff(moment(data.rawData.birthDate).format('L'), 'years');
-        s.qrData.fullAddress = (data.rawData.brgyPermAddress == null ? "" : data.rawData.brgyPermAddress) + ' '
-                                + (data.rawData.cityMunPermAddress == null ? "" : data.rawData.cityMunPermAddress) + ' '
-                                + (data.rawData.provincePermAddress == null ? "" : data.rawData.provincePermAddress);
+        formatEmpData(data);
 
         s.isEdittingDiagnosis = true;
         s.diagnose = {};
         s.diagnoseInfo = {}
-        getBPhistory(data.rawData.qrCode, s.qrData.age);
+        getBPhistory(data.qrCode, s.qrData.age);
  
-        angular.forEach(data.rawData.diagnosis, function (rec) {
+        angular.forEach(data.diagnosis, function (rec) {
             switch(rec.diagnoseID)
             {
                 case 'DIAG023':     // Other Diagnosis
@@ -514,12 +570,12 @@
                     break;
                 case 'DIAG049':     // Tooth Extraction
                     s.diagnose.DIAG049 = true;
-                    s.diagnoseInfo.toothNum = data.rawData.toothNum;
-                    s.per.personnelID = data.rawData.dentistID;
+                    s.diagnoseInfo.toothNum = data.toothNum;
+                    s.per.personnelID = data.dentistID;
                     break;
                 case 'DIAG024':     // Referral
-                    s.diagnoseInfo.outsideReferral = data.rawData.outsideReferral;
-                    s.diagnoseInfo.remarks = data.rawData.remarks;
+                    s.diagnoseInfo.outsideReferral = data.outsideReferral;
+                    s.diagnoseInfo.remarks = data.remarks;
                     break;
             }
         });
@@ -528,23 +584,34 @@
         $('#diagnosHistory_modal').modal('hide');
     }
 
-    s.cancelEditting = function () {
+    s.cancelEditting = function (data) {
         s.resetForm();
-        s.isEdittingDiagnosis = false;
+
+        if (data == 'rx')
+            s.isEdittingRx = false;
+
+        else
+            s.isEdittingDiagnosis = false;
+
         s.showClientList = !s.showClientList;
+    }
+
+    s.editRx = function (data) {
+        formatEmpData(data);
+        s.consultID = data.consultID;
+        s.isEdittingRx = true;
+        s.RxList = [];
+
+        h.post('../Dental/getRxList?consultID=' + data.consultID).then(function (d) {
+            s.RxList = d.data;
+        });
+
+        s.showClientList = !s.showClientList;
+        $('#diagnosHistory_modal').modal('hide');
     }
     
     s.updateDiagnosis = function (diagnosis, info, dentist) {
-        if(!diagnosis.DIAG023 && !diagnosis.DIAG048 && !diagnosis.DIAG049 && !info.outsideReferral)
-        {
-            swal({
-                title: "Failed",
-                text: "Please fill-up the diagnosis form!",
-                type: "error"
-            });
-        }
-
-        else {
+        
             
                     swal({
                         title: "UPDATING",
@@ -587,16 +654,15 @@
                                 if (isConfirm) {
                                     //s.showRx = !s.showRx;
                                     getDiagnoseClientList();
-                                    s.cancelEditting();
+                                    s.cancelEditting('diagnosis');
                                     //s.showClientListBTN = false;
-                                    //s.conslultID = d.data.result;
+                                    //s.consultID = d.data.result;
                                     s.$apply();
                                 }
                             });
 
                         }
                     });
-                }
     }
 
 
@@ -616,12 +682,3 @@
 
 }]);
 
-app.filter('ageFilter', function () {
-    return function (birthday) {
-        var birthday = new Date(birthday);
-        var today = new Date();
-        var age = ((today - birthday) / (31557600000));
-        var age = Math.floor(age);
-        return age;
-    }
-});

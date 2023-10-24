@@ -22,6 +22,7 @@ namespace MediCon.Models
         public Nullable<decimal> dosage { get; set; }
         public Nullable<int> perDay { get; set; }
         public string noDay { get; set; }
+        public string note { get; set; }
         public Nullable<bool> isRelease { get; set; }
         public Nullable<int> qtyReleased { get; set; }
         public string userIDreleased { get; set; }

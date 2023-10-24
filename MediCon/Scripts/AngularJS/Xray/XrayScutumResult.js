@@ -32,6 +32,32 @@
         s.mainSearch(content);
     });
 
+    s.searchPerson = function (info, infoType) {
+        searchParam = info;
+        searchType = infoType;
+
+        if (info.length > 1) {
+            s.tableLoader = true;
+
+            h.post('../XrayResult/GetClientRecord', { param: info, type: infoType == "Name" ? 1 : 0 }).then(function (d) {
+
+                angular.forEach(d.data, function (d) {
+                    angular.forEach(d, function (e) {
+                        e.birthdate = moment(e.birthdate).format('ll');
+                        e.dateTimeLog = moment(e.dateTimeLog).format('ll');
+                        e.DateXray = moment(e.DateXray).format('ll');
+                        e.xrayResultDate = e.xrayResultDate == null ? null : moment(e.xrayResultDate).format('ll');
+                    })
+                });
+
+                s.personList = {};
+                s.personList = d.data;
+                s.tableLoader = false;
+            });
+        }
+    }
+
+
     s.mainSearch = function (qrCode) {
         s.loader = true;
         s.isAlreadyRequested = false;

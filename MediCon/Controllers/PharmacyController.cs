@@ -28,30 +28,7 @@ namespace MediCon.Controllers
         {
             try
             {
-                var list = db.spOT_MedicineDispensing(qrCode).GroupBy(a => a.serviceID).ToList();
-                //var list = db.OutgoingItems.Join(db.MedicalPrescriptions, oi => oi.rxID, mp => mp.rxID, (oi, mp) => new { oi, mp })
-                //                           .Join(db.Consultations, oimp => oimp.mp.consultID, c => c.consultID, (oimp, c) => new { oimp, c })
-                //                           .Join(db.VitalSigns, oimpvs => oimpvs.c.vSignID, vs => vs.vSignID, (oimpvs, vs) => new { oimpvs, vs })
-                //                           .Join(db.ProductLists, _pl => _pl.oimpvs.oimp.oi.productCode, pl => pl.productCode, ( _pl , pl) => new { _pl, pl})
-                //                           .Join(db.ProductUnits, _plpu => _plpu.pl.unitID, pu => pu.unitID, (_plpu, pu) => new { _plpu, pu})
-                //                           .Join(db.Measurements, _plme => _plme._plpu.pl.measurementID, me => me.measurementID , (_plme, me) => new {_plme , me})
-                //                           .Where(w => w._plme._plpu._pl.vs.qrCode == qrCode)
-                //                           .Select(s => new { 
-                                           
-                //                                s._plme._plpu._pl.vs.qrCode,
-                //                                s._plme._plpu._pl.oimpvs.oimp.mp.serviceID,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.outID,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.productCode,
-                //                                s._plme._plpu.pl.productDesc,
-                //                                s.me.measurementDesc,
-                //                                s._plme.pu.unitDesc,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.dosage,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.perDay,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.noDay,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.qtyRx,
-                //                                s._plme._plpu._pl.oimpvs.oimp.oi.isRelease
-
-                //                           }).ToList();
+                var list = db.spOT_MedicineDispensing(qrCode).OrderByDescending(b => b.dateTimeRx).GroupBy(a => new { a.serviceID, a.dateTimeRx, a.personnelID }).ToList();
 
                 var serializer = new JavaScriptSerializer();
                 serializer.MaxJsonLength = Int32.MaxValue;

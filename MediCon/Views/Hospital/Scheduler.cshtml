@@ -109,6 +109,7 @@
                             </div>
                         </div>
                         <div class="ibox-content" style="height: 582px;">
+                            <label>LEGEND: <i class="fa fa-check-circle text-success"></i> <label class="text-success"> DONE</label></label> <small> [Atleast 1 laboratory test]</small>
                             <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                 <table class="table table-striped">
                                     <thead>
@@ -136,7 +137,8 @@
                                         <tr ng-repeat="item in patientList">
                                             <td>{{$index + 1}}</td>
                                             <td>{{item.idNo}}</td>
-                                            <td><i ng-show="item.isTested > 0" class="fa fa-check-circle text-success"></i> {{item.fullNameLast}}</td>
+                                            <td ng-show="item.isTested == 0">{{item.fullNameLast}}</td>
+                                            <td ng-show="item.isTested > 0"><i class="fa fa-check-circle text-success"></i> <a ng-click="showTestedLab(item)">{{item.fullNameLast}}</a></td>
                                             <td>{{item.shortDepartmentName}}</td>
                                         </tr>
                                     </tbody>
@@ -151,6 +153,50 @@
             </div>
         </div>
     </div>
+
+    @*MODAL LAB TEST TAKEN*@
+    <div class="modal fade" id="modalLabTestTaken">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center">List of Availed Laboratory Tests</h4>
+                </div>
+                <div class="modal-body" style="height: 100%;">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table table-stripped table-hover" style="width: 100%;">
+                            <tbody>
+                                <tr class="text-center" ng-show="medHistLoader_modal">
+                                    <td colspan="2">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are loading your data...</i></text>
+                                    </td>
+                                </tr>
+                                <tr class="text-center" ng-show="labHistoryList.length == 0 && bpLoader == false">
+                                    <td colspan="2">
+                                        <label class="text-danger">NO INFORMATION FOUND!</label>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="dh in labHistoryList | orderBy: '-dateTested'">
+                                    <td class="text-center">{{$index + 1}}</td>
+                                    <td>
+                                        {{dh.labTestID == 'L0004' ? dh.labTestName + ' (' + dh.ecgDesc + ')' :
+                                        dh.labTestID == 'L0006' ? dh.labTestName + ' (' + dh.xrayDesc + ')' :
+                                        dh.labTestID == 'L0023' ? dh.labTestName + ' (' + dh.ultrasoundDesc + ')' : dh.labTestName}}
+                                    </td>
+                                    <td class="text-center">{{dh.dateTested == 'Invalid date' ? '':dh.dateTested}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*MODAL LAB TEST TAKEN*@
 
 </div>
 

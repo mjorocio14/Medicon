@@ -20,6 +20,9 @@ namespace MediCon.Models
         public string productCode { get; set; }
         public string productDesc { get; set; }
         public string measurementDesc { get; set; }
+        public Nullable<System.DateTime> dateTimeRx { get; set; }
+        public string personnelID { get; set; }
+        public string consultID { get; set; }
         public string unitDesc { get; set; }
         public Nullable<decimal> dosage { get; set; }
         public Nullable<int> perDay { get; set; }
@@ -28,5 +31,10 @@ namespace MediCon.Models
         public Nullable<bool> isRelease { get; set; }
         public Nullable<int> qtyReleased { get; set; }
         public Nullable<System.DateTime> dateTimeReleased { get; set; }
+        public string note { get; set; }
+        public string personnel_lastName { get; set; }
+        public string personnel_firstName { get; set; }
+        public string personnel_midInit { get; set; }
+        public string personnel_extName { get; set; }
     }
 }

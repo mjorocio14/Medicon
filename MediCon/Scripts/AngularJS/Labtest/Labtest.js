@@ -3,8 +3,8 @@
     s.qrData = {};
     s.showClientListBTN = true;
     s.showClientList = false;
-    s.searchBy = 'byQR';
-    s.showInfoForm = true;
+    s.searchBy = 'byName';
+    s.showInfoForm = false;
     s.tableLoader = false;
     s.searchResultList = [];
     s.showBackBtn = false;
@@ -20,7 +20,6 @@
         }
     );
 
-    startCamera();
     function startCamera() {
         Instascan.Camera.getCameras().then(function (cameras) {
             if (cameras.length > 0) {
@@ -101,9 +100,9 @@
 
     s.mainSearchByName = function (data) {
         s.tableLoader = true;
+        s.searchResultList = [];
 
         h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
-            s.searchResultList = [];
 
             if (d.data.status == 'error') {
                 swal({

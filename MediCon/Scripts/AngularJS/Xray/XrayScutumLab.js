@@ -38,6 +38,57 @@
         s.mainSearch(content);
     });
 
+    s.searchByName = function () {
+        s.searchResultList = [];
+        s.infoFormData = {};
+        $('#modalPatient').modal('show');
+    }
+
+    s.mainSearchByName = function (data) {
+        s.modal_tableLoader = true;
+
+        h.post('../QRPersonalInfo/getInfoByName', { lastName: data.lastName, firstName: data.firstName }).then(function (d) {
+            s.searchResultList = [];
+
+            if (d.data.status == 'error') {
+                swal({
+                    title: "Searching failed!",
+                    text: d.data.msg,
+                    type: "error"
+                });
+            }
+
+            else {
+                angular.forEach(d.data, function (item) {
+                    item.birthDate = item.birthDate != null ? moment(item.birthDate).format('ll') : null;
+                })
+
+                s.searchResultList = d.data;
+            }
+
+            s.modal_tableLoader = false;
+        })
+    }
+
+    s.selectEmp = function (empData) {
+        s.isAlreadyRequested = false;
+        s.qrData = {};
+        s.status = {};
+        s.searchQRcode = '';
+        s.mainSearch(empData.qrCode);
+        $('#modalPatient').modal('hide');
+    }
+
+    function formatEmpData(data) {
+        data.birthdate = data.birthDate != null ? new Date(moment(data.birthDate).format()) : null;
+        data.sex = data.sex != null ? (data.sex == "MALE" ? 'true' : 'false') : null;
+        s.qrData = data;
+        s.qrData.age = moment().diff(moment(data.birthdate).format('L'), 'years');
+        s.qrData.fullAddress = (data.brgyPermAddress == null ? "" : data.brgyPermAddress) + ' '
+                                + (data.cityMunPermAddress == null ? "" : data.cityMunPermAddress) + ' '
+                                + (data.provincePermAddress == null ? "" : data.provincePermAddress);
+    }
+
     s.mainSearch = function (qrCode) {
         s.loader = true;
         s.isAlreadyRequested = false;
@@ -63,42 +114,68 @@
                     }
 
                     else {
-                            d.data.qr.birthdate = d.data.qr.birthDate != null ? new Date(moment(d.data.qr.birthDate).format()) : null;
-                            d.data.qr.sex = d.data.qr.sex != null ? (d.data.qr.sex == "MALE" ? 'true' : 'false') : null;
+                            //d.data.qr.birthdate = d.data.qr.birthDate != null ? new Date(moment(d.data.qr.birthDate).format()) : null;
+                            //d.data.qr.sex = d.data.qr.sex != null ? (d.data.qr.sex == "MALE" ? 'true' : 'false') : null;
 
-                            s.qrData = d.data.qr;
-                            s.qrData.fullAddress = (d.data.qr.brgyPermAddress == null ? "" : d.data.qr.brgyPermAddress) + ' '
-                                        + (d.data.qr.cityMunPermAddress == null ? "" : d.data.qr.cityMunPermAddress) + ' '
-                                        + (d.data.qr.provincePermAddress == null ? "" : d.data.qr.provincePermAddress);
+                            //s.qrData = d.data.qr;
+                            //s.qrData.fullAddress = (d.data.qr.brgyPermAddress == null ? "" : d.data.qr.brgyPermAddress) + ' '
+                            //            + (d.data.qr.cityMunPermAddress == null ? "" : d.data.qr.cityMunPermAddress) + ' '
+                        //            + (d.data.qr.provincePermAddress == null ? "" : d.data.qr.provincePermAddress);
+                        formatEmpData(d.data.qr);
+                        getLabData(d.data);
 
+                            //// DISPLAY XRAY AND SCUTUM TAG
+                            //s.status.isXray = d.data.tag[0].isXray == true ? 'Yes' : d.data.tag[0].isXray == false ? 'No' : '';
+                            //s.status.isNeedScutum = d.data.tag[0].isNeedScutum == true ? 'Yes' : d.data.tag[0].isNeedScutum == false ? 'No' : '';
+                            //s.status.personStatusID = d.data.tag[0].personStatusID;
 
-                            // DISPLAY XRAY AND SCUTUM TAG
-                            s.status.isXray = d.data.tag[0].isXray == true ? 'Yes' : d.data.tag[0].isXray == false ? 'No' : '';
-                            s.status.isNeedScutum = d.data.tag[0].isNeedScutum == true ? 'Yes' : d.data.tag[0].isNeedScutum == false ? 'No' : '';
-                            s.status.personStatusID = d.data.tag[0].personStatusID;
+                            //if (s.status.isNeedScutum == 'No' && !s.isEditting) {
+                            //    swal({
+                            //        title: "NO SCUTUM REQUEST!",
+                            //        text: "Client was x-ray but has no scutum request is created.",
+                            //        type: "error"
+                            //    });
+                            //}
 
-                            if (s.status.isNeedScutum == 'No' && !s.isEditting) {
-                                swal({
-                                    title: "NO SCUTUM REQUEST!",
-                                    text: "Client was x-ray but has no scutum request is created.",
-                                    type: "error"
-                                });
-                            }
+                            //if (d.data.labReqCount > 0 && !s.isEditting) {
+                            //    s.isAlreadyRequested = true;
 
-                            if (d.data.labReqCount > 0 && !s.isEditting) {
-                                s.isAlreadyRequested = true;
-
-                                swal({
-                                    title: "ALREADY REQUESTED!",
-                                    text: "Laboratory request is already created for this client today.",
-                                    type: "error"
-                                });
-                            }
+                            //    swal({
+                            //        title: "ALREADY REQUESTED!",
+                            //        text: "Laboratory request is already created for this client today.",
+                            //        type: "error"
+                            //    });
+                            //}
                     }
                 }
             })
 
         s.loader = false;
+    }
+
+    function getLabData(data) {
+        // DISPLAY XRAY AND SCUTUM TAG
+        s.status.isXray = data.tag[0].isXray == true ? 'Yes' : data.tag[0].isXray == false ? 'No' : '';
+        s.status.isNeedScutum = data.tag[0].isNeedScutum == true ? 'Yes' : data.tag[0].isNeedScutum == false ? 'No' : '';
+        s.status.personStatusID = data.tag[0].personStatusID;
+
+        if (s.status.isNeedScutum == 'No' && !s.isEditting) {
+            swal({
+                title: "NO SCUTUM REQUEST!",
+                text: "Client was x-ray but has no scutum request is created.",
+                type: "error"
+            });
+        }
+
+        if (data.labReqCount > 0 && !s.isEditting) {
+            s.isAlreadyRequested = true;
+
+            swal({
+                title: "ALREADY REQUESTED!",
+                text: "Laboratory request is already created for this client today.",
+                type: "error"
+            });
+        }
     }
 
     s.proceed = function (qrInfo, status) {

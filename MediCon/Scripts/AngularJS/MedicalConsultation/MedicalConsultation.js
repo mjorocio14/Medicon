@@ -18,12 +18,12 @@
     s.medicalRecord_loader = false;
     s.showMedicalRecord = false;
     s.isEditting = false;
-    getSpecialist();
     s.isShowEditRxForm = true;
     s.labSchedInfo = {};
     s.checkLabList = 0;
     events = [];
     let filteredEvents = [];
+    s.showLabScheduler = true;
 
 
     //  Date Picker for Scheduler Initialization
@@ -77,24 +77,26 @@
             resetDatePicker(isModal);
 
         else {
-            filteredEvents = events.filter(function (d) {
-                return d.hospitalID == id;
-            });
+            if(id != 'HPL004') {
+                filteredEvents = events.filter(function (d) {
+                    return d.hospitalID == id;
+                });
          
-            if (isModal) {
-                // EDIT MODAL DIALOG
-                // SET RED DOT INDICATOR TO CALENDAR ACCORDING TO HOSPITAL LAB AVAILABILITY
-                datePicker_modal.config.onDayCreate = [datePicker_onDayCreate];
-                // DISABLE DATES THAT ARE NOT PART OF HOSPITAL LAB AVAILABILITY
-                datePicker_modal.config.disable.push(datePicker_disable_dates);
-            }
+                if (isModal) {
+                    // EDIT MODAL DIALOG
+                    // SET RED DOT INDICATOR TO CALENDAR ACCORDING TO HOSPITAL LAB AVAILABILITY
+                    datePicker_modal.config.onDayCreate = [datePicker_onDayCreate];
+                    // DISABLE DATES THAT ARE NOT PART OF HOSPITAL LAB AVAILABILITY
+                    datePicker_modal.config.disable.push(datePicker_disable_dates);
+                }
             
-            else {
-                // SET RED DOT INDICATOR TO CALENDAR ACCORDING TO HOSPITAL LAB AVAILABILITY
-                date_picker.config.onDayCreate = [datePicker_onDayCreate];
-                // DISABLE DATES THAT ARE NOT PART OF HOSPITAL LAB AVAILABILITY
-                date_picker.config.disable.push(datePicker_disable_dates);
-            }
+                else {
+                    // SET RED DOT INDICATOR TO CALENDAR ACCORDING TO HOSPITAL LAB AVAILABILITY
+                    date_picker.config.onDayCreate = [datePicker_onDayCreate];
+                    // DISABLE DATES THAT ARE NOT PART OF HOSPITAL LAB AVAILABILITY
+                    date_picker.config.disable.push(datePicker_disable_dates);
+                }
+            } 
         }
 
         isModal ? datePicker_modal.redraw() : date_picker.redraw();
@@ -346,15 +348,7 @@
             }
 
             else {
-                
-                angular.forEach(d.data, function (value) {
-                    if (value.bloodChemResult.length > 0)
-                    {
-                        angular.forEach(value.bloodChemResult, function (data) {
-                            data.bloodChemDateEncoded = moment(data.bloodChemDateEncoded).format('lll');
-                        });
-                    }
-                        
+                angular.forEach(d.data, function (value) {  
                     value.dateTested = moment(value.dateTested).format('lll');
                 });
 
@@ -410,112 +404,48 @@
         
     }
 
-    function getSpecialist() {
-        h.post("../LaboratoryResult/getSpecialist").then(function (d) {
-            s.specialistData = d.data;
+    s.viewLabResult = function (data) 
+    {
+        s.modalTitle = data.labTestName;
+        $('#modalLabResult').modal('show');
+        s.imgCount = 0;
+        s.currentImgIndex = 0;
+        s.ImgCollection = [];
+
+        s.labResultLoader = true;
+        h.post('../LaboratoryResult/getScannedList', { qrCode: data.qrCode, labID: data.labID }).then(function (d) {
+            s.imgCount = d.data.length;
+
+            for (var i = 0; i < d.data.length; i++) {
+                s.ImgCollection.push({ FileName: d.data[i], Path: 'getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[i] });
+            }
+
+            document.getElementById('labResult').innerHTML = '<img id="APreview" style="text-align: center;height:100%; width:100%;" src="getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[0] + '" height="60%" width="100%" />';
+            s.labResultLoader = false;
         });
-    }
+    };
 
-    s.viewLabResult = function (data) {
-        
-        //   URINALYSIS RESULT
-        if (data.labTestID == "L0001") {    
-            s.uri = {};
-
-            h.post("../LaboratoryResult/getUrinalysisResult?labID=" + data.labID).then(function (d) {
-                s.uri = d.data[0];
-            });
-
-            $('#modalUrinalysis').modal('show');
+    s.navLabImg = function (dir) {
+        if(dir == 'prev') {
+            var img = document.getElementById('APreview');
+  
+            s.currentImgIndex--;
+            if (s.currentImgIndex < 0) {
+                s.currentImgIndex = s.imgCount - 1;
+            }
         }
 
-        //   CBC RESULT
-        else if (data.labTestID == "L0002") {
-            s.cbc = {};
-
-            h.post("../LaboratoryResult/getCBCresult?labID=" + data.labID).then(function (d) {
-                s.cbc = d.data[0];
-            });
-            
-            $('#modalCbc').modal('show');
-        }
-
-        //   FECALYSIS RESULT
-        else if (data.labTestID == "L0003") {
-            s.fecalysis = {};
-
-            h.post("../LaboratoryResult/getFecalysisResult?labID=" + data.labID).then(function (d) {
-                s.fecalysis = d.data;
-            });
-
-            $('#modalFecalysis').modal('show');
-        }
-
-        //   CHEST X-RAY RESULT
-        else if (data.labTestID == "L0006") {
-            s.xray = {};
-
-            h.post("../LaboratoryResult/getXrayResult?labID=" + data.labID).then(function (d) {
-                d.data.mcXrayDateResult = new Date(moment(d.data.mcXrayDateResult).format());
-                s.xray = d.data;
-            });
-
-            $('#modalXray').modal('show');
-        }
-
-        //   ULTRASOUND RESULT
-        else if (data.labTestID == "L0023") {
-            s.ultrasound = {};
-
-            h.post("../LaboratoryResult/getUltrasoundResult?labID=" + data.labID).then(function (d) {
-                d.data.ultraDateResult = new Date(moment(d.data.ultraDateResult).format());
-                s.ultrasound = d.data;
-            });
-
-            $('#modalUltrasound').modal('show');
-        }
-
-        //   2D ECHO RESULT
-        else if (data.labTestID == "L0024") {
-            s.echo = {};
-
-            h.post("../LaboratoryResult/get2dEchoResult?labID=" + data.labID).then(function (d) {
-                d.data.echoDateResult = new Date(moment(d.data.echoDateResult).format());
-                s.echo = d.data;
-            });
-
-            $('#modalEcho').modal('show');
-        }
-
-        //   HbA1c RESULT
-        else if (data.labTestID == "L0025") {
-            s.hba1c = {};
-
-            //h.post("../LaboratoryResult/getHbA1cResult?labID=" + data.labID).then(function (d) {
-            //    d.data.echoDateResult = new Date(moment(d.data.echoDateResult).format());
-            //    s.echo = d.data;
-            //});
-
-            //$('#modalEcho').modal('show');
-        }
-
-        //   ECG RESULT
-        else if (data.labTestID == "L0004") {
-            s.ecg = {};
-
-            h.post("../LaboratoryResult/getECGResult?labID=" + data.labID).then(function (d) {
-                s.ecg = d.data;
-            });
-
-            $('#modalECG').modal('show');
-        }
-
-        //   BLOOD CHEM RESULT
         else {
-            s.BCResult = {};
-            s.BCResult = data;
-            $('#modalBLoodChem').modal('show');
+            var img = document.getElementById('APreview');
+    
+            s.currentImgIndex++;
+            if (s.currentImgIndex >= s.imgCount) {
+                s.currentImgIndex = 0;
+            }
         }
+
+        img.src = s.ImgCollection[s.currentImgIndex].Path;
+        s.displayFileName = s.ImgCollection[s.currentImgIndex].FileName;
     }
 
     s.saveDiagnosis = function (refer, diagnosisCheck, detail, remarks, labtest, labSchedInfo, xrayDesc, ecgDesc, ultrasoundDesc)
@@ -529,7 +459,7 @@
             });
         }
         
-        else if (s.checkLabList > 0 && labSchedInfo.labSchedule == undefined || labSchedInfo.labSchedule == ''){
+        else if (s.checkLabList > 0 && labSchedInfo.hospitalID != 'HPL004' && (labSchedInfo.labSchedule == undefined || labSchedInfo.labSchedule == '')){
             swal({
                 title: "ERROR",
                 text: "Please set a laboratory schedule for the selected hospital.",
@@ -603,8 +533,7 @@
 
                     else {
                         // Send SMS schedule to patient
-                        //s.qrData.contactNo = "09688515104";
-                        if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '')) sendSMS(labSchedInfo);
+                        if (labtestList.length > 0 && (s.qrData.contactNo != null && s.qrData.contactNo != '') && labSchedInfo.hospitalID != 'HPL004') sendSMS(labSchedInfo);
 
                         swal({
                             title: "SUCCESSFUL",
@@ -1156,13 +1085,15 @@
                             
                             s.selectHospital(hospitalData[0].hospitalID, true);
                            
-                            // Set date picker month to labSchedule month
-                            datePicker_modal.changeMonth(moment(hospitalData[0].scheduleDate).format('M') - 1, false);
+                            if(hospitalData[0].hospitalID != "HPL004")  {
+                                // Set date picker month to labSchedule month
+                                datePicker_modal.changeMonth(moment(hospitalData[0].scheduleDate).format('M') - 1, false);
+                            }
 
                             s.resultDiag.setLabSched = {
                                 isNeededLab: true,
-                                hospitalID: hospitalData[0].hospitalID,
-                                labSchedule: moment(hospitalData[0].scheduleDate).format('YYYY-MM-DD'),
+                                hospitalID: hospitalData[0].hospitalID == null ? "HPL004" : hospitalData[0].hospitalID,
+                                labSchedule: hospitalData[0].hospitalID == null ? null : moment(hospitalData[0].scheduleDate).format('YYYY-MM-DD'),
                                 currentCalendarID: hospitalData[0].calendarID
                             };
                         }
@@ -1282,16 +1213,7 @@
                 remarks: result.info.remarks,
             }
            
-            //if((!result.hospitalID || !result.labSchedule) && labList.length > 0)
-            //{
-            //    swal({
-            //        title: "ERROR",
-            //        text: "Please select hospital and set laboratory date.",
-            //        type: "error"
-            //    });
-            //}
-            
-            if (labList.length > 0 && result.setLabSched.labSchedule == undefined) {
+            if (labList.length > 0 && result.setLabSched.hospitalID != "HPL004" && (result.setLabSched.labSchedule == "" || result.setLabSched.labSchedule == undefined || result.setLabSched.labSchedule == null)) {
                 swal({
                     title: "ERROR",
                     text: "Please set a laboratory schedule for the selected hospital.",
@@ -1333,6 +1255,9 @@
 
                         $('#personDiagnosis_modal').modal('hide');
                         s.filterResult(s.FilterDate);
+
+                        // Send SMS schedule to patient
+                        if (labList.length > 0 && (result.info.contactNo != null && result.info.contactNo != '') && result.setLabSched.hospitalID != 'HPL004') sendSMS(result.info);
                     }
                 });
             }
@@ -1389,6 +1314,7 @@
         data.noDay = med.noDay;
         data.dosage = med.dosage;
         data.perDay = med.perDay
+        data.note = med.note;
 
             //.... QTY CALCULATION
             var result = 0;
@@ -1462,7 +1388,7 @@
         });
     }
 
-    function sendSMS(schedInfo) {
+    function sendSMS(schedInfo) { 
         let data = {
             employee: s.qrData.fullNameTitle,
             contactNo: s.qrData.contactNo,

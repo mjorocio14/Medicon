@@ -1,0 +1,245 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="ReadingGlassesCtrl">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-4">
+            <h2 >Reading Glasses</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">EYE CARE</a>
+                </li>
+                <li class="active">
+                    <strong>Libreng Reading Glasses</strong>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="animated fadeInRight ecommerce">
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title text-center">
+                            <label class="text-center">QR CODE INFORMATION</label>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                    <div class="profile_img">
+                                        <!-- Current avatar -->
+                                        <video id="preview" class="img-responsive avatar-view" style="width: 250px; height: 50%; margin:0px auto;" />
+                                    </div>
+                                    <form name="qrSearchForm">
+                                        <div class="input-group" style="margin-top: 10px; margin-bottom: -10px;">
+                                            <input type="text" class="form-control border-green" ng-model="searchQRcode" placeholder="Search by QR code number" style="width:100%;" required>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success" ng-disabled="qrSearchForm.$invalid" ng-click="mainSearch(searchQRcode)"> Find <i class="fa fa-qrcode"></i></button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                    <br />
+                                    <button class="btn btn-warning full-width" ng-click="searchByName()"><i class="fa fa-search"></i> Search by name</button>
+                                    <br />
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                    <div class="text-center" ng-show="loader" style="margin-top: 15%;">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are getting your data...</i></text>
+                                    </div>
+                                    <div ng-show="!loader">
+                                            <form id="QR_FORM" name="QR_FORM">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="qr_lastName">QR CODE</label>
+                                                            <input type="text" id="qr_qrcode" name="qr_qrcode" required ng-model="qrData.qrCode" placeholder="QR Code" class="form-control text-center" disabled />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-9 col-xs-9 col-lg-9">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="qr_lastName">Full name</label>
+                                                            <input type="text" id="qr_lastName" name="qr_lastName" required ng-model="qrData.fullNameLast" placeholder="Last name" class=" text-center form-control" disabled />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 col-xs-3 col-lg-3">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="qr_birthdate">Age</label>
+                                                            <input type="text" id="qr_age" name="qr_age" ng-model="qrData.age" class="form-control text-center" readonly />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-4 col-xs-4 col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="qr_birthdate">Birthday</label>
+                                                            <input type="date" id="qr_birthdate" name="qr_birthdate" required ng-model="qrData.birthdate" class="form-control text-center" ng-disabled="!isEditting" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <label class="control-label">Sex</label>
+                                                        <div class="form-group text-center">
+                                                            <div class="radio radio-primary radio-inline">
+                                                                <input type="radio" id="radio_sex_male" value="true" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                                <label for="radio_sex_male"> Male </label>
+                                                            </div>
+                                                            <div class="radio radio-danger radio-inline">
+                                                                <input type="radio" id="radio_sex_female" value="false" name="radio_sex" ng-model="qrData.sex" disabled />
+                                                                <label for="radio_sex_female"> Female </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-4 col-xs-4 col-lg-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="qr_contactNo">Contact no.</label>
+                                                            <input type="text" id="qr_contactNo" name="qr_contactNo" ng-model="qrData.contactNo" placeholder="Contact no." class="form-control text-center" readonly />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-lg-12 col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="control-label" for="qr_address">Address</label>
+                                                            <input type="text" id="qr_address" name="qr_address" ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <button type="submit" ng-hide="btnProceed" class="btn btn-primary pull-right" style="margin-right: 2px;" ng-click="!QR_FORM.$invalid ? proceedBtn(qrData.qrCode):''"><i class="fa fa-arrow-right"></i> Proceed </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /QR CODE INFO FORM -->
+            </div>
+        </div>
+        <!-- SOCIAL SERVICES FORM -->
+
+        <!-- LIST OF PATIENTS -->
+        <div class="animated fadeInRight ecommerce">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title text-center">
+                    <label class="text-center">LIST OF PATIENTS</label>
+                </div>
+                <div class="ibox-content">
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table id="clientList_tbl" class="table table-stripped table-hover" style="width: 100%;">
+                            <thead>
+                                <tr>
+
+                                    <th>#</th>
+                                    <th>Last name</th>
+                                    <th>First name</th>
+                                    <th>M.I.</th>
+                                    <th>Suffix</th>
+                                    <th>Sex</th>
+                                    <th>Age</th>
+                                    <th>Contact no.</th>
+                                    <th>Address</th>
+                                    <th>Date & Time</th>
+                                    <th class="text-center" data-sort-ignore="true">With Glass</th>
+
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /LIST OF PATIENTS -->
+
+    </div>
+
+    <!-- MODAL SELECT PATIENT -->
+    <div class="modal fade" id="modalPatient">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" ng-click="resetModal()">&times;</button>
+                    <h4 class="modal-title text-center">Search Employee</h4>
+                </div>
+                <div class="modal-body" style="height: 100%;">
+                    <form id="INFO_FORM" name="INFO_FORM">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" id="info_lastName" name="info_lastName" ng-model="infoFormData.lastName" placeholder="Last name" class="form-control text-center" />
+                                </div>
+                            </div>
+                            <div class="col-sm-5">
+                                <div class="form-group">
+                                    <input type="text" id="info_firstName" name="info_firstName" ng-model="infoFormData.firstName" placeholder="First name" class="form-control text-center" />
+                                </div>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="btn btn-primary full-width" ng-disabled="INFO_FORM.$invalid" ng-click="mainSearchByName(infoFormData)"><i class="fa fa-search"></i> Search </button>
+                            </div>
+                        </div>
+                    </form>
+                    <hr />
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 300px !important;">
+                        <table class="table table-stripped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Last name</th>
+                                    <th>First name</th>
+                                    <th>Middle name</th>
+                                    <th>Sex</th>
+                                    <th>Birthday</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="text-center" ng-show="modal_tableLoader">
+                                    <td colspan="6">
+                                        <div class="sk-spinner sk-spinner-double-bounce">
+                                            <div class="sk-double-bounce1"></div>
+                                            <div class="sk-double-bounce2"></div>
+                                        </div>
+                                        <text><i>Please wait, we are loading your data...</i></text>
+                                    </td>
+                                </tr>
+                                <tr class="text-center" ng-show="searchResultList.length == 0 && modal_tableLoader == false">
+                                    <td colspan="6">
+                                        <text>NO INFORMATION FOUND!</text>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="person in searchResultList | orderBy: 'firstName'">
+                                    <td>{{person.lastName}}</td>
+                                    <td>{{person.firstName}}</td>
+                                    <td>{{person.middleName}}</td>
+                                    <td>{{person.sex == 'MALE' ? 'M' : person.sex == 'FEMALE' ? 'F' : ''}}</td>
+                                    <td>{{person.birthDate}}</td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-success" ng-click="selectEmp(person)">Select</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL SELECT PATIENT -->
+
+
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/ReadingGlasses/ReadingGlasses.js"></script>
+}

@@ -27,30 +27,22 @@ namespace MediCon.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<BloodChem> BloodChems { get; set; }
         public virtual DbSet<BloodPressure> BloodPressures { get; set; }
         public virtual DbSet<BrandList> BrandLists { get; set; }
-        public virtual DbSet<CBC> CBCs { get; set; }
         public virtual DbSet<Consultation> Consultations { get; set; }
         public virtual DbSet<Diagnosi> Diagnosis { get; set; }
         public virtual DbSet<DietCounseling> DietCounselings { get; set; }
-        public virtual DbSet<ECG> ECGs { get; set; }
         public virtual DbSet<EditRemark> EditRemarks { get; set; }
-        public virtual DbSet<Fecalysi> Fecalysis { get; set; }
-        public virtual DbSet<HbA1c> HbA1c { get; set; }
         public virtual DbSet<Hospital> Hospitals { get; set; }
         public virtual DbSet<HospitalCalendar> HospitalCalendars { get; set; }
-        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
         public virtual DbSet<LaboratoryGroupTest> LaboratoryGroupTests { get; set; }
         public virtual DbSet<LaboratoryTest> LaboratoryTests { get; set; }
         public virtual DbSet<MaleRepro_Diagnosis> MaleRepro_Diagnosis { get; set; }
         public virtual DbSet<MaleRepro_Interview> MaleRepro_Interview { get; set; }
         public virtual DbSet<Measurement> Measurements { get; set; }
-        public virtual DbSet<MedCon_Xray> MedCon_Xray { get; set; }
         public virtual DbSet<MedicalPrescription> MedicalPrescriptions { get; set; }
         public virtual DbSet<MenuAccess> MenuAccesses { get; set; }
         public virtual DbSet<MRHrequest> MRHrequests { get; set; }
-        public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
         public virtual DbSet<PapsmearBreastExam> PapsmearBreastExams { get; set; }
         public virtual DbSet<PatientAppointment> PatientAppointments { get; set; }
         public virtual DbSet<Personnel> Personnels { get; set; }
@@ -63,9 +55,6 @@ namespace MediCon.Models
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<Temp_LabPrices> Temp_LabPrices { get; set; }
         public virtual DbSet<Temp_Morbidity> Temp_Morbidity { get; set; }
-        public virtual DbSet<TwoDecho> TwoDechoes { get; set; }
-        public virtual DbSet<Ultrasound> Ultrasounds { get; set; }
-        public virtual DbSet<Urinalysi> Urinalysis { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
         public virtual DbSet<VitalSign> VitalSigns { get; set; }
         public virtual DbSet<Xray_Comorbidity> Xray_Comorbidity { get; set; }
@@ -77,6 +66,9 @@ namespace MediCon.Models
         public virtual DbSet<Xray_PersonStatus> Xray_PersonStatus { get; set; }
         public virtual DbSet<Xray_Screening> Xray_Screening { get; set; }
         public virtual DbSet<Xray_ScutumLabRequest> Xray_ScutumLabRequest { get; set; }
+        public virtual DbSet<LaboratoryExam> LaboratoryExams { get; set; }
+        public virtual DbSet<EyeCare> EyeCares { get; set; }
+        public virtual DbSet<OutgoingItem> OutgoingItems { get; set; }
     
         [DbFunction("MediconEntities", "fn_DashboardAnalytics")]
         public virtual IQueryable<fn_DashboardAnalytics_Result> fn_DashboardAnalytics()
@@ -154,16 +146,6 @@ namespace MediCon.Models
                 new ObjectParameter("paramDate", typeof(System.DateTime));
     
             return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPapsmearBreastExamClients_Result>("[MediconEntities].[fn_getPapsmearBreastExamClients](@paramDate)", paramDateParameter);
-        }
-    
-        [DbFunction("MediconEntities", "fn_getPatientLabHistory")]
-        public virtual IQueryable<fn_getPatientLabHistory_Result> fn_getPatientLabHistory(string qrCode)
-        {
-            var qrCodeParameter = qrCode != null ?
-                new ObjectParameter("qrCode", qrCode) :
-                new ObjectParameter("qrCode", typeof(string));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<fn_getPatientLabHistory_Result>("[MediconEntities].[fn_getPatientLabHistory](@qrCode)", qrCodeParameter);
         }
     
         [DbFunction("MediconEntities", "fn_getPatientXrayHistory")]

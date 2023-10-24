@@ -3,6 +3,7 @@
     getPhysicianList();
     getSchedule();
     s.modal_tableLoader = false;
+    s.scheduleData = {};
 
     let currMonth = new Date().getMonth();
     let currYr = new Date().getFullYear();
@@ -13,6 +14,7 @@
     s.showSchedPatient = false;
     s.tbl_loader = false;
     let clickedEventData = {};
+    let eventInfo = {};
 
     const dp = new DayPilot.Month("dp", {
         cssClassPrefix: "month_green",
@@ -31,6 +33,16 @@
         s.tbl_loader = true;
         getPatientList(args.e.data);
         s.showSchedPatient = true;
+
+        // ------------
+       
+        eventInfo = args.e.data;
+        //s.scheduleData.calendarID = args.e.data.id;
+        //s.scheduleData.physician = args.e.data.text;
+        //s.scheduleData.personnelID = args.e.data.personnelID;
+        //s.scheduleData.followUpDate = args.e.data.start;
+        //s.$apply();
+        //$('#modalPatientScheduler').modal('show');
     };
 
     s.hideClientList = function() {
@@ -48,27 +60,10 @@
         return count;
     }
 
-    s.createAppointment = function(empData) {
-        let countSched = checkSchedule(empData.qrCode);
-       
-        if(countSched.length > 0)
-        {
-            swal({
-                title: "ERROR",
-                text: "Schedule already exist!",
-                type: "error"
-            });
-        }
-       
-        else {
-
-            let physician = s.physicianList.filter(function (val) {
-                return val.personnelID == clickedEventData.personnelID;
-            });
-
+    s.createAppointment = function(appData) { 
             swal({
                 title: 'Appointment',
-                text: `Set appointment on ${s.headerDate} between ${empData.fullNameTitle} and Dr. ${physician[0].personnel_lastName}?`,
+                text: `Set appointment on ${moment(s.scheduleData.followUpDate).format('ll')} between ${appData.patientCount} patients and ${appData.physician}?`,
                 type: "info",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
@@ -86,7 +81,8 @@
                                 showConfirmButton: false
                             });
 
-                            h.post('../PatientCalendar/Create', {qrCode: empData.qrCode, calendarID: clickedEventData.id}).then(function (d) {
+                            //h.post('../PatientCalendar/Create', {qrCode: appData.qrCode, calendarID: clickedEventData.id}).then(function (d) {
+                            h.post('../PatientCalendar/Create', {calendarID: appData.calendarID, consultDate: moment(appData.date).format('YYYY-MM-DD'), personnelID: appData.personnelID}).then(function (d) {
                                 if (d.data.status == "error") {
                                     swal({
                                         title: "ERROR",
@@ -99,8 +95,9 @@
                                 else {
 
                                     // Send SMS schedule to patient
-                                    empData.contactNo = "09688515104";
-                                    if (empData.contactNo != null && empData.contactNo != '') sendSMS(empData, clickedEventData);
+                                    sendSMS(appData);
+                                    //appData.contactNo = "09688515104";
+                                    //if (appData.contactNo != null && appData.contactNo != '') sendSMS(appData, clickedEventData);
                                     
                                     swal({
                                         title: "Created!",
@@ -114,9 +111,12 @@
                                         if (isConfirm) {
                                             s.tbl_loader = true;
                                             getPatientList(clickedEventData);
+                                            
+                                            $('#modalPatientScheduler').modal('hide');
+                                            s.resetSchedulerModal();
 
-                                            $('#modalPatient').modal('hide');
-                                            s.resetModal();
+                                            //$('#modalPatient').modal('hide');
+                                            //s.resetModal();
                                             s.$apply();
                                         }
                                     });
@@ -124,16 +124,104 @@
                             });
                         }
                     });
-            }
+
+
+        //let countSched = checkSchedule(appData.qrCode);
+       
+        //if(countSched.length > 0)
+        //{
+        //    swal({
+        //        title: "ERROR",
+        //        text: "Schedule already exist!",
+        //        type: "error"
+        //    });
+        //}
+       
+        //else {
+
+        //    let physician = s.physicianList.filter(function (val) {
+        //        return val.personnelID == clickedEventData.personnelID;
+        //    });
+
+        //    swal({
+        //        title: 'Appointment',
+        //        text: `Set appointment on ${s.headerDate} between ${appData.fullNameTitle} and Dr. ${physician[0].personnel_lastName}?`,
+        //        type: "info",
+        //        showCancelButton: true,
+        //        confirmButtonClass: "btn-danger",
+        //        confirmButtonText: "Yes, set it!",
+        //        cancelButtonText: "No",
+        //        closeOnConfirm: false,
+        //        closeOnCancel: true
+        //    },
+        //            function(isConfirm) {
+        //                if (isConfirm) {
+        //                    swal({
+        //                        title: "SAVING",
+        //                        text: "Please wait while we are saving your data.",
+        //                        type: "info",
+        //                        showConfirmButton: false
+        //                    });
+
+        //                    h.post('../PatientCalendar/Create', {qrCode: appData.qrCode, calendarID: clickedEventData.id}).then(function (d) {
+        //                        if (d.data.status == "error") {
+        //                            swal({
+        //                                title: "ERROR",
+        //                                text: "<labal>" + d.data.msg + "</label>",
+        //                                type: "error",
+        //                                html: true
+        //                            });
+        //                        }
+
+        //                        else {
+
+        //                            // Send SMS schedule to patient
+        //                            appData.contactNo = "09688515104";
+        //                            if (appData.contactNo != null && appData.contactNo != '') sendSMS(appData, clickedEventData);
+                                    
+        //                            swal({
+        //                                title: "Created!",
+        //                                text: "Appointment is set",
+        //                                type: "success",
+        //                                html: true,
+        //                                confirmButtonColor: '#4bdead',
+        //                                confirmButtonText: 'Ok',
+        //                                closeOnConfirm: true
+        //                            }, function (isConfirm) {
+        //                                if (isConfirm) {
+        //                                    s.tbl_loader = true;
+        //                                    getPatientList(clickedEventData);
+
+        //                                    $('#modalPatient').modal('hide');
+        //                                    s.resetModal();
+        //                                    s.$apply();
+        //                                }
+        //                            });
+        //                        }
+        //                    });
+        //                }
+        //            });
+        //    }
     }
 
     s.addPatient = function() {
-        $('#modalPatient').modal('show');
+        //$('#modalPatient').modal('show');
+
+        s.scheduleData.calendarID = eventInfo.id;
+        s.scheduleData.physician = eventInfo.text;
+        s.scheduleData.personnelID = eventInfo.personnelID;
+        s.scheduleData.followUpDate = eventInfo.start;
+        $('#modalPatientScheduler').modal('show');
     }
 
     s.resetModal = function() {
         s.infoFormData = {};
         s.searchResultList = [];
+    }
+
+    s.resetSchedulerModal = function() {
+        s.scheduleData = {}
+        eventInfo = {};
     }
 
 
@@ -236,17 +324,25 @@
         })
     }
 
-    function sendSMS(emp, schedInfo) {
-        let data = {
-            employee: emp.fullNameTitle,
-            contactNo: emp.contactNo,
-            //contactNo: "09688515104",
-            appointee: schedInfo.personnelID,
-            schedule: schedInfo.start
-        };
+    //function sendSMS(emp, schedInfo) {
+    function sendSMS(appData) {
+        //let data = {
+        //    employee: emp.fullNameTitle,
+        //    contactNo: emp.contactNo,
+        //    //contactNo: "09688515104",
+        //    appointee: schedInfo.personnelID,
+        //    schedule: schedInfo.start
+        //};
     
-        h.post('../SendSMS/Send', { info: data, isHospital: false }).then(function (d) {
+        h.post('../SendSMS/GroupMessageSend', { calendarID: appData.calendarID, consultDate: moment(appData.date).format('YYYY-MM-DD'), followUpDate: appData.followUpDate, personnelID: appData.personnelID }).then(function (d) {
             console.log(d);
+        });
+    }
+
+    s.selectConsultationDate = function(data) {
+        h.post('../PatientCalendar/GetPatientCount', { date: moment(data.date).format('YYYY-MM-DD'), physicianID: data.personnelID } ).then(function (d) {
+            s.scheduleData.patientCount = 0;
+            s.scheduleData.patientCount = d.data;
         });
     }
 
