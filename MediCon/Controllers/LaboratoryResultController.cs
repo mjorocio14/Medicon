@@ -76,18 +76,20 @@ namespace MediCon.Controllers
                 {
                     string fileDir = fileuploadDir + qrCode + "\\";
 
-                    if (!Directory.Exists(fileDir))
-                        Directory.CreateDirectory(fileDir);
+                    //if (!Directory.Exists(fileDir))
+                    //    Directory.CreateDirectory(fileDir);
 
-                    // Check and count if file exist
-                    DirectoryInfo di = new DirectoryInfo(fileDir);
-                    var fileCount = di.EnumerateFiles(labID + "*").Count();
+                    //// Check and count if file exist
+                    //DirectoryInfo di = new DirectoryInfo(fileDir);
+                    //var fileCount = di.EnumerateFiles(labID + "*").Count();
 
-                    if(fileCount > 0)
-                    {
-                        var randomID = new IDgenerator(labID);
-                        labID = labID + "_" + randomID.generateID.Substring(0, 4);
-                    }
+                    //if(fileCount > 0)
+                    //{
+                    //    var randomID = new IDgenerator(labID);
+                    //    labID = labID + "_" + randomID.generateID.Substring(0, 4);
+                    //}
+
+                    var result = FileExistChecker(fileDir, labID);
 
                     var fileData = file.Substring(22);
                     byte[] bytes = Convert.FromBase64String(fileData);
@@ -98,23 +100,24 @@ namespace MediCon.Controllers
                         imageData = Image.FromStream(ms);
                     }
 
-                    var fullPath = Path.Combine(fileDir, labID + ".png");
+                    var fullPath = Path.Combine(fileDir, result.Item1 + ".png");
                     imageData.Save(fullPath, System.Drawing.Imaging.ImageFormat.Png);
 
-                    if (fileCount == 0)
+                    if (result.Item2 == 0)
                     {
                         // Save tagging ni LaboratoryExam table
-                        var tag = dbMed.LaboratoryExams.Find(labID);
-                        tag.isEncoded = true;
-                        tag.dateEncoded = DateTime.Now;
-                        tag.encodedBy = Session["personnelID"].ToString();
-                        dbMed.Entry(tag).State = EntityState.Modified;
-                        var affectedRow = dbMed.SaveChanges();
+                        //var tag = dbMed.LaboratoryExams.Find(labID);
+                        //tag.isEncoded = true;
+                        //tag.dateEncoded = DateTime.Now;
+                        //tag.encodedBy = Session["personnelID"].ToString();
+                        //dbMed.Entry(tag).State = EntityState.Modified;
+                        //var affectedRow = dbMed.SaveChanges();
+                        var tagResult = TagLabResult(labID);
 
-                        if (affectedRow == 0)
+                        if (tagResult == "error")
                             return Json(new { status = "error", msg = "Failed to save the scanned document." }, JsonRequestBehavior.AllowGet);
 
-                        return Json(new { status = "success", msg = "Document is successfully saved" }, JsonRequestBehavior.AllowGet);
+                        //return Json(new { status = "success", msg = "Document is successfully saved" }, JsonRequestBehavior.AllowGet);
                     }
                 }
 
@@ -131,16 +134,22 @@ namespace MediCon.Controllers
         public ActionResult getScannedList(string qrCode, string labID)
         {
             var dir = fileuploadDir + qrCode + "\\";
-            List<string> fileNameList = new List<string>();
+            List<fileInfo> fileNameList = new List<fileInfo>();
 
             DirectoryInfo di = new DirectoryInfo(dir);
 
             foreach (var fi in di.EnumerateFiles(labID + "*"))
             {
-                fileNameList.Add(fi.Name);
+                fileNameList.Add(new fileInfo() { Name = fi.Name, Type =  fi.Extension});
             }
 
             return Json(fileNameList);
+        }
+
+        public class fileInfo
+        {
+            public string Name {get;set;}
+            public string Type { get; set; }
         }
 
         public ActionResult getScannedLabResult(string qrCode, string fileName)
@@ -149,7 +158,9 @@ namespace MediCon.Controllers
             {
                 string fileDir = fileuploadDir + qrCode + "\\" + fileName;
                 var path = Path.Combine(fileDir);
-                return base.File(path, "image/png");
+                string ext = Path.GetExtension(fileDir);
+
+                return base.File(path, ext == ".pdf" ? "application/pdf" : "image/png");
             }
             catch
             {
@@ -187,6 +198,74 @@ namespace MediCon.Controllers
             {
                 return Content("File not found!");
             }   
+        }
+
+        private Tuple<string, int> FileExistChecker(string fileDir, string labID)
+        {
+            if (!Directory.Exists(fileDir))
+                Directory.CreateDirectory(fileDir);
+
+            // Check and count if file exist
+            DirectoryInfo di = new DirectoryInfo(fileDir);
+            var fileCount = di.EnumerateFiles(labID + "*").Count();
+
+            if (fileCount > 0)
+            {
+                var randomID = new IDgenerator(labID);
+                labID = labID + "_" + randomID.generateID.Substring(0, 4);
+            }
+
+            var tuple = new Tuple<string, int>(labID, fileCount);
+            return tuple;
+        }
+
+        private string TagLabResult(string labID)
+        {
+            // Save tagging ni LaboratoryExam table
+            var tag = dbMed.LaboratoryExams.Find(labID);
+            tag.isEncoded = true;
+            tag.dateEncoded = DateTime.Now;
+            tag.encodedBy = Session["personnelID"].ToString();
+            dbMed.Entry(tag).State = EntityState.Modified;
+            var affectedRow = dbMed.SaveChanges();
+
+            if (affectedRow == 0)
+                return "error";
+
+            return "success";
+        }
+
+        [HttpPost]
+        public ActionResult UploadPdfResult(string file, string qrCode, string labID)
+        {
+            // Verify that the user selected a file
+            if (file != null)
+            {
+                string fileDir = fileuploadDir + qrCode + "\\";
+
+                var result = FileExistChecker(fileDir, labID);
+
+                var sub = file.Substring(file.IndexOf("base64") + 7);
+                byte[] bytes = Convert.FromBase64String(sub);
+
+                System.IO.FileStream stream = new FileStream(fileDir + result.Item1 + ".pdf", FileMode.CreateNew);
+                System.IO.BinaryWriter writer = new BinaryWriter(stream);
+                writer.Write(bytes, 0, bytes.Length);
+                writer.Close();
+
+                if (result.Item2 == 0)
+                {
+                    var tagResult = TagLabResult(labID);
+
+                    if (tagResult == "error")
+                        return Json(new { status = "error", msg = "Failed to upload the document." }, JsonRequestBehavior.AllowGet);
+                }
+
+                return Json(new { status = "success", msg = "File is uploaded successfully" }, JsonRequestBehavior.AllowGet);
+
+            }
+
+            return Json(new { status = "error", msg = "No file is selected" }, JsonRequestBehavior.AllowGet);
         }
     }
 }

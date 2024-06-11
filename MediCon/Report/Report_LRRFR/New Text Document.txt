@@ -1,0 +1,27 @@
+Print Controller
+	   public ActionResult printTransmittal(string dateCollected)
+        {
+            Session["dateCollected"] = dateCollected;
+            return Content("YES");
+        }
+
+
+===============
+
+JS
+	  var dd = "2024-02-19";
+
+                h.post('../Print/printTransmittal?dateCollected=' + dd).then(function (d) {
+                    window.open("../Report/MediConRpt.aspx?type=transmittal");
+                });
+===============
+
+
+Telerik Webform
+	
+                case "transmittal":
+                    rpt.Parameters.Add("dateCollected", Session["dateCollected"].ToString());
+                    rpt.ReportDocument = new LRRF.SputumTransmittal();
+                    break;
+
+

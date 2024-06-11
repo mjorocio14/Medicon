@@ -17,6 +17,7 @@ namespace MediCon.Models
         public short recNo { get; set; }
         public string labTestID { get; set; }
         public string labTestName { get; set; }
+        public Nullable<decimal> price { get; set; }
         public string personnelID { get; set; }
         public Nullable<System.DateTime> dateTimeLog { get; set; }
     }

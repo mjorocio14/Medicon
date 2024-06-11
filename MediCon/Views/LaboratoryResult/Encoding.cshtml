@@ -166,6 +166,12 @@
                                                 <input type="text" id="qr_address" name="qr_address" ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" readonly style="background-color: white;" />
                                             </div>
                                         </div>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label class="control-label" for="departmentName">Office</label>
+                                                <input type="text" id="departmentName" name="departmentName" ng-model="qrData.departmentName" placeholder="Office" class="form-control text-center" readonly style="background-color: white;" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </form>
 
@@ -283,6 +289,7 @@
                                             <td>
                                                 <button ng-disabled="hist.isEncoded != true" class="btn btn-success btn-sm" ng-click="viewLabResult(hist)"><i class="fa fa-eye"></i></button>
                                                 <button class="btn btn-primary btn-sm" ng-click="encodeResult(hist, 0, true)"><i class="fa fa-pencil"></i></button>
+                                                <button class="btn btn-warning btn-sm" ng-click="showLabUploader(hist)"><i class="fa fa-upload"></i></button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -327,6 +334,7 @@
                                     <th>Sex</th>
                                     <th>Age</th>
                                     <th>Contact no.</th>
+                                    <th>Office</th>
                                     <th>Lab. Test</th>
                                     <th>Lab. Date & Time</th>
                                     <th>Referred by</th>
@@ -364,7 +372,7 @@
                                 <button class="btn btn-outline btn-primary pull-left" ng-click="navLabImg('prev')"><i class="fa fa-caret-left"></i> Prev</button>
                             </div>
                             <div class="col-sm-4 col-xs-4 text-center">
-                                <label>{{currentImgIndex + 1}} of {{imgCount}} Images</label>
+                                <label>{{currentImgIndex + 1}} of {{imgCount}} Images/PDF</label>
                             </div>
                             <div class="col-sm-4 col-xs-4">
                                 <button class="btn btn-outline btn-primary pull-right" ng-click="navLabImg('next')">Next <i class="fa fa-caret-right"></i></button>
@@ -372,7 +380,7 @@
                         </div>
                         <hr style="margin-top: 10px !important; margin-bottom: 10px !important;"/>
                         <small class="pull-left">{{displayFileName}}</small><button class="btn btn-sm btn-danger pull-right" ng-click="deleteLabImg()"><i class="fa fa-trash-o"></i></button>
-                        <div id="labResult" ng-show="!labResultLoader" style="height:100%; width:100%;" class="img-responsive avatar-view"></div>
+                        <div id="labResult" ng-show="!labResultLoader" style="height:80vh; width:100%; margin-bottom:10px;" class="img-responsive avatar-view"></div>
                     </div>
                 </div>
             </div>
@@ -431,6 +439,37 @@
             </div>
         </div>
         @*MODAL SCANNER*@
+
+        @*MODAL UPLOAD*@
+        <div class="modal fade" id="modalUpload">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="closeResult()">&times;</button>
+                    </div>
+                    <div class="modal-body" style="height: 100%;">
+                       <div>
+                           <h3 class="text-center" style="margin-top: -8px !important;">Upload Laboratory Result for <span class="text-danger text-uppercase">{{labInfo.labTestName}}</span></h3>
+                           <hr />
+                           <form id="uploadForm" name="uploadForm" >
+                               <div class="row">
+                                   <div class="col-lg-10">
+                                       <div class="form-group">
+                                           <label for="file">File</label>
+                                           <input id="file" name="file" type="file" class="form-control text-center"/>
+                                       </div>
+                                   </div>
+                                   <div class="col-lg-2" style="margin-top: 23px;">
+                                       <button class="btn btn-primary full-width" type="button" ng-click="uploadLabResult()">Upload</button>
+                                   </div>
+                               </div>
+                           </form>
+                       </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*MODAL UPLOAD*@
 
     </div>
 </div>

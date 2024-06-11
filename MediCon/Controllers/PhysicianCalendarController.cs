@@ -51,7 +51,7 @@ namespace MediCon.Controllers
                 if (isExist > 0)
                     return Json(new { status = "error", msg = "Schedule already exist!" }, JsonRequestBehavior.AllowGet);
 
-                //......  SAVE DATA TO HOSPITAL CALENDAR
+                //......  SAVE DATA TO PHYSICIAN CALENDAR
                 data.phyCalendarID = data.phyCalendarID.Substring(0, 15);
                 data.createPersonnelID = Session["personnelID"].ToString();
                 data.dateTimeLog = DateTime.Now;

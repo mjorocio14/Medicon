@@ -103,6 +103,9 @@
                        return age <= 12 ? '<span class="label label-primary">' + age + '</span>' : '<span class="label label-success">' + age + '</span>';
                    }
                },
+                {
+                    "data": 'shortDepartmentName'
+                },
                {
                    "data": null, render: function (row) {
                        return moment(row.dateTimeLog).format('lll');

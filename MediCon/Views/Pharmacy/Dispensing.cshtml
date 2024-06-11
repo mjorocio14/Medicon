@@ -141,20 +141,18 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-sm-12">
+                                        <div class="col-sm-8">
                                             <div class="form-group">
                                                 <label class="control-label" for="qr_address">Address</label>
                                                 <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
                                             </div>
                                         </div>
-                                        @*<hr />
-                                        <div class="col-sm-12" ng-show="isEditting == false">
-                                            <button type="button" class="btn btn-success pull-right" style="margin-right: 2px;" ng-click="isEditting = !isEditting" ng-disabled="qrData.qrCode == null"><i class="fa fa-pencil"></i> Edit QR </button>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label class="control-label" for="qr_shortDepartmentName">Office</label>
+                                                <input type="text" id="qr_shortDepartmentName" name="qr_shortDepartmentName" ng-model="qrData.shortDepartmentName" placeholder="Office" class="form-control text-center" ng-disabled="!isEditting" />
+                                            </div>
                                         </div>
-                                        <div class="col-sm-12" ng-show="isEditting == true">
-                                            <button type="button" class="btn btn-danger pull-right" ng-click="isEditting = !isEditting" ng-disabled=""><i class="fa fa-times"></i> Cancel </button>
-                                            <button type="submit" class="btn btn-primary pull-right" style="margin-right: 2px;" ng-click="!QR_FORM.$invalid ? updateQRinfo(qrData):''"><i class="fa fa-save"></i> Save Changes</button>
-                                        </div>*@
                                     </div>
                                 </form>
                             </div>
@@ -258,6 +256,7 @@
                                     <th>Suffix</th>
                                     <th>Sex</th>
                                     <th>Age</th>
+                                    <th>Office</th>
                                     <th>Released by</th>
                                     <th>Date & Time Released</th>
                                     <th class="text-right" data-sort-ignore="true">Action</th>

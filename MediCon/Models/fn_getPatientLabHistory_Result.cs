@@ -21,10 +21,6 @@ namespace MediCon.Models
         public Nullable<bool> isEncoded { get; set; }
         public string labTestID { get; set; }
         public string labTestName { get; set; }
-        public string bloodChemID { get; set; }
-        public Nullable<decimal> result { get; set; }
-        public string LabTestGroupID { get; set; }
-        public Nullable<System.DateTime> bloodChemDateEncoded { get; set; }
         public Nullable<System.DateTime> dateTested { get; set; }
         public string referredServiceID { get; set; }
         public string MRDiagnosisID { get; set; }

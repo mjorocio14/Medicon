@@ -260,8 +260,7 @@
           function getPatientList(data) 
           {
               s.patientList = [];
-
-              h.get('../Hospital/PatientList?calendarID=' + data.id).then(function (d) {
+              h.post('../Hospital/PatientList', { calendarID: data.id, scheduleDate: data.start }).then(function (d) {
                   s.patientList = d.data; 
                   s.tbl_loader = false;
               });
@@ -271,8 +270,8 @@
 
           s.showTestedLab = function(data) {
               s.labTestTaken_loader = true;
-
-              h.post('../MedicalConsultation/getLabHistory?qrCode=' + data.qrCode).then(function (d) {
+          
+              h.post('../Hospital/getLabForSchedule', { qrCode: data.qrCode, scheduleDate: data.scheduleDate } ).then(function (d) {
                   if (d.data.status == 'error') {
                       swal({
                           title: "ERROR",

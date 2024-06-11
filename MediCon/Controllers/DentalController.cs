@@ -458,6 +458,7 @@ namespace MediCon.Controllers
                                         a.pi.sex,
                                         a.pi.birthDate,
                                         a.pi.contactNo,
+                                        a.pi.shortDepartmentName,
                                         a.pi.brgyPermAddress,
                                         a.pi.cityMunPermAddress,
                                         a.pi.provincePermAddress,

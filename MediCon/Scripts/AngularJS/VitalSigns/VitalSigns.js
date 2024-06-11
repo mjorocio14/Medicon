@@ -7,6 +7,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
     s.isVSexist = false;
     s.showClientList = false;
     s.modal_tableLoader = false;
+    s.savingIndicator = false;
 
     // QR Scanner Initialization
     s.scanner = new Instascan.Scanner(
@@ -150,6 +151,9 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                    }
                },
                {
+                   "data": 'shortDepartmentName',
+               },
+               {
                    "data": null,
                    render: function (row) {
                        return row.height == null ? '---' : row.height;
@@ -175,7 +179,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                 "order": [[0, "asc"]],
                 'columnDefs': [
                    {
-                       "targets": [0, 5, 6, 7, 9],
+                       "targets": [0, 5, 6, 7, 9, 10, 11, 13],
                        "className": "text-center"
                    }]
             });
@@ -272,8 +276,6 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
     }
 
     s.btnProceed = function (qrData) {
-        console.log(s.isVSexist);
-
         if (s.qrData.qrCode == null || s.qrData.qrCode == undefined || s.qrData.qrCode == '') {
             swal({
                 title: "ERROR",
@@ -298,6 +300,8 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                     weight: qrData.weight,
                 };
 
+                s.savingIndicator = true;
+
                 h.post('../VitalSigns/saveVitalSigns', { qrCode: qrData.qrCode, vs: VSdata }).then(function (d) {
                     if (d.data.status == "success") {
                         s.showQRpanel = !s.showQRpanel;
@@ -310,6 +314,7 @@ app.controller('VitalSignCtrl', ['$scope', '$http', function (s, h) {
                         });
 
                         s.isVSexist = true;
+                        s.savingIndicator = false;
                     }
 
                     else {

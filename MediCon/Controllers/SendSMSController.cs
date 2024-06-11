@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Text;
 using System.Net;
 using MediCon.Models;
+using MediCon.Classes;
 
 namespace MediCon.Controllers
 {
@@ -27,7 +28,7 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public async Task Send(recipient info, bool isHospital)
+        public async Task Send(Recipient info, bool isHospital)
         {
             var values = new Dictionary<string, string>();
             values.Add("app_key", "DavN0rHR!S");
@@ -120,14 +121,6 @@ namespace MediCon.Controllers
                 }
             }
         }
-
-        public class recipient
-        {
-            public string employee { get; set; }
-            public string contactNo { get; set; }
-            public string appointee { get; set; }
-            public DateTime schedule { get; set; }
-        }
-
+      
     }
 }

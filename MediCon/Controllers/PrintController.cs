@@ -70,5 +70,11 @@ namespace MediCon.Controllers
             public string title { get; set; }
             public string licenseNo { get; set; }
         }
+
+	public ActionResult printTransmittal(string dateCollected)
+        {
+            Session["dateCollected"] = dateCollected;
+            return Content("YES");
+        }
     }
 }

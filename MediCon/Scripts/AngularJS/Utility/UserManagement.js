@@ -221,7 +221,6 @@
     }
 
     s.saveUser = function (a) {
-        console.log(a);
         if (!usern.test(a.username) && a.userTypeID != '3') {
                 swal({
                     title: "Username Error!",
@@ -259,7 +258,7 @@
                         else {
 
                             a.sex = a.sex == 'MALE' ? 1 : 0;
-
+                     
                             h.post('../SystemUser/saveUser', a).then(function (d)
                             {
                                 if (d.data.responseCode == 200)

@@ -100,27 +100,29 @@ namespace MediCon.Controllers
         {
             try
             {
-                var diagnosis = dbMed.ResultDiagnosis.Join(dbMed.Diagnosis, rd => rd.diagnoseID, d => d.diagnoseID, (rd, d) => new { rd, d })
-                                                   .Join(dbMed.Consultations, r1 => r1.rd.consultID, c => c.consultID, (r1, c) => new { r1, c })
-                                                   .Join(dbMed.VitalSigns, r2 => r2.c.vSignID, vs => vs.vSignID, (r2, vs) => new { r2, vs })
-                                                   .Join(dbMed.Services, r3 => r3.r2.c.serviceID, s => s.serviceID, (r3, s) => new { r3, s })
-                                                   .Where(a => a.r3.vs.qrCode == qrCode)
-                                                   .Select(b => new
-                                                   {
-                                                       b.r3.r2.r1.rd.diagnoseID,
-                                                       b.r3.r2.r1.rd.otherDiagnosis,
-                                                       b.r3.r2.r1.rd.resultID,
-                                                       b.r3.r2.r1.d.diagnoseName,
-                                                       b.r3.r2.c.consultID,
-                                                       b.r3.r2.c.outsideReferral,
-                                                       b.r3.r2.c.remarks,
-                                                       b.r3.r2.c.personnelID,
-                                                       b.r3.r2.c.dateTimeLog,
-                                                       b.s.serviceName,
-                                                       physician = dbMed.Personnels.Where(c => c.personnelID == b.r3.r2.c.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName })
-                                                   })
-                                                   .OrderByDescending(x => x.dateTimeLog)
-                                                   .GroupBy(e => e.consultID).ToList();
+                //var diagnosis = dbMed.ResultDiagnosis.Join(dbMed.Diagnosis, rd => rd.diagnoseID, d => d.diagnoseID, (rd, d) => new { rd, d })
+                //                                   .Join(dbMed.Consultations, r1 => r1.rd.consultID, c => c.consultID, (r1, c) => new { r1, c })
+                //                                   .Join(dbMed.VitalSigns, r2 => r2.c.vSignID, vs => vs.vSignID, (r2, vs) => new { r2, vs })
+                //                                   .Join(dbMed.Services, r3 => r3.r2.c.serviceID, s => s.serviceID, (r3, s) => new { r3, s })
+                //                                   .Where(a => a.r3.vs.qrCode == qrCode)
+                //                                   .Select(b => new
+                //                                   {
+                //                                       b.r3.r2.r1.rd.diagnoseID,
+                //                                       b.r3.r2.r1.rd.otherDiagnosis,
+                //                                       b.r3.r2.r1.rd.resultID,
+                //                                       b.r3.r2.r1.d.diagnoseName,
+                //                                       b.r3.r2.c.consultID,
+                //                                       b.r3.r2.c.outsideReferral,
+                //                                       b.r3.r2.c.remarks,
+                //                                       b.r3.r2.c.personnelID,
+                //                                       b.r3.r2.c.dateTimeLog,
+                //                                       b.s.serviceName,
+                //                                       physician = dbMed.Personnels.Where(c => c.personnelID == b.r3.r2.c.personnelID).Select(d => new { d.personnel_firstName, d.personnel_midInit, d.personnel_lastName, d.personnel_extName })
+                //                                   })
+                //                                   .OrderByDescending(x => x.dateTimeLog)
+                //                                   .GroupBy(e => e.consultID).ToList();
+
+                var diagnosis = dbMed.fn_hris_consultationHistory(qrCode).OrderByDescending(x => x.dateTimeLog).GroupBy(e => e.consultID).ToList();
 
                 var rxHist = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, c => c.vSignID, (vs, c) => new {vs, c})
                                              .Join(dbMed.MedicalPrescriptions, r1 => r1.c.consultID, mp => mp.consultID, (r1, mp) => new {r1, mp})
@@ -219,7 +221,7 @@ namespace MediCon.Controllers
         // Count # of clients per hospital and date
         private int CheckSchedCount(string calendarID)
         {
-            // 20 clients per day Carmen (HPL001)
+            // 20 clients per day Carmen (HPL001) -> change to 25 as per HR advice
             // 25 clients per day Kapalong (HPL002)
             var countSched = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, con => con.vSignID, (vs, con) => new { vs, con })
                                                  .Join(dbMed.Referrals, r1 => r1.con.consultID, reff => reff.consultID, (r1, reff) => new { r1, reff })
@@ -247,7 +249,8 @@ namespace MediCon.Controllers
                     var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
                     var countSched = CheckSchedCount(calendarID);
 
-                    if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                    //if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                    if (countSched < 25)
                     {
                         var result = saveProcess(detail, checkedDiagnosis, referral, consultation, lab, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc);
                        
@@ -534,15 +537,17 @@ namespace MediCon.Controllers
                 }
 
                 var lab = dbMed.LaboratoryExams.Join(dbMed.Referrals, le => le.referralID, r => r.referralID, (le, r) => new { le, r })
-                                               .Where(a => a.r.consultID == consultID && a.r.MRDiagnosisID == null)
+                                               .Join(dbMed.LaboratoryTests, r1 => r1.le.labTestID, lt => lt.labTestID, (r1, lt) => new { r1, lt })
+                                               .Where(a => a.r1.r.consultID == consultID && a.r1.r.MRDiagnosisID == null)
                                                .Select(b => new
                                                {
-                                                   b.le.labTestID,
+                                                   b.r1.le.labTestID,
+                                                   b.lt.price,
                                                    //b.le.otherLabDesc,
-                                                   b.le.xrayDesc,
-                                                   b.le.ecgDesc,
-                                                   b.le.ultrasoundDesc,
-                                                   b.le.isTested
+                                                   b.r1.le.xrayDesc,
+                                                   b.r1.le.ecgDesc,
+                                                   b.r1.le.ultrasoundDesc,
+                                                   b.r1.le.isTested
                                                }).ToList();
 
                 var rx = dbMed.MedicalPrescriptions.Join(dbMed.OutgoingItems, mp => mp.rxID, oi => oi.rxID, (mp, oi) => new { mp, oi })
@@ -621,7 +626,7 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public ActionResult updateDiagnosis(string qrCode, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string hospitalID, DateTime? labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc, string currentCalendarID)
+        public ActionResult updateDiagnosis(Recipient empInfo, Consultation consult, string[] diagnosis, string otherDiagnose, string[] referral, string outsideReferral, string[] labReq, string hospitalID, DateTime? labSchedule, string xrayDesc, string ecgDesc, string ultrasoundDesc, string currentCalendarID)
         {
             try
             {
@@ -637,12 +642,12 @@ namespace MediCon.Controllers
 
                 else
                 {
-                    var calendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
+                    var newCalendarID = dbMed.HospitalCalendars.SingleOrDefault(a => a.hospitalID == hospitalID && a.scheduleDate == labSchedule).calendarID;
 
                     // Check if previous and selected calendarID is same
-                    if (currentCalendarID == calendarID)
+                    if (currentCalendarID == newCalendarID)
                     {
-                        var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, calendarID);
+                        var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, newCalendarID);
 
                         if (result == "error")
                             return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
@@ -653,11 +658,17 @@ namespace MediCon.Controllers
 
                     else
                     {
-                        var countSched = CheckSchedCount(calendarID);
+                        var countSched = CheckSchedCount(newCalendarID);
 
-                        if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                        //if ((countSched < 20 && hospitalID == "HPL001") || (countSched < 25 && hospitalID == "HPL002"))
+                        if (countSched < 25)
                         {
-                            var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, calendarID);
+                            var result = updateProcess(consult, diagnosis, otherDiagnose, referral, outsideReferral, labReq, hospitalID, labSchedule, xrayDesc, ecgDesc, ultrasoundDesc, newCalendarID);
+
+                            // Send SMS for the updated laboratory schedule
+                            var sendSMS = new SendSMSController();
+                            if (labReq.Length > 0 && !String.IsNullOrEmpty(empInfo.contactNo) && empInfo.hospitalID != "HPL004") 
+                                sendSMS.Send(empInfo, true);
 
                             if (result == "error")
                                 return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);
@@ -683,7 +694,7 @@ namespace MediCon.Controllers
             var con = dbMed.Consultations.SingleOrDefault(a => a.consultID == consult.consultID);
             //con.dateTimeLog = DateTime.Now;
             con.outsideReferral = consult.outsideReferral;
-            con.personnelID = Session["userTypeID"].ToString() == "1" ? con.personnelID : Session["personnelID"].ToString();
+            con.personnelID = Session["userTypeID"].ToString() == "1" || Session["userTypeID"].ToString() == "10" ? con.personnelID : Session["personnelID"].ToString();
             con.remarks = consult.remarks;
             dbMed.Entry(con).State = EntityState.Modified;
             //......  /UPDATE DATA TO CONSULATIONSURGERY TABLE
@@ -941,10 +952,12 @@ namespace MediCon.Controllers
         {
             try
             {
-                string fileDir = @"D:\DavNor Health & Wellness\LaboratoryResults\" + qrCode + "\\" + fileName;
-                //string fileuploadDir = @"C:\Users\LOG1C\Documents\LOG1C Files\System Development\Project Files\ASP.NET Projects\MediCon Sample Lab\" + qrCode + "\\" + fileName;
+                //string fileDir = @"D:\DavNor Health & Wellness\LaboratoryResults\" + qrCode + "\\" + fileName;
+                string fileDir = @"C:\Users\LOG1C\Documents\LOG1C Files\System Development\Project Files\ASP.NET Projects\MediCon Sample Lab\" + qrCode + "\\" + fileName;
                 var path = Path.Combine(fileDir);
-                return base.File(path, "image/png");
+                string ext = Path.GetExtension(fileDir);
+
+                return base.File(path, ext == ".pdf" ? "application/pdf" : "image/png");
             }
             catch
             {

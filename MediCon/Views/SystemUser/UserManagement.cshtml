@@ -157,7 +157,7 @@
                                                         </div>
                                                         <hr class="hr-line-dashed" />
                                                         <div class="row">
-                                                            <div ng-class="users.userTypeID == '1' || users.userTypeID == '4' || users.userTypeID == '7' || users.userTypeID == '8' || users.userTypeID == '10' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
+                                                            <div ng-class="users.userTypeID == '1' || users.userTypeID == '4' || users.userTypeID == '7' || users.userTypeID == '8' || users.userTypeID == '10' || (users.userTypeID == '2' && users.serviceID == 'SERVICE006') ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">User Type</label><span style="color:#ff0000"> *</span>
                                                                     <select ng-model="users.userTypeID" ng-change="sService(users.userTypeID)" name="userType" id="userType" required style="width: 100%;" class="form-control">
@@ -167,7 +167,19 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div ng-show="users.userTypeID == '9'" class=" col-sm-4 col-xs-4">
+                                                            
+
+                                                            <div ng-show="users.userTypeID != '1' && users.userTypeID != '4' &&  users.userTypeID != '7' && users.userTypeID != '8' && users.userTypeID != '9' && users.userTypeID != '10'" ng-class="users.userTypeID == '2' && users.serviceID == 'SERVICE006' ? 'col-sm-6 col-xs-6 col-lg-6' : 'col-sm-4 col-xs-4 col-lg-4'">
+                                                                <div class="form-group">
+                                                                    <label class="control-label" for="userType">Service</label><span style="color:#ff0000"> *</span>
+                                                                    <select ng-model="users.serviceID" name="userType" id="service" style="width: 100%;" class="form-control" ng-required="users.userTypeID != '1' && users.userTypeID != '4' && users.userTypeID != '7' && users.userTypeID != '8' && users.userTypeID != '9' && users.userTypeID != '10'">
+                                                                        <option value=""></option>
+                                                                        <option ng-repeat="item in services" value={{item.serviceID}}>{{item.serviceName == 'X-ray' ? 'Tuberculosis Screening' : item.serviceName}}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-show="users.userTypeID == '9' || (users.userTypeID == '2' && users.serviceID == 'SERVICE006')" ng-class="users.userTypeID == '2' && users.serviceID == 'SERVICE006' ? 'col-sm-6 col-xs-6 col-lg-6' : 'col-sm-4 col-xs-4 col-lg-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="hospitalID">Hospital</label><span style="color:#ff0000"> *</span>
                                                                     <select ng-model="users.hospitalID" name="hospitalID" id="hospitalID" ng-required="users.userTypeID == '9'" style="width: 100%;" class="form-control">
@@ -177,16 +189,7 @@
                                                                 </div>
                                                             </div>
 
-                                                            <div ng-show="users.userTypeID != '1' && users.userTypeID != '4' &&  users.userTypeID != '7' && users.userTypeID != '8' && users.userTypeID != '9' && users.userTypeID != '10'" class="col-sm-4 col-xs-4 col-lg-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label" for="userType">Service</label><span style="color:#ff0000"> *</span>
-                                                                    <select ng-model="users.serviceID" name="userType" id="service" style="width: 100%;" class="form-control" ng-required="users.userTypeID != '1' && users.userTypeID != '4' && users.userTypeID != '7' && users.userTypeID != '8' && users.userTypeID != '9' && users.userTypeID != '10'">
-                                                                        <option value=""></option>
-                                                                        <option ng-repeat="item in services" value={{item.serviceID}}>{{item.serviceName == 'X-ray' ? 'Tuberculosis Screening' : item.serviceName}}</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div ng-class="users.userTypeID == '1' || users.userTypeID == '4' || users.userTypeID == '7' || users.userTypeID == '8' || users.userTypeID == '10' ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
+                                                            <div ng-class="users.userTypeID == '1' || users.userTypeID == '4' || users.userTypeID == '7' || users.userTypeID == '8' || users.userTypeID == '10' || (users.userTypeID == '2' && users.serviceID == 'SERVICE006') ? 'col-sm-6 col-xs-6':'col-sm-4 col-xs-4'">
                                                                 <div class="form-group">
                                                                     <label class="control-label" for="userType">Position</label><span style="color:#ff0000"> *</span>
                                                                     <input type="text" required ng-model="users.position" placeholder="Position" class="form-control" />

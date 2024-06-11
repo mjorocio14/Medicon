@@ -170,6 +170,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Classes\IDgenerator.cs" />
+    <Compile Include="Classes\Recipient.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AnalyticsController.cs" />
     <Compile Include="Controllers\ClinicalScreeningController.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Controllers\LabtestController.cs" />
     <Compile Include="Controllers\MaleReproController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MasterListController.cs" />
     <Compile Include="Controllers\MedicalConsultationController.cs" />
     <Compile Include="Controllers\PapsmearBreastExamController.cs" />
     <Compile Include="Controllers\PatientCalendarController.cs" />
@@ -197,9 +199,9 @@
     <Compile Include="Controllers\SystemUserController.cs" />
     <Compile Include="Controllers\UserAccess.cs" />
     <Compile Include="Controllers\VitalSignsController.cs" />
+    <Compile Include="Controllers\XrayReportController.cs" />
     <Compile Include="Controllers\XrayResultController.cs" />
     <Compile Include="Controllers\XrayScutumLabController.cs" />
-    <Compile Include="Controllers\XrayScutumResultController.cs" />
     <Compile Include="Controllers\XrayTaggingController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -247,6 +249,12 @@
     <Compile Include="Models\EyeCare.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\fnSputumTransmittal_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_ActualEmpTestedForLab_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\fn_DashboardAnalytics_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
@@ -257,6 +265,9 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_DashboardMRH_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_getActualLabTestDates_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_getDiagnoseClients_Result.cs">
@@ -292,10 +303,25 @@
     <Compile Include="Models\fn_getXrayTagClients_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\fn_hris_consultationHistory_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_hris_laboratoryHistory_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_hris_prescriptionHistory_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_LabSchedMasterList_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\fn_MedicineList_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_Prescriptions_Result.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\fn_ScheduledEmpForLab_Result.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\fn_vitalSignList_Result.cs">
@@ -307,20 +333,20 @@
     <Compile Include="Models\HospitalCalendar.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\HRISDB.Context.cs">
+    <Compile Include="Models\HRIS.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>HRISDB.Context.tt</DependentUpon>
+      <DependentUpon>HRIS.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\HRISDB.cs">
+    <Compile Include="Models\HRIS.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>HRISDB.tt</DependentUpon>
+      <DependentUpon>HRIS.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\HRISDB.Designer.cs">
+    <Compile Include="Models\HRIS.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>HRISDB.edmx</DependentUpon>
+      <DependentUpon>HRIS.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LaboratoryExam.cs">
@@ -430,7 +456,7 @@
       <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\vEmployeeHealthWell.cs">
-      <DependentUpon>HRISDB.tt</DependentUpon>
+      <DependentUpon>HRIS.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\VitalSign.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
@@ -475,6 +501,18 @@
     </Compile>
     <Compile Include="Report\LRRF\LRRFRpt.Designer.cs">
       <DependentUpon>LRRFRpt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\LRRF\SputumTransmittal.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\LRRF\SputumTransmittal.Designer.cs">
+      <DependentUpon>SputumTransmittal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\MasterList\PrintMasterList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\MasterList\PrintMasterList.Designer.cs">
+      <DependentUpon>PrintMasterList.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\MediConRpt.aspx.cs">
       <DependentUpon>MediConRpt.aspx</DependentUpon>
@@ -638,15 +676,15 @@
       <DependentUpon>DCIMS.edmx</DependentUpon>
       <LastGenOutput>DCIMS.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\HRISDB.Context.tt">
+    <Content Include="Models\HRIS.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>HRISDB.edmx</DependentUpon>
-      <LastGenOutput>HRISDB.Context.cs</LastGenOutput>
+      <DependentUpon>HRIS.edmx</DependentUpon>
+      <LastGenOutput>HRIS.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\HRISDB.tt">
+    <Content Include="Models\HRIS.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>HRISDB.edmx</DependentUpon>
-      <LastGenOutput>HRISDB.cs</LastGenOutput>
+      <DependentUpon>HRIS.edmx</DependentUpon>
+      <LastGenOutput>HRIS.cs</LastGenOutput>
     </Content>
     <Content Include="Models\Medicon.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -669,6 +707,7 @@
     <Content Include="Scripts\AngularJS\LabResult\LabResult.js" />
     <Content Include="Scripts\AngularJS\Labtest\Labtest.js" />
     <Content Include="Scripts\AngularJS\MaleRepro\MaleRepro.js" />
+    <Content Include="Scripts\AngularJS\MasterList\MasterListCtrl.js" />
     <Content Include="Scripts\AngularJS\MedicalConsultation\MedicalConsultation.js" />
     <Content Include="Scripts\AngularJS\MedConApp.js" />
     <Content Include="Scripts\AngularJS\Medicines\MedicineProducts.js" />
@@ -684,9 +723,9 @@
     <Content Include="Scripts\AngularJS\Utility\UserManagement.js" />
     <Content Include="Scripts\AngularJS\VitalSigns\VitalSigns.js" />
     <Content Include="Scripts\AngularJS\Xray\ClinicalScreening.js" />
+    <Content Include="Scripts\AngularJS\Xray\XrayReport.js" />
     <Content Include="Scripts\AngularJS\Xray\XrayResult.js" />
     <Content Include="Scripts\AngularJS\Xray\XrayScutumLab.js" />
-    <Content Include="Scripts\AngularJS\Xray\XrayScutumResult.js" />
     <Content Include="Scripts\AngularJS\Xray\XrayTagging.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -700,19 +739,19 @@
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\ISPINIA\fonts\glyphicons-halflings-regulard41d.eot" />
-    <EntityDeploy Include="Models\HRISDB.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>HRISDB.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\HRISDB.edmx.diagram">
-      <DependentUpon>HRISDB.edmx</DependentUpon>
-    </Content>
     <EntityDeploy Include="Models\DCIMS.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>DCIMS.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\DCIMS.edmx.diagram">
       <DependentUpon>DCIMS.edmx</DependentUpon>
+    </Content>
+    <EntityDeploy Include="Models\HRIS.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>HRIS.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\HRIS.edmx.diagram">
+      <DependentUpon>HRIS.edmx</DependentUpon>
     </Content>
     <EntityDeploy Include="Models\Medicon.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -802,13 +841,14 @@
     <Content Include="Views\XrayTagging\Tag.cshtml" />
     <Content Include="Views\XrayScutumLab\Form2A.cshtml" />
     <Content Include="Views\XrayResult\Index.cshtml" />
-    <Content Include="Views\XrayScutumResult\Result.cshtml" />
     <Content Include="Views\Hospital\Scheduler.cshtml" />
     <Content Include="Views\PhysicianCalendar\Calendar.cshtml" />
     <Content Include="Views\PatientCalendar\Appointment.cshtml" />
     <Content Include="Views\Home\Scanner.cshtml" />
     <Content Include="Views\Prescriptions\List.cshtml" />
     <Content Include="Views\ReadingGlasses\Index.cshtml" />
+    <Content Include="Views\MasterList\LabSched.cshtml" />
+    <Content Include="Views\XrayReport\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -834,6 +874,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Report\LRRF\LRRFRpt.resx">
       <DependentUpon>LRRFRpt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\LRRF\SputumTransmittal.resx">
+      <DependentUpon>SputumTransmittal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\MasterList\PrintMasterList.resx">
+      <DependentUpon>PrintMasterList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\Prescription\Prescription.resx">
       <DependentUpon>Prescription.cs</DependentUpon>

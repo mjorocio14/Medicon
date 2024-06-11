@@ -146,16 +146,19 @@ namespace MediCon.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult PatientList(string calendarID)
+        [HttpPost]
+        public ActionResult PatientList(string calendarID, string scheduleDate)
         {
             try
             {
+                DateTime dateStart = DateTime.Parse(scheduleDate + " 00:00:00");
+                DateTime dateEnd = DateTime.Parse(scheduleDate + " 23:59:59");
+
                 var patients = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, con => con.vSignID, (vs, con) => new { vs, con })
                                                .Join(dbMed.Referrals, r1 => r1.con.consultID, reff => reff.consultID, (r1, reff) => new { r1, reff })
                                                .Where(a => a.reff.referredServiceID == "SERVICE006" && a.reff.calendarID == calendarID)
                                                .Select(b => new { 
-                                                    b.r1.vs.qrCode,
+                                                    b.r1.vs.qrCode
                                                }).Distinct().ToList();
 
                 var list = patients.Join(hrisDB.vEmployeeHealthWells, hw => hw.qrCode, emp => emp.qrCode, (hw, emp) => new { hw, emp })
@@ -165,10 +168,11 @@ namespace MediCon.Controllers
                                         a.emp.qrCode,
                                         a.emp.fullNameLast,
                                         a.emp.shortDepartmentName,
+                                        scheduleDate,
                                         isTested = dbMed.VitalSigns.Join(dbMed.Consultations, vs => vs.vSignID, con => con.vSignID, (vs, con) => new { vs, con })
                                                  .Join(dbMed.Referrals, r1 => r1.con.consultID, reff => reff.consultID, (r1, reff) => new { r1, reff })
                                                  .Join(dbMed.LaboratoryExams, r2 => r2.reff.referralID, le => le.referralID, (r2, le) => new { r2, le })
-                                                 .Count(b => b.r2.r1.vs.qrCode == a.emp.qrCode && b.le.isTested == true)
+                                                 .Count(b => b.r2.r1.vs.qrCode == a.emp.qrCode && b.le.isTested == true && b.le.dateTimeLog >= dateStart && b.le.dateTimeLog <= dateEnd)
                                     }).OrderBy(b => b.fullNameLast);
 
                 return Json(list, JsonRequestBehavior.AllowGet);
@@ -176,6 +180,51 @@ namespace MediCon.Controllers
             catch (Exception ex)
             {
                 return Json(new { status = "error", msg = "An error occured while fetching the medicines.", error = ex }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult getLabForSchedule(string qrCode, string scheduleDate)
+        {
+            try
+            {
+                DateTime dateStart = DateTime.Parse(scheduleDate + " 00:00:00");
+                DateTime dateEnd = DateTime.Parse(scheduleDate + " 23:59:59");
+
+                var labHist = dbMed.LaboratoryExams.Join(dbMed.LaboratoryTests, le => le.labTestID, lt => lt.labTestID, (le, lt) => new { le, lt })
+                                                   .Join(dbMed.Referrals, res1 => res1.le.referralID, r => r.referralID, (res1, r) => new { res1, r })
+                                                   .Join(dbMed.Consultations, res2 => res2.r.consultID, c => c.consultID, (res2, c) => new { res2, c })
+                                                   .Join(dbMed.VitalSigns, res3 => res3.c.vSignID, vs => vs.vSignID, (res3, vs) => new { res3, vs })
+                                                   .Where(a => a.vs.qrCode == qrCode && a.res3.res2.res1.le.dateTimeLog >= dateStart && a.res3.res2.res1.le.dateTimeLog <= dateEnd)
+                                                   .Select(b => new
+                                                   {
+                                                       b.res3.res2.res1.le.labID,
+                                                       b.res3.res2.res1.le.labTestID,
+                                                       b.res3.res2.res1.lt.labTestName,
+                                                       b.res3.res2.res1.le.isTested,
+                                                       b.res3.res2.res1.le.isEncoded,
+                                                       //b.res3.res2.res1.le.otherLabDesc,
+                                                       b.res3.res2.res1.le.xrayDesc,
+                                                       b.res3.res2.res1.le.ecgDesc,
+                                                       b.res3.res2.res1.le.ultrasoundDesc,
+                                                       labPersonID = b.res3.res2.res1.le.personnelID,
+                                                       dateTested = b.res3.res2.res1.le.dateTimeLog,
+                                                       b.res3.res2.r.referralID,
+                                                       b.res3.res2.r.MRDiagnosisID,
+                                                       ConsultServiceName = dbMed.Services.FirstOrDefault(aa => aa.serviceID == b.res3.c.serviceID).serviceName,
+                                                       refServiceName = dbMed.Services.FirstOrDefault(aa => aa.serviceID == b.res3.res2.r.referredServiceID).serviceName,
+                                                       b.res3.c.consultID,
+                                                       b.vs.qrCode,
+                                                       consultPersonID = b.res3.c.personnelID,
+                                                       consultDT = b.res3.c.dateTimeLog,
+                                                       consultPersonnel = dbMed.Personnels.Where(c => c.personnelID == b.res3.c.personnelID).Select(e => new { e.personnel_lastName, e.personnel_firstName, e.personnel_midInit, e.personnel_extName }),
+                                                   }).ToList();
+
+                return Json(labHist, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", msg = "An error occured while fetching laboratory history.", error = ex }, JsonRequestBehavior.AllowGet);
             }
         }
     }

@@ -182,10 +182,16 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-8">
                                                 <div class="form-group">
                                                     <label class="control-label" for="qr_address">Address</label>
                                                     <input type="text" id="qr_address" name="qr_address" required ng-model="qrData.fullAddress" placeholder="Address" class="form-control text-center" ng-disabled="!isEditting" />
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label class="control-label" for="qr_shortDepartmentName">Office</label>
+                                                    <input type="text" id="qr_shortDepartmentName" name="qr_shortDepartmentName" ng-model="qrData.shortDepartmentName" placeholder="Office" class="form-control text-center" ng-disabled="!isEditting" />
                                                 </div>
                                             </div>
                                         </div>
@@ -240,7 +246,8 @@
                                                 <tr ng-repeat="dh in diagnoseHistoryList | orderBy: '-dateTimeLog'">
                                                     <td class="text-center">{{$index + 1}}</td>
                                                     <td>{{dh[0].dateTimeLog}}</td>
-                                                    <td>Dr. {{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td>
+                                                    @* <td>Dr. {{dh[0].physician[0].personnel_firstName}} {{dh[0].physician[0].personnel_midInit}} {{dh[0].physician[0].personnel_lastName}} {{dh[0].physician[0].personnel_extName}}</td> *@
+                                                    <td>{{dh[0].Physician.toUpperCase()}}</td>
                                                     <td>{{dh[0].serviceName}}</td>
                                                     <td>{{dh[0].outsideReferral}}</td>
                                                     <td>{{dh[0].remarks}}</td>
@@ -638,54 +645,54 @@
                                             <div class="col-lg-12">
                                                 <div class="col-lg-3 col-md-3">
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0002" value="L0002" ng-model="labtest.L0002" ng-checked="checkLab(labtest)">
-                                                        <label for="L0002"> CBC </label>
+                                                        <input type="checkbox" id="L0002" value="L0002" ng-model="labtest.L0002" ng-checked="checkLab(labtest)" ng-change="onSelectLab('L0002', 275, labtest.L0002)">
+                                                        <label for="L0002"> CBC <i>(Php 275)</i></label>
                                                     </div>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0001" value="L0001" ng-model="labtest.L0001">
-                                                        <label for="L0001"> Urinalysis </label>
+                                                        <input type="checkbox" id="L0001" value="L0001" ng-model="labtest.L0001" ng-change="onSelectLab('L0001', 60, labtest.L0001)">
+                                                        <label for="L0001"> Urinalysis <i>(Php 60)</i></label>
                                                     </div>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0003" value="L0003" ng-model="labtest.L0003">
-                                                        <label for="L0003"> Fecalysis </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-3 col-md-3">
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0005" value="L0005" ng-model="labtest.L0005">
-                                                        <label for="L0005"> FBS </label>
-                                                    </div>
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0009" value="L0009" ng-model="labtest.L0009">
-                                                        <label for="L0009"> Creatinine </label>
-                                                    </div>
-                                                    <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0007" value="L0007" ng-model="labtest.L0007">
-                                                        <label for="L0007"> Lipid Profile </label>
+                                                        <input type="checkbox" id="L0003" value="L0003" ng-model="labtest.L0003" ng-change="onSelectLab('L0003', 60, labtest.L0003)">
+                                                        <label for="L0003"> Fecalysis <i>(Php 60)</i></label>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3 col-md-3">
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0010" value="L0010" ng-model="labtest.L0010">
-                                                        <label for="L0010"> Uric Acid </label>
+                                                        <input type="checkbox" id="L0005" value="L0005" ng-model="labtest.L0005" ng-change="onSelectLab('L0005', 200, labtest.L0005)">
+                                                        <label for="L0005"> FBS <i>(Php 200)</i></label>
                                                     </div>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0011" value="L0011" ng-model="labtest.L0011">
-                                                        <label for="L0011"> SGPT </label>
+                                                        <input type="checkbox" id="L0009" value="L0009" ng-model="labtest.L0009" ng-change="onSelectLab('L0009', 350, labtest.L0009)">
+                                                        <label for="L0009"> Creatinine <i>(Php 350)</i></label>
                                                     </div>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0012" value="L0012" ng-model="labtest.L0012">
-                                                        <label for="L0012"> SGOT </label>
+                                                        <input type="checkbox" id="L0007" value="L0007" ng-model="labtest.L0007" ng-change="onSelectLab('L0007', 880, labtest.L0007)">
+                                                        <label for="L0007"> Lipid Profile <i>(Php 880)</i></label>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3 col-md-3">
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0008" value="L0008" ng-model="labtest.L0008">
-                                                        <label for="L0008"> Serum Electrolytes </label>
+                                                        <input type="checkbox" id="L0010" value="L0010" ng-model="labtest.L0010" ng-change="onSelectLab('L0010', 340, labtest.L0010)">
+                                                        <label for="L0010"> Uric Acid <i>(Php 340)</i></label>
                                                     </div>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0025" value="L0025" ng-model="labtest.L0025">
-                                                        <label for="L0025"> HbA1c </label>
+                                                        <input type="checkbox" id="L0011" value="L0011" ng-model="labtest.L0011" ng-change="onSelectLab('L0011', 300, labtest.L0011)">
+                                                        <label for="L0011"> SGPT <i>(Php 300)</i></label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0012" value="L0012" ng-model="labtest.L0012" ng-change="onSelectLab('L0012', 300, labtest.L0012)">
+                                                        <label for="L0012"> SGOT <i>(Php 300)</i></label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-md-3">
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0008" value="L0008" ng-model="labtest.L0008" ng-change="onSelectLab('L0008', 1000, labtest.L0008)">
+                                                        <label for="L0008"> Serum Electrolytes <i>(Php 1000)</i></label>
+                                                    </div>
+                                                    <div class="checkbox checkbox-danger">
+                                                        <input type="checkbox" id="L0025" value="L0025" ng-model="labtest.L0025" ng-change="onSelectLab('L0025', 600, labtest.L0025)">
+                                                        <label for="L0025"> HbA1c <i>(Php 600)</i></label>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12">
@@ -695,7 +702,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4">
                                                             <div class="checkbox checkbox-danger">
-                                                                <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006" ng-change="labtest.L0006 == false ? xrayDesc = '':''">
+                                                                <input type="checkbox" id="L0006" value="L0006" ng-model="labtest.L0006" ng-change="onSelectLab('L0006', 0, labtest.L0006)">
                                                                 <label for="L0006"> X-ray </label>
                                                             </div>
                                                         </div>
@@ -708,8 +715,8 @@
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4">
                                                             <div class="checkbox checkbox-danger">
-                                                                <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004" ng-change="labtest.L0004 == false ? ecgDesc = '':''">
-                                                                <label for="L0004"> ECG </label>
+                                                                <input type="checkbox" id="L0004" value="L0004" ng-model="labtest.L0004" ng-change="onSelectLab('L0004', 200, labtest.L0004)">
+                                                                <label for="L0004"> ECG <i>(Php 200)</i></label>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-8 col-md-8">
@@ -723,7 +730,7 @@
                                                     <div class="row">
                                                         <div class="col-lg-4 col-md-4">
                                                             <div class="checkbox checkbox-danger">
-                                                                <input type="checkbox" id="L0023" value="L0023" ng-model="labtest.L0023" ng-change="labtest.L0023 == false ? ultrasoundDesc = '':''">
+                                                                <input type="checkbox" id="L0023" value="L0023" ng-model="labtest.L0023" ng-change="onSelectLab('L0023', 0, labtest.L0023)">
                                                                 <label for="L0023"> Ultrasound </label>
                                                             </div>
                                                         </div>
@@ -734,10 +741,17 @@
                                                         </div>
                                                     </div>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" id="L0024" value="L0024" ng-model="labtest.L0024">
-                                                        <label for="L0024"> 2D Echocardiography </label>
+                                                        <input type="checkbox" id="L0024" value="L0024" ng-model="labtest.L0024" ng-change="onSelectLab('L0024', 3400, labtest.L0024)">
+                                                        <label for="L0024"> 2D Echocardiography <i>(Php 3400)</i></label>
                                                     </div>
                                                 </div>
+
+                                                <!-- TOTAL LAB COST -->
+                                                <div class="col-lg-12">
+                                                    <label class="form-control" for="totalLabCost">TOTAL COST: {{totalLabCost}}</label>
+                                                </div>
+                                                <!-- /TOTAL LAB COST -->
+
                                                 <div class="col-lg-12">
                                                     <hr style="margin: 7px 0px 15px 0px;" />
                                                 </div>
@@ -834,6 +848,7 @@
                                             <option value=7>7 Days</option>
                                             <option value=10>10 Days</option>
                                             <option value=14>14 Days</option>
+                                            <option value=30>30 Days</option>
                                         </select>
                                     </div>
                                     <div ng-show="showRxQty" class="form-group">
@@ -1243,54 +1258,65 @@
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0002" value="L0002" ng-model="resultDiag.laboratory.L0002" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0002isEncoded">
-                                            <label for="edit_L0002"> CBC </label>
+                                            <input type="checkbox" id="edit_L0002" value="L0002" ng-model="resultDiag.laboratory.L0002" 
+                                             ng-change="onSelectLab('L0002', 275, resultDiag.laboratory.L0002)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0002isEncoded">
+                                            <label for="edit_L0002"> CBC <i>(Php 275)</i></label>
                                         </div>
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0001" value="L0001" ng-model="resultDiag.laboratory.L0001" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0001isEncoded">
-                                            <label for="edit_L0001"> Urinalysis </label>
+                                            <input type="checkbox" id="edit_L0001" value="L0001" ng-model="resultDiag.laboratory.L0001" 
+                                             ng-change="onSelectLab('L0001', 60, resultDiag.laboratory.L0001)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0001isEncoded">
+                                            <label for="edit_L0001"> Urinalysis <i>(Php 60)</i></label>
                                         </div>
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0003" value="L0003" ng-model="resultDiag.laboratory.L0003" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0003isEncoded">
-                                            <label for="edit_L0003"> Fecalysis </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3">
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0005" value="L0005" ng-model="resultDiag.laboratory.L0005" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0005isEncoded">
-                                            <label for="edit_L0005"> FBS </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0009" value="L0009" ng-model="resultDiag.laboratory.L0009" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0009isEncoded">
-                                            <label for="edit_L0009"> Creatinine </label>
-                                        </div>
-                                        <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0007" value="L0007" ng-model="resultDiag.laboratory.L0007" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0007isEncoded">
-                                            <label for="edit_L0007"> Lipid Profile </label>
+                                            <input type="checkbox" id="edit_L0003" value="L0003" ng-model="resultDiag.laboratory.L0003" 
+                                             ng-change="onSelectLab('L0003', 60, resultDiag.laboratory.L0003)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0003isEncoded">
+                                            <label for="edit_L0003"> Fecalysis <i>(Php 60)</i></label>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0010" value="L0010" ng-model="resultDiag.laboratory.L0010" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0010isEncoded">
-                                            <label for="edit_L0010"> Uric Acid </label>
+                                            <input type="checkbox" id="edit_L0005" value="L0005" ng-model="resultDiag.laboratory.L0005" 
+                                             ng-change="onSelectLab('L0005', 200, resultDiag.laboratory.L0005)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0005isEncoded">
+                                            <label for="edit_L0005"> FBS <i>(Php 200)</i></label>
                                         </div>
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0011" value="L0011" ng-model="resultDiag.laboratory.L0011" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0011isEncoded">
-                                            <label for="edit_L0011"> SGPT </label>
+                                            <input type="checkbox" id="edit_L0009" value="L0009" ng-model="resultDiag.laboratory.L0009" 
+                                             ng-change="onSelectLab('L0009', 350, resultDiag.laboratory.L0009)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0009isEncoded">
+                                            <label for="edit_L0009"> Creatinine <i>(Php 350)</i></label>
                                         </div>
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0012" value="L0012" ng-model="resultDiag.laboratory.L0012" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0012isEncoded">
-                                            <label for="edit_L0012"> SGOT </label>
+                                            <input type="checkbox" id="edit_L0007" value="L0007" ng-model="resultDiag.laboratory.L0007" 
+                                             ng-change="onSelectLab('L0007', 880, resultDiag.laboratory.L0007)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0007isEncoded">
+                                            <label for="edit_L0007"> Lipid Profile <i>(Php 880)</i></label>
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0008" value="L0008" ng-model="resultDiag.laboratory.L0008" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0008isEncoded">
-                                            <label for="edit_L0008"> Serum Electrolytes </label>
+                                            <input type="checkbox" id="edit_L0010" value="L0010" ng-model="resultDiag.laboratory.L0010" 
+                                             ng-change="onSelectLab('L0010', 340, resultDiag.laboratory.L0010)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0010isEncoded">
+                                            <label for="edit_L0010"> Uric Acid <i>(Php 340)</i></label>
                                         </div>
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0025" value="edit_L0025" ng-model="resultDiag.laboratory.L0025" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0025isEncoded">
-                                            <label for="edit_L0025"> HbA1c </label>
+                                            <input type="checkbox" id="edit_L0011" value="L0011" ng-model="resultDiag.laboratory.L0011" 
+                                             ng-change="onSelectLab('L0011', 300, resultDiag.laboratory.L0011)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0011isEncoded">
+                                            <label for="edit_L0011"> SGPT <i>(Php 300)</i></label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_L0012" value="L0012" ng-model="resultDiag.laboratory.L0012" 
+                                             ng-change="onSelectLab('L0012', 300, resultDiag.laboratory.L0012)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0012isEncoded">
+                                            <label for="edit_L0012"> SGOT <i>(Php 300)</i></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-3">
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_L0008" value="L0008" ng-model="resultDiag.laboratory.L0008" 
+                                             ng-change="onSelectLab('L0008', 1000, resultDiag.laboratory.L0008)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0008isEncoded">
+                                            <label for="edit_L0008"> Serum Electrolytes <i>(Php 1000)</i></label>
+                                        </div>
+                                        <div class="checkbox checkbox-danger">
+                                            <input type="checkbox" id="edit_L0025" value="edit_L0025" ng-model="resultDiag.laboratory.L0025"
+                                             ng-change="onSelectLab('L0025', 600, resultDiag.laboratory.L0025)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0025isEncoded">
+                                            <label for="edit_L0025"> HbA1c <i>(Php 600)</i></label>
                                         </div>
                                     </div>
                                     <div class="col-lg-12">
@@ -1300,7 +1326,8 @@
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0006" value="L0006" ng-model="resultDiag.laboratory.L0006" ng-change="resultDiag.laboratory.L0006 == false ? resultDiag.xrayDesc = '':''" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0006isEncoded">
+                                                    <input type="checkbox" id="edit_L0006" value="L0006" ng-model="resultDiag.laboratory.L0006" 
+                                                     ng-change="onSelectLab('L0006', 0, resultDiag.laboratory.L0006)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0006isEncoded">
                                                     <label for="edit_L0006"> X-ray </label>
                                                 </div>
                                             </div>
@@ -1313,8 +1340,9 @@
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0004" value="L0004" ng-model="resultDiag.laboratory.L0004" ng-change="resultDiag.laboratory.L0004 == false ? resultDiag.ecgDesc = '':''" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0004isEncoded">
-                                                    <label for="edit_L0004"> ECG </label>
+                                                    <input type="checkbox" id="edit_L0004" value="L0004" ng-model="resultDiag.laboratory.L0004" 
+                                                     ng-change="onSelectLab('L0004', 200, resultDiag.laboratory.L0004)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0004isEncoded">
+                                                    <label for="edit_L0004"> ECG <i>(Php 200)</i></label>
                                                 </div>
                                             </div>
                                             <div class="col-lg-8 col-md-8">
@@ -1328,7 +1356,8 @@
                                         <div class="row">
                                             <div class="col-lg-4 col-md-4">
                                                 <div class="checkbox checkbox-danger">
-                                                    <input type="checkbox" id="edit_L0023" value="L0023" ng-model="resultDiag.laboratory.L0023" ng-change="resultDiag.laboratory.L0023 == false ? resultDiag.ultrasoundDesc = '':''" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0023isEncoded">
+                                                    <input type="checkbox" id="edit_L0023" value="L0023" ng-model="resultDiag.laboratory.L0023"
+                                                     ng-change="onSelectLab('L0023', 0, resultDiag.laboratory.L0023)" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0023isEncoded">
                                                     <label for="edit_L0023"> Ultrasound </label>
                                                 </div>
                                             </div>
@@ -1339,10 +1368,15 @@
                                             </div>
                                         </div>
                                         <div class="checkbox checkbox-danger">
-                                            <input type="checkbox" id="edit_L0024" value="L0024" ng-model="resultDiag.laboratory.L0024" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0024isEncoded">
-                                            <label for="edit_L0024"> 2D Echocardiography </label>
+                                            <input type="checkbox" id="edit_L0024" value="L0024" ng-model="resultDiag.laboratory.L0024" ng-disabled="!isEditting || resultDiag.labIsEncoded.L0024isEncoded" ng-change="onSelectLab('L0024', 3400, resultDiag.laboratory.L0024)">
+                                            <label for="edit_L0024"> 2D Echocardiography <i>(Php 3400)</i></label>
                                         </div>
                                     </div>
+                                    <!-- TOTAL LAB COST -->
+                                    <div class="col-lg-12">
+                                        <label class="form-control" for="totalLabCost">TOTAL COST: {{totalLabCost}}</label>
+                                    </div>
+                                    <!-- /TOTAL LAB COST -->
                                     <br />
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -1498,6 +1532,7 @@
                                                             <option value=7>7 Days</option>
                                                             <option value=10>10 Days</option>
                                                             <option value=14>14 Days</option>
+                                                            <option value=30>30 Days</option>
                                                         </select>
                                                     </div>
                                                     <div ng-show="showRxQtyEdit" class="form-group">
@@ -1679,7 +1714,7 @@
                         </div>
                     </div>
                     <br />
-                    <div id="labResult" ng-show="!labResultLoader" style="height:100%; width:100%;" class="img-responsive avatar-view"></div>
+                    <div id="labResult" ng-show="!labResultLoader" style="height:80vh; width:100%;" class="img-responsive avatar-view"></div>
                 </div>
             </div>
         </div>
@@ -1690,7 +1725,7 @@
 
 @section scripts
 {
-    <script src="~/Scripts/AngularJS/MedicalConsultation/MedicalConsultation.js?v=1.1"></script>
+    <script src="~/Scripts/AngularJS/MedicalConsultation/MedicalConsultation.js?v=2"></script>
     <script src="~/Content/Daypilot-Calendar/scripts/daypilot-all.min.js"></script>
     <script src="~/Content/Flatpickr-DatePicker/flatpickr.js"></script>
 }

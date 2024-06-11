@@ -133,6 +133,9 @@
                        return age <= 12 ? '<span class="label label-primary">' + age + '</span>' : '<span class="label label-success">' + age + '</span>';
                    }
                },
+                {
+                    "data": null, render: function(row) { return row[0].shortDepartmentName }
+                },
                {
                    "data": null, render: function (row) {
                        return row[0].personnel_firstName + ' ' + (row[0].personnel_midInit == null ? '' : row[0].personnel_midInit)

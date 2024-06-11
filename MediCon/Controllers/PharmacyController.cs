@@ -74,6 +74,7 @@ namespace MediCon.Controllers
                                         a.pi.extName,
                                         a.pi.sex,
                                         a.pi.birthDate,
+                                        a.pi.shortDepartmentName,
                                         a.r.r5.r4.oi.dateTimeReleased,
                                         a.r.r5.r4.oi.rxID,
                                         a.r.r5.r4.r3.mp.consultID,

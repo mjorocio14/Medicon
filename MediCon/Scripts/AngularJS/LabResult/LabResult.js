@@ -261,6 +261,9 @@
             {
               "data": "contactNo",
             },
+             {
+                 "data": 'shortDepartmentName'
+             },
             {
               "data": "labTestName",
             },
@@ -324,7 +327,7 @@
         retrievingFile(data);
     };
 
-    function retrievingFile(data) {
+    function retrievingFile(data) { 
         s.imgCount = 0;
         s.currentImgIndex = 0;
         s.ImgCollection = [];
@@ -336,11 +339,13 @@
           
             if(s.imgCount > 0) {
                 for (var i = 0; i < d.data.length; i++) {
-                    s.ImgCollection.push({ FileName: d.data[i], Path: 'getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[i] });
+                    s.ImgCollection.push({ FileName: d.data[i].Name, Type: d.data[i].Type, Path: 'getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[i].Name });
                 }
-
-                s.displayFileName = d.data[0];
-                document.getElementById('labResult').innerHTML = '<img id="APreview" style="text-align: center;height:100%; width:100%;" src="getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[0] + '" height="60%" width="100%" />';
+            
+                s.displayFileName = d.data[0].Name;
+                //document.getElementById('labResult').innerHTML = '<img id="APreview" style="text-align: center;height:100%; width:100%;" src="getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[0] + '" height="60%" width="100%" />';
+                document.getElementById('labResult').innerHTML = '<embed id="APreview" style="text-align: center;height:100%; width:100%;" src="getScannedLabResult?qrCode=' + data.qrCode + '&fileName=' + d.data[0].Name + '" height="100%" width="100%">'; 
+                //document.getElementById('APreview').setAttribute("type", d.data[0].Type == ".pdf" ? "application/pdf" : "image/png");
             }
 
             else {
@@ -353,26 +358,29 @@
     }
 
     s.navLabImg = function (dir) {
-        if(dir == 'prev') {
-            var img = document.getElementById('APreview');
+        if(s.imgCount > 1) {
+            if(dir == 'prev') {
+                var img = document.getElementById('APreview');
   
-            s.currentImgIndex--;
-            if (s.currentImgIndex < 0) {
-                s.currentImgIndex = s.imgCount - 1;
+                s.currentImgIndex--;
+                if (s.currentImgIndex < 0) {
+                    s.currentImgIndex = s.imgCount - 1;
+                }
             }
-        }
 
-        else {
-            var img = document.getElementById('APreview');
+            else {
+                var img = document.getElementById('APreview');
     
-            s.currentImgIndex++;
-            if (s.currentImgIndex >= s.imgCount) {
-                s.currentImgIndex = 0;
+                s.currentImgIndex++;
+                if (s.currentImgIndex >= s.imgCount) {
+                    s.currentImgIndex = 0;
+                }
             }
-        }
 
-        img.src = s.ImgCollection[s.currentImgIndex].Path;
-        s.displayFileName = s.ImgCollection[s.currentImgIndex].FileName;
+            img.src = s.ImgCollection[s.currentImgIndex].Path;
+            s.displayFileName = s.ImgCollection[s.currentImgIndex].FileName;
+        }
+       
     }
 
     s.deleteLabImg = function() {
@@ -438,6 +446,83 @@
 
     s.editResult = function() {
         s.isShowResult = !s.isShowResult;
+    }
+
+    s.showLabUploader = function (data) 
+    {
+        s.labInfo = {};
+        s.labInfo = data;
+        $("#modalUpload").modal("show");
+    };
+
+    s.uploadLabResult = function()
+    {
+        swal({
+            title: "SAVING",
+            text: "Please wait while we are saving your data.",
+            type: "info",
+            showConfirmButton: false,
+        });
+
+        let fileUpload = document.getElementById("file").files[0];
+      
+        if(fileUpload != undefined)
+        {
+            if(fileUpload.size/1024/1024 > 2)
+            {
+                swal({
+                    title: "Error",
+                    text: "File is too large",
+                    type: "error",
+                });
+            }
+
+            else 
+            {
+                const fileReader = new FileReader();
+                fileReader.readAsDataURL(fileUpload);
+
+                fileReader.onload = (function (file) { // here we save variable 'file' in closure
+                    return function (e) { // return handler function for 'onload' event
+                        var data = this.result; // do some thing with data
+                        h.post("../LaboratoryResult/UploadPdfResult", {file: data, qrCode: s.labInfo.qrCode, labID: s.labInfo.labID}).then(function (d) {
+                            if (d.data.status == "success") {
+                                swal({
+                                    title: "Successful",
+                                    text: d.data.msg,
+                                    type: "info",
+                                });
+
+                                s.getLabtest(s.labInfo.qrCode);
+                                s.closeResult();
+                            } 
+        
+                            else {
+                                swal({
+                                    title: "Error",
+                                    text: d.data.msg,
+                                    type: "error",
+                                });
+                            }
+                        });
+                    }
+                })(file);
+            }
+        }
+
+        else {
+            swal({
+                title: "Error",
+                text: "No file is selected",
+                type: "error",
+            });
+        }
+    }
+
+    s.closeResult = function() {
+        s.labInfo = {};
+        let fileUpload = document.getElementById("file").value = null;
+        $("#modalUpload").modal("hide");
     }
 
     // UPLOADING OF SCANNED LAB RESULTS

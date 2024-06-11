@@ -60,9 +60,10 @@ namespace MediCon.Controllers
 
             else {
             if (p.productCode == null) {
-                var x = db2.ProductLists.Count();
-                var xx = x + 1;
-                p.productCode = "PC" + xx.ToString("D8");
+                p.productCode = "M" + (Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty)).Substring(0, 5).ToUpper() +
+                                      (DateTime.Now.ToString().Replace("/", "").Replace(" ", "").Replace(":", "").ToUpper());
+                p.productCode = p.productCode.Length > 10 ? p.productCode.Substring(0, 10) : p.productCode;
+             
                 p.dateTimeLog = DateTime.Now;
                 p.personnelID = Session["personnelID"].ToString();
                 db2.ProductLists.Add(p);
@@ -112,9 +113,10 @@ namespace MediCon.Controllers
                 {
                     if (p.measurementID == null)
                     {
-                        var x = db2.Measurements.Count();
-                        var xx = x + 1;
-                        p.measurementID = "M" + xx.ToString("D4");
+
+                        p.measurementID = "M" + (Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty)).Substring(0, 5).ToUpper() +
+                                       (DateTime.Now.ToString().Replace("/", "").Replace(" ", "").Replace(":", "").ToUpper());
+                        p.measurementID = p.measurementID.Length > 5 ? p.measurementID.Substring(0, 5) : p.measurementID;
                         p.dateTimeLog = DateTime.Now;
                         p.personnelID = Session["personnelID"].ToString();
                         db2.Measurements.Add(p);
@@ -137,8 +139,9 @@ namespace MediCon.Controllers
             catch (DbEntityValidationException e)
             {
                 return Json(new { status = "error", msg = "Something went wrong. Failed to retrieve data.", exceptionMessage = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
-            }         
+            }
         }
+
 
         [HttpPost]
         public ActionResult saveUnit(ProductUnit p)
@@ -157,9 +160,11 @@ namespace MediCon.Controllers
                 {
                     if (p.unitID == null)
                     {
-                        var x = db2.ProductUnits.Count();
-                        var xx = x + 1;
-                        p.unitID = "U" + xx.ToString("D4");
+                        p.unitID = "U" + (Guid.NewGuid().ToString().Replace("-", string.Empty).Replace("+", string.Empty)).Substring(0, 5).ToUpper() +
+                                      (DateTime.Now.ToString().Replace("/", "").Replace(" ", "").Replace(":", "").ToUpper());
+
+                        p.unitID = p.unitID.Length > 5 ? p.unitID.Substring(0, 5) : p.unitID;
+
                         p.dateTimeLog = DateTime.Now;
                         p.personnelID = Session["personnelID"].ToString();
                         db2.ProductUnits.Add(p);

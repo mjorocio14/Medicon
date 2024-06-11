@@ -1,0 +1,107 @@
+﻿
+@{
+    ViewBag.Title = "SputumSummary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .table-wrapper-scroll-y {
+        display: block;
+    }
+
+    .my-custom-scrollbar {
+        position: relative;
+        /*height: 250px !important;*/
+        overflow: auto;
+        border: none;
+        width: 100%;
+    }
+
+    th {
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0px;
+        z-index: 2;
+    }
+</style>
+
+<div ng-controller="XrayReportCtrl" ng-init="">
+    <!-- HEADER -->
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-6">
+            <h2>Sputum Summary Report</h2>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="">Medicon</a>
+                </li>
+                <li>
+                    <a href="">X-ray</a>
+                </li>
+                <li class="active">
+                    <strong>Sputum Summary Report</strong>
+                </li>
+            </ol>
+        </div>
+        <div class="col-lg-6" style="margin-top:30px; text-align:end;">
+         @*   <button class="btn" ng-class="showClientList == false ? 'btn-primary':'btn-danger'" ng-click="showDiagnoseList()"><i class="fa" ng-class="showClientList == false ? 'fa-list':'fa-angle-double-left'"></i> {{showClientList == false ? 'Patient List':'Back'}} </button>*@
+        </div>
+    </div>
+    <!-- /HEADER -->
+
+    <div class="wrapper wrapper-content ">
+        <div class="row">
+
+            <!-- PATIENT LIST -->
+            <div class="animated fadeInRight ecommerce">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="panel">
+                        <div class="panel-heading" style="padding-bottom: 0px !important;">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8">
+                                    <h4 style="margin-top: 9px !important;"><label> LIST OF SPUTUM REQUEST </label></h4>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="col-lg-4 col-md-4">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label"style="margin-top: 7px;">Date Collected:</label>
+                                        <div class="input-group col-sm-8">
+                                            <input type="date" class="form-control border-aero" ng-model="filterDate" ng-change="filterRequest()" required>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-primary" ng-click="printSummary()"><i class="fa fa-print"></i></button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 0px !important; margin-bottom: 0px !important;" />
+                        <div class="panel-body">
+                            <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                                <table id="sputumTable" class="table table-stripped table-hover" style="width: 100%; height: 100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Last name</th>
+                                            <th>First name</th>
+                                            <th>M.I.</th>
+                                            <th>Suffix</th>
+                                            <th>Address</th>
+                                            <th class="text-center">Date Collected</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /PATIENT LIST -->
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/AngularJS/Xray/XrayReport.js?v=1.1"></script>
+}

@@ -274,6 +274,9 @@
                {
                    "data": 'contactNo'
                },
+                {
+                    "data": 'shortDepartmentName'
+                },
                {
                    "data": 'labTestName'
                },

@@ -1,7 +1,7 @@
 ﻿app.controller('AppointmentCtrl', ['$scope', '$http', function (s, h) {
     let events = [];
     getPhysicianList();
-    getSchedule();
+    //getSchedule();
     s.modal_tableLoader = false;
     s.scheduleData = {};
 
@@ -280,13 +280,13 @@
     {
     
         // Blue, Red, Yellow, Orange, Purple, Green, Grey, Brown
-        let colors = ['#006EB3', '#FF6D6A', '#F6BE00', '#F6BE00', '#68478D', '#00873E', '#888B8D', '#623412'];
+        let colors = ['#006EB3', '#FF6D6A', '#F6BE00', '#68478D', '#00873E', '#888B8D', '#623412'];
 
         await h.post('../SystemUser/getUsers').then(function (d) {
             let result = d.data.filter(function (rec) {
-                return rec.userTypeID == 5;
+                return rec.userTypeID == 5 || rec.userTypeID == 6;
             });
-        
+         
             result = result.map(function (data, index) { 
                 // Generate random color per physician
                 data.color = colors[index];
@@ -295,6 +295,7 @@
             });
   
             s.physicianList = result;
+            getSchedule();
         });
     }
 

@@ -82,7 +82,7 @@ namespace MediCon.Controllers
 
                 var access = (granted.userTypeID == "1" || granted.userTypeID == "4" || granted.userTypeID == "9" || granted.userTypeID == "10") ? 
                              db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID ).OrderBy(e => e.orderNo).ToList() :
-                             granted.userTypeID == "5" ? db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID && (x.serviceID == granted.serviceID || x.serviceID == null)).OrderBy(e => e.orderNo).ToList() :
+                             granted.userTypeID == "5" || granted.userTypeID == "6" ? db.MenuAccesses.Where(x => x.userTypeID == granted.userTypeID && (x.serviceID == granted.serviceID || x.serviceID == null)).OrderBy(e => e.orderNo).ToList() :
                              db.MenuAccesses.Where(x =>  x.userTypeID == granted.userTypeID && x.serviceID == granted.serviceID ).OrderBy(e => e.orderNo).ToList();
 
                 Session["MenuAccess"] = access;

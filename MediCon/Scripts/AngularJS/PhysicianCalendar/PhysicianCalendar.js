@@ -102,7 +102,7 @@ function checkSchedule(personnelID) {
     return isExist;
 }
 
-s.createAppointment = function(selectedPersonnel) { 
+s.createAppointment = function(selectedPersonnel) {
     let sessionPersonnelID = document.getElementById("sessionPersonnelID").innerText;
     let countSched = checkSchedule(sessionPersonnelID);
 
@@ -259,7 +259,7 @@ async function getPhysicianList()
 
    await h.post('../SystemUser/getUsers').then(function (d) {
         let result = d.data.filter(function (rec) {
-            return rec.userTypeID == 5;
+            return rec.userTypeID == 5 || rec.userTypeID == 6;
         });
         
         result = result.map(function (data, index) { 

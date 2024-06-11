@@ -47,7 +47,6 @@ namespace MediCon.Report
 
 
                 case "prescriptionList":
-
                     rpt.Parameters.Add("rxID", Session["rxID"].ToString());
                     rpt.Parameters.Add("fullName", Session["fullName"].ToString());
                     rpt.Parameters.Add("PatientAddress", Session["PatientAddress"].ToString());
@@ -59,6 +58,19 @@ namespace MediCon.Report
                     rpt.Parameters.Add("mp_dateTimeRx", Session["mp_dateTimeRx"].ToString());
 
                     rpt.ReportDocument = new Prescription.rxList();
+                    break;
+
+                case "masterList":
+                    rpt.Parameters.Add("scheduleDate", Session["scheduleDate"].ToString());
+                    rpt.Parameters.Add("labTestID", Session["labTestID"].ToString());
+                    rpt.Parameters.Add("hospitalID", Session["hospitalID"].ToString());
+                    rpt.Parameters.Add("labTestName", Session["labTestName"].ToString());
+                    rpt.ReportDocument = new MasterList.PrintMasterList();
+                    break;
+
+		case "transmittal":
+                    rpt.Parameters.Add("dateCollected", Session["dateCollected"].ToString());
+                    rpt.ReportDocument = new LRRF.SputumTransmittal();
                     break;
             }
 

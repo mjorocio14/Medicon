@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BloodPressure">
           <Key>
             <PropertyRef Name="BPID" />
@@ -141,6 +141,7 @@
           <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="labTestID" Type="varchar" MaxLength="5" Nullable="false" />
           <Property Name="labTestName" Type="varchar" MaxLength="50" />
+          <Property Name="price" Type="decimal" Precision="7" Scale="2" />
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
@@ -545,6 +546,26 @@
           <Property Name="personnelID" Type="varchar" MaxLength="8" />
           <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
+        <Function Name="fn_ActualEmpTestedForLab" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="testDate" Type="datetime" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="EIC" Type="varchar" MaxLength="30" Nullable="false" />
+                <Property Name="fullNameLast" Type="varchar" MaxLength="150" />
+                <Property Name="sex" Type="varchar" MaxLength="6" />
+                <Property Name="shortDepartmentName" Type="varchar" MaxLength="10" />
+                <Property Name="calendarID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="scheduleDate" Type="date" />
+                <Property Name="hospitalName" Type="varchar" MaxLength="50" />
+                <Property Name="referralID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="isTested" Type="bit" />
+                <Property Name="testDate" Type="date" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="fn_DashboardAnalytics" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <ReturnType>
             <CollectionType>
@@ -588,6 +609,15 @@
           </ReturnType>
         </Function>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="fn_getActualLabTestDates" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="testedDate" Type="date" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="fn_getDiagnoseClients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="serviceID" Type="varchar" Mode="In" />
           <Parameter Name="paramDate" Type="date" Mode="In" />
@@ -1016,6 +1046,115 @@
             </CollectionType>
           </ReturnType>
         </Function>
+        <Function Name="fn_hris_consultationHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="qrCode" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="vSignID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="consultID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="serviceID" Type="varchar" MaxLength="10" />
+                <Property Name="outsideReferral" Type="varchar" MaxLength="200" />
+                <Property Name="remarks" Type="varchar" MaxLength="200" />
+                <Property Name="personnelID" Type="varchar" MaxLength="8" />
+                <Property Name="dateTimeLog" Type="datetime" />
+                <Property Name="resultID" Type="varchar" MaxLength="15" />
+                <Property Name="diagnoseID" Type="varchar" MaxLength="8" />
+                <Property Name="otherDiagnosis" Type="varchar" MaxLength="200" />
+                <Property Name="diagnoseName" Type="varchar" MaxLength="100" />
+                <Property Name="Physician" Type="varchar" MaxLength="118" Nullable="false" />
+                <Property Name="userTypeID" Type="varchar" MaxLength="5" Nullable="false" />
+                <Property Name="userTypeDesc" Type="varchar" MaxLength="30" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fn_hris_laboratoryHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="qrCode" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="vSignID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="consultID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="dateTimeLog" Type="datetime" />
+                <Property Name="personnelID" Type="varchar" MaxLength="8" />
+                <Property Name="Physician" Type="varchar" MaxLength="118" Nullable="false" />
+                <Property Name="referralID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="referredServiceID" Type="varchar" MaxLength="10" />
+                <Property Name="calendarID" Type="varchar" MaxLength="15" />
+                <Property Name="labID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="labTestID" Type="varchar" MaxLength="5" />
+                <Property Name="otherLabDesc" Type="varchar" MaxLength="50" />
+                <Property Name="xrayDesc" Type="varchar" MaxLength="50" />
+                <Property Name="ultrasoundDesc" Type="varchar" MaxLength="50" />
+                <Property Name="ecgDesc" Type="varchar" MaxLength="50" />
+                <Property Name="isTested" Type="bit" />
+                <Property Name="isEncoded" Type="bit" />
+                <Property Name="dateEncoded" Type="datetime" />
+                <Property Name="EmpTested" Type="varchar" MaxLength="8" />
+                <Property Name="TestDT" Type="datetime" />
+                <Property Name="labTestName" Type="varchar" MaxLength="50" />
+                <Property Name="scheduleDate" Type="date" />
+                <Property Name="hospitalID" Type="varchar" MaxLength="6" Nullable="false" />
+                <Property Name="hospitalName" Type="varchar" MaxLength="50" />
+                <Property Name="userTypeID" Type="varchar" MaxLength="5" Nullable="false" />
+                <Property Name="userTypeDesc" Type="varchar" MaxLength="30" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fn_hris_prescriptionHistory" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="qrCode" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="vSignID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="consultID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="serviceID" Type="varchar" MaxLength="10" />
+                <Property Name="personnelID" Type="varchar" MaxLength="8" />
+                <Property Name="dateTimeLog" Type="datetime" />
+                <Property Name="Physician" Type="varchar" MaxLength="118" Nullable="false" />
+                <Property Name="userTypeID" Type="varchar" MaxLength="5" Nullable="false" />
+                <Property Name="userTypeDesc" Type="varchar" MaxLength="30" />
+                <Property Name="rxID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="outID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="productCode" Type="varchar" MaxLength="10" />
+                <Property Name="qtyRx" Type="int" />
+                <Property Name="dosage" Type="decimal" Precision="5" Scale="2" />
+                <Property Name="perDay" Type="int" />
+                <Property Name="noDay" Type="varchar" MaxLength="30" />
+                <Property Name="note" Type="varchar" MaxLength="200" />
+                <Property Name="productDesc" Type="varchar" MaxLength="50" />
+                <Property Name="measurementID" Type="varchar" MaxLength="5" />
+                <Property Name="unitID" Type="varchar" MaxLength="5" />
+                <Property Name="measurementDesc" Type="varchar" MaxLength="50" />
+                <Property Name="unitDesc" Type="varchar" MaxLength="50" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fn_LabSchedMasterList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="scheduleDate" Type="varchar" Mode="In" />
+          <Parameter Name="labTestID" Type="varchar" Mode="In" />
+          <Parameter Name="hospitalID" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="idNo" Type="varchar" MaxLength="6" />
+                <Property Name="fullNameFirst" Type="varchar" MaxLength="150" />
+                <Property Name="shortDepartmentName" Type="varchar" MaxLength="10" />
+                <Property Name="departmentName" Type="varchar" MaxLength="150" />
+                <Property Name="fullNameLast" Type="varchar" MaxLength="150" />
+                <Property Name="scheduleDate" Type="date" />
+                <Property Name="labTestID" Type="varchar" MaxLength="5" Nullable="false" />
+                <Property Name="hospitalID" Type="varchar" MaxLength="6" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="fn_MedicineList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <ReturnType>
             <CollectionType>
@@ -1060,6 +1199,25 @@
             </CollectionType>
           </ReturnType>
         </Function>
+        <Function Name="fn_ScheduledEmpForLab" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="startDate" Type="datetime" Mode="In" />
+          <Parameter Name="endDate" Type="datetime" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="EIC" Type="varchar" MaxLength="30" Nullable="false" />
+                <Property Name="fullNameLast" Type="varchar" MaxLength="150" />
+                <Property Name="sex" Type="varchar" MaxLength="6" />
+                <Property Name="shortDepartmentName" Type="varchar" MaxLength="10" />
+                <Property Name="hospitalID" Type="varchar" MaxLength="6" Nullable="false" />
+                <Property Name="hospitalName" Type="varchar" MaxLength="50" />
+                <Property Name="calendarID" Type="varchar" MaxLength="15" Nullable="false" />
+                <Property Name="scheduleDate" Type="date" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="fn_vitalSignList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="dateFilter" Type="date" Mode="In" />
           <ReturnType>
@@ -1085,6 +1243,24 @@
                 <Property Name="contactNo" Type="varchar" MaxLength="13" />
                 <Property Name="birthDate" Type="date" />
                 <Property Name="sex" Type="varchar" MaxLength="6" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
+        <Function Name="fnSputumTransmittal" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="dateCollected" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="qrCode" Type="varchar" MaxLength="30" />
+                <Property Name="lastName" Type="varchar" MaxLength="50" />
+                <Property Name="firstName" Type="varchar" MaxLength="50" />
+                <Property Name="middleName" Type="varchar" MaxLength="50" />
+                <Property Name="extName" Type="varchar" MaxLength="10" />
+                <Property Name="_address" Type="nvarchar" MaxLength="512" Nullable="false" />
+                <Property Name="isNeedScutum" Type="bit" />
+                <Property Name="dateEncoded" Type="date" />
+                <Property Name="dateCollected" Type="date" />
               </RowType>
             </CollectionType>
           </ReturnType>
@@ -1174,10 +1350,24 @@
           <EntitySet Name="Xray_Screening" EntityType="Self.Xray_Screening" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Xray_ScutumLabRequest" EntityType="Self.Xray_ScutumLabRequest" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MediconModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <ComplexType Name="fn_ActualEmpTestedForLab_Result">
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EIC" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fullNameLast" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="sex" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="shortDepartmentName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="calendarID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="scheduleDate" Type="DateTime" />
+          <Property Name="hospitalName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="testDate" Type="DateTime" />
+        </ComplexType>
         <ComplexType Name="fn_DashboardAnalytics_Result">
           <Property Name="sex" Type="Boolean" />
           <Property Name="CountPerSex" Type="Int32" />
@@ -1195,6 +1385,9 @@
         <ComplexType Name="fn_DashboardMRH_Result">
           <Property Name="sex" Type="Boolean" />
           <Property Name="MRHcount" Type="Int32" />
+        </ComplexType>
+        <ComplexType Name="fn_getActualLabTestDates_Result">
+          <Property Name="testedDate" Type="DateTime" />
         </ComplexType>
         <ComplexType Name="fn_getDiagnoseClients_Result">
           <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
@@ -1371,10 +1564,6 @@
           <Property Name="isEncoded" Type="Boolean" />
           <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
           <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="bloodChemID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="result" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="LabTestGroupID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="bloodChemDateEncoded" Type="DateTime" />
           <Property Name="dateTested" Type="DateTime" />
           <Property Name="referredServiceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="MRDiagnosisID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
@@ -1551,6 +1740,85 @@
           <Property Name="isNeedScutum" Type="Boolean" />
           <Property Name="isXray" Type="Boolean" />
         </ComplexType>
+        <ComplexType Name="fn_hris_consultationHistory_Result">
+          <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="outsideReferral" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="remarks" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" />
+          <Property Name="resultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="diagnoseID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="otherDiagnosis" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="diagnoseName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Physician" Type="String" MaxLength="118" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userTypeDesc" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </ComplexType>
+        <ComplexType Name="fn_hris_laboratoryHistory_Result">
+          <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="dateTimeLog" Type="DateTime" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="Physician" Type="String" MaxLength="118" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="referredServiceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="calendarID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="xrayDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ultrasoundDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ecgDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="isEncoded" Type="Boolean" />
+          <Property Name="dateEncoded" Type="DateTime" />
+          <Property Name="EmpTested" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="TestDT" Type="DateTime" />
+          <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="scheduleDate" Type="DateTime" />
+          <Property Name="hospitalID" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="hospitalName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userTypeDesc" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </ComplexType>
+        <ComplexType Name="fn_hris_prescriptionHistory_Result">
+          <Property Name="vSignID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="consultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" />
+          <Property Name="Physician" Type="String" MaxLength="118" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userTypeID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="userTypeDesc" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="outID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="qtyRx" Type="Int32" />
+          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="perDay" Type="Int32" />
+          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="productDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="measurementID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="unitID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="measurementDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="unitDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </ComplexType>
+        <ComplexType Name="fn_LabSchedMasterList_Result">
+          <Property Name="idNo" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="fullNameFirst" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="shortDepartmentName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="departmentName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="fullNameLast" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="scheduleDate" Type="DateTime" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="hospitalID" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+        </ComplexType>
         <ComplexType Name="fn_MedicineList_Result">
           <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="productDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -1582,6 +1850,17 @@
           <Property Name="mpconsultID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="mp_dateTimeRx" Type="DateTime" />
         </ComplexType>
+        <ComplexType Name="fn_ScheduledEmpForLab_Result">
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EIC" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="fullNameLast" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="sex" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="shortDepartmentName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="hospitalID" Type="String" MaxLength="6" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="hospitalName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="calendarID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="scheduleDate" Type="DateTime" />
+        </ComplexType>
         <ComplexType Name="fn_vitalSignList_Result">
           <Property Name="dateTimeLog" Type="DateTime" />
           <Property Name="height" Type="Decimal" Precision="5" Scale="2" />
@@ -1603,6 +1882,17 @@
           <Property Name="contactNo" Type="String" MaxLength="13" FixedLength="false" Unicode="false" />
           <Property Name="birthDate" Type="DateTime" />
           <Property Name="sex" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+        </ComplexType>
+        <ComplexType Name="fnSputumTransmittal_Result">
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="firstName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="middleName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="extName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="C_address" Type="String" MaxLength="512" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="isNeedScutum" Type="Boolean" />
+          <Property Name="dateEncoded" Type="DateTime" />
+          <Property Name="dateCollected" Type="DateTime" />
         </ComplexType>
         <EntityType Name="BloodPressure">
           <Key>
@@ -1676,6 +1966,16 @@
           <Property Name="editedBy" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateEdited" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="EyeCare">
+          <Key>
+            <PropertyRef Name="eyeCareID_rxID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="eyeCareID_rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="Hospital">
           <Key>
             <PropertyRef Name="hospitalID" />
@@ -1695,6 +1995,25 @@
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="LaboratoryExam">
+          <Key>
+            <PropertyRef Name="labID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="labID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="xrayDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ultrasoundDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ecgDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="isTested" Type="Boolean" />
+          <Property Name="isEncoded" Type="Boolean" />
+          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
+          <Property Name="encodedBy" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="LaboratoryGroupTest">
           <Key>
             <PropertyRef Name="LabTestGroupID" />
@@ -1711,6 +2030,7 @@
           <Property Name="recNo" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="labTestName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="price" Type="Decimal" Precision="7" Scale="2" />
           <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
         </EntityType>
@@ -1812,6 +2132,24 @@
           <Property Name="diagnoseDT" Type="DateTime" Precision="3" />
           <Property Name="requestPersonID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
           <Property Name="requestDT" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="OutgoingItem">
+          <Key>
+            <PropertyRef Name="outID" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="outID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="qtyRx" Type="Int32" />
+          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
+          <Property Name="perDay" Type="Int32" />
+          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="isRelease" Type="Boolean" />
+          <Property Name="qtyReleased" Type="Int32" />
+          <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="PapsmearBreastExam">
           <Key>
@@ -2104,8 +2442,10 @@
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosi" />
           <EntitySet Name="DietCounselings" EntityType="Self.DietCounseling" />
           <EntitySet Name="EditRemarks" EntityType="Self.EditRemark" />
+          <EntitySet Name="EyeCares" EntityType="Self.EyeCare" />
           <EntitySet Name="Hospitals" EntityType="Self.Hospital" />
           <EntitySet Name="HospitalCalendars" EntityType="Self.HospitalCalendar" />
+          <EntitySet Name="LaboratoryExams" EntityType="Self.LaboratoryExam" />
           <EntitySet Name="LaboratoryGroupTests" EntityType="Self.LaboratoryGroupTest" />
           <EntitySet Name="LaboratoryTests" EntityType="Self.LaboratoryTest" />
           <EntitySet Name="MaleRepro_Diagnosis" EntityType="Self.MaleRepro_Diagnosis" />
@@ -2114,6 +2454,7 @@
           <EntitySet Name="MedicalPrescriptions" EntityType="Self.MedicalPrescription" />
           <EntitySet Name="MenuAccesses" EntityType="Self.MenuAccess" />
           <EntitySet Name="MRHrequests" EntityType="Self.MRHrequest" />
+          <EntitySet Name="OutgoingItems" EntityType="Self.OutgoingItem" />
           <EntitySet Name="PapsmearBreastExams" EntityType="Self.PapsmearBreastExam" />
           <EntitySet Name="PatientAppointments" EntityType="Self.PatientAppointment" />
           <EntitySet Name="Personnels" EntityType="Self.Personnel" />
@@ -2137,45 +2478,73 @@
           <EntitySet Name="Xray_PersonStatus" EntityType="Self.Xray_PersonStatus" />
           <EntitySet Name="Xray_Screening" EntityType="Self.Xray_Screening" />
           <EntitySet Name="Xray_ScutumLabRequest" EntityType="Self.Xray_ScutumLabRequest" />
+          <FunctionImport Name="fn_ActualEmpTestedForLab" IsComposable="true" ReturnType="Collection(MediconModel.fn_ActualEmpTestedForLab_Result)">
+            <Parameter Name="testDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
           <FunctionImport Name="fn_DashboardAnalytics" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardAnalytics_Result)" />
           <FunctionImport Name="fn_DashboardDental" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardDental_Result)" />
           <FunctionImport Name="fn_DashboardMorbidity" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardMorbidity_Result)" />
           <FunctionImport Name="fn_DashboardMRH" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardMRH_Result)" />
+          <FunctionImport Name="fn_getActualLabTestDates" IsComposable="true" ReturnType="Collection(MediconModel.fn_getActualLabTestDates_Result)" />
           <FunctionImport Name="fn_getDiagnoseClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getDiagnoseClients_Result)">
             <Parameter Name="serviceID" Mode="In" Type="String" />
             <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabResult" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabResult_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getMRHclients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getMRHclients_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getPapsmearBreastExamClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPapsmearBreastExamClients_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="fn_getPatientLabHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPatientLabHistory_Result)">
+            <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_getPatientXrayHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPatientXrayHistory_Result)">
-          <Parameter Name="qrCode" Mode="In" Type="String" />
+            <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_getRectalClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getRectalClients_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getXrayLabReqClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayLabReqClients_Result)" />
           <FunctionImport Name="fn_getXrayScreenedClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayScreenedClients_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getXrayTagClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayTagClients_Result)">
-          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="fn_hris_consultationHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_hris_consultationHistory_Result)">
+            <Parameter Name="qrCode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="fn_hris_laboratoryHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_hris_laboratoryHistory_Result)">
+            <Parameter Name="qrCode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="fn_hris_prescriptionHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_hris_prescriptionHistory_Result)">
+            <Parameter Name="qrCode" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="fn_LabSchedMasterList" IsComposable="true" ReturnType="Collection(MediconModel.fn_LabSchedMasterList_Result)">
+            <Parameter Name="scheduleDate" Mode="In" Type="String" />
+            <Parameter Name="labTestID" Mode="In" Type="String" />
+            <Parameter Name="hospitalID" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_MedicineList" IsComposable="true" ReturnType="Collection(MediconModel.fn_MedicineList_Result)" />
           <FunctionImport Name="fn_Prescriptions" IsComposable="true" ReturnType="Collection(MediconModel.fn_Prescriptions_Result)">
-          <Parameter Name="date" Mode="In" Type="String" />
+            <Parameter Name="date" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="fn_ScheduledEmpForLab" IsComposable="true" ReturnType="Collection(MediconModel.fn_ScheduledEmpForLab_Result)">
+            <Parameter Name="startDate" Mode="In" Type="DateTime" />
+            <Parameter Name="endDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_vitalSignList" IsComposable="true" ReturnType="Collection(MediconModel.fn_vitalSignList_Result)">
-          <Parameter Name="dateFilter" Mode="In" Type="DateTime" />
+            <Parameter Name="dateFilter" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="fnSputumTransmittal" IsComposable="true" ReturnType="Collection(MediconModel.fnSputumTransmittal_Result)">
+            <Parameter Name="dateCollected" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -2215,9 +2584,6 @@
             <Parameter Name="new_diagramname" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
-          <EntitySet Name="LaboratoryExams" EntityType="MediconModel.LaboratoryExam" />
-          <EntitySet Name="EyeCares" EntityType="MediconModel.EyeCare" />
-          <EntitySet Name="OutgoingItems" EntityType="MediconModel.OutgoingItem" />
           <FunctionImport Name="spOT_MedicineDispensing" ReturnType="Collection(MediconModel.spOT_MedicineDispensing_Result)">
             <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
@@ -2310,53 +2676,6 @@
           <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
           <Property Type="Int32" Name="OwnerID" Nullable="false" />
         </ComplexType>
-        <EntityType Name="LaboratoryExam">
-          <Key>
-            <PropertyRef Name="labID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="labID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="referralID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="labTestID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="otherLabDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="xrayDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ultrasoundDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ecgDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="isTested" Type="Boolean" />
-          <Property Name="isEncoded" Type="Boolean" />
-          <Property Name="dateEncoded" Type="DateTime" Precision="3" />
-          <Property Name="encodedBy" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="EyeCare">
-          <Key>
-            <PropertyRef Name="eyeCareID_rxID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="eyeCareID_rxID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="OutgoingItem">
-          <Key>
-            <PropertyRef Name="outID" />
-          </Key>
-          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="outID" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="rxID" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
-          <Property Name="productCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="qtyRx" Type="Int32" />
-          <Property Name="dosage" Type="Decimal" Precision="5" Scale="2" />
-          <Property Name="perDay" Type="Int32" />
-          <Property Name="noDay" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
-          <Property Name="note" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="isRelease" Type="Boolean" />
-          <Property Name="qtyReleased" Type="Int32" />
-          <Property Name="userIDreleased" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="dateTimeReleased" Type="DateTime" Precision="3" />
-        </EntityType>
         <ComplexType Name="spOT_MedicineDispensing_Result">
           <Property Type="String" Name="qrCode" Nullable="true" MaxLength="30" />
           <Property Type="String" Name="serviceID" Nullable="true" MaxLength="10" />
@@ -2466,6 +2785,17 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="EyeCares">
+            <EntityTypeMapping TypeName="MediconModel.EyeCare">
+              <MappingFragment StoreEntitySet="EyeCare">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="eyeCareID_rxID" ColumnName="eyeCareID_rxID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Hospitals">
             <EntityTypeMapping TypeName="MediconModel.Hospital">
               <MappingFragment StoreEntitySet="Hospital">
@@ -2487,6 +2817,26 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="LaboratoryExams">
+            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
+              <MappingFragment StoreEntitySet="LaboratoryExam">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
+                <ScalarProperty Name="xrayDesc" ColumnName="xrayDesc" />
+                <ScalarProperty Name="ultrasoundDesc" ColumnName="ultrasoundDesc" />
+                <ScalarProperty Name="ecgDesc" ColumnName="ecgDesc" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
+                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
+                <ScalarProperty Name="encodedBy" ColumnName="encodedBy" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="LaboratoryGroupTests">
             <EntityTypeMapping TypeName="MediconModel.LaboratoryGroupTest">
               <MappingFragment StoreEntitySet="LaboratoryGroupTest">
@@ -2503,6 +2853,7 @@
                 <ScalarProperty Name="recNo" ColumnName="recNo" />
                 <ScalarProperty Name="labTestID" ColumnName="labTestID" />
                 <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="price" ColumnName="price" />
                 <ScalarProperty Name="personnelID" ColumnName="personnelID" />
                 <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
               </MappingFragment>
@@ -2610,6 +2961,25 @@
                 <ScalarProperty Name="diagnoseDT" ColumnName="diagnoseDT" />
                 <ScalarProperty Name="requestPersonID" ColumnName="requestPersonID" />
                 <ScalarProperty Name="requestDT" ColumnName="requestDT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OutgoingItems">
+            <EntityTypeMapping TypeName="MediconModel.OutgoingItem">
+              <MappingFragment StoreEntitySet="OutgoingItems">
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+                <ScalarProperty Name="outID" ColumnName="outID" />
+                <ScalarProperty Name="rxID" ColumnName="rxID" />
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+                <ScalarProperty Name="dosage" ColumnName="dosage" />
+                <ScalarProperty Name="perDay" ColumnName="perDay" />
+                <ScalarProperty Name="noDay" ColumnName="noDay" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
+                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
+                <ScalarProperty Name="userIDreleased" ColumnName="userIDreleased" />
+                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -2920,6 +3290,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_ActualEmpTestedForLab" FunctionImportName="fn_ActualEmpTestedForLab">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_ActualEmpTestedForLab_Result">
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="EIC" ColumnName="EIC" />
+                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
+                <ScalarProperty Name="calendarID" ColumnName="calendarID" />
+                <ScalarProperty Name="scheduleDate" ColumnName="scheduleDate" />
+                <ScalarProperty Name="hospitalName" ColumnName="hospitalName" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="testDate" ColumnName="testDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionName="MediconModel.Store.fn_DashboardAnalytics" FunctionImportName="fn_DashboardAnalytics">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.fn_DashboardAnalytics_Result">
@@ -2951,6 +3338,13 @@
               <ComplexTypeMapping TypeName="MediconModel.fn_DashboardMRH_Result">
                 <ScalarProperty Name="sex" ColumnName="sex" />
                 <ScalarProperty Name="MRHcount" ColumnName="MRHcount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_getActualLabTestDates" FunctionImportName="fn_getActualLabTestDates">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getActualLabTestDates_Result">
+                <ScalarProperty Name="testedDate" ColumnName="testedDate" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -3137,6 +3531,25 @@
                 <ScalarProperty Name="contactNo" ColumnName="contactNo" />
                 <ScalarProperty Name="birthDate" ColumnName="birthDate" />
                 <ScalarProperty Name="sex" ColumnName="sex" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_getPatientLabHistory" FunctionImportName="fn_getPatientLabHistory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_getPatientLabHistory_Result">
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="dateTested" ColumnName="dateTested" />
+                <ScalarProperty Name="referredServiceID" ColumnName="referredServiceID" />
+                <ScalarProperty Name="MRDiagnosisID" ColumnName="MRDiagnosisID" />
+                <ScalarProperty Name="ConsultServiceName" ColumnName="ConsultServiceName" />
+                <ScalarProperty Name="refServiceName" ColumnName="refServiceName" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -3330,6 +3743,101 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_hris_consultationHistory" FunctionImportName="fn_hris_consultationHistory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_hris_consultationHistory_Result">
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="outsideReferral" ColumnName="outsideReferral" />
+                <ScalarProperty Name="remarks" ColumnName="remarks" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="resultID" ColumnName="resultID" />
+                <ScalarProperty Name="diagnoseID" ColumnName="diagnoseID" />
+                <ScalarProperty Name="otherDiagnosis" ColumnName="otherDiagnosis" />
+                <ScalarProperty Name="diagnoseName" ColumnName="diagnoseName" />
+                <ScalarProperty Name="Physician" ColumnName="Physician" />
+                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+                <ScalarProperty Name="userTypeDesc" ColumnName="userTypeDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_hris_laboratoryHistory" FunctionImportName="fn_hris_laboratoryHistory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_hris_laboratoryHistory_Result">
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="Physician" ColumnName="Physician" />
+                <ScalarProperty Name="referralID" ColumnName="referralID" />
+                <ScalarProperty Name="referredServiceID" ColumnName="referredServiceID" />
+                <ScalarProperty Name="calendarID" ColumnName="calendarID" />
+                <ScalarProperty Name="labID" ColumnName="labID" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
+                <ScalarProperty Name="xrayDesc" ColumnName="xrayDesc" />
+                <ScalarProperty Name="ultrasoundDesc" ColumnName="ultrasoundDesc" />
+                <ScalarProperty Name="ecgDesc" ColumnName="ecgDesc" />
+                <ScalarProperty Name="isTested" ColumnName="isTested" />
+                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
+                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
+                <ScalarProperty Name="EmpTested" ColumnName="EmpTested" />
+                <ScalarProperty Name="TestDT" ColumnName="TestDT" />
+                <ScalarProperty Name="labTestName" ColumnName="labTestName" />
+                <ScalarProperty Name="scheduleDate" ColumnName="scheduleDate" />
+                <ScalarProperty Name="hospitalID" ColumnName="hospitalID" />
+                <ScalarProperty Name="hospitalName" ColumnName="hospitalName" />
+                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+                <ScalarProperty Name="userTypeDesc" ColumnName="userTypeDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_hris_prescriptionHistory" FunctionImportName="fn_hris_prescriptionHistory">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_hris_prescriptionHistory_Result">
+                <ScalarProperty Name="vSignID" ColumnName="vSignID" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="consultID" ColumnName="consultID" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="Physician" ColumnName="Physician" />
+                <ScalarProperty Name="userTypeID" ColumnName="userTypeID" />
+                <ScalarProperty Name="userTypeDesc" ColumnName="userTypeDesc" />
+                <ScalarProperty Name="rxID" ColumnName="rxID" />
+                <ScalarProperty Name="outID" ColumnName="outID" />
+                <ScalarProperty Name="productCode" ColumnName="productCode" />
+                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
+                <ScalarProperty Name="dosage" ColumnName="dosage" />
+                <ScalarProperty Name="perDay" ColumnName="perDay" />
+                <ScalarProperty Name="noDay" ColumnName="noDay" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="productDesc" ColumnName="productDesc" />
+                <ScalarProperty Name="measurementID" ColumnName="measurementID" />
+                <ScalarProperty Name="unitID" ColumnName="unitID" />
+                <ScalarProperty Name="measurementDesc" ColumnName="measurementDesc" />
+                <ScalarProperty Name="unitDesc" ColumnName="unitDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_LabSchedMasterList" FunctionImportName="fn_LabSchedMasterList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_LabSchedMasterList_Result">
+                <ScalarProperty Name="idNo" ColumnName="idNo" />
+                <ScalarProperty Name="fullNameFirst" ColumnName="fullNameFirst" />
+                <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
+                <ScalarProperty Name="departmentName" ColumnName="departmentName" />
+                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+                <ScalarProperty Name="scheduleDate" ColumnName="scheduleDate" />
+                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
+                <ScalarProperty Name="hospitalID" ColumnName="hospitalID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionName="MediconModel.Store.fn_MedicineList" FunctionImportName="fn_MedicineList">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.fn_MedicineList_Result">
@@ -3369,6 +3877,21 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fn_ScheduledEmpForLab" FunctionImportName="fn_ScheduledEmpForLab">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fn_ScheduledEmpForLab_Result">
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="EIC" ColumnName="EIC" />
+                <ScalarProperty Name="fullNameLast" ColumnName="fullNameLast" />
+                <ScalarProperty Name="sex" ColumnName="sex" />
+                <ScalarProperty Name="shortDepartmentName" ColumnName="shortDepartmentName" />
+                <ScalarProperty Name="hospitalID" ColumnName="hospitalID" />
+                <ScalarProperty Name="hospitalName" ColumnName="hospitalName" />
+                <ScalarProperty Name="calendarID" ColumnName="calendarID" />
+                <ScalarProperty Name="scheduleDate" ColumnName="scheduleDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionName="MediconModel.Store.fn_vitalSignList" FunctionImportName="fn_vitalSignList">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.fn_vitalSignList_Result">
@@ -3392,6 +3915,21 @@
                 <ScalarProperty Name="contactNo" ColumnName="contactNo" />
                 <ScalarProperty Name="birthDate" ColumnName="birthDate" />
                 <ScalarProperty Name="sex" ColumnName="sex" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionName="MediconModel.Store.fnSputumTransmittal" FunctionImportName="fnSputumTransmittal">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="MediconModel.fnSputumTransmittal_Result">
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="middleName" ColumnName="middleName" />
+                <ScalarProperty Name="extName" ColumnName="extName" />
+                <ScalarProperty Name="C_address" ColumnName="_address" />
+                <ScalarProperty Name="isNeedScutum" ColumnName="isNeedScutum" />
+                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
+                <ScalarProperty Name="dateCollected" ColumnName="dateCollected" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -3504,56 +4042,6 @@
           </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="MediconModel.Store.sp_renamediagram" />
           <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="MediconModel.Store.sp_upgraddiagrams" />
-          <EntitySetMapping Name="LaboratoryExams">
-            <EntityTypeMapping TypeName="MediconModel.LaboratoryExam">
-              <MappingFragment StoreEntitySet="LaboratoryExam">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="encodedBy" ColumnName="encodedBy" />
-                <ScalarProperty Name="dateEncoded" ColumnName="dateEncoded" />
-                <ScalarProperty Name="isEncoded" ColumnName="isEncoded" />
-                <ScalarProperty Name="isTested" ColumnName="isTested" />
-                <ScalarProperty Name="ecgDesc" ColumnName="ecgDesc" />
-                <ScalarProperty Name="ultrasoundDesc" ColumnName="ultrasoundDesc" />
-                <ScalarProperty Name="xrayDesc" ColumnName="xrayDesc" />
-                <ScalarProperty Name="otherLabDesc" ColumnName="otherLabDesc" />
-                <ScalarProperty Name="labTestID" ColumnName="labTestID" />
-                <ScalarProperty Name="referralID" ColumnName="referralID" />
-                <ScalarProperty Name="labID" ColumnName="labID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="EyeCares">
-            <EntityTypeMapping TypeName="MediconModel.EyeCare">
-              <MappingFragment StoreEntitySet="EyeCare">
-                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
-                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
-                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
-                <ScalarProperty Name="eyeCareID_rxID" ColumnName="eyeCareID_rxID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OutgoingItems">
-            <EntityTypeMapping TypeName="MediconModel.OutgoingItem">
-              <MappingFragment StoreEntitySet="OutgoingItems">
-                <ScalarProperty Name="dateTimeReleased" ColumnName="dateTimeReleased" />
-                <ScalarProperty Name="userIDreleased" ColumnName="userIDreleased" />
-                <ScalarProperty Name="qtyReleased" ColumnName="qtyReleased" />
-                <ScalarProperty Name="isRelease" ColumnName="isRelease" />
-                <ScalarProperty Name="note" ColumnName="note" />
-                <ScalarProperty Name="noDay" ColumnName="noDay" />
-                <ScalarProperty Name="perDay" ColumnName="perDay" />
-                <ScalarProperty Name="dosage" ColumnName="dosage" />
-                <ScalarProperty Name="qtyRx" ColumnName="qtyRx" />
-                <ScalarProperty Name="productCode" ColumnName="productCode" />
-                <ScalarProperty Name="rxID" ColumnName="rxID" />
-                <ScalarProperty Name="outID" ColumnName="outID" />
-                <ScalarProperty Name="recNo" ColumnName="recNo" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <FunctionImportMapping FunctionImportName="spOT_MedicineDispensing" FunctionName="MediconModel.Store.spOT_MedicineDispensing">
             <ResultMapping>
               <ComplexTypeMapping TypeName="MediconModel.spOT_MedicineDispensing_Result">
