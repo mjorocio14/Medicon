@@ -667,8 +667,8 @@ namespace MediCon.Controllers
 
                             // Send SMS for the updated laboratory schedule
                             var sendSMS = new SendSMSController();
-                            if (labReq.Length > 0 && !String.IsNullOrEmpty(empInfo.contactNo) && empInfo.hospitalID != "HPL004") 
-                                sendSMS.Send(empInfo, true);
+                            if (labReq.Length > 0 && !String.IsNullOrEmpty(empInfo.contactNo) && empInfo.hospitalID != "HPL004")
+                                sendSMS.Send(empInfo, true, "labSched");
 
                             if (result == "error")
                                 return Json(new { status = "error", msg = "Diagnosis is not updated!" }, JsonRequestBehavior.AllowGet);

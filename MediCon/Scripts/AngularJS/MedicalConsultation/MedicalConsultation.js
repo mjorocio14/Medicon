@@ -1109,7 +1109,6 @@
                         
                         // If hospital and lab schedule is present
                         if (hospitalData.length > 0) {
-                            
                             s.selectHospital(hospitalData[0].hospitalID, true);
                            
                             if(hospitalData[0].hospitalID != "HPL004")  {
@@ -1432,7 +1431,7 @@
             schedule: schedInfo.labSchedule
         };
     
-        h.post('../SendSMS/Send', { info: data, isHospital: true }).then(function (d) {
+        h.post('../SendSMS/Send', { info: data, isHospital: true, type: "labSched" }).then(function (d) {
             console.log(d);
         });
     }

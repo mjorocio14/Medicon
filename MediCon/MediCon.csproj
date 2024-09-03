@@ -174,6 +174,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AnalyticsController.cs" />
     <Compile Include="Controllers\ClinicalScreeningController.cs" />
+    <Compile Include="Controllers\ClinicPatientAppointmentController.cs" />
     <Compile Include="Controllers\DentalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HospitalController.cs" />
@@ -218,6 +219,12 @@
     </Compile>
     <Compile Include="Models\CityMun.cs">
       <DependentUpon>DCIMS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClinicPatientAppointment.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClinicUnavailability.cs">
+      <DependentUpon>Medicon.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Consultation.cs">
       <DependentUpon>Medicon.tt</DependentUpon>
@@ -701,6 +708,7 @@
     <Content Include="Report\MediConRpt.aspx" />
     <Content Include="Scripts\AngularJS\Analytics\AnalyticsCtrl.js" />
     <Content Include="Scripts\AngularJS\angular.min.js" />
+    <Content Include="Scripts\AngularJS\ClinicPatientAppointment\ClinicPatientAppointment.js" />
     <Content Include="Scripts\AngularJS\Dental\OralExam.js" />
     <Content Include="Scripts\AngularJS\Dental\ToothExtraction.js" />
     <Content Include="Scripts\AngularJS\Hospital\Scheduler.js" />
@@ -849,6 +857,7 @@
     <Content Include="Views\ReadingGlasses\Index.cshtml" />
     <Content Include="Views\MasterList\LabSched.cshtml" />
     <Content Include="Views\XrayReport\Report.cshtml" />
+    <Content Include="Views\ClinicPatientAppointment\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

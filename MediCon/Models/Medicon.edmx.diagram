@@ -47,6 +47,8 @@
         <EntityTypeShape EntityType="MediconModel.Xray_PersonStatus" Width="1.5" PointX="18.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Xray_Screening" Width="1.5" PointX="0.75" PointY="18.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MediconModel.Xray_ScutumLabRequest" Width="1.5" PointX="2.75" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MediconModel.ClinicUnavailability" Width="1.5" PointX="5.375" PointY="18.75" />
+        <EntityTypeShape EntityType="MediconModel.ClinicPatientAppointment" Width="1.5" PointX="7.375" PointY="18.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

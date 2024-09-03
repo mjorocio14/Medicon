@@ -69,6 +69,8 @@ namespace MediCon.Models
         public virtual DbSet<Xray_PersonStatus> Xray_PersonStatus { get; set; }
         public virtual DbSet<Xray_Screening> Xray_Screening { get; set; }
         public virtual DbSet<Xray_ScutumLabRequest> Xray_ScutumLabRequest { get; set; }
+        public virtual DbSet<ClinicUnavailability> ClinicUnavailabilities { get; set; }
+        public virtual DbSet<ClinicPatientAppointment> ClinicPatientAppointments { get; set; }
     
         [DbFunction("MediconEntities", "fn_ActualEmpTestedForLab")]
         public virtual IQueryable<fn_ActualEmpTestedForLab_Result> fn_ActualEmpTestedForLab(Nullable<System.DateTime> testDate)

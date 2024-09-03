@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MediconModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="BloodPressure">
           <Key>
             <PropertyRef Name="BPID" />
@@ -25,6 +25,32 @@
           <Property Name="recNo" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="brandID" Type="varchar" MaxLength="8" Nullable="false" />
           <Property Name="brandName" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Medicon.dbo.ClinicPatientAppointment' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ClinicPatientAppointment">
+          <Key>
+            <PropertyRef Name="recNo" />
+          </Key>
+          <Property Name="recNo" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="clinicAppID" Type="varchar" MaxLength="10" />
+          <Property Name="qrCode" Type="varchar" MaxLength="30" />
+          <Property Name="date" Type="date" />
+          <Property Name="daytime" Type="bit" />
+          <Property Name="serviceID" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="ClinicUnavailability">
+          <Key>
+            <PropertyRef Name="unavailableID" />
+          </Key>
+          <Property Name="recNo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="unavailableID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="personnelID" Type="varchar" MaxLength="8" />
+          <Property Name="serviceID" Type="varchar" MaxLength="10" />
+          <Property Name="date" Type="date" />
+          <Property Name="justification" Type="varchar(max)" />
+          <Property Name="cancelledByID" Type="varchar" MaxLength="8" />
+          <Property Name="dateTimeLog" Type="datetime" />
         </EntityType>
         <EntityType Name="Consultation">
           <Key>
@@ -1309,6 +1335,7 @@
         <EntityContainer Name="MediconModelStoreContainer">
           <EntitySet Name="BloodPressure" EntityType="Self.BloodPressure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BrandList" EntityType="Self.BrandList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClinicUnavailability" EntityType="Self.ClinicUnavailability" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Consultation" EntityType="Self.Consultation" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Diagnosis" EntityType="Self.Diagnosis" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DietCounseling" EntityType="Self.DietCounseling" Schema="dbo" store:Type="Tables" />
@@ -1349,9 +1376,18 @@
           <EntitySet Name="Xray_PersonStatus" EntityType="Self.Xray_PersonStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Xray_Screening" EntityType="Self.Xray_Screening" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Xray_ScutumLabRequest" EntityType="Self.Xray_ScutumLabRequest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClinicPatientAppointment" EntityType="Self.ClinicPatientAppointment" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ClinicPatientAppointment].[recNo] AS [recNo], 
+    [ClinicPatientAppointment].[clinicAppID] AS [clinicAppID], 
+    [ClinicPatientAppointment].[qrCode] AS [qrCode], 
+    [ClinicPatientAppointment].[date] AS [date], 
+    [ClinicPatientAppointment].[daytime] AS [daytime], 
+    [ClinicPatientAppointment].[serviceID] AS [serviceID]
+    FROM [dbo].[ClinicPatientAppointment] AS [ClinicPatientAppointment]</DefiningQuery>
+          </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MediconModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -2479,7 +2515,7 @@
           <EntitySet Name="Xray_Screening" EntityType="Self.Xray_Screening" />
           <EntitySet Name="Xray_ScutumLabRequest" EntityType="Self.Xray_ScutumLabRequest" />
           <FunctionImport Name="fn_ActualEmpTestedForLab" IsComposable="true" ReturnType="Collection(MediconModel.fn_ActualEmpTestedForLab_Result)">
-            <Parameter Name="testDate" Mode="In" Type="DateTime" />
+          <Parameter Name="testDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_DashboardAnalytics" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardAnalytics_Result)" />
           <FunctionImport Name="fn_DashboardDental" IsComposable="true" ReturnType="Collection(MediconModel.fn_DashboardDental_Result)" />
@@ -2491,41 +2527,41 @@
             <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabPatients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabPatients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getLabResult" IsComposable="true" ReturnType="Collection(MediconModel.fn_getLabResult_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getMRHclients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getMRHclients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getPapsmearBreastExamClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPapsmearBreastExamClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getPatientLabHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPatientLabHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_getPatientXrayHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_getPatientXrayHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_getRectalClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getRectalClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getXrayLabReqClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayLabReqClients_Result)" />
           <FunctionImport Name="fn_getXrayScreenedClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayScreenedClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_getXrayTagClients" IsComposable="true" ReturnType="Collection(MediconModel.fn_getXrayTagClients_Result)">
-            <Parameter Name="paramDate" Mode="In" Type="DateTime" />
+          <Parameter Name="paramDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_hris_consultationHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_hris_consultationHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_hris_laboratoryHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_hris_laboratoryHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_hris_prescriptionHistory" IsComposable="true" ReturnType="Collection(MediconModel.fn_hris_prescriptionHistory_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_LabSchedMasterList" IsComposable="true" ReturnType="Collection(MediconModel.fn_LabSchedMasterList_Result)">
             <Parameter Name="scheduleDate" Mode="In" Type="String" />
@@ -2534,17 +2570,17 @@
           </FunctionImport>
           <FunctionImport Name="fn_MedicineList" IsComposable="true" ReturnType="Collection(MediconModel.fn_MedicineList_Result)" />
           <FunctionImport Name="fn_Prescriptions" IsComposable="true" ReturnType="Collection(MediconModel.fn_Prescriptions_Result)">
-            <Parameter Name="date" Mode="In" Type="String" />
+          <Parameter Name="date" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="fn_ScheduledEmpForLab" IsComposable="true" ReturnType="Collection(MediconModel.fn_ScheduledEmpForLab_Result)">
             <Parameter Name="startDate" Mode="In" Type="DateTime" />
             <Parameter Name="endDate" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fn_vitalSignList" IsComposable="true" ReturnType="Collection(MediconModel.fn_vitalSignList_Result)">
-            <Parameter Name="dateFilter" Mode="In" Type="DateTime" />
+          <Parameter Name="dateFilter" Mode="In" Type="DateTime" />
           </FunctionImport>
           <FunctionImport Name="fnSputumTransmittal" IsComposable="true" ReturnType="Collection(MediconModel.fnSputumTransmittal_Result)">
-            <Parameter Name="dateCollected" Mode="In" Type="String" />
+          <Parameter Name="dateCollected" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_alterdiagram">
             <Parameter Name="diagramname" Mode="In" Type="String" />
@@ -2585,8 +2621,10 @@
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
           <FunctionImport Name="spOT_MedicineDispensing" ReturnType="Collection(MediconModel.spOT_MedicineDispensing_Result)">
-            <Parameter Name="qrCode" Mode="In" Type="String" />
+          <Parameter Name="qrCode" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="ClinicUnavailabilities" EntityType="MediconModel.ClinicUnavailability" />
+          <EntitySet Name="ClinicPatientAppointments" EntityType="MediconModel.ClinicPatientAppointment" />
         </EntityContainer>
         <ComplexType Name="sp_getXrayClientRecord_Result">
           <Property Type="String" Name="labRequestID" Nullable="false" MaxLength="15" />
@@ -2701,6 +2739,30 @@
           <Property Type="String" Name="personnel_midInit" Nullable="true" MaxLength="1" />
           <Property Type="String" Name="personnel_extName" Nullable="true" MaxLength="10" />
         </ComplexType>
+        <EntityType Name="ClinicUnavailability">
+          <Key>
+            <PropertyRef Name="unavailableID" />
+          </Key>
+          <Property Name="recNo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="unavailableID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="personnelID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="date" Type="DateTime" Precision="0" />
+          <Property Name="justification" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="cancelledByID" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="dateTimeLog" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ClinicPatientAppointment">
+          <Key>
+            <PropertyRef Name="recNo" />
+          </Key>
+          <Property Name="recNo" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="clinicAppID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="qrCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="date" Type="DateTime" Precision="0" />
+          <Property Name="daytime" Type="Boolean" />
+          <Property Name="serviceID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4071,6 +4133,32 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="ClinicUnavailabilities">
+            <EntityTypeMapping TypeName="MediconModel.ClinicUnavailability">
+              <MappingFragment StoreEntitySet="ClinicUnavailability">
+                <ScalarProperty Name="dateTimeLog" ColumnName="dateTimeLog" />
+                <ScalarProperty Name="cancelledByID" ColumnName="cancelledByID" />
+                <ScalarProperty Name="justification" ColumnName="justification" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="personnelID" ColumnName="personnelID" />
+                <ScalarProperty Name="unavailableID" ColumnName="unavailableID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClinicPatientAppointments">
+            <EntityTypeMapping TypeName="MediconModel.ClinicPatientAppointment">
+              <MappingFragment StoreEntitySet="ClinicPatientAppointment">
+                <ScalarProperty Name="serviceID" ColumnName="serviceID" />
+                <ScalarProperty Name="daytime" ColumnName="daytime" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="qrCode" ColumnName="qrCode" />
+                <ScalarProperty Name="clinicAppID" ColumnName="clinicAppID" />
+                <ScalarProperty Name="recNo" ColumnName="recNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

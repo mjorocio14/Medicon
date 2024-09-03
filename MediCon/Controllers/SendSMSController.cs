@@ -28,7 +28,7 @@ namespace MediCon.Controllers
         }
 
         [HttpPost]
-        public async Task Send(Recipient info, bool isHospital)
+        public async Task Send(Recipient info, bool isHospital, string type)
         {
             var values = new Dictionary<string, string>();
             values.Add("app_key", "DavN0rHR!S");
@@ -38,18 +38,27 @@ namespace MediCon.Controllers
             values.Add("rcvd_transid", "S858340416-9601");
             values.Add("is_intl", "false");
 
-            if (isHospital)
-                values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory schedule at PEEDO-" + info.appointee + " will be on " + info.schedule.ToLongDateString() + ", at 7 a.m."
-                                       + " It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the hospital laboratory. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
+            if (type == "labSched")
+            {
+                if (isHospital)
+                    values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory schedule at PEEDO-" + info.appointee + " will be on " + info.schedule.ToLongDateString() + ", at 7 a.m."
+                                           + " It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the hospital laboratory. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
 
+                else
+                {
+                    var physician = dbMed.Personnels.SingleOrDefault(a => a.personnelID == info.appointee);
+                    var physicianName = "Dr. " + physician.personnel_firstName + " " + physician.personnel_lastName;
+
+                    values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory results are already available and you are scheduled to visit " + physicianName +
+                        " on " + info.schedule.ToLongDateString() + ", at DavNor Employees' Clinic. It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the physicians' schedule. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
+                }
+            }
             else
             {
-                var physician = dbMed.Personnels.SingleOrDefault(a => a.personnelID == info.appointee);
-                var physicianName = "Dr. " + physician.personnel_firstName + " " + physician.personnel_lastName;
-
-                values.Add("content", "Hi " + info.employee + "! We would like to inform you that your laboratory results are already available and you are scheduled to visit " + physicianName +
-                    " on " + info.schedule.ToLongDateString() + ", at DavNor Employees' Clinic. It is highly encouraged for you to strictly follow the assigned schedule due to the limited slots in the physicians' schedule. For any schedule changes and other concerns, kindly inform the PHRMO-Admin Division.");
+                values.Add("content", "Hi " + info.employee + "! We regret to inform you that your health & wellness medical consultation at our clinic on " + info.schedule.ToLongDateString() + ", was cancelled because the physician will not be available on the said date." +
+                    "Please create a new booking/appointment at your convenience in your HRIS. Thank you.");
             }
+            
 
             var content = new FormUrlEncodedContent(values);
 

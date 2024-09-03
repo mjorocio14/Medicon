@@ -295,8 +295,9 @@
             });
   
             s.physicianList = result;
-            getSchedule();
         });
+
+        getSchedule();
     }
 
     s.mainSearchByName = function (data) {
